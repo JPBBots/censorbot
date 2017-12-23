@@ -1,0 +1,2 @@
+# jacobsux
+JacobSux Discord Bot
