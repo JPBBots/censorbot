@@ -451,4 +451,4 @@ if (message.content == '+test')  {
  //End of Testing Commands
 		
 
-bot.login('Mzk0MDE5OTE0MTU3MTI5NzI4.DSREAQ.ZzIsakoZgMSlV4AKUU_vptyqLOc');
+bot.login('token');
