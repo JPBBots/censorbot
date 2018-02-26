@@ -614,7 +614,7 @@ bot.on('message', message => {
 
 if (message.content == '+help') {
 	message.delete()
-    message.reply('Hello and thanks for using JacobSux, just for your information, this is non-customizable, atleast right now...\n``+help`` : Displays this list\n``+support`` : Sends invite to support server to DMs\n``+inv`` : Sends link to invite\n``+invite`` : Same as +inv\n``+update`` : Displays the most recent update to the bot\n``+donate`` : Donate towards the development of JacobSux')
+    message.reply('Hello and thanks for using JacobSux, just for your information, this is non-customizable, atleast right now...\n``+help`` : Displays this list\n``+support`` : Sends invite to support server to DMs\n``+inv`` : Sends link to invite\n``+invite`` : Same as +inv\n``+github`` : Displays the github link\n``+update`` : Displays the most recent update to the bot\n``+donate`` : Donate towards the development of JacobSux')
     console.log(`${message.author} ${message.author.username} Requested Help...`)
     logchannel.send(`${message.author} ${message.author.username} Requested Help...`)
 }
@@ -637,6 +637,12 @@ if (message.content == '+invite') {
     console.log(`${message.author} ${message.author.username} Requested an Invite...`)
     logchannel.send(`${message.author} ${message.author.username} Requested an Invite...`)
 } 
+if (message.content == '+github') {
+	message.delete()
+    message.reply('https://github.com/mcriper/jacobsux')
+    console.log(`${message.author} ${message.author.username} Requested GitHub...`)
+    logchannel.send(`${message.author} ${message.author.username} Requested GitHub...`)
+} 
 if (message.content == '+donate') {
 	message.delete()
     message.reply('Donate (All goes towards development of new features/new products!): https://paypal.me/jpbberry')
@@ -645,10 +651,11 @@ if (message.content == '+donate') {
 } 
 if (message.content == '+update') {
 	message.delete()
-    message.reply('Most recent update: \n 2/24/18: All use commands (which can be listed with +help) Now delete request! Basically, If you type +help, youll get the commands, AND it will delete the "+help" command message... \n(Too get updates on recent updates, join the discord! (+support) Have fun!)')
+    message.reply('Most recent update: \n 2/26/18: Added the +github command\n 2/24/18: All use commands (which can be listed with +help) Now delete request! Basically, If you type +help, youll get the commands, AND it will delete the "+help" command message...\n 2/24/18: Added the +updates command :> \n(Too get updates on recent updates, join the discord! (+support) Have fun!)')
     console.log(`${message.author} ${message.author.username} Requested Update...`)
     logchannel.send(`${message.author} ${message.author.username} Requested Update...`)
 } 
+
 });
 //End of Use Commands
 
