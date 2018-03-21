@@ -1,40 +1,72 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
+const auth = require('./auth.json')
 const logchannel = bot.channels.get("399688995283533824")
 const serverlistchannel = bot.channels.get("413831069117186078")
 const swears = require("./swears.js")
+var mysql = require('mysql')
+const DBL = require("dblapi.js")
+const dbl = new DBL(auth.dbltoken)
+bot.on('ready', () => {
+        dbl.postStats(bot.guilds.size);
+});
+
+var connection = mysql.createConnection({
+
+	host: "localhost",
+
+	user: "bot",
+
+	password: "passwordlmao",
+
+	database: "bot"
+
+}); 
+
+
+
+
 //Start of Status + Game Playing
 
 bot.on("ready", () => {
 	const logchannel = bot.channels.get("399688995283533824")
-console.log('Bot Started...');
+console.log('Bot Started...' + bot.guilds.size);
 bot.user.setStatus("online");
-bot.user.setGame('In Development');
+bot.user.setGame('In ' + bot.guilds.size + ' servers!');
 logchannel.send("Bot Either Crashed Or Was Restarted... BOT ONLINE")
 });
 //End of Status + Game Playing
 //Start Of Bot Join Message
 bot.on("guildCreate", (guild) => {
-	if(message.guild.id == "110373943822540800") return;    
-if(message.guild.id == "264445053596991498") return
+	dbl.postStats(bot.guilds.size);
 	const logchannel = bot.channels.get("399688995283533824")
 	const serverlistchannel = bot.channels.get("413831069117186078")
     const botowner = bot.users.get("142408079177285632")
 	botowner.send(`${guild.owner} ${guild.ownerID} Invited JacobSux to server ${guild.name} ${guild.id}... Awaiting Approval`)
  console.log(`Joined ${guild.name}`)
  var newguildchannel = guild.channels.find("name", "general");
- newguildchannel.send("Hello! Thanks for inviting me!!! Do +log for the log/support server! If the discord owner can join so that they can be set as a representative of the server, that'd be great! I hope we have a great time together!!")
+ newguildchannel.send("Hello! Thanks for inviting me!!! Do +support for the support server! If the discord owner can join so that they can be set as a representative of the server, that'd be great! I hope we have a great time together!!")
  logchannel.send(`Joined new server! ${guild.name}`)
  newguildchannel.createInvite({maxAge:  0}).then(invite =>
  serverlistchannel.send(`Owned By ${guild.owner} - ${invite.url}`)
  )
+ bot.user.setGame('In ' + bot.guilds.size + ' servers!');
  guild.owner.send("Hello! Thanks for inviting me to your server, PLEASE join the support/log server so you can be represented! https://discord.gg/mx6Gcdb -- After joining, a short time later you will receive the server owner role!")
  });
 //End Of Bot Join Message
+bot.on("guildDelete", (guild) => {
+	dbl.postStats(bot.guilds.size);
+	console.log(`Left ${guild.name}`)
+	 const botowner = bot.users.get("142408079177285632")
+	 botowner.send(`left ${guild.name}`)
+	 bot.user.setGame('In ' + bot.guilds.size + ' servers!');
+})
 //Start of Basic Filter
+
 bot.on('message', async (message) => {
 
 if(!message.guild) return;	
+
 if(message.channel.nsfw) return;
 if(message.author.bot) return;
     if (message.author.id !='270198738570444801' && message.author.id !='394019914157129728' && message.author.id !='204255221017214977') {
@@ -677,7 +709,18 @@ if (message.content == '+update') {
 	console.log(`${message.author} ${message.author.username} Requested Update...`)
     logchannel.send(`${message.author} ${message.author.username} Requested Update...`)
 } 
-
+if (message.content == '+log') {
+	message.delete()
+  const logmsg = await message.reply('The Log server has been deleted, if you would like to log curses, add the channel by the name of #log, If you need the support server do +support')
+    setTimeout(function() {
+		logmsg.edit(":boom:")
+		setTimeout(function() {
+			logmsg.delete()
+		}, 1000)
+	}, 9000);
+	console.log(`${message.author} ${message.author.username} Requested Log...`)
+    logchannel.send(`${message.author} ${message.author.username} Requested Log...`)
+} 
 });
 //End of Use Commands
 
@@ -708,4 +751,4 @@ if (message.content == '+test')  {
  //End of Testing Commands
 		
 
-bot.login('token');
+bot.login(auth.token);
