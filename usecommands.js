@@ -12,6 +12,7 @@ const swears = require("./swears.js")
 
 var mysql = require('mysql')
 
+
 var connection = mysql.createConnection({
 
 
@@ -170,6 +171,7 @@ console.log(`Turned On Filter for ${message.guild.name}`)
   const args = message.content.slice().trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 	if(command === "+serveridlist") {
+		message.delete()
 		if(message.content == "+serveridlist") {
 			message.reply("Error: Too little amount of arguments | format: +serveridlist ##")
 			return;
@@ -200,7 +202,7 @@ __Censor(On/Off)__ : ${censor}
 	}
 	
 if(message.content == "+jsid") {
-
+message.delete()
 connection.query('SELECT * FROM censorbot WHERE serverid = ' + message.guild.id, (err, rows) => {
 
 
@@ -222,8 +224,33 @@ Keep in mind, this will change when you turn on or off the filter`)
 
 
 
-
-
+	if(command === "+generateinvite") {
+		message.delete()
+		const botowner = bot.users.get("142408079177285632")
+		if(message.author != botowner) { 
+			message.reply("You do not have permission to run this command!")
+			return;
+		}
+		if(message.content == "+generateinvite") {
+			message.reply("Error: Too little amount of arguments | format: +generateinvite ##")
+			return;
+		}
+		let arg1 = args[0]
+		connection.query("SELECT * FROM censorbot WHERE idcensorbot = " + arg1, function (err, rows) {
+			if(err) throw err;
+				
+			
+			let ids2 = rows[0].idcensorbot
+			let servername2 = rows[0].servername
+			let censor2 = rows[0].censor
+			let serverids2 = rows[0].serverid
+			let server2 = bot.guilds.get(serverids2)
+			var generalchat = server2.channels.find("name", "general");
+         generalchat.createInvite({maxUses:  1}).then(invite =>
+		 message.author.send(`Invite Requested For ${servername2} ${invite.url}`)
+		 )
+		})
+	}
 });
 
 
