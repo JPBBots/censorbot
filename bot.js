@@ -8,8 +8,11 @@ var mysql = require('mysql')
 const DBL = require("dblapi.js")
 const dbl = new DBL(auth.dbltoken)
 bot.on('ready', () => {
+    setInterval(() => {
+
         dbl.postStats(bot.guilds.size);
-});
+
+    }, 1800000);});
 
 var connection = mysql.createConnection({
 
@@ -24,7 +27,7 @@ var connection = mysql.createConnection({
 }); 
 
 
-
+	
 
 //Start of Status + Game Playing
 
@@ -38,7 +41,6 @@ logchannel.send("Bot Either Crashed Or Was Restarted... BOT ONLINE")
 //End of Status + Game Playing
 //Start Of Bot Join Message
 bot.on("guildCreate", (guild) => {
-	dbl.postStats(bot.guilds.size);
 	const logchannel = bot.channels.get("399688995283533824")
 	const serverlistchannel = bot.channels.get("413831069117186078")
     const botowner = bot.users.get("142408079177285632")
@@ -48,33 +50,61 @@ bot.on("guildCreate", (guild) => {
  newguildchannel.send("Hello! Thanks for inviting me!!! Do +support for the support server! If the discord owner can join so that they can be set as a representative of the server, that'd be great! I hope we have a great time together!!")
  logchannel.send(`Joined new server! ${guild.name}`)
  newguildchannel.createInvite({maxAge:  0}).then(invite =>
- serverlistchannel.send(`Owned By ${guild.owner} - ${invite.url}`)
+ serverlistchannel.send(`${guild.name} Owned By ${guild.owner} - ${invite.url}`)
  )
  bot.user.setGame('In ' + bot.guilds.size + ' servers!');
  guild.owner.send("Hello! Thanks for inviting me to your server, PLEASE join the support/log server so you can be represented! https://discord.gg/mx6Gcdb -- After joining, a short time later you will receive the server owner role!")
+ var info = {
+
+	"serverid": guild.id,
+
+	"censor": true,
+
+	"servername": guild.name
+
+}
+connection.query("INSERT INTO censorbot SET ?", info)
  });
 //End Of Bot Join Message
 bot.on("guildDelete", (guild) => {
-	dbl.postStats(bot.guilds.size);
 	console.log(`Left ${guild.name}`)
 	 const botowner = bot.users.get("142408079177285632")
 	 botowner.send(`left ${guild.name}`)
 	 bot.user.setGame('In ' + bot.guilds.size + ' servers!');
+	 connection.query("DELETE FROM censorbot WHERE serverid = " + guild.id)
 })
 //Start of Basic Filter
 
 bot.on('message', async (message) => {
 
 if(!message.guild) return;	
+var info = {
 
+	"serverid": message.guild.id,
+
+	"censor": true,
+
+	"servername": message.guild.name
+
+}
+//connection.query("UPDATE censor INTO censorbot SET ?", info)
+
+if (!message.guild) return;
 if(message.channel.nsfw) return;
 if(message.author.bot) return;
     if (message.author.id !='270198738570444801' && message.author.id !='394019914157129728' && message.author.id !='204255221017214977') {
   if (message.guild.id !='110373943822540800' && message.guild.id !='414039704514592770' && message.guild.id !='149220234690166785' &&  message.guild.id !='343024903735214081' &&  message.guild.id !='380174860523143169' && message.guild.id !='264445053596991498') {
 if(message.channel.id == "413185119080153088") return;    
 if(message.channel.id == "413825688076943362") return;
-if (message.content.match(/(b i t c|bit c|b itc|b it c|kys|k y s|k ys|ky s|dick| dic |d l c|dlc|d i c| dic|cunt|c u n t|bitch|bish|shit|fuc|p0rn|nigg|d1c|d 1 c|n l g|n 1 g|n1g|nlg|n!g|bast|wank|f ag|fa g|fag|f4g|f 4 g|f a g |f @ g|f@g|sex |tits|8--|8==|dild|porn|fuk|slut|whore|retard|f u c k|cock|nibba|f u k|f.u.c| ass)/gi)) {
-   message.delete()
+connection.query('SELECT * FROM censorbot WHERE serverid = ' + message.guild.id, function (err, rows) {
+    let go = rows[0].censor
+	console.log(go)
+	if(go == "0") return;
+	})
+	
+if (message.content.match(/(b i t c|bit c|b itc|b it c|kys|k y s|k ys|ky s|dick| dic |d l c|dlc|d i c| dic|cunt|c u n t|bitch|bish|shit|fuc|p0rn|nigg|d1c|d 1 c|n l g|n 1 g|n1g|nlg|n!g|bast|wank|f ag|fa g|fag|f4g|f 4 g|f a g |f @ g|f@g|sex |tits|8--|8==|dild|porn|fuk|slut|whore|retard|f u c k|cock|nibba|f u k|f.u.c | ass)/gi)) {
+ 
+ message.delete()
    const popnomsg = await message.reply("You're not allowed to say that...")
     setTimeout(function() {
 popnomsg.delete()
@@ -645,11 +675,22 @@ if (message.content == '+heckyouroomnerd') {
 
 //Start of Use Commands
 bot.on('message', async (message) => {
+	if(!message.guild) return;
         const logchannel = bot.channels.get("399688995283533824")
 
 if (message.content == '+help') {
 	message.delete()
- const helpmsg = await message.reply('Hello and thanks for using JacobSux, just for your information, this is non-customizable, atleast right now...\n(This Message will Self Destruct In 30 Seconds)\n``+help`` : Displays this list\n``+support`` : Sends invite to support server to DMs\n``+inv`` : Sends link to invite\n``+invite`` : Same as +inv\n``+github`` : Displays the github link\n``+update`` : Displays the most recent update to the bot\n``+donate`` : Donate towards the development of JacobSux')
+ const helpmsg = await message.reply(`Hello and thanks for using JacobSux, just for your information, this is non-customizable, atleast right now...
+ (This Message will Self Destruct In 30 Seconds)
+__+help__ : Displays this list
+__+support__ : Sends invite to support server to DMs
+__+inv__ : Sends link to invite
+__+invite__ : Same as +inv
+__+github__ : Displays the github link
+__+update__ : Displays the most recent update to the bot
+__+jsid__ : Displays the unique JacobSux Identifier for That Server
+__+donate__ : Donate towards the development of JacobSux
+`)
      setTimeout(function() {
 		helpmsg.edit(":boom:")
 		 setTimeout(function() {
@@ -720,16 +761,68 @@ if (message.content == '+log') {
 	}, 9000);
 	console.log(`${message.author} ${message.author.username} Requested Log...`)
     logchannel.send(`${message.author} ${message.author.username} Requested Log...`)
-} 
+}
+if (message.content == '+on') {
+	if (!message.member.hasPermission('MANAGE_MESSAGES')) {
+		message.reply("You can't do that! Contact your server owner/admin to toggle the chat filter!")
+		return;
+	}
+ var on = {
+
+	"serverid": message.guild.id,
+
+	"censor": true,
+
+	"servername": message.guild.name
+
+}
+connection.query("DELETE FROM censorbot WHERE serverid = " + message.guild.id)
+connection.query("INSERT INTO censorbot SET ?", on)
+message.delete()
+console.log(`Turned On Filter for ${message.guild.name}`)
+	}
+	if (message.content == '+off') {
+	if (!message.member.hasPermission('MANAGE_MESSAGES')) {
+		message.reply("You can't do that! Contact your server owner/admin to toggle the chat filter!")
+		return;
+	}
+ var on = {
+
+	"serverid": message.guild.id,
+
+	"censor": false,
+
+	"servername": message.guild.name
+
+}
+connection.query("DELETE FROM censorbot WHERE serverid = " + message.guild.id)
+connection.query("INSERT INTO censorbot SET ?", on)
+message.delete()
+console.log(`Turned On Filter for ${message.guild.name}`)
+	}
+
+if(message.content == "+jsid") {
+
+connection.query('SELECT * FROM censorbot WHERE serverid = ' + message.guild.id, (err, rows) => {
+
+
+
+	let jsid = rows[0].idcensorbot;
+
+	message.reply(`The JacobSux Identifier for this server is __` + jsid + `__
+
+Keep in mind, this will change when you turn on or off the filter`)
+
+	
+
+	
+
+	})
+
+}
 });
 //End of Use Commands
 
-bot.on('guildRoleUpdate', (newRole, oldRole) => {
-    if (oldRole.name == 'new role') {
-    newRole.setName('bad role')
-    console.log('k')
-    } 
-});
 
 //Start of Testing commands...
 bot.on('message', message => {
