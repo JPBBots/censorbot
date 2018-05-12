@@ -11,7 +11,8 @@ bot.on('ready', () => {
     setInterval(() => {
 
         dbl.postStats(bot.guilds.size);
-
+		bot.user.setGame('In ' + bot.guilds.size + ' servers!');
+		console.log(`Updated ${bot.guilds.size}`)
     }, 1800000);});
 
 var connection = mysql.createConnection({

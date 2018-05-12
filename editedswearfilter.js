@@ -8,9 +8,11 @@ const logchannel = bot.channels.get("399688995283533824")
 
 const serverlistchannel = bot.channels.get("413831069117186078")
 
-const swears = require("./swears.js")
+const swears = require("./swears.json")
 
 var mysql = require('mysql')
+
+var curses = new RegExp (swears.var)
 
 var connection = mysql.createConnection({
 
@@ -40,6 +42,7 @@ console.log("sector on")
 
 bot.on('messageUpdate', async (newMessage, oldMessage, guild) => {
 if(!oldMessage.guild) return;
+if(oldMessage.author.bot) return;
 if(oldMessage.channel.nsfw) return;
 
        if(oldMessage.guild.id == "149220234690166785") return;
@@ -48,7 +51,7 @@ if(oldMessage.channel.nsfw) return;
 	   if(oldMessage.guild.id == "110373943822540800") return;
 	   if(newMessage.guild.id == "264445053596991498") return;
 	   if(oldMessage.guild.id == "414039704514592770") return;
-    if (oldMessage.content.match(/(b i t c|bit c|b itc|b it c|kys|k y s|k ys|ky s|dick| dic |d l c|dlc|d i c| dic|cunt|c u n t|bitch|bish|shit|fuc|p0rn|nig|d1c|d 1 c|n l g|n i g|n 1 g|n1g|nlg|n!g|bast|wank|f ag|fa g|fag|f4g|f 4 g|f a g|f @ g|f@g|sex |tits|8--|8==|dild|porn|fuk|slut|whore|retard|f u c k|cock|nibba|f u k|f.u.c)/gi)) {
+    if (oldMessage.content.match(curses)) { 
 
  
 

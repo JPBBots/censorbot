@@ -55,8 +55,15 @@ __+support__ : Sends invite to support server to DMs
 __+inv__ : Sends link to invite
 __+invite__ : Same as +inv
 __+github__ : Displays the github link
+__+ping__ : Gives Bot Latency and API Latency
+__+kick__ : Kicks Specifed User (+kick for help)
+__+ban__ : Bans Specified User (+ban for help)
 __+update__ : Displays the most recent update to the bot
 __+jsid__ : Displays the unique JacobSux Identifier for That Server
+__+mmo__ : "Make Me Owner" Claim Server Owner Role In the Support Server
+__+vote__ : Gives link to vote for JacobSux On discordbots.org, It really helps!!
+__+on__ : Turns on chat filter, doesn't work, YET!
+__+off__ : Turns off chat filter, doesn't work, YET!
 __+donate__ : Donate towards the development of JacobSux
 `)
      setTimeout(function() {
@@ -178,8 +185,6 @@ console.log(`Turned On Filter for ${message.guild.name}`)
 		}
 		let arg1 = args[0]
 		connection.query("SELECT * FROM censorbot WHERE idcensorbot = " + arg1, function (err, rows) {
-			if(err) throw err;
-				
 			
 			let ids = rows[0].idcensorbot
 			let servername = rows[0].servername
@@ -236,6 +241,7 @@ Keep in mind, this will change when you turn on or off the filter`)
 			return;
 		}
 		let arg1 = args[0]
+		let arg2 = args[1]
 		connection.query("SELECT * FROM censorbot WHERE idcensorbot = " + arg1, function (err, rows) {
 			if(err) throw err;
 				
@@ -245,12 +251,71 @@ Keep in mind, this will change when you turn on or off the filter`)
 			let censor2 = rows[0].censor
 			let serverids2 = rows[0].serverid
 			let server2 = bot.guilds.get(serverids2)
-			var generalchat = server2.channels.find("name", "general");
+			var generalchat = server2.channels.find("name", arg2);
          generalchat.createInvite({maxUses:  1}).then(invite =>
 		 message.author.send(`Invite Requested For ${servername2} ${invite.url}`)
 		 )
 		})
 	}
+	if(message.content == "+vote") {
+				
+		message.delete()
+		const votemsg = await message.reply("You can vote for JacobSux by going to https://discordbots.org/bot/394019914157129728/vote It really does help if you do!!")
+		setTimeout(function() {
+		votemsg.edit(":boom:")
+		setTimeout(function() {
+			votemsg.delete()
+		}, 1000)
+	}, 10000);		
+	}
+	
+	if (message.content === "+mysqlsettle") {
+		
+		
+		
+		
+		connection.query("truncate `bot`.`censorbot`")
+		connection.query("ALTER TABLE `bot`.`censorbot`  CHANGE COLUMN `idcensorbot` `idcensorbot` INT(11) NOT NULL ;")
+		connection.query("ALTER TABLE `bot`.`censorbot` CHANGE COLUMN `idcensorbot` `idcensorbot` INT(11) NOT NULL AUTO_INCREMENT ;")
+
+
+		
+		
+		
+        var guildList = bot.guilds.array();
+            guildList.forEach(guild => {
+				
+				
+				
+
+				
+				var servername = guild.name
+
+
+
+				
+			 let on = {
+
+	"serverid": guild.id,
+
+	"censor": true,
+
+}
+			connection.query("INSERT INTO censorbot SET ?", on)
+			console.log(`inserted ${guild.name}`)
+			
+					if(guild.id == "428570175126634516") return;
+					if(guild.id == "438881277899440168") return;
+					if(guild.id == "292962760764030977") return;
+					if(guild.id == "437473327062450188") return;
+					if(guild.id == "440310076914270208") return;
+					
+			connection.query(`UPDATE censorbot SET servername = "${guild.name}" WHERE serverid = '${guild.id}'`)
+					
+				
+			});
+        
+    }
 });
 
 

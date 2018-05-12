@@ -8,9 +8,11 @@ const logchannel = bot.channels.get("399688995283533824")
 
 const serverlistchannel = bot.channels.get("413831069117186078")
 
-const swears = require("./swears.js")
+const swears = require("./swears.json")
 
 var mysql = require('mysql')
+
+var curses = new RegExp (swears.var)
 
 var connection = mysql.createConnection({
 
@@ -58,9 +60,9 @@ if(message.channel.id == "413825688076943362") return;
 //	console.log(go)
 //	if(go == "0") return;
 //	})
-	
-if (message.content.match(/(b i t c|bit c|b itc|b it c|kys|k y s|k ys|ky s|dick| dic |d l c|dlc|d i c| dic|cunt|c u n t|bitch|bish|shit|fuc|p0rn|nigg|d1c|d 1 c|n l g|n 1 g|n1g|nlg|n!g|bast|wank|f ag|fa g|fag|f4g|f 4 g|f a g |f @ g|f@g|sex |tits|8--|8==|dild|porn|fuk|slut|whore|retard|f u c k|cock|nibba|f u k|f.u.c | ass)/gi)) {
- 
+
+if (message.content.match(curses)) {
+
  message.delete()
    const popnomsg = await message.reply("You're not allowed to say that...")
     setTimeout(function() {
@@ -223,7 +225,7 @@ nomsg.delete()
 
 	}} 
     }
-      }
+  }
       
     
 }); 
