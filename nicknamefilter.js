@@ -12,7 +12,9 @@ const swears = require("./swears.json")
 
 var mysql = require('mysql')
 
-var curses = new RegExp (swears.var)
+var curses = new RegExp (swears.var, 'gi')
+
+const modulename = "nicknamefilter"
 
 var connection = mysql.createConnection({
 
@@ -36,8 +38,28 @@ var connection = mysql.createConnection({
 
 }); 
 
+bot.on('message', async (message) => {
+	if(message.content == "+restart all") {
+		const botowner = bot.users.get("142408079177285632")
+		if(message.author != botowner) return;
+		message.delete();
+			connection.query("CRASH")
+	}
+		if(message.content == "+restart nicknamefilter") {
+		const botowner = bot.users.get("142408079177285632")
+		if(message.author != botowner) return;
+		message.delete();
+			connection.query("CRASH")
+	}
+		if(message.content == "+modulesonline") {
+		message.channel.send(`${modulename} = Online (10 In Total)`)
+	}
+});
+
 bot.on("ready", () => {
 console.log("sector on")
+const statuslog = bot.channels.get("450444337357258772")
+statuslog.send(`${Date().toLocaleString()} Module Started: ${modulename}`)
 })
 
 //

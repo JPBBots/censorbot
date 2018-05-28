@@ -12,6 +12,7 @@ const swears = require("./swears.js")
 
 var mysql = require('mysql')
 
+const modulename = "kickbanping"
 
 var connection = mysql.createConnection({
 
@@ -35,8 +36,28 @@ var connection = mysql.createConnection({
 
 }); 
 
+client.on('message', async (message) => {
+	if(message.content == "+restart all") {
+		const botowner = client.users.get("142408079177285632")
+		if(message.author != botowner) return;
+		message.delete();
+			connection.query("CRASH")
+	}
+		if(message.content == "+restart kickbanping") {
+		const botowner = client.users.get("142408079177285632")
+		if(message.author != botowner) return;
+		message.delete();
+			connection.query("CRASH")
+	}
+		if(message.content == "+modulesonline") {
+		message.channel.send(`${modulename} = Online (10 In Total)`)
+	}
+});
+
 client.on("ready", () => {
 console.log("sector on")
+const statuslog = client.channels.get("450444337357258772")
+statuslog.send(`${Date().toLocaleString()} Module Started: ${modulename}`)
 })
 
 client.on('message', async (message) => {

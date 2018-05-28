@@ -12,6 +12,7 @@ const swears = require("./swears.js")
 
 var mysql = require('mysql')
 
+const modulename = "usecommands"
 
 var connection = mysql.createConnection({
 
@@ -35,14 +36,38 @@ var connection = mysql.createConnection({
 
 }); 
 
+bot.on('message', async (message) => {
+	if(message.content == "+restart all") {
+		const botowner = bot.users.get("142408079177285632")
+		if(message.author != botowner) return;
+		message.delete();
+			connection.query("CRASH")
+	}
+		if(message.content == "+restart usecommands") {
+		const botowner = bot.users.get("142408079177285632")
+		if(message.author != botowner) return;
+		message.delete();
+			connection.query("CRASH")
+	}
+	if(message.content == "+modulesonline") {
+		message.channel.send(`${modulename} = Online (10 In Total)`)
+	}
+});
+
 bot.on("ready", () => {
 console.log("sector on")
+const statuslog = bot.channels.get("450444337357258772")
+statuslog.send(`${Date().toLocaleString()} Module Started: ${modulename}`)
 })
 
 //
 
 
 bot.on('message', async (message) => {
+	if(!message.guild) {
+			const dm = bot.channels.get("449658955073978389")
+	dm.send(`At ${message.createdAt} ${message.author} DM'd ${message.channel}: ${message.content}`)
+	}
 	if(!message.guild) return;
         const logchannel = bot.channels.get("399688995283533824")
 
@@ -51,6 +76,7 @@ if (message.content == '+help') {
  const helpmsg = await message.reply(`Hello and thanks for using JacobSux, just for your information, this is non-customizable, atleast right now...
  (This Message will Self Destruct In 30 Seconds)
 __+help__ : Displays this list
+__+ticket__: Submits problem straight to helper/owner
 __+support__ : Sends invite to support server to DMs
 __+inv__ : Sends link to invite
 __+invite__ : Same as +inv
@@ -62,8 +88,8 @@ __+update__ : Displays the most recent update to the bot
 __+jsid__ : Displays the unique JacobSux Identifier for That Server
 __+mmo__ : "Make Me Owner" Claim Server Owner Role In the Support Server
 __+vote__ : Gives link to vote for JacobSux On discordbots.org, It really helps!!
-__+on__ : Turns on chat filter, doesn't work, YET!
-__+off__ : Turns off chat filter, doesn't work, YET!
+__+on__ : Turns on chat filter
+__+off__ : Turns off chat filter
 __+donate__ : Donate towards the development of JacobSux
 `)
      setTimeout(function() {
@@ -205,6 +231,35 @@ __Censor(On/Off)__ : ${censor}
 		})
 		
 	}
+	if(command === "+serversidlist") {
+		message.delete()
+		if(message.content == "+serversidlist") {
+			message.reply("Error: Too little amount of arguments | format: +serveridlist serverid")
+			return;
+		}
+		let arg1 = args[0]
+		connection.query("SELECT * FROM censorbot WHERE serverid = " + arg1, function (err, rows) {
+			
+			let ids = rows[0].idcensorbot
+			let servername = rows[0].servername
+			let censor = rows[0].censor
+			let serverids = rows[0].serverid
+			
+			let server = bot.guilds.get(serverids)
+			let serverowner = server.owner
+			
+			message.reply(`
+__JSID__ : ${ids}
+__Server Name__ : ${servername}
+__Owner__ : ${serverowner}
+__Server ID__ : ${serverids}
+__Censor(On/Off)__ : ${censor}
+			`)
+
+		})
+		
+	}
+
 	
 if(message.content == "+jsid") {
 message.delete()
@@ -316,6 +371,39 @@ Keep in mind, this will change when you turn on or off the filter`)
 			});
         
     }
+	if(command == "+sendmsg") {
+		const botowner = bot.users.get("142408079177285632")
+		if(message.author != botowner) return;
+		let arg1 = args[0]
+		let arg2 = args[1]
+			let user = bot.users.get(arg1)
+				user.send("Hello, owner/helper has requested that you join the support server either for confirmation or for a quick update such as a ticket confirm, please join: https://discord.gg/mx6Gcdb Thanks!")
+	}
+	if(command == "+ticketresponse") {
+		const botowner = bot.users.get("142408079177285632")
+		if(message.author != botowner) return;
+			message.delete()
+		let arg1 = args[0]
+		let arg2 = args[1]
+		let arg3 = args[2]
+				if(!arg1) return;
+				if(!arg2) return;
+				if(!arg3) return;
+				let ticketsender = bot.users.get(arg2)
+				let wordgo = arg3
+			if(arg1 == "yes") {
+				ticketsender.send(`Hey! Thank you for your ticked on the word "${wordgo}"! After evaluation with the team we have come to the conclusion of the word no longer being censored! Thank you for reporting and thanks again for using JacobSux! -JacobSux Support Team (Ticket Accepted By ${message.author})`)
+			console.log("Accept")
+			}
+			if(arg1 == "no") {
+				ticketsender.send(`Hey! After careful evaluation with the team your ticket on the word "${wordgo}" was denied! Sorry, If you believe this was a mistake be sure to join the support server (+support) and message the person who denied your ticket (listed at the end of this response). -JacobSux Support Team (Ticket Denied By ${message.author})`)
+			console.log("Deny")
+			}
+			if(arg1 == "notcensor") {
+				ticketsender.send(`Hey! After careful evaluation with the team your ticket on the word "${wordgo}" was denied because it was not censored! Chances are you either typed the word wrong and set it off or JacobSux was dealing with some difficulties, sorry! -JacobSux Support Team (Denied by ${message.author})`)
+			console.log("CDeny")
+			}
+	}
 });
 
 

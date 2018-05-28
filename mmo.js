@@ -7,15 +7,18 @@ const logchannel = bot.channels.get("399688995283533824")
 
 const serverlistchannel = bot.channels.get("413831069117186078")
 
+const auth = require('./auth.json')
+
 
 var mysql = require('mysql')
 
+const modulename = "mmo"
 
 var connection = mysql.createConnection({
 
 
 
-	host: "192.168.0.10",
+	host: "localhost",
 
 
 
@@ -33,8 +36,28 @@ var connection = mysql.createConnection({
 
 }); 
 
+bot.on('message', async (message) => {
+	if(message.content == "+restart all") {
+		const botowner = bot.users.get("142408079177285632")
+		if(message.author != botowner) return;
+		message.delete();
+			connection.query("CRASH")
+	}
+		if(message.content == "+restart mmo") {
+		const botowner = bot.users.get("142408079177285632")
+		if(message.author != botowner) return;
+		message.delete();
+			connection.query("CRASH")
+	}
+		if(message.content == "+modulesonline") {
+		message.channel.send(`${modulename} = Online (10 In Total)`)
+	}
+});
+
 bot.on("ready", () => {
 console.log("sector on")
+const statuslog = bot.channels.get("450444337357258772")
+statuslog.send(`${Date().toLocaleString()} Module Started: ${modulename}`)
 })
 
 
@@ -60,7 +83,7 @@ bot.on('message', async (message) => {
 		}
 		let arg1 = args[0]
 		connection.query("SELECT * FROM censorbot WHERE idcensorbot = " + arg1, function (err, rows) {
-			if(err) throw err;
+			
 				
 			
 			let ids2 = rows[0].idcensorbot
@@ -100,4 +123,4 @@ message.reply(`You have claimed ownership of ${servername2}`)
 
 
 
-bot.login('Mzk0MDE5OTE0MTU3MTI5NzI4.DZQ8jg.Nvpcun8JZDmA05k2DvWgriU3zLo');
+bot.login(auth.token);
