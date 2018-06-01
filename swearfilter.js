@@ -1,61 +1,41 @@
-const Discord = require('discord.js');
-
-const bot = new Discord.Client();
-
-const auth = require('./auth.json')
-
-const logchannel = bot.channels.get("399688995283533824")
-
-const serverlistchannel = bot.channels.get("413831069117186078")
-
-const swears = require("./swears.json")
-
-var mysql = require('mysql')
-
-var curses = new RegExp (swears.var, 'gi')
-
 const modulename = "swearfilter"
 
+
+const Discord = require('discord.js');
+const bot = new Discord.Client();
+const auth = require('./auth.json')
+const swears = require("./swears.json")
+var mysql = require('mysql')
+var curses = new RegExp (swears.var, 'gi')
+const stuff = require('./stuff.json')
+var statuslog = bot.channels.get("450444337357258772")
+var logchannel = bot.channels.get("399688995283533824")
+var serverlistchannel = bot.channels.get("413831069117186078")
+var botowner = bot.users.get("142408079177285632")
 var connection = mysql.createConnection({
-
-
-
-	host: "localhost",
-
-
-
-	user: "bot",
-
-
-
-	password: "passwordlmao",
-
-
-
-	database: "bot"
-
-
-
+	host: auth.mysqlhost,
+	user: auth.mysqluser,
+	password: auth.mysqlpassword,
+	database: auth.mysqldatabase
 }); 
 
 bot.on('message', async (message) => {
-	if(message.content == "+restart all") {
-		const botowner = bot.users.get("142408079177285632")
-		if(message.author != botowner) return;
-		message.delete();
-			connection.query("CRASH")
-	}
-		if(message.content == "+restart swearfilter") {
-		const botowner = bot.users.get("142408079177285632")
-		if(message.author != botowner) return;
-		message.delete();
-			connection.query("CRASH")
-	}
-		if(message.content == "+modulesonline") {
-		message.channel.send(`${modulename} = Online (10 In Total)`)
-	}
+if(message.content == "+restart all") {
+const botowner = bot.users.get("142408079177285632")
+if(message.author != botowner) return;
+connection.query("CRASH")
+}
+if(message.content == "+restart " + modulename) {
+const botowner = bot.users.get("142408079177285632")
+if(message.author != botowner) return;
+connection.query("CRASH")
+}
+if(message.content == "+modulesonline") { message.channel.send(`${modulename} = Online (${stuff.moduleamount} In Total)`) }
+const yes = bot.emojis.get("427889207608999938");
+if(message.content == "+module " + modulename) {
+	message.reply(`${modulename} status: ${yes}`)
+}
 });
-
 bot.on('ready', () => {
     console.log('sector on');
 	const statuslog = bot.channels.get("450444337357258772")
@@ -113,7 +93,7 @@ popnomsg.delete()
 	})
 	}
 	
-	if(message.content.match(/(Pu.ssy|P.ussy|Puss.y|b i t c|bit c|b itc|b it c|d l c|dlc| dic|c u n t|d 1 c|n l g|n!g|f ag|fa g|f4g|f 4 g|f a g |f @ g|f u c k|f u k|f.u.c)/gi)) {
+	if(message.content.match(/(f uck|fu ck|Pu.ssy|P.ussy|Puss.y|b i t c|bit c|b itc|b it c|d l c|dlc| dic|c u n t|d 1 c|n l g|n!g|f ag|fa g|f4g|f 4 g|f a g |f @ g|f u c k|f u k|f.u.c)/gi)) {
 		stopped();
 		console.log(crash)
 	}
@@ -121,10 +101,11 @@ popnomsg.delete()
  
 		arg.forEach(arg => {
 				if(arg.match(/ass/gi)) {
+					if(arg.match(/wass/)) return;
 					if(arg.match(/assum/)) return;
 					if(arg.match(/rass/)) return;
 					if(arg.match(/assa/gi)) return;
-					if(arg.match(/asse/gi)) return;
+					if(arg.match(/assem/gi)) return;
 					if(arg.match(/asso/gi)) return;
 					if(arg.match(/glass/gi)) return;
 					if(arg.match(/bass/gi)) return;
@@ -213,6 +194,14 @@ popnomsg.delete()
 					console.log(crash)
 				}
 				if(arg.match(/pussy/gi)) {
+					stopped();
+					console.log(crash)
+				}
+				if(arg.match(/cum/gi)) {
+					if(arg.match(/cumul/gi)) return;
+					if(arg.match(/cumfer/gi)) return;
+					if(arg.match(/scum/gi)) return;
+					if(arg.match(/cumber/gi)) return;
 					stopped();
 					console.log(crash)
 				}

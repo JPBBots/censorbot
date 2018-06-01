@@ -1,66 +1,48 @@
-const Discord = require('discord.js');
-
-const client = new Discord.Client();
-
-const auth = require('./auth.json')
-
-const logchannel = client.channels.get("399688995283533824")
-
-const serverlistchannel = client.channels.get("413831069117186078")
-
-const swears = require("./swears.js")
-
-var mysql = require('mysql')
-
 const modulename = "kickbanping"
 
+
+const Discord = require('discord.js');
+const bot = new Discord.Client();
+const auth = require('./auth.json')
+const swears = require("./swears.json")
+var mysql = require('mysql')
+var curses = new RegExp (swears.var, 'gi')
+const stuff = require('./stuff.json')
+var statuslog = bot.channels.get("450444337357258772")
+var logchannel = bot.channels.get("399688995283533824")
+var serverlistchannel = bot.channels.get("413831069117186078")
+var botowner = bot.users.get("142408079177285632")
 var connection = mysql.createConnection({
-
-
-
-	host: "localhost",
-
-
-
-	user: "bot",
-
-
-
-	password: "passwordlmao",
-
-
-
-	database: "bot"
-
-
-
+	host: auth.mysqlhost,
+	user: auth.mysqluser,
+	password: auth.mysqlpassword,
+	database: auth.mysqldatabase
 }); 
 
-client.on('message', async (message) => {
-	if(message.content == "+restart all") {
-		const botowner = client.users.get("142408079177285632")
-		if(message.author != botowner) return;
-		message.delete();
-			connection.query("CRASH")
-	}
-		if(message.content == "+restart kickbanping") {
-		const botowner = client.users.get("142408079177285632")
-		if(message.author != botowner) return;
-		message.delete();
-			connection.query("CRASH")
-	}
-		if(message.content == "+modulesonline") {
-		message.channel.send(`${modulename} = Online (10 In Total)`)
-	}
+bot.on('message', async (message) => {
+if(message.content == "+restart all") {
+const botowner = bot.users.get("142408079177285632")
+if(message.author != botowner) return;
+connection.query("CRASH")
+}
+if(message.content == "+restart " + modulename) {
+const botowner = bot.users.get("142408079177285632")
+if(message.author != botowner) return;
+connection.query("CRASH")
+}
+if(message.content == "+modulesonline") { message.channel.send(`${modulename} = Online (${stuff.moduleamount} In Total)`) }
+const yes = bot.emojis.get("427889207608999938");
+if(message.content == "+module " + modulename) {
+	message.reply(`${modulename} status: ${yes}`)
+}
+});
+bot.on('ready', () => {
+    console.log('sector on');
+	const statuslog = bot.channels.get("450444337357258772")
+statuslog.send(`${Date().toLocaleString()} Module Started: ${modulename}`)
 });
 
-client.on("ready", () => {
-console.log("sector on")
-const statuslog = client.channels.get("450444337357258772")
-statuslog.send(`${Date().toLocaleString()} Module Started: ${modulename}`)
-})
-
-client.on('message', async (message) => {
+bot.on('message', async (message) => {
   
   const args = message.content.slice().trim().split(/ +/g);
   const command = args.shift().toLowerCase();
@@ -68,7 +50,7 @@ client.on('message', async (message) => {
   
   if(command === "+ping") {
     const m = await message.channel.send("Ping?");
-    m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
+    m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(bot.ping)}ms`);
   }
   
   
@@ -155,4 +137,4 @@ client.on('message', async (message) => {
   }
 
 });
-client.login(auth.token)
+bot.login(auth.token)

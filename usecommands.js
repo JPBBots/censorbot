@@ -1,64 +1,46 @@
-const Discord = require('discord.js');
-
-const bot = new Discord.Client();
-
-const auth = require('./auth.json')
-
-const logchannel = bot.channels.get("399688995283533824")
-
-const serverlistchannel = bot.channels.get("413831069117186078")
-
-const swears = require("./swears.js")
-
-var mysql = require('mysql')
-
 const modulename = "usecommands"
 
+
+const Discord = require('discord.js');
+const bot = new Discord.Client();
+const auth = require('./auth.json')
+const swears = require("./swears.json")
+var mysql = require('mysql')
+var curses = new RegExp (swears.var, 'gi')
+const stuff = require('./stuff.json')
+var statuslog = bot.channels.get("450444337357258772")
+var logchannel = bot.channels.get("399688995283533824")
+var serverlistchannel = bot.channels.get("413831069117186078")
+var botowner = bot.users.get("142408079177285632")
 var connection = mysql.createConnection({
-
-
-
-	host: "localhost",
-
-
-
-	user: "bot",
-
-
-
-	password: "passwordlmao",
-
-
-
-	database: "bot"
-
-
-
+	host: auth.mysqlhost,
+	user: auth.mysqluser,
+	password: auth.mysqlpassword,
+	database: auth.mysqldatabase
 }); 
 
 bot.on('message', async (message) => {
-	if(message.content == "+restart all") {
-		const botowner = bot.users.get("142408079177285632")
-		if(message.author != botowner) return;
-		message.delete();
-			connection.query("CRASH")
-	}
-		if(message.content == "+restart usecommands") {
-		const botowner = bot.users.get("142408079177285632")
-		if(message.author != botowner) return;
-		message.delete();
-			connection.query("CRASH")
-	}
-	if(message.content == "+modulesonline") {
-		message.channel.send(`${modulename} = Online (10 In Total)`)
-	}
+if(message.content == stuff.prefix + "restart all") {
+const botowner = bot.users.get("142408079177285632")
+if(message.author != botowner) return;
+connection.query("CRASH")
+}
+if(message.content == stuff.prefix + "restart " + modulename) {
+const botowner = bot.users.get("142408079177285632")
+if(message.author != botowner) return;
+connection.query("CRASH")
+}
+if(message.content == stuff.prefix + "modulesonline") { message.channel.send(`${modulename} = Online (${stuff.moduleamount} In Total)`) }
+const yes = bot.emojis.get("427889207608999938");
+if(message.content == "+module " + modulename) {
+	message.reply(`${modulename} status: ${yes}`)
+}
 });
-
-bot.on("ready", () => {
-console.log("sector on")
-const statuslog = bot.channels.get("450444337357258772")
+bot.on('ready', () => {
+    console.log('sector on');
+	const statuslog = bot.channels.get("450444337357258772")
 statuslog.send(`${Date().toLocaleString()} Module Started: ${modulename}`)
-})
+});
 
 //
 
@@ -71,26 +53,25 @@ bot.on('message', async (message) => {
 	if(!message.guild) return;
         const logchannel = bot.channels.get("399688995283533824")
 
-if (message.content == '+help') {
+if (message.content == stuff.prefix + 'help') {
 	message.delete()
  const helpmsg = await message.reply(`Hello and thanks for using JacobSux, just for your information, this is non-customizable, atleast right now...
  (This Message will Self Destruct In 30 Seconds)
-__+help__ : Displays this list
-__+ticket__: Submits problem straight to helper/owner
-__+support__ : Sends invite to support server to DMs
-__+inv__ : Sends link to invite
-__+invite__ : Same as +inv
-__+github__ : Displays the github link
-__+ping__ : Gives Bot Latency and API Latency
-__+kick__ : Kicks Specifed User (+kick for help)
-__+ban__ : Bans Specified User (+ban for help)
-__+update__ : Displays the most recent update to the bot
-__+jsid__ : Displays the unique JacobSux Identifier for That Server
-__+mmo__ : "Make Me Owner" Claim Server Owner Role In the Support Server
-__+vote__ : Gives link to vote for JacobSux On discordbots.org, It really helps!!
-__+on__ : Turns on chat filter
-__+off__ : Turns off chat filter
-__+donate__ : Donate towards the development of JacobSux
+__${stuff.prefix}help__ : Displays this list
+__${stuff.prefix}ticket__: Submits problem straight to helper/owner
+__${stuff.prefix}support__ : Sends invite to support server to DMs
+__${stuff.prefix}inv__ : Sends link to invite
+__${stuff.prefix}invite__ : Same as ${stuff.prefix}inv
+__${stuff.prefix}github__ : Displays the github link
+__${stuff.prefix}ping__ : Gives Bot Latency and API Latency
+__${stuff.prefix}kick__ : Kicks Specifed User (${stuff.prefix}kick for help)
+__${stuff.prefix}ban__ : Bans Specified User (${stuff.prefix}ban for help)
+__${stuff.prefix}update__ : Displays the most recent update to the bot
+__${stuff.prefix}jsid__ : Displays the unique JacobSux Identifier for That Server
+__${stuff.prefix}vote__ : Gives link to vote for JacobSux On discordbots.org, It really helps!!
+__${stuff.prefix}on__ : Turns on chat filter
+__${stuff.prefix}off__ : Turns off chat filter
+__${stuff.prefix}donate__ : Donate towards the development of JacobSux
 `)
      setTimeout(function() {
 		helpmsg.edit(":boom:")
@@ -101,7 +82,7 @@ __+donate__ : Donate towards the development of JacobSux
 	console.log(`${message.author} ${message.author.username} Requested Help...`)
     logchannel.send(`${message.author} ${message.author.username} Requested Help...`)
 }
-if (message.content == '+support') {
+if (message.content == stuff.prefix + 'support') {
 	message.delete()           
    const msg = await message.reply("Support Server Sent to DM's")
     setTimeout(function() {
@@ -111,19 +92,19 @@ msg.delete()
     console.log(`${message.author} ${message.author.username} Requested Support...`)
     logchannel.send(`${message.author} ${message.author.username} Requested Support...`)
 } 
-if (message.content == '+inv') {
+if (message.content == stuff.prefix + 'inv') {
 	message.delete()
     message.reply('`Invite me:` https://www.jt3ch.net/jacobsux')
     console.log(`${message.author} ${message.author.username} Requested an Invite...`)
     logchannel.send(`${message.author} ${message.author.username} Requested an Invite...`)
 } 
-if (message.content == '+invite') {
+if (message.content == stuff.prefix + 'invite') {
 	message.delete()
     message.reply('`Invite me:` https://www.jt3ch.net/jacobsux')
     console.log(`${message.author} ${message.author.username} Requested an Invite...`)
     logchannel.send(`${message.author} ${message.author.username} Requested an Invite...`)
 } 
-if (message.content == '+github') {
+if (message.content == stuff.prefix + 'github') {
 		message.delete()           
    const msg = await message.reply("Github REPO Sent to DM's")
     setTimeout(function() {
@@ -133,13 +114,13 @@ msg.delete()
     console.log(`${message.author} ${message.author.username} Requested GitHub...`)
     logchannel.send(`${message.author} ${message.author.username} Requested GitHub...`)
 } 
-if (message.content == '+donate') {
+if (message.content == stuff.prefix + 'donate') {
 	message.delete()
     message.reply('Donate (All goes towards development of new features/new products!): https://paypal.me/jpbberry')
     console.log(`${message.author} ${message.author.username} Requested Donation...`)
     logchannel.send(`${message.author} ${message.author.username} Requested Donation...`)
 } 
-if (message.content == '+update') {
+if (message.content == stuff.prefix + 'update') {
 	message.delete()
   const updatemsg = await message.reply('Most recent updates: \n(This message will self destruct in 10seconds\n3/3/18: All channels set to NSFW (the little switch in the channel settings) will be ignored from cursing... \n2/26/18: Update command now self destructs after 10 seconds :>\n2/26/18: Help command now self destructs after 30s\n2/26/18: +support and +github now send links to DMs instead of in public chat\n2/26/18: Added the +github command\n2/24/18: All use commands (which can be listed with +help) Now delete request! Basically, If you type +help, youll get the commands, AND it will delete the "+help" command message...\n2/24/18: Added the +updates command :> \n(Too get updates on recent updates, join the discord! (+support) Have fun!)')
     setTimeout(function() {
@@ -151,7 +132,7 @@ if (message.content == '+update') {
 	console.log(`${message.author} ${message.author.username} Requested Update...`)
     logchannel.send(`${message.author} ${message.author.username} Requested Update...`)
 } 
-if (message.content == '+log') {
+if (message.content == stuff.prefix + 'log') {
 	message.delete()
   const logmsg = await message.reply('The Log server has been deleted, if you would like to log curses, add the channel by the name of #log, If you need the support server do +support')
     setTimeout(function() {
@@ -163,11 +144,18 @@ if (message.content == '+log') {
 	console.log(`${message.author} ${message.author.username} Requested Log...`)
     logchannel.send(`${message.author} ${message.author.username} Requested Log...`)
 }
-if (message.content == '+on') {
+if (message.content == stuff.prefix + 'on') {
 	if (!message.member.hasPermission('MANAGE_MESSAGES')) {
 		message.reply("You can't do that! Contact your server owner/admin to toggle the chat filter!")
 		return;
 	}
+		    		const logchannelxd = message.guild.channels.find("name", "log");
+	if(logchannelxd) {
+		logchannelxd.send(`${message.author} Toggled The Filter On`)
+
+	}
+	message.reply("Filter Toggled On")
+	message.guild.owner.send(`${message.author} Toggled The Filter On`)
  var on = {
 
 	"serverid": message.guild.id,
@@ -182,13 +170,20 @@ connection.query("INSERT INTO censorbot SET ?", on)
 message.delete()
 console.log(`Turned On Filter for ${message.guild.name}`)
 	}
-	if (message.content == '+off') {
+	if (message.content == stuff.prefix + 'off') {
 	if (!message.member.hasPermission('MANAGE_MESSAGES')) {
 		message.reply("You can't do that! Contact your server owner/admin to toggle the chat filter!")
 		return;
 	}
- var on = {
+	    		const logchannelxd = message.guild.channels.find("name", "log");
+	if(logchannelxd) {
+		logchannelxd.send(`${message.author} Toggled The Filter Off`)
 
+	}
+	message.reply("Filter Toggled Off")
+	message.guild.owner.send(`${message.author} Toggled The Filter Off`)
+ var on = {
+ 
 	"serverid": message.guild.id,
 
 	"censor": false,
@@ -203,9 +198,9 @@ console.log(`Turned On Filter for ${message.guild.name}`)
 	}
   const args = message.content.slice().trim().split(/ +/g);
   const command = args.shift().toLowerCase();
-	if(command === "+serveridlist") {
+	if(command === stuff.prefix + "serveridlist") {
 		message.delete()
-		if(message.content == "+serveridlist") {
+		if(message.content == stuff.prefix + "serveridlist") {
 			message.reply("Error: Too little amount of arguments | format: +serveridlist ##")
 			return;
 		}
@@ -231,7 +226,7 @@ __Censor(On/Off)__ : ${censor}
 		})
 		
 	}
-	if(command === "+serversidlist") {
+	if(command === stuff.prefix + "serversidlist") {
 		message.delete()
 		if(message.content == "+serversidlist") {
 			message.reply("Error: Too little amount of arguments | format: +serveridlist serverid")
@@ -261,7 +256,7 @@ __Censor(On/Off)__ : ${censor}
 	}
 
 	
-if(message.content == "+jsid") {
+if(message.content == stuff.prefix + "jsid") {
 message.delete()
 connection.query('SELECT * FROM censorbot WHERE serverid = ' + message.guild.id, (err, rows) => {
 
@@ -284,7 +279,7 @@ Keep in mind, this will change when you turn on or off the filter`)
 
 
 
-	if(command === "+generateinvite") {
+	if(command === stuff.prefix + "generateinvite") {
 		message.delete()
 		const botowner = bot.users.get("142408079177285632")
 		if(message.author != botowner) { 
@@ -312,7 +307,7 @@ Keep in mind, this will change when you turn on or off the filter`)
 		 )
 		})
 	}
-	if(message.content == "+vote") {
+	if(message.content == stuff.prefix + "vote") {
 				
 		message.delete()
 		const votemsg = await message.reply("You can vote for JacobSux by going to https://discordbots.org/bot/394019914157129728/vote It really does help if you do!!")
@@ -324,7 +319,7 @@ Keep in mind, this will change when you turn on or off the filter`)
 	}, 10000);		
 	}
 	
-	if (message.content === "+mysqlsettle") {
+	if (message.content === stuff.prefix + "mysqlsettle") {
 		
 		
 		
@@ -358,20 +353,17 @@ Keep in mind, this will change when you turn on or off the filter`)
 }
 			connection.query("INSERT INTO censorbot SET ?", on)
 			console.log(`inserted ${guild.name}`)
-			
-					if(guild.id == "428570175126634516") return;
-					if(guild.id == "438881277899440168") return;
-					if(guild.id == "292962760764030977") return;
-					if(guild.id == "437473327062450188") return;
-					if(guild.id == "440310076914270208") return;
 					
-			connection.query(`UPDATE censorbot SET servername = "${guild.name}" WHERE serverid = '${guild.id}'`)
-					
+			connection.query(`UPDATE censorbot SET servername = "${guild.name}" WHERE serverid = '${guild.id}'`, function(err){
+					if(err) {
+						console.log("Error Setting Name")
+						return;
+					}
 				
 			});
-        
+			})  
     }
-	if(command == "+sendmsg") {
+	if(command == stuff.prefix + "sendmsg") {
 		const botowner = bot.users.get("142408079177285632")
 		if(message.author != botowner) return;
 		let arg1 = args[0]
@@ -379,7 +371,7 @@ Keep in mind, this will change when you turn on or off the filter`)
 			let user = bot.users.get(arg1)
 				user.send("Hello, owner/helper has requested that you join the support server either for confirmation or for a quick update such as a ticket confirm, please join: https://discord.gg/mx6Gcdb Thanks!")
 	}
-	if(command == "+ticketresponse") {
+	if(command == stuff.prefix + "ticketresponse") {
 		const botowner = bot.users.get("142408079177285632")
 		if(message.author != botowner) return;
 			message.delete()
@@ -396,7 +388,7 @@ Keep in mind, this will change when you turn on or off the filter`)
 			console.log("Accept")
 			}
 			if(arg1 == "no") {
-				ticketsender.send(`Hey! After careful evaluation with the team your ticket on the word "${wordgo}" was denied! Sorry, If you believe this was a mistake be sure to join the support server (+support) and message the person who denied your ticket (listed at the end of this response). -JacobSux Support Team (Ticket Denied By ${message.author})`)
+				ticketsender.send(`Hey! After careful evaluation with the team your ticket on the word "${wordgo}" was denied! Sorry, If you believe this was a mistake be sure to join the support server (${stuff.prefix}support) and message the person who denied your ticket (listed at the end of this response). -JacobSux Support Team (Ticket Denied By ${message.author})`)
 			console.log("Deny")
 			}
 			if(arg1 == "notcensor") {
