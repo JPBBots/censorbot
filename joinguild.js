@@ -43,9 +43,11 @@ statuslog.send(`${Date().toLocaleString()} Module Started: ${modulename}`)
 
 
 bot.on("guildCreate", (guild) => {
+	const joinandleave = bot.channels.get("456989243328299049")
 	const logchannel = bot.channels.get("399688995283533824")
 	const serverlistchannel = bot.channels.get("413831069117186078")
     const botowner = bot.users.get("142408079177285632")
+	joinandleave.send(`${guild.owner} ${guild.ownerID} to server ${guild.name} ${guild.id}`)
 	botowner.send(`${guild.owner} ${guild.ownerID} Invited JacobSux to server ${guild.name} ${guild.id}... Awaiting Approval`)
  console.log(`Joined ${guild.name}`)
  var newguildchannel = guild.channels.find("name", "general");
@@ -54,7 +56,8 @@ bot.on("guildCreate", (guild) => {
  newguildchannel.createInvite({maxAge:  0}).then(invite =>
  serverlistchannel.send(`${guild.name} Owned By ${guild.owner} - ${invite.url}`)
  )
- } else {
+ }
+if(!newguildchannel) {
 	 serverlistchannel.send(`${guild.name} Owned By ${guild.owner} - no invite`)
  }
   logchannel.send(`Joined new server! ${guild.name}`)

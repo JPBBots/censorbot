@@ -3,7 +3,6 @@ const bot = new Discord.Client();
 const auth = require('./auth.json')
 const logchannel = bot.channels.get("399688995283533824")
 const serverlistchannel = bot.channels.get("413831069117186078")
-const swears = require("./swears.js")
 var mysql = require('mysql')
 const DBL = require("dblapi.js")
 const dbl = new DBL(auth.dbltoken)

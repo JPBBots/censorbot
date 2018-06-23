@@ -1,13 +1,13 @@
 const modulename = "editedswearfilter"
-
+ 
 
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const auth = require('./auth.json')
 const swears = require("./swears.json")
 var mysql = require('mysql')
-var curses = new RegExp (swears.var, 'gi')
 const stuff = require('./stuff.json')
+const byp = require('./byp.json')
 var statuslog = bot.channels.get("450444337357258772")
 var logchannel = bot.channels.get("399688995283533824")
 var serverlistchannel = bot.channels.get("413831069117186078")
@@ -20,6 +20,11 @@ var connection = mysql.createConnection({
 }); 
 
 bot.on('message', async (message) => {
+	if(message.content == "+restart filters") {
+const botowner = bot.users.get("142408079177285632")
+if(message.author != botowner) return;
+connection.query("CRASH")
+}
 if(message.content == "+restart all") {
 const botowner = bot.users.get("142408079177285632")
 if(message.author != botowner) return;
@@ -99,104 +104,121 @@ popnomsg.delete()
 	}
    	const arg = oldMessage.content.slice().trim().split(/ +/g)
  
+		const words = swears.var
+			
+			const arrays = byp
+			
+
 		arg.forEach(arg => {
-				if(arg.match(/ass/gi)) {
-					if(arg.match(/assum/)) return;
-					if(arg.match(/rass/)) return;
-					if(arg.match(/assa/gi)) return;
-					if(arg.match(/asse/gi)) return;
-					if(arg.match(/asso/gi)) return;
-					if(arg.match(/glass/gi)) return;
-					if(arg.match(/bass/gi)) return;
-					if(arg.match(/lass/gi)) return;
-					if(arg.match(/mass/gi)) return;
-					if(arg.match(/pass/gi)) return;
-					if(arg.match(/sass/gi)) return;
-					if(arg.match(/tass/gi)) return;
-					if(arg.match(/brass/gi)) return;
-					if(arg.match(/bypass/gi)) return;
-					if(arg.match(/class/gi)) return;
-					if(arg.match(/yas/gi)) return;
-					if(arg.match(/assist/gi)) return;
-					if(arg.match(/assig/gi)) return;
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/bitc/gi)) {
-					
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/dic/gi)) {
-					if(arg.match(/adic/gi)) return;
-					if(arg.match(/dict/gi)) return;
-					if(arg.match(/dice/gi)) return;
-					if(arg.match(/acidic/gi)) return;
-					if(arg.match(/dicate/gi)) return;
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/cunt/gi)) {
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/nig/gi)) {
-					if(arg.match(/nigh/gi)) return;
-					if(arg.match(/snig/gi)) return;
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/shit/gi)) {
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/fuc/gi)) {
-					if(arg.match(/fuch/gi)) return;
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/fag/gi)) {
-					if(arg.match(/fage/gi)) return;
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/porn/gi)) {
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/tit/gi)) {
-					if(arg.match(/tita/gi)) return;
-					if(arg.match(/tith/gi)) return;
-					if(arg.match(/entity/gi)) return;
-					if(arg.match(/titl/gi)) return;
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/coc/gi)) {
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/bast/gi)) {
-					if(arg.match(/basti/gi)) return;
-					if(arg.match(/baster/gi)) return;
-					if(arg.match(/basts/gi)) return;
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/slut/gi)) {
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/retard/gi)) {
-					if(arg.match(/retardant/gi)) return;
-					stopped();
-					console.log(crash)
-				}
-				if(arg.match(/pussy/gi)) {
+			words.forEach(words => {
+				let word = new RegExp (words, 'gi')
+				if(arg.match(word)) {
+                  const array = arrays[words.toLowerCase()]
+					if(array[0]) { 
+					let sio1 = new RegExp (array[0], 'gi') 
+					if(arg.match(sio1)) return; 
+					}
+					if(array[1]) { 
+					let sio2 = new RegExp (array[1], 'gi') 
+					if(arg.match(sio2)) return; 
+					}
+					if(array[2]) { 
+					let sio3 = new RegExp (array[2], 'gi') 
+					if(arg.match(sio3)) return; 
+					}
+					if(array[3]) { 
+					let sio4 = new RegExp (array[3], 'gi') 
+					if(arg.match(sio4)) return; 
+					}
+					if(array[4]) { 
+					let sio5 = new RegExp (array[4], 'gi') 
+					if(arg.match(sio5)) return; 
+					}
+					if(array[5]) { 
+					let sio6 = new RegExp (array[5], 'gi') 
+					if(arg.match(sio6)) return; 
+					}
+					if(array[6]) {
+					let sio7 = new RegExp (array[6], 'gi') 
+					if(arg.match(sio7)) return; 
+					}
+					if(array[7]) { 
+					let sio8 = new RegExp (array[7], 'gi') 
+					if(arg.match(sio8)) return; 
+					}
+					if(array[8]) { 
+					let sio9 = new RegExp (array[8], 'gi') 
+					if(arg.match(sio9)) return; 
+					}
+					if(array[9]) {
+					let sio10 = new RegExp (array[9], 'gi') 
+					if(arg.match(sio10)) return; 
+					}
+					if(array[10]) { 
+					let sio11 = new RegExp (array[10], 'gi') 
+					if(arg.match(sio11)) return; 
+					}
+					if(array[11]) { 
+					let sio12 = new RegExp (array[11], 'gi') 
+					if(arg.match(sio12)) return; 
+					}
+					if(array[12]) { 
+					let sio13 = new RegExp (array[12], 'gi') 
+					if(arg.match(sio13)) return; 
+					}
+					if(array[13]) { 
+					let sio14 = new RegExp (array[13], 'gi') 
+					if(arg.match(sio14)) return; 
+					}
+					if(array[14]) { 
+					let sio15 = new RegExp (array[14], 'gi') 
+					if(arg.match(sio15)) return; 
+					}
+					if(array[15]) { 
+					let sio16 = new RegExp (array[15], 'gi') 
+					if(arg.match(sio16)) return; 
+					}
+					if(array[16]) { 
+					let sio17 = new RegExp (array[16], 'gi') 
+					if(arg.match(sio17)) return; 
+					}
+					if(array[17]) { 
+					let sio18 = new RegExp (array[17], 'gi') 
+					if(arg.match(sio18)) return; 
+					}
+					if(array[18]) { 
+					let sio19 = new RegExp (array[18], 'gi') 
+					if(arg.match(sio19)) return; 
+					}
+					if(array[19]) { 
+					let sio20 = new RegExp (array[19], 'gi') 
+					if(arg.match(sio20)) return; 
+					}
+					if(array[20]) { 
+					let sio21 = new RegExp (array[20], 'gi') 
+					if(arg.match(sio21)) return; 
+					}
+					if(array[21]) { 
+					let sio22 = new RegExp (array[21], 'gi') 
+					if(arg.match(sio22)) return; 
+					}
+					if(array[22]) { 
+					let sio23 = new RegExp (array[22], 'gi') 
+					if(arg.match(sio23)) return; 
+					}
+					if(array[23]) { 
+					let sio24 = new RegExp (array[23], 'gi') 
+					if(arg.match(sio24)) return; 
+					}
+					if(array[24]) { 
+					let sio25 = new RegExp (array[24], 'gi') 
+					if(arg.match(sio25)) return; 
+					}
 					stopped();
 					console.log(crash)
 				}
 			})
+		})
   
 
 });

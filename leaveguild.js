@@ -4,9 +4,7 @@ const modulename = "leaveguild"
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const auth = require('./auth.json')
-const swears = require("./swears.json")
 var mysql = require('mysql')
-var curses = new RegExp (swears.var, 'gi')
 const stuff = require('./stuff.json')
 var statuslog = bot.channels.get("450444337357258772")
 var logchannel = bot.channels.get("399688995283533824")
@@ -52,6 +50,8 @@ statuslog.send(`${Date().toLocaleString()} Module Started: ${modulename}`)
 
 
 bot.on("guildDelete", (guild) => {
+		const joinandleave = bot.channels.get("456989243328299049")
+        joinandleave.send(`${guild.owner} ${guild.ownerID} removed from server ${guild.name} ${guild.id}`)
 	console.log(`Left ${guild.name}`)
 	 const botowner = bot.users.get("142408079177285632")
 	 botowner.send(`left ${guild.name}`)

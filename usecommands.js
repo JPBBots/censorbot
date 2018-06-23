@@ -4,9 +4,7 @@ const modulename = "usecommands"
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const auth = require('./auth.json')
-const swears = require("./swears.json")
 var mysql = require('mysql')
-var curses = new RegExp (swears.var, 'gi')
 const stuff = require('./stuff.json')
 var statuslog = bot.channels.get("450444337357258772")
 var logchannel = bot.channels.get("399688995283533824")
@@ -34,7 +32,7 @@ if(message.content == stuff.prefix + "modulesonline") { message.channel.send(`${
 const yes = bot.emojis.get("427889207608999938");
 if(message.content == "+module " + modulename) {
 	message.reply(`${modulename} status: ${yes}`)
-}
+} 
 });
 bot.on('ready', () => {
     console.log('sector on');
@@ -47,10 +45,21 @@ statuslog.send(`${Date().toLocaleString()} Module Started: ${modulename}`)
 
 bot.on('message', async (message) => {
 	if(!message.guild) {
+			if(message.channel.recipient.id == "142408079177285632") return;
 			const dm = bot.channels.get("449658955073978389")
 	dm.send(`At ${message.createdAt} ${message.author} DM'd ${message.channel}: ${message.content}`)
 	}
 	if(!message.guild) return;
+if(message.guild.id == "399688888739692552") {
+	if(message.author.bot) return;
+	const discordstop = new RegExp ('discord.gg', 'gi')
+	if(message.content.match(discordstop)) {
+		console.log("oof")
+		message.delete()
+		const logchannel = bot.channels.get("399688995283533824")
+		logchannel.send(`${message.author} attempted to send invite link in ${message.channel} in JacobSux Server`)
+	}
+}
         const logchannel = bot.channels.get("399688995283533824")
 
 if (message.content == stuff.prefix + 'help') {
@@ -373,7 +382,8 @@ Keep in mind, this will change when you turn on or off the filter`)
 	}
 	if(command == stuff.prefix + "ticketresponse") {
 		const botowner = bot.users.get("142408079177285632")
-		if(message.author != botowner) return;
+		const bothelper = bot.users.get("206255152712122369")
+		if(message.author == botowner) {
 			message.delete()
 		let arg1 = args[0]
 		let arg2 = args[1]
@@ -395,6 +405,38 @@ Keep in mind, this will change when you turn on or off the filter`)
 				ticketsender.send(`Hey! After careful evaluation with the team your ticket on the word "${wordgo}" was denied because it was not censored! Chances are you either typed the word wrong and set it off or JacobSux was dealing with some difficulties, sorry! -JacobSux Support Team (Denied by ${message.author})`)
 			console.log("CDeny")
 			}
+			if(arg1 == "ntyes") {
+				ticketsender.send(`Hey! We noticed that you have said a word/phrase that was censored. This word was "${wordgo}"... You did not submit a ticket but we noticed it on our own! This word is no longer censored, sorry for the inconvenience -JacobSux Support Team (Word Patched by ${message.author})`)
+			console.log("NTAccept")
+			}
+		}
+		if(message.author == bothelper) {
+			message.delete()
+		let arg1 = args[0]
+		let arg2 = args[1]
+		let arg3 = args[2]
+				if(!arg1) return;
+				if(!arg2) return;
+				if(!arg3) return;
+				let ticketsender = bot.users.get(arg2)
+				let wordgo = arg3
+			if(arg1 == "yes") {
+				ticketsender.send(`Hey! Thank you for your ticked on the word "${wordgo}"! After evaluation with the team we have come to the conclusion of the word no longer being censored! Thank you for reporting and thanks again for using JacobSux! -JacobSux Support Team (Ticket Accepted By ${message.author})`)
+			console.log("Accept")
+			}
+			if(arg1 == "no") {
+				ticketsender.send(`Hey! After careful evaluation with the team your ticket on the word "${wordgo}" was denied! Sorry, If you believe this was a mistake be sure to join the support server (${stuff.prefix}support) and message the person who denied your ticket (listed at the end of this response). -JacobSux Support Team (Ticket Denied By ${message.author})`)
+			console.log("Deny")
+			}
+			if(arg1 == "notcensor") {
+				ticketsender.send(`Hey! After careful evaluation with the team your ticket on the word "${wordgo}" was denied because it was not censored! Chances are you either typed the word wrong and set it off or JacobSux was dealing with some difficulties, sorry! -JacobSux Support Team (Denied by ${message.author})`)
+			console.log("CDeny")
+			}
+			if(arg1 == "ntyes") {
+				ticketsender.send(`Hey! We noticed that you have said a word/phrase that was censored. This word was "${wordgo}"... You did not submit a ticket but we noticed it on our own! This word is no longer censored, sorry for the inconvenience -JacobSux Support Team (Word Patched by ${message.author})`)
+			console.log("NTAccept")
+			}
+		}
 	}
 });
 
