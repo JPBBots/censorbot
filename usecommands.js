@@ -61,7 +61,9 @@ if(message.guild.id == "399688888739692552") {
 	}
 }
         const logchannel = bot.channels.get("399688995283533824")
-
+if(message.isMentioned("394019914157129728")) {
+		message.reply(`Hello! The prefix for this bot is "${stuff.prefix}" Run ${stuff.prefix}help for commands!`)
+	}
 if (message.content == stuff.prefix + 'help') {
 	message.delete()
  const helpmsg = await message.reply(`Hello and thanks for using JacobSux, just for your information, this is non-customizable, atleast right now...
@@ -69,6 +71,7 @@ if (message.content == stuff.prefix + 'help') {
 __${stuff.prefix}help__ : Displays this list
 __${stuff.prefix}ticket__: Submits problem straight to helper/owner
 __${stuff.prefix}support__ : Sends invite to support server to DMs
+__${stuff.prefix}stats__ : Displays JacobSux stats
 __${stuff.prefix}inv__ : Sends link to invite
 __${stuff.prefix}invite__ : Same as ${stuff.prefix}inv
 __${stuff.prefix}github__ : Displays the github link
@@ -91,6 +94,26 @@ __${stuff.prefix}donate__ : Donate towards the development of JacobSux
 	console.log(`${message.author} ${message.author.username} Requested Help...`)
     logchannel.send(`${message.author} ${message.author.username} Requested Help...`)
 }
+if(message.content == stuff.prefix + 'stats') {
+		let stats = {
+  "embed": {
+    "title": "JacobSux Stats",
+    "description": "JacobSux Is In " + bot.guilds.size + " servers and serving " + bot.users.size + " users!",
+    "url": "https://jacobsux.ml/invite.html",
+    "color": 14976715,
+    "thumbnail": {
+      "url": "https://cdn.discordapp.com/app-icons/394019914157129728/2759df1fe0b8ec03a26c5645bc19c652.png"
+    },
+    "author": {
+      "name": "JacobSux",
+      "url": "https://jacobsux.ml/",
+      "icon_url": "https://cdn.discordapp.com/app-icons/394019914157129728/2759df1fe0b8ec03a26c5645bc19c652.png"
+    },
+    "fields": []
+  }
+}
+		message.channel.send(stats)
+	}
 if (message.content == stuff.prefix + 'support') {
 	message.delete()           
    const msg = await message.reply("Support Server Sent to DM's")
@@ -313,7 +336,9 @@ Keep in mind, this will change when you turn on or off the filter`)
 			var generalchat = server2.channels.find("name", arg2);
          generalchat.createInvite({maxUses:  1}).then(invite =>
 		 message.author.send(`Invite Requested For ${servername2} ${invite.url}`)
-		 )
+		 ).catch(err => {
+			 message.reply(err.message)
+		 })
 		})
 	}
 	if(message.content == stuff.prefix + "vote") {
@@ -327,7 +352,21 @@ Keep in mind, this will change when you turn on or off the filter`)
 		}, 1000)
 	}, 10000);		
 	}
-	
+	if(command === stuff.prefix + "idea") {
+		let arg1 = args[0]
+		if(!arg1) {
+			message.reply("Submit your own idea! Correct format: +idea (Idea)")
+			return;
+		}
+		if(arg1) {
+			let ideasubmittionchannel = bot.channels.get("461534577291427841")
+		ideasubmittionchannel.send(`Idea submitted by ${message.author} from ${message.guild}: ${message.content}`)
+		message.delete().catch(err => {
+			console.log("RIP Perms")
+		})
+		message.reply("Idea submitted! We will look at your idea very soon and hopefully we can get it implemented, thank you!")
+		}
+	}
 	if (message.content === stuff.prefix + "mysqlsettle") {
 		
 		
