@@ -1,44 +1,12 @@
+module.exports = function(bot, connection, stuff, auth) {
+
 const modulename = "usecommands"
-
-
-const Discord = require('discord.js');
-const bot = new Discord.Client();
-const auth = require('./auth.json')
-var mysql = require('mysql')
-const stuff = require('./stuff.json')
 var statuslog = bot.channels.get("450444337357258772")
 var logchannel = bot.channels.get("399688995283533824")
 var serverlistchannel = bot.channels.get("413831069117186078")
 var botowner = bot.users.get("142408079177285632")
-var connection = mysql.createConnection({
-	host: auth.mysqlhost,
-	user: auth.mysqluser,
-	password: auth.mysqlpassword,
-	database: auth.mysqldatabase
-}); 
 
-bot.on('message', async (message) => {
-if(message.content == stuff.prefix + "restart all") {
-const botowner = bot.users.get("142408079177285632")
-if(message.author != botowner) return;
-connection.query("CRASH")
-}
-if(message.content == stuff.prefix + "restart " + modulename) {
-const botowner = bot.users.get("142408079177285632")
-if(message.author != botowner) return;
-connection.query("CRASH")
-}
-if(message.content == stuff.prefix + "modulesonline") { message.channel.send(`${modulename} = Online (${stuff.moduleamount} In Total)`) }
-const yes = bot.emojis.get("427889207608999938");
-if(message.content == "+module " + modulename) {
-	message.reply(`${modulename} status: ${yes}`)
-} 
-});
-bot.on('ready', () => {
-    console.log('sector on');
-	const statuslog = bot.channels.get("450444337357258772")
-statuslog.send(`${Date().toLocaleString()} Module Started: ${modulename}`)
-});
+ 
 
 //
 
@@ -126,13 +94,13 @@ msg.delete()
 } 
 if (message.content == stuff.prefix + 'inv') {
 	message.delete()
-    message.reply('`Invite me:` https://www.jt3ch.net/jacobsux')
+    message.reply('`Invite me:` https://jacobsux.ml/invite.html')
     console.log(`${message.author} ${message.author.username} Requested an Invite...`)
     logchannel.send(`${message.author} ${message.author.username} Requested an Invite...`)
 } 
 if (message.content == stuff.prefix + 'invite') {
 	message.delete()
-    message.reply('`Invite me:` https://www.jt3ch.net/jacobsux')
+    message.reply('`Invite me:` https://jacobsux.ml/invite.html')
     console.log(`${message.author} ${message.author.username} Requested an Invite...`)
     logchannel.send(`${message.author} ${message.author.username} Requested an Invite...`)
 } 
@@ -477,6 +445,14 @@ Keep in mind, this will change when you turn on or off the filter`)
 			}
 		}
 	}
+	if(command == stuff.prefix + "updatebot") {
+		const botowner = bot.users.get("142408079177285632")
+		const bothelper = bot.users.get("206255152712122369")
+		if(message.author == botowner) {
+	bot.user.setGame('In ' + bot.guilds.size + ' servers! | +help');
+	message.reply("updated")
+		}
+	}
 });
 
 
@@ -484,8 +460,7 @@ Keep in mind, this will change when you turn on or off the filter`)
 
 
 
-bot.login(auth.token);
-
+}
 
 
 

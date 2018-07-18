@@ -1,51 +1,15 @@
+module.exports = function(bot, connection, stuff, auth) {
+
 const modulename = "nicknamefilter"
-
-
-const Discord = require('discord.js');
-const bot = new Discord.Client();
-const auth = require('./auth.json')
 const swears = require("./swears.json")
-var mysql = require('mysql')
-const stuff = require('./stuff.json')
 const byp = require('./byp.json')
 var statuslog = bot.channels.get("450444337357258772")
 var logchannel = bot.channels.get("399688995283533824")
 var serverlistchannel = bot.channels.get("413831069117186078")
 var botowner = bot.users.get("142408079177285632")
-var connection = mysql.createConnection({
-	host: auth.mysqlhost,
-	user: auth.mysqluser,
-	password: auth.mysqlpassword,
-	database: auth.mysqldatabase
-}); 
+ 
 
-bot.on('message', async (message) => {
-		if(message.content == "+restart filters") {
-const botowner = bot.users.get("142408079177285632")
-if(message.author != botowner) return;
-connection.query("CRASH")
-}
-if(message.content == "+restart all") {
-const botowner = bot.users.get("142408079177285632")
-if(message.author != botowner) return;
-connection.query("CRASH")
-}
-if(message.content == "+restart " + modulename) {
-const botowner = bot.users.get("142408079177285632")
-if(message.author != botowner) return;
-connection.query("CRASH")
-}
-if(message.content == "+modulesonline") { message.channel.send(`${modulename} = Online (${stuff.moduleamount} In Total)`) }
-const yes = bot.emojis.get("427889207608999938");
-if(message.content == "+module " + modulename) {
-	message.reply(`${modulename} status: ${yes}`)
-}
-});
-bot.on('ready', () => {
-    console.log('sector on');
-	const statuslog = bot.channels.get("450444337357258772")
-statuslog.send(`${Date().toLocaleString()} Module Started: ${modulename}`)
-});
+ 
 
 //
 bot.on('guildMemberUpdate', (newMember, oldMember, guild) => {
@@ -95,15 +59,42 @@ var crash = "hi"
 		}
 
 	if(logchannelxd) {
-
-		logchannelxd.send(`Changed ${oldMember}'s nickname because it was innapropriate (Was "${oldMember.displayName}")`)
-
+		let yas = {
+			"embed": {
+			  "title": "Changed Innapropriate Nickname",
+			  "color": 16452296,
+			  "timestamp": "",
+			  "footer": {
+				"icon_url": "https://cdn.discordapp.com/app-icons/394019914157129728/2759df1fe0b8ec03a26c5645bc19c652.png",
+				"text": "If you believe this was a mistake run +ticket word"
+			  },
+			  "thumbnail": {
+				"url": oldMember.avatarURL
+			  },
+			  "fields": [
+				{
+				  "name": "User",
+				  "value": oldMember + "",
+				  "inline": true
+				},
+				{
+				  "name": "Time",
+				  "value": Date() + ""
+				},
+				{
+				  "name": "Nickname",
+				  "value": oldMember.displayName + ""
+				}
+			  ]
+			}
+		  }
+		  logchannelxd.send(yas)
 	}
 	
 	})
 	}
 	
-	if(oldMember.displayName.match(/(Pu.ssy|P.ussy|Puss.y|b i t c|bit c|b itc|b it c|d l c|dlc| dic|c u n t|d 1 c|n l g|n!g|f ag|fa g|f4g|f 4 g|f a g |f @ g|f u c k|f u k|f.u.c)/gi)) {
+	if(oldMember.displayName.match(/(f uck|fu ck|Pu.ssy|P.ussy|Puss.y|b i t c|b itc|d l c|dlc|c u n t|d 1 c|n l g|n!g|fa g|f4g|f 4 g|f a g |f @ g|f u c k|f u k|f.u.c|🇫🇺🇨|🇫 🇺 🇨|🇦🇸🇸|🇦 🇸 🇸|🇧🇮🇹🇨|🇧 🇮 🇹 🇨|🇩🇮🇨|🇩 🇮 🇨|🇨🇺🇳🇹|🇨 🇺 🇳 🇹|🇳🇮🇬|🇳 🇮 🇬|🇸🇭🇮🇹|🇸 🇭 🇮 🇹|🇫🇦🇬|🇫 🇦 🇬|🇵🇴🇷🇳|🇵 🇴 🇷 🇳|🇹🇮🇹|🇹 🇮 🇹|🇨🇴🇨|🇨 🇴 🇨|🇧🇦🇸🇹|🇧 🇦 🇸 🇹|🇸🇱🇺🇹|🇸 🇱 🇺 🇹|🇷🇪🇹🇦🇷🇩|🇷 🇪 🇹 🇦 🇷 🇩|🇵🇺🇸🇸🇾|🇵 🇺 🇸 🇸 🇾|🇨🇺🇲|🇨 🇺 🇲)/gi)) {
 		stopped();
 		console.log(crash)
 	}
@@ -227,5 +218,4 @@ var crash = "hi"
 })
    
    
-bot.login(auth.token);
-
+}

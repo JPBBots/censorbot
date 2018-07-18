@@ -1,51 +1,14 @@
-const modulename = "swearfilter"
+module.exports = function(bot, connection, stuff, auth) {
 
- 
-const Discord = require('discord.js');
-const bot = new Discord.Client();
-const auth = require('./auth.json')
+const modulename = "swearfilter"
 const swears = require("./swears.json")
-var mysql = require('mysql')
-const stuff = require('./stuff.json')
 const byp = require('./byp.json')
 var statuslog = bot.channels.get("450444337357258772")
 var logchannel = bot.channels.get("399688995283533824")
 var serverlistchannel = bot.channels.get("413831069117186078")
 var botowner = bot.users.get("142408079177285632")
-var connection = mysql.createConnection({
-	host: auth.mysqlhost,
-	user: auth.mysqluser,
-	password: auth.mysqlpassword,
-	database: auth.mysqldatabase
-}); 
-
-bot.on('message', async (message) => {
-		if(message.content == "+restart filters") {
-const botowner = bot.users.get("142408079177285632")
-if(message.author != botowner) return;
-connection.query("CRASH")
-}
-if(message.content == "+restart all") {
-const botowner = bot.users.get("142408079177285632")
-if(message.author != botowner) return;
-connection.query("CRASH")
-}
-if(message.content == "+restart " + modulename) {
-const botowner = bot.users.get("142408079177285632")
-if(message.author != botowner) return;
-connection.query("CRASH")
-}
-if(message.content == "+modulesonline") { message.channel.send(`${modulename} = Online (${stuff.moduleamount} In Total)`) }
-const yes = bot.emojis.get("427889207608999938");
-if(message.content == "+module " + modulename) {
-	message.reply(`${modulename} status: ${yes}`)
-}
-});
-bot.on('ready', () => {
-    console.log('sector on');
-	const statuslog = bot.channels.get("450444337357258772")
-statuslog.send(`${Date().toLocaleString()} Module Started: ${modulename}`)
-});
+ 
+ 
 
 bot.on('message', async (message) => {
 	if(!message.guild) return;
@@ -53,6 +16,10 @@ bot.on('message', async (message) => {
 	if(message.guild.id == "264445053596991498") return;
 	if(message.guild.id == "110373943822540800") return;
   if(message.author.bot) return;
+  if(message.channel.id == "463137032177451008") return;
+if(message.guild.id == "446519010935439371") {
+	if(message.content.match(/slut/)) return;
+}
 
   
 							
@@ -82,23 +49,73 @@ popnomsg.delete()
 }, 3000);
 	
     console.log(`Deleted message from ${message.author} ${message.author.username}: ${message.content}`)
-    const logchannel = bot.channels.get("399688995283533824")
-    logchannel.send(`Deleted message from ${message.author} ${message.author.tag} ${message.author.username}: ${message.content} | Server: ${message.guild.name} ${message.guild.id} | Channel: ${message.channel.name} ${message.channel.id}`)   
-    		const logchannelxd = message.guild.channels.find("name", "log");
+	const logchannel = bot.channels.get("399688995283533824")
+	let oml = { "embed": {
+		"title": message.content + "",
+		"footer": {
+		  },
+		"fields": [
+			{
+				"name": "User",
+				"value": message.author + ""
+			  }
+		]
+	  }
+	}
+    logchannel.send(`Deleted message from ${message.author.tag} ${message.author.username}: | Server: ${message.guild.name} ${message.guild.id} | Channel: ${message.channel.name} ${message.channel.id}`)   
+	logchannel.send(oml)
+			const logchannelxd = message.guild.channels.find("name", "log");
 		if(!logchannelxd) {
 			message.channel.send("error! no log channel found! Be sure to create a #log chat so I can log the curses!")
 		}
 	if(logchannelxd) {
-		logchannelxd.send(`Deleted message from ${message.author} ${message.author.tag} ${message.author.username}: ${message.content} | Channel: ${message.channel.name} ${message.channel.id} | If you believe this was a mistake run +ticket word`)
-
+		let yas = {
+			"embed": {
+			  "title": "Deleted Message",
+			  "color": 16452296,
+			  "timestamp": "",
+			  "footer": {
+				"icon_url": "https://cdn.discordapp.com/app-icons/394019914157129728/2759df1fe0b8ec03a26c5645bc19c652.png",
+				"text": "If you believe this was a mistake run +ticket word"
+			  },
+			  "thumbnail": {
+				"url": message.author.avatarURL
+			  },
+			  "fields": [
+				{
+				  "name": "User",
+				  "value": message.author + "",
+				  "inline": true
+				},
+				{
+				  "name": "Channel",
+				  "value": message.channel + "",
+				  "inline": true
+				},
+				{
+				  "name": "Time",
+				  "value": Date() + ""
+				},
+				{
+				  "name": "Message",
+				  "value": message.content + ""
+				}
+			  ]
+			}
+		  }
+		  logchannelxd.send(yas)
 	}
 		})
 	console.log(crash).catch(err => {
 			if(err) return;
 	})
 	}
-	
-	if(message.content.match(/(f uck|fu ck|Pu.ssy|P.ussy|Puss.y|b i t c|b itc|d l c|dlc|c u n t|d 1 c|n l g|n!g|fa g|f4g|f 4 g|f a g |f @ g|f u c k|f u k|f.u.c)/gi)) {
+	if(message.guild.id == "449765733476335629") {
+		if(message.content.match(/damn/)) {
+			stopped();
+		}
+	}
+	if(message.content.match(/(f uck|fu ck|Pu.ssy|P.ussy|Puss.y|b i t c|b itc|d l c|dlc|c u n t|d 1 c|n l g|n!g|fa g|f4g|f 4 g|f a g |f @ g|f u c k|f u k|🇫🇺🇨|🇫.+🇨|🇫 🇺 🇨|🇦🇸🇸|🇦 🇸 🇸|🇧🇮🇹🇨|🇧 🇮 🇹 🇨|🇩🇮🇨|🇩 🇮 🇨|🇨🇺🇳🇹|🇨 🇺 🇳 🇹|🇳🇮🇬|🇳 🇮 🇬|🇸🇭🇮🇹|🇸 🇭 🇮 🇹|🇫🇦🇬|🇫 🇦 🇬|🇵🇴🇷🇳|🇵 🇴 🇷 🇳|🇹🇮🇹|🇹 🇮 🇹|🇨🇴🇨|🇨 🇴 🇨|🇧🇦🇸🇹|🇧 🇦 🇸 🇹|🇸🇱🇺🇹|🇸 🇱 🇺 🇹|🇷🇪🇹🇦🇷🇩|🇷 🇪 🇹 🇦 🇷 🇩|🇵🇺🇸🇸🇾|🇵 🇺 🇸 🇸 🇾|🇨🇺🇲|🇨 🇺 🇲)/gi)) {
 		stopped();
 		console.log(crash)
 	}
@@ -213,6 +230,8 @@ popnomsg.delete()
 					let sio25 = new RegExp (array[24], 'gi') 
 					if(arg.match(sio25)) return; 
 					}
+					let linkreg = new RegExp ("youtube.com", 'gi') 
+					if(arg.match(linkreg)) return;
 					stopped();
 					console.log(crash)
 				}
@@ -221,4 +240,4 @@ popnomsg.delete()
   
 
 });
-bot.login(auth.token)
+}
