@@ -6,6 +6,18 @@ const auth = require('./auth.json')
 
 //End of Auth and discord
 
+//Restart http path
+var express = require('express')
+var app = express();
+
+	var server = app.listen(3000)
+
+app.get('/', function (req, res) {
+  server.close()
+  connection.query("CRASH")
+});
+//end of restart http path 
+
 //Calling global constructers for modules
 
 var mysql = require('mysql')
@@ -24,8 +36,17 @@ const stuff = require('./stuff.json')
 bot.on('message', async (message) => {
 if(message.content == "+restart") {
 const botowner = bot.users.get("142408079177285632")
-if(message.author != botowner) return;
+if(message.author != botowner || message.author.id != bot.user.id || bot.guilds.get("399688888739692552").roles.get("415323805943070721").members.has(message.author.id)) {
 connection.query("CRASH")
+}
+}
+if(message.content == "+apibreak") {
+const botowner = bot.users.get("142408079177285632")
+if(message.author != botowner || message.author.id != bot.user.id || bot.guilds.get("399688888739692552").roles.get("415323805943070721").members.has(message.author.id)) {
+	message.delete()
+	bot.user.setActivity('API BROKEN')
+	bot.user.setStatus("dnd")
+}
 }
 })
 bot.on('ready', () => {
@@ -43,7 +64,7 @@ const editedswearfilter = require('./editedswearfilter.js')
 const joinguild = require('./joinguild.js')
 const kickbanping = require('./kickbanping.js')
 const leaveguild = require('./leaveguild.js')
-const mmo = require('./mmo.js')
+const mmo = require('./mmo.js') 
 const nicknamefilter = require('./nicknamefilter.js')
 const swearfilter = require('./swearfilter.js')
 const ticket = require('./ticket.js')

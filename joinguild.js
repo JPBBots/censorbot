@@ -9,17 +9,30 @@ var botowner = bot.users.get("142408079177285632")
  
 
 
+let broken = 0
+
 //
+
+
+bot.on('message', async (message) => {
+	if(message.content == "+apibreak") {
+	const botowner = bot.users.get("142408079177285632")
+	if(message.author != botowner || message.author.id != bot.user.id || bot.guilds.get("399688888739692552").roles.get("415323805943070721").members.has(message.author.id)) {
+	broken = 1
+	}
+	}
+})
 
 
 
 bot.on("guildCreate", (guild) => {
+	if(broken == 1) return;
 	const joinandleave = bot.channels.get("456989243328299049")
 	const logchannel = bot.channels.get("399688995283533824")
 	const serverlistchannel = bot.channels.get("413831069117186078")
     const botowner = bot.users.get("142408079177285632")
 	joinandleave.send(`${guild.owner} ${guild.ownerID} to server ${guild.name} ${guild.id}`)
-	botowner.send(`${guild.owner} ${guild.ownerID} Invited JacobSux to server ${guild.name} ${guild.id}... Awaiting Approval`)
+	botowner.send(`${guild.owner.user.username} and ${guild.name} | ${guild.owner} ${guild.ownerID} ${guild.owner.user.username} Invited ${stuff.name} to server ${guild.name} ${guild.id}... Awaiting Approval`)
  console.log(`Joined ${guild.name}`)
  var newguildchannel = guild.channels.find("name", "general");
  if(newguildchannel) {
@@ -32,7 +45,6 @@ if(!newguildchannel) {
 	 serverlistchannel.send(`${guild.name} Owned By ${guild.owner} - no invite`)
  }
   logchannel.send(`Joined new server! ${guild.name}`)
- bot.user.setGame('In ' + bot.guilds.size + ' servers!');
  guild.owner.send("Hello! Thanks for inviting me to your server, PLEASE join the support/log server so you can be represented! https://discord.gg/mx6Gcdb -- After joining, a short time later you will receive the server owner role!")
  var info = {
 

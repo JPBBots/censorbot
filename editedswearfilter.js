@@ -1,7 +1,8 @@
 module.exports = function(bot, connection, stuff, auth) {
-const modulename = "editedswearfilter"
-const swears = require("./swears.json")
-const byp = require('./byp.json')
+	var SelfReloadJSON = require('self-reload-json');
+	const modulename = "editedswearfilter"
+const swears = new SelfReloadJSON("./swears.json")
+var byp = new SelfReloadJSON('./byp.json');
 var statuslog = bot.channels.get("450444337357258772")
 var logchannel = bot.channels.get("399688995283533824")
 var serverlistchannel = bot.channels.get("413831069117186078")
@@ -22,21 +23,17 @@ bot.on('messageUpdate', async (newMessage, oldMessage, guild) => {
 							
 	async function stopped() {
 		connection.query("SELECT * FROM censorbot WHERE serverid = " + oldMessage.guild.id, async function (err, rows) {
-						if(err) {
-							 var on = {
-
-	"serverid": oldMessage.guild.id,
-
-	"censor": true,
-	
-	"serverowner": oldMessage.guild.owner
-
-}
-							connection.query("INSERT INTO censorbot SET ?", on)
-							return;
-						}
-							let censor = rows[0].censor
-							if(censor == false) return;
+			if (rows && rows[0] && rows[0].censor == 0){
+				return;
+			} else {
+							connection.query("SELECT * FROM roleandlog WHERE serverid = " + oldMessage.guild.id, async function (err, rows) {
+								if(rows && rows[0]) {
+									let roleid = rows[0].roleid
+									let roleobject = oldMessage.guild.roles.get(roleid)
+									if(roleobject) {
+									if(oldMessage.guild.member(oldMessage.author.id).roles.has(roleid)) return;
+									}
+								}
 		oldMessage.delete().catch(err => {
 			console.log(`${oldMessage.guild.name} ${oldMessage.guild.id} Missing perms`)
 		})
@@ -59,7 +56,7 @@ popnomsg.delete()
 			  "color": 16452296,
 			  "timestamp": "",
 			  "footer": {
-				"icon_url": "https://cdn.discordapp.com/app-icons/394019914157129728/2759df1fe0b8ec03a26c5645bc19c652.png",
+				"icon_url": bot.user.avatarURL + "",
 				"text": "If you believe this was a mistake run +ticket word"
 			  },
 			  "thumbnail": {
@@ -93,14 +90,29 @@ popnomsg.delete()
 	console.log(crash).catch(err => {
 			if(err) return;
 	})
+}
+})
 	}
 	
 	if(oldMessage.content.match(/(f uck|fu ck|Pu.ssy|P.ussy|Puss.y|b i t c|b itc|d l c|dlc|c u n t|d 1 c|n l g|n!g|fa g|f4g|f 4 g|f a g |f @ g|f u c k|f u k|f.u.c|🇫🇺🇨|🇫 🇺 🇨|🇦🇸🇸|🇦 🇸 🇸|🇧🇮🇹🇨|🇧 🇮 🇹 🇨|🇩🇮🇨|🇩 🇮 🇨|🇨🇺🇳🇹|🇨 🇺 🇳 🇹|🇳🇮🇬|🇳 🇮 🇬|🇸🇭🇮🇹|🇸 🇭 🇮 🇹|🇫🇦🇬|🇫 🇦 🇬|🇵🇴🇷🇳|🇵 🇴 🇷 🇳|🇹🇮🇹|🇹 🇮 🇹|🇨🇴🇨|🇨 🇴 🇨|🇧🇦🇸🇹|🇧 🇦 🇸 🇹|🇸🇱🇺🇹|🇸 🇱 🇺 🇹|🇷🇪🇹🇦🇷🇩|🇷 🇪 🇹 🇦 🇷 🇩|🇵🇺🇸🇸🇾|🇵 🇺 🇸 🇸 🇾|🇨🇺🇲|🇨 🇺 🇲)/gi)) {
 		stopped();
 		console.log(crash)
 	}
-   	const arg = oldMessage.content.slice().trim().split(/ +/g)
- 
+	function RemoveAccents(str) {
+		var accents    = 'ÀÁÂÃÄÅàáâãäåßÒÓÔÕÕÖØŐòóôőõöøĎďDŽdžÈÉÊËèéêëðÇçČčÐÌÍÎÏìíîïÙÚÛÜŰùűúûüĽĹľĺÑŇňñŔŕŠšŤťŸÝÿýŽž';
+		var accentsOut = "AAAAAAaaaaaabOOOOOOOOoooooooDdDZdzEEEEeeeeeCcCcDIIIIiiiiUUUUUuuuuuLLllNNnnRrSsTtYYyyZz";
+		str = str.split('');
+		var strLen = str.length;
+		var i, x;
+		for (i = 0; i < strLen; i++) {
+		  if ((x = accents.indexOf(str[i])) != -1) {
+			str[i] = accentsOut[x];
+		  }
+		}
+		return str.join('');
+	  }
+	  
+			 const arg = RemoveAccents(oldMessage.content.replace(/[.]/g, '')).slice().trim().split(/ +/g)
 		const words = swears.var
 			
 			const arrays = byp
@@ -211,7 +223,31 @@ popnomsg.delete()
 					let sio25 = new RegExp (array[24], 'gi') 
 					if(arg.match(sio25)) return; 
 					}
-					let linkreg = new RegExp ("youtube.com", 'gi') 
+					if(array[25]) { 
+					let sio26 = new RegExp (array[25], 'gi') 
+					if(arg.match(sio26)) return; 
+					}
+					if(array[26]) { 
+					let sio27 = new RegExp (array[26], 'gi') 
+					if(arg.match(sio27)) return; 
+					}
+					if(array[27]) { 
+					let sio28 = new RegExp (array[27], 'gi') 
+					if(arg.match(sio28)) return; 
+					}
+					if(array[28]) { 
+					let sio29 = new RegExp (array[28], 'gi') 
+					if(arg.match(sio29)) return; 
+					}
+					if(array[29]) { 
+					let sio30 = new RegExp (array[29], 'gi') 
+					if(arg.match(sio30)) return; 
+					}
+					if(array[30]) { 
+					let sio31 = new RegExp (array[30], 'gi') 
+					if(arg.match(sio31)) return; 
+					}
+					let linkreg = new RegExp (".com", 'gi') 
 					if(arg.match(linkreg)) return;
 					stopped();
 					console.log(crash)

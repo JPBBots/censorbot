@@ -1,13 +1,14 @@
 module.exports = function(bot, connection, stuff, auth) {
+	var SelfReloadJSON = require('self-reload-json');
 
 const modulename = "swearfilter"
-const swears = require("./swears.json")
-const byp = require('./byp.json')
+const swears = new SelfReloadJSON("./swears.json")
+
 var statuslog = bot.channels.get("450444337357258772")
 var logchannel = bot.channels.get("399688995283533824")
 var serverlistchannel = bot.channels.get("413831069117186078")
 var botowner = bot.users.get("142408079177285632")
- 
+var byp = new SelfReloadJSON('./byp.json');
  
 
 bot.on('message', async (message) => {
@@ -17,29 +18,36 @@ bot.on('message', async (message) => {
 	if(message.guild.id == "110373943822540800") return;
   if(message.author.bot) return;
   if(message.channel.id == "463137032177451008") return;
+  if(message.channel.id == "362693179033649152" || message.channel.id == "410475762257494016" || message.channel.id == "362689481586901002" || message.channel.id == "467069321768730624") return;
 if(message.guild.id == "446519010935439371") {
 	if(message.content.match(/slut/)) return;
 }
+if(message.guild.id == "468235532497977355") {
+	if(message.content.match(/porn/)) return;
+}
+if(message.guild.id == "430410558681120768") {
+	if(message.content.match(/frigger/)) stopped();
+	if(message.content.match(/twat/)) stopped();
+}
 
   
-							
+					delete require.cache[require.resolve('./byp.json')]
+		
 	async function stopped() {
 		connection.query("SELECT * FROM censorbot WHERE serverid = " + message.guild.id, async function (err, rows) {
-						if(err) {
-							 var on = {
-
-	"serverid": message.guild.id,
-
-	"censor": true,
-	
-	"serverowner": message.guild.owner
-
-}
-							connection.query("INSERT INTO censorbot SET ?", on)
+						if (rows && rows[0] && rows[0].censor == 0){
 							return;
-						}
-							let censor = rows[0].censor
-							if(censor == false) return;
+						} else {
+							connection.query("SELECT * FROM roleandlog WHERE serverid = " + message.guild.id, async function (err, rows) {
+								if(rows && rows[0]) {
+									let roleid = rows[0].roleid
+									let roleobject = message.guild.roles.get(roleid)
+									if(roleobject) {
+									if(message.guild.member(message.author.id).roles.has(roleid)) return;
+									}
+								}
+						
+						
 		message.delete().catch(err => {
 			console.log(`${message.guild.name} ${message.guild.id} Missing perms`)
 		})
@@ -75,7 +83,7 @@ popnomsg.delete()
 			  "color": 16452296,
 			  "timestamp": "",
 			  "footer": {
-				"icon_url": "https://cdn.discordapp.com/app-icons/394019914157129728/2759df1fe0b8ec03a26c5645bc19c652.png",
+				"icon_url": bot.user.avatarURL + "",
 				"text": "If you believe this was a mistake run +ticket word"
 			  },
 			  "thumbnail": {
@@ -105,21 +113,34 @@ popnomsg.delete()
 		  }
 		  logchannelxd.send(yas)
 	}
-		})
+		
+	})
 	console.log(crash).catch(err => {
 			if(err) return;
-	})
-	}
-	if(message.guild.id == "449765733476335629") {
-		if(message.content.match(/damn/)) {
-			stopped();
-		}
-	}
-	if(message.content.match(/(f uck|fu ck|Pu.ssy|P.ussy|Puss.y|b i t c|b itc|d l c|dlc|c u n t|d 1 c|n l g|n!g|fa g|f4g|f 4 g|f a g |f @ g|f u c k|f u k|🇫🇺🇨|🇫.+🇨|🇫 🇺 🇨|🇦🇸🇸|🇦 🇸 🇸|🇧🇮🇹🇨|🇧 🇮 🇹 🇨|🇩🇮🇨|🇩 🇮 🇨|🇨🇺🇳🇹|🇨 🇺 🇳 🇹|🇳🇮🇬|🇳 🇮 🇬|🇸🇭🇮🇹|🇸 🇭 🇮 🇹|🇫🇦🇬|🇫 🇦 🇬|🇵🇴🇷🇳|🇵 🇴 🇷 🇳|🇹🇮🇹|🇹 🇮 🇹|🇨🇴🇨|🇨 🇴 🇨|🇧🇦🇸🇹|🇧 🇦 🇸 🇹|🇸🇱🇺🇹|🇸 🇱 🇺 🇹|🇷🇪🇹🇦🇷🇩|🇷 🇪 🇹 🇦 🇷 🇩|🇵🇺🇸🇸🇾|🇵 🇺 🇸 🇸 🇾|🇨🇺🇲|🇨 🇺 🇲)/gi)) {
+		})
+	};
+});
+}
+	
+	if(message.content.match(/(f uck|fu ck|penis|Pu.ssy|P.ussy|Puss.y|d l c|dlck|c u n t|n l g|n!g|fa g|f4g|f 4 g|f a g |f @ g|f u c k|f u k|ðŸ‡«ðŸ‡ºðŸ‡¨|ðŸ‡«.+ðŸ‡¨|ðŸ‡« ðŸ‡º ðŸ‡¨|ðŸ‡¦ðŸ‡¸ðŸ‡¸|ðŸ‡¦ ðŸ‡¸ ðŸ‡¸|ðŸ‡§ðŸ‡®ðŸ‡¹ðŸ‡¨|ðŸ‡§ ðŸ‡® ðŸ‡¹ ðŸ‡¨|ðŸ‡©ðŸ‡®ðŸ‡¨|ðŸ‡© ðŸ‡® ðŸ‡¨|ðŸ‡¨ðŸ‡ºðŸ‡³ðŸ‡¹|ðŸ‡¨ ðŸ‡º ðŸ‡³ ðŸ‡¹|ðŸ‡³ðŸ‡®ðŸ‡¬|ðŸ‡³ ðŸ‡® ðŸ‡¬|ðŸ‡¸ðŸ‡­ðŸ‡®ðŸ‡¹|ðŸ‡¸ ðŸ‡­ ðŸ‡® ðŸ‡¹|ðŸ‡«ðŸ‡¦ðŸ‡¬|ðŸ‡« ðŸ‡¦ ðŸ‡¬|ðŸ‡µðŸ‡´ðŸ‡·ðŸ‡³|ðŸ‡µ ðŸ‡´ ðŸ‡· ðŸ‡³|ðŸ‡¹ðŸ‡®ðŸ‡¹|ðŸ‡¹ ðŸ‡® ðŸ‡¹|ðŸ‡¨ðŸ‡´ðŸ‡¨|ðŸ‡¨ ðŸ‡´ ðŸ‡¨|ðŸ‡§ðŸ‡¦ðŸ‡¸ðŸ‡¹|ðŸ‡§ ðŸ‡¦ ðŸ‡¸ ðŸ‡¹|ðŸ‡¸ðŸ‡±ðŸ‡ºðŸ‡¹|ðŸ‡¸ ðŸ‡± ðŸ‡º ðŸ‡¹|ðŸ‡·ðŸ‡ªðŸ‡¹ðŸ‡¦ðŸ‡·ðŸ‡©|ðŸ‡· ðŸ‡ª ðŸ‡¹ ðŸ‡¦ ðŸ‡· ðŸ‡©|ðŸ‡µðŸ‡ºðŸ‡¸ðŸ‡¸ðŸ‡¾|ðŸ‡µ ðŸ‡º ðŸ‡¸ ðŸ‡¸ ðŸ‡¾|ðŸ‡¨ðŸ‡ºðŸ‡²|ðŸ‡¨ ðŸ‡º ðŸ‡²)/gi)) {
 		stopped();
 		console.log(crash)
 	}
-   	const arg = message.content.slice().trim().split(/ +/g)
+	function RemoveAccents(str) {
+		var accents    = 'Ã€ÃÃ‚ÃƒÃ„Ã…Ã Ã¡Ã¢Ã£Ã¤Ã¥ÃŸÃ’Ã“Ã”Ã•Ã•Ã–Ã˜ÅÃ²Ã³Ã´Å‘ÃµÃ¶Ã¸ÄŽÄDÅ½dÅ¾ÃˆÃ‰ÃŠÃ‹Ã¨Ã©ÃªÃ«Ã°Ã‡Ã§ÄŒÄÃÃŒÃÃŽÃÃ¬Ã­Ã®Ã¯Ã™ÃšÃ›ÃœÅ°Ã¹Å±ÃºÃ»Ã¼Ä½Ä¹Ä¾ÄºÃ‘Å‡ÅˆÃ±Å”Å•Å Å¡Å¤Å¥Å¸ÃÃ¿Ã½Å½Å¾';
+		var accentsOut = "AAAAAAaaaaaabOOOOOOOOoooooooDdDZdzEEEEeeeeeCcCcDIIIIiiiiUUUUUuuuuuLLllNNnnRrSsTtYYyyZz";
+  str = str.split('');
+  var strLen = str.length;
+  var i, x;
+  for (i = 0; i < strLen; i++) {
+    if ((x = accents.indexOf(str[i])) != -1) {
+      str[i] = accentsOut[x];
+    }
+  }
+  return str.join('');
+}
+
+   	const arg = RemoveAccents(message.content.replace(/[.]/g, '').replace(/\u200b/g, '')).slice().trim().split(/ +/g)
 			const words = swears.var
 			
 			const arrays = byp
@@ -230,7 +251,31 @@ popnomsg.delete()
 					let sio25 = new RegExp (array[24], 'gi') 
 					if(arg.match(sio25)) return; 
 					}
-					let linkreg = new RegExp ("youtube.com", 'gi') 
+					if(array[25]) { 
+					let sio26 = new RegExp (array[25], 'gi') 
+					if(arg.match(sio26)) return; 
+					}
+					if(array[26]) { 
+					let sio27 = new RegExp (array[26], 'gi') 
+					if(arg.match(sio27)) return; 
+					}
+					if(array[27]) { 
+					let sio28 = new RegExp (array[27], 'gi') 
+					if(arg.match(sio28)) return; 
+					}
+					if(array[28]) { 
+					let sio29 = new RegExp (array[28], 'gi') 
+					if(arg.match(sio29)) return; 
+					}
+					if(array[29]) { 
+					let sio30 = new RegExp (array[29], 'gi') 
+					if(arg.match(sio30)) return; 
+					}
+					if(array[30]) { 
+					let sio31 = new RegExp (array[30], 'gi') 
+					if(arg.match(sio31)) return; 
+					}
+					let linkreg = new RegExp (".com", 'gi') 
 					if(arg.match(linkreg)) return;
 					stopped();
 					console.log(crash)

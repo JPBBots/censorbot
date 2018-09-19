@@ -21,7 +21,7 @@ var botowner = bot.users.get("142408079177285632")
 					if(member.id == guild.owner.id) {
 						const autoowner = bot.channels.get("451537426867814402")
 						console.log(`${member.name} Owns a Server, Role Given`)
-						member.send("Welcome to The JacobSux Support Server! We have detected that you own a server, your role has been automatically given to you!")
+						member.send("Welcome to The " + stuff.name +" Support Server! We have detected that you own a server, your role has been automatically given to you!")
 						let role = member.guild.roles.find("name", "Server Owner");
 						member.addRole(role);
 						autoowner.send(`Gave ${member} ${member.id} Server Owner Role On Join`)
@@ -39,6 +39,15 @@ var botowner = bot.users.get("142408079177285632")
 			let role = supportserver.roles.find("name", "Server Owner");
 			guildownermember.removeRole(role);
 			autoowner.send(`Removed ${guildownermember} ${guildownermember.id} Server Owner Role On Deleted Guild`)
+			var guildList = bot.guilds.array();
+				guildList.forEach(guild => {
+					if(!guild.owner) return;
+					if(guild.owner.id == guildowner.id) {
+						autoowner.send(`Added ${guildownermember} ${guildownermember.id} Server Owner Role On Still In Other Guild`)
+						let role = supportserver.roles.find("name", "Server Owner");
+						guildownermember.addRole(role);
+					}
+				})
 		}
 })
 	bot.on("guildCreate", (guild) => {
