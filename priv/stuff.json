@@ -1,0 +1,10 @@
+{
+"moduleamount": "AMOUNT OF MODULES (10)",
+"prefix": "PREFIX",
+"name": "BOT NAME (DISPLAYED IN MESSAGES)",
+"website": "ROOT OF BOT WEBSITE",
+"invitesite": "LINK TO BOT INVITE",
+"donate": "BOT DONATION LINK",
+"github": "BOT GITHUB LINK",
+"support": "BOT SUPPORT SERVER LINK"
+}
