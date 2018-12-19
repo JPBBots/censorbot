@@ -1,0 +1,4 @@
+{"author": Authors USERID, "word": WORD SUBMITTED, "ticmsg": MessageID of ticket channel message sent}
+
+Formatted as ticketID.json
+(TicketID = random 3 character string)
