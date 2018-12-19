@@ -1,0 +1,9 @@
+PREMISE:
+{
+BAD_WORD: [BYPASSES,GO,HERE],
+NEXT_WORD: [MORE,BYPASSES],
+OR_NO_BYPASSES: [],
+ETC: [ETC]
+}
+
+privated to prevent direct copying
