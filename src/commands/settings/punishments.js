@@ -74,7 +74,7 @@ exports.run = async (client, message, args) => {
         }
         var res = await client.sendSettings(message, ["Punishment Toggle", cur, newT], [`Toggled Punishments ${newT ? "ON" : "OFF"}`, "Punishments toggled by " + message.author.tag]);
         if (res == 200) {
-            client.rdb.get(message.guild.id).update({"punish": newT});
+            client.rdb.get(message.guild.id).update({"punish": newT}).run();
         }
     } else if (type == "current") {
         var cur = await client.punishdb.get(message.guild.id).run();

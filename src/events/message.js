@@ -13,9 +13,19 @@ module.exports = async (client, message) => {
     if(message.author.bot && message.author.id !== "536004227470721055") return;
     require(client.mappings.filterHandler.msg)(client, message)
     //Commands
-    if(message.content[0] !== client.config.prefix) return;
-    const args = message.content.slice().trim().split(/ +/g);
-    const command = args.shift().toLowerCase().replace(message.content[0], '');
+    if(!message.content.startsWith(client.config.prefix) && !message.content.startsWith(`<@${client.user.id}>`) && !message.content.startsWith(`<@!${client.user.id}>`)) return;
+    var prefix;
+    if(message.content.startsWith(client.config.prefix)) prefix = client.config.prefix
+    else if(message.content.startsWith("<@")) {
+        if(message.content.startsWith("<@!")) prefix = `<@!${client.user.id}> `;
+        else prefix = `<@${client.user.id}> `;
+        
+        message.mentions.users.delete(client.user.id);
+        message.mentions.members.delete(client.user.id)
+    }
+    
+    const args = message.content.slice(prefix.length).split(' ');
+    const command = args.shift().toLowerCase();
     if(command == "updaterole") {
         if(message.guild.id != "399688888739692552") {
             client.sendErr(message, "This can only be done in the support server!")

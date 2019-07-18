@@ -322,23 +322,19 @@ app.get("/test", (req, res) => {
 app.get('/inserver', async (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET");
-    let dbRes = await client.rdb.get(req.query.serverid || null).run();
-    if (dbRes.id) {
-        return res.send('1')
-    } else {
-        return res.send("0");
-    }
+    getStuff(`this.guilds.get("${req.query.serverid}")`, (result, i) => {
+        if(!result) return res.send("0");
+        else res.send("1");
+    })
 });
 app.post("/inserver", async (req, res) => {
     if (!req.headers.authorization) return res.send("0");
     var [server, token] = req.headers.authorization.split(" ");
-    if (!server) return res.send("1");
-    let dbRes = await client.rdb.get(server || null).run();
-    if (dbRes && dbRes.id) {
-        return res.send('1')
-    } else {
-        return res.send("0");
-    }
+    if (!server) return res.send("0");
+    getStuff(`this.guilds.get("${server}")`, (result, i) => {
+        if(!result) return res.send("0");
+        else res.send("1");
+    })
 })
 
 function dbHandler(res, cb) {
@@ -511,7 +507,7 @@ app.get("/filter", (req, res) => {
 })
 app.put("/filter", (req, res) => { //adding
     CHECK(res, (response) => {
-        if (req.body.value.match(/("|\*|\.|'|\||\\|\/|`|\?)/gi)) return res.json({
+        if (req.body.value.match(/[^a-zA-Z0-9 ]/gi)) return res.json({
             error: errors["invalidWord"]
         });
         var filter = client.filter.test(req.body.value, true);
@@ -730,8 +726,8 @@ app.get("/admin/userGuilds/:id", (req, res) => {
     });
     getuser(req.headers.authorization.split(" ")[1])
         .then(x => x.json())
-        .then(res => {
-            if (res.id !== "142408079177285632") return res.json({
+        .then(re => {
+            if (re.id !== "142408079177285632") return res.json({
                 error: {
                     message: "unatuh"
                 }

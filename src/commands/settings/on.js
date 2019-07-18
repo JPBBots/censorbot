@@ -12,7 +12,7 @@ exports.run = async (client,message,args) => {
     }
     var res = await client.sendSettings(message, ["Filter Toggle", "OFF", "ON"],["Successfully toggled the filter on!", "Filter Toggled by " + message.author.username])
         if(res == 200) {
-            client.rdb.get(message.guild.id).update({'censor':true})
+            client.rdb.get(message.guild.id).update({'censor':true}).run();
                 console.log(`Shard ${client.shard.id} | Turned On Filter for ${message.guild.name}`.grey)
         } else return console.log("Error: " + res);
 }

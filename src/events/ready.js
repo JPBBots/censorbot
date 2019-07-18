@@ -21,6 +21,7 @@ module.exports = async (client) => {
     client.msgs = []
     const DBL = require("dblapi.js");
     const dbl = new DBL(client.config.dbltoken);
+    client.dbl = dbl;
     const plotly = require('plotly')("censorbot", client.config.plotlyapi)
     console.log(`Shard ${client.shard.id} | >>> All Events Started, Bot Ready!`.bgRed)
     if (client.shard.id == client.shard.count - 1) {

@@ -6,8 +6,8 @@ module.exports = class JPBFilter {
         this.linkByp = require(linkBypFile).links;
         this.client = client;
         this.replaceSpots = {
-            spaces: /(\_|\/|\\|\.|\n|\&|\-|\+|\=|\:|\~)/gi,
-            nothing: /(\"|\*|\'|\||\`|\<|\>|\@|\#|\!|\,|\(|\)|\[|\]|\{|\}|\;|\%)/gi
+            spaces: /(\_|\/|\\|\.|\n|\&|\-|\+|\=|\:|\~|\,)/gi,
+            nothing: /(\"|\*|\'|\||\`|\<|\>|\@|\#|\!|\(|\)|\[|\]|\{|\}|\;|\%)/gi
         }
         this.emoji_lookup = {
             "🇦": "a",
@@ -188,7 +188,14 @@ module.exports = class JPBFilter {
         var site;
         var arg;
         arr.forEach(a=>{
-            var match = content.match(new RegExp(a, 'gi'))
+            let reg;
+            try {
+                reg = new RegExp(a, "gi");
+            } catch(e) {
+                console.log(a + "err");
+            }
+            if(!reg) return;
+            var match = content.match(reg)
             if(match) {
                 res = true;
                 site = a;

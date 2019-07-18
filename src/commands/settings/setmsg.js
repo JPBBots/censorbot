@@ -8,7 +8,7 @@ exports.run = async (client,message,args) => {
     if(newMessage == oldMessage) return client.sendErr(message, "This is already the message set!");
     if(!oldMessage) oldMessage = "OFF"
 	var res = await client.sendSettings(message, ["Message Reply", oldMessage, newMessage], [`Set new response to \`${newMessage}\``, 'Message set by ' + message.author.username]);
-    if(res == 200) return client.rdb.get(message.guild.id).update({'msg': newMessage});
+    if(res == 200) return client.rdb.get(message.guild.id).update({'msg': newMessage}).run();
     else return console.log("Error: " + res)
 }
 exports.info = {

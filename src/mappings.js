@@ -28,6 +28,7 @@ module.exports = {
         class: resolve(filter, "./class.js"),
         filter: resolve(filter, "./filter.json"),
         linkbyp: resolve(filter, "./linkbyp.json"),
+        filterbackup: resolve(filter, "./filterbackup.json"),
     },
     filterHandler: {
         index: filterHandler,
