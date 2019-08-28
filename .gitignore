@@ -1,3 +1,4 @@
+.gitignore
 config.js
 *filter.json*
 *linkbyp.json*
