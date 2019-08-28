@@ -108,6 +108,7 @@ module.exports = class JPBFilter {
             }
         }
         init();
+        if(res.censor) this.addNum();
         return res;
     }
     removeAccents(str) {
@@ -260,10 +261,9 @@ module.exports = class JPBFilter {
         return arr;
     }
     addNum() {
-        require("fs").readFile('./num.json', (err, result) => {
-            let u = JSON.parse(result)
-            u['num'] += 1
-            require("fs").writeFileSync('./num.json', JSON.stringify(u))
-        })
+        var n = require("path").resolve(__dirname, "../num")
+        var num = Number(require("fs").readFileSync(n, "utf-8"));
+        num++;
+        require("fs").writeFileSync(n, String(num))
     }
 }

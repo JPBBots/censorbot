@@ -65,7 +65,7 @@ exports.run = async (client,message,args) => {
                 },
                 {
                     "name": ":wastebasket: Messages Deleted",
-                    "value": JSON.parse(require('fs').readFileSync('./num.json'))['num'].toLocaleString(),
+                    "value": Number(require('fs').readFileSync('./num', "utf-8")).toLocaleString(),
                     "inline": true
                 }   
             ]
