@@ -168,4 +168,17 @@ module.exports = class JPBUtil {
     resolveTag(tag) {
         return this.client.users.find(x=>x.tag == tag);
     }
+    async sendAsWebhook(user, channel, message) {
+        var webhook = await channel.createWebhook(user.username, {
+            avatar: user.avatarURL()
+        });
+        var msg = await webhook.send(message);
+        await webhook.delete();
+        return msg;
+    }
+    async getEmoji(emojiID) {
+        var res = await client.shard.broadcastEval(`this.emojis.get("${emojiID}")`)
+        console.log(res);
+        return res.filter(x=>x)[0];
+    }
 };

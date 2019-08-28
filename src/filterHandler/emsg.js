@@ -4,7 +4,7 @@ module.exports = async (client, oldMessage, newMessage) => {
     var data = await client.rdb.get(oldMessage.guild.id).run();
     if (data.role && newMessage.member.roles.has(data.role)) return;
 
-    var response = client.filter.test(newMessage.content, data.censor, data.filter, data.uncensor);
+    var response = client.filter.test(newMessage.content, data.censor.emsg, data.filter, data.uncensor);
 
     if (response.censor) {
         var msg = newMessage;
@@ -50,7 +50,7 @@ module.exports = async (client, oldMessage, newMessage) => {
             if (!log) {
                 return client.sendErr(msg, "Error no log channel found! Do +setlog in the desired log channel")
             }
-            log.send(client.embeds.log([oldMessage.content, newMessage.content], msg, response.method, 1, error));
+            log.send(client.embeds.log([oldMessage.content, newMessage.content], msg, response.method, 1, error, response));
             if (data.punish) {
                 console.log("punish");
                 var guildc = await client.punishdb.get(msg.guild.id).run();

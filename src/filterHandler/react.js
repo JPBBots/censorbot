@@ -3,13 +3,13 @@ module.exports = async (client, reaction, user) => {
     if (message.guild && message.guild.id == "264445053596991498") return;
     if (message.channel.nsfw) return;
 
-    let member = message.guild.members.get(user.id) || message.guild.members.fetch(user.id);
+    let member = message.guild.members.get(user.id) || await message.guild.members.fetch(user.id);
 
     var data = await client.rdb.get(message.guild.id).run();
     if (data.role && member.roles.has(data.role)) return;
 
-    var response = client.filter.test(reaction.emoji.name, data.censor, data.filter, data.uncensor);
-    if (response.censor) {
+    var response = client.filter.test(reaction.emoji.name, data.censor.react, data.filter, data.uncensor);
+    if (response.censor.react) {
         var msg = message;
         var error;
         try {
@@ -21,7 +21,7 @@ module.exports = async (client, reaction, user) => {
         console.log(`Shard ${client.shard.id} | Removed reaction from ${user} ${user.username}: `.yellow + `${reaction.emoji.name}`.yellow.underline)
         var log = msg.guild.channels.get(data.log);
         if(!log) return;
-        log.send(client.embeds.log([reaction.emoji.name, reaction.emoji.url], reaction.message, response.method, 3, error));
+        log.send(client.embeds.log([reaction.emoji.name, reaction.emoji.url || ""], reaction.message, response.method, 3, error));
         if (data.punish) {
             console.log("punish");
             var guildc = await client.punishdb.get(message.guild.id).run();

@@ -477,7 +477,7 @@ app.get("/censor", (req, res) => {
     CHECK(res, (response) => {
         client.rdb.get(response.guild.id).run().then(respo => {
             res.json({
-                censor: respo && respo.censor ? true : false
+                censor: respo && respo.censor.msg
             });
         })
     })
@@ -487,8 +487,14 @@ app.post("/censor", (req, res) => {
         if (!["0", "1"].includes(req.body.value)) return res.json({
             error: errors["invalidBoolean"]
         })
+        var piece = req.body.value == "0" ? false : true;
         client.rdb.get(response.guild.id).update({
-            censor: req.body.value == "0" ? false : true
+            censor: {
+                msg: piece,
+                emsg: piece,
+                nick: piece,
+                react: piece
+            }
         }).run().then(dbHandler(res, () => {
             res.json({
                 newValue: req.body.value == "0" ? false : true
@@ -726,8 +732,8 @@ app.get("/admin/userGuilds/:id", (req, res) => {
     });
     getuser(req.headers.authorization.split(" ")[1])
         .then(x => x.json())
-        .then(re => {
-            if (re.id !== "142408079177285632") return res.json({
+        .then(user => {
+            if (user.id !== "142408079177285632") return res.json({
                 error: {
                     message: "unatuh"
                 }
@@ -747,8 +753,8 @@ app.get("/admin/guild/:id", (req, res) => {
     });
     getuser(req.headers.authorization.split(" ")[1])
         .then(x => x.json())
-        .then(res => {
-            if (res.id !== "142408079177285632") return res.json({
+        .then(user => {
+            if (user.id !== "142408079177285632") return user.json({
                 error: {
                     message: "unatuh"
                 }

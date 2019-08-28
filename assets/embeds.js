@@ -10,11 +10,25 @@ module.exports = {
             .addField("Match site + Swear Array Match", `${arg} + ${word}`)
         return embed;
     },
-    "log": (content, message, method, type, err) => {
+    "log": (content, message, method, type, err, obj) => {
         var tikme = "";
         var tikem = "";
         for (var i = 0; i < content.length; i++) {
             content[i] = content[i].replace(/\`\`\`/gi, "\\`\\`\\`")
+            if(obj) {
+                var cc = content[i].split(" ");
+                for(var z = 0; z < cc.length; z++) {
+                    var s = false;
+                    obj.arg.forEach(arg=>{
+                        if(s) return;
+                        if(cc[z].match(arg)) {
+                            cc[z] = `__${cc[z]}__`;
+                            s = true;
+                        }
+                    })
+                }
+                content[i] = cc.join(" ");
+            }
         }
         if (method == "base") {
             tikme = "Mistake? Do +ticket"

@@ -32,7 +32,7 @@ module.exports = async (client, message) => {
     }
     if (data.role && message.member.roles.has(data.role)) return;
 
-    var response = client.filter.test(message.content, data.censor, data.filter, data.uncensor);
+    var response = client.filter.test(message.content, data.censor.msg, data.filter, data.uncensor);
 
     if (response.censor) {
         var msg = message;
@@ -78,7 +78,7 @@ module.exports = async (client, message) => {
             if (!log) {
                 return client.sendErr(msg, "Error no log channel found! Do +setlog in the desired log channel")
             }
-            log.send(client.embeds.log([msg.content], msg, response.method, 0, error));
+            log.send(client.embeds.log([msg.content], msg, response.method, 0, error, response));
             if (data.punish) {
                 console.log("punish");
                 var guildc = await client.punishdb.get(msg.guild.id).run();
@@ -99,6 +99,21 @@ module.exports = async (client, message) => {
                     log.send(embed);
                 }
                 client.punishdb.replace(guildc).run();
+            }
+            if(data.webhook) {
+                var cc = msg.content.split(" ");
+                for(var z = 0; z < cc.length; z++) {
+                    var s = false;
+                    response.arg.forEach(arg=>{
+                        if(s) return;
+                        if(cc[z].match(arg)) {
+                            cc[z] = `||${cc[z]}||`;
+                            s = true;
+                        }
+                    })
+                }
+                var content = cc.join(" ").replace(/\`\`\`/gi, "");
+                client.u.sendAsWebhook(msg.author, msg.channel, content);
             }
         }
     }

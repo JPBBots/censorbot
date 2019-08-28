@@ -1,4 +1,4 @@
-exports.run = (client,message,args) => {
+exports.run = async (client,message,args) => {
     var user;
     if(args.join(" ").match("#")) {
         user = client.u.resolveTag(args.join(" "))
@@ -9,7 +9,7 @@ exports.run = (client,message,args) => {
     } 
     if(!user) return message.channel.send("Invalid user");
 
-    message.channel.send(client.u.userEmbed(user));
+    message.channel.send(await client.u.ShardUserEmbed(user));
 }
 
 exports.info = {

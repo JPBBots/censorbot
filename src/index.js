@@ -44,6 +44,13 @@ const init = async () => {
 
   console.log(`>>> Loading ${adminFiles.length} admin commands, ${settingFiles.length} setting commands, & ${normalFiles.length} normal commands. ${adminFiles.length+settingFiles.length+normalFiles.length} total.`);
 
+  client.filterHandler = {
+    msg: require(mappings.filterHandler.msg),
+    emsg: require(mappings.filterHandler.emsg),
+    nick: require(mappings.filterHandler.nick),
+    react: require(mappings.filterHandler.react)
+  }
+
   adminFiles.forEach(file => {
     if (!file.endsWith(".js")) return;
     const stuff = require(`${mappings.commands.admin}/${file}`);

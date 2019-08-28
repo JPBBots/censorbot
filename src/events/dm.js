@@ -6,5 +6,5 @@ module.exports = async (client, message) => {
         user = message.channel
     }
     if (message.channel.recipient.id == "142408079177285632") return;
-    client.msg("dms", `At ${message.createdAt} ${message.author} DM'd ${user}: ${message.content}`)
+    client.msg("DMs", `At ${message.createdAt} ${message.author} DM'd ${user}: ${message.content}`)
 }

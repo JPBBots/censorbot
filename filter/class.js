@@ -1,3 +1,5 @@
+const emojis = require("emoji-unicode-map");
+
 module.exports = class JPBFilter {
     constructor(client, filterFile, linkBypFile) {
         this.filterFile = filterFile;
@@ -54,10 +56,10 @@ module.exports = class JPBFilter {
         delete require.cache[require.resolve(this.linkBypFile)]
         this.linkByp = require(this.linkBypFile).links;
     }
-    
+
     addToBypass(key, newValue) {
-        if(!this.filter[key]) this.filter[key] = [];
-        if(newValue) this.filter[key].push(newValue);
+        if (!this.filter[key]) this.filter[key] = [];
+        if (newValue) this.filter[key].push(newValue);
         return this.filter;
     }
     /**
@@ -76,16 +78,16 @@ module.exports = class JPBFilter {
             arg: null
         }
         const init = () => {
-            if(UNCENSOR && UNCENSOR[0]) {
+            if (UNCENSOR && UNCENSOR[0]) {
                 var uncensorRes = this.testAgainstArray(this.resolveContent(content).join(" "), UNCENSOR);
-                if(uncensorRes[0]) {
+                if (uncensorRes[0]) {
                     res.censor = false;
                     return;
                 };
             }
-            if(SERVER && SERVER[0]) {
+            if (SERVER && SERVER[0]) {
                 var serverFilter = this.testAgainstArray(this.resolveContent(content).join(" "), SERVER);
-                if(serverFilter[0]) {
+                if (serverFilter[0]) {
                     res.censor = true;
                     res.method = "server";
                     res.word = serverFilter[1];
@@ -93,14 +95,14 @@ module.exports = class JPBFilter {
                     return;
                 }
             }
-        
-            if(GLOBAL) {
+
+            if (GLOBAL) {
                 var baseFilter = this.testWithBypass(this.resolveContent(content), this.filter)
-                if(baseFilter) {
+                if (baseFilter.stopped) {
                     res.censor = true;
                     res.method = "base";
-                    res.word = baseFilter[0]
-                    res.arg = baseFilter[1]
+                    res.word = undefined;
+                    res.arg = baseFilter.args
                     return;
                 }
             }
@@ -122,11 +124,13 @@ module.exports = class JPBFilter {
         return str.join('');
     };
     resolveContent(str) {
-        return this.resolvePlusCharacters(this.resolveTwos(this.resolveOnes(this.resolveEmoji(this.removeAccents(this.removeLinks(str.split(" ")).join(" ").replace(this.replaceSpots.spaces, " ").replace(this.replaceSpots.nothing, "")).slice().trim().split(/ +/g)))));
+        return this.resolvePlusCharacters(this.resolveTwos(this.resolveOnes(this.removeAccents(this.removeLinks(this.resolveEmoji(str.split(" "))).join(" ").replace(this.replaceSpots.spaces, " ").replace(this.replaceSpots.nothing, "")).slice().trim().split(/ +/g))));
     }
     resolveEmoji(arr) {
         for (var i = 0; i < arr.length; i++) {
-            if (this.emoji_lookup[arr[i]]) arr[i] = this.emoji_lookup[arr[i]]
+            if (this.emoji_lookup[arr[i]]) arr[i] = this.emoji_lookup[arr[i]];
+            var thing = emojis.get(arr[i]);
+            if (thing) arr[i] = thing;
         }
         return arr;
     }
@@ -135,10 +139,12 @@ module.exports = class JPBFilter {
             if (e.length === 1 && (!last || last.length === 1)) {
                 if (acc.length === 0) {
                     acc.push(e)
-                } else {
+                }
+                else {
                     acc[acc.length - 1] += e
                 }
-            } else {
+            }
+            else {
                 acc.push(e)
             }
             return [e, acc]
@@ -148,11 +154,14 @@ module.exports = class JPBFilter {
                 if (arr[i].length == 1 && arr[i + 1].length == 1) {
                     arr[i] = arr[i] + arr[i + 1];
                     arr[i + 1] = "";
-                } else if (arr[i].length == 1 && arr[i + 1].length != 1) {
+                }
+                else if (arr[i].length == 1 && arr[i + 1].length != 1) {
                     arr[i + 1] = arr[i] + arr[i + 1];
                     arr[i] = "";
-                } else continue;
-            } else continue;
+                }
+                else continue;
+            }
+            else continue;
         }
         return arr
     }
@@ -186,43 +195,46 @@ module.exports = class JPBFilter {
     testAgainstArray(content, arr) {
         var res = false;
         var site;
-        var arg;
-        arr.forEach(a=>{
+        var arg = [];
+        arr.forEach(a => {
             let reg;
             try {
                 reg = new RegExp(a, "gi");
-            } catch(e) {
+            }
+            catch (e) {
                 console.log(a + "err");
             }
-            if(!reg) return;
+            if (!reg) return;
             var match = content.match(reg)
-            if(match) {
+            if (match) {
                 res = true;
                 site = a;
-                arg = match[0];
+                arg.push(reg);
             }
         })
         return [res, site, arg];
     }
     testWithBypass(args, obj) {
-        var res = false
-        var stop = false;
+        var res = {
+            stopped: false,
+            args: []
+        }
         args.forEach(arg => {
-            if(stop) return;
             Object.keys(obj).forEach(wrd => {
-                if(stop) return;
                 let word = new RegExp(wrd, 'gi')
                 if (arg.match(word)) {
                     const array = obj[wrd.toLowerCase()]
-                    stop = true
+                    var stop = false;
                     array.forEach(bypass => {
+                        if (stop) return;
                         let sio = new RegExp(bypass, 'gi')
                         if (arg.match(sio)) {
-                            stop = false
+                            stop = true;
                         }
                     })
-                    if(stop) {
-                        return res = [word, arg];
+                    if (!stop) {
+                        res.stopped = true;
+                        res.args.push(word);
                     }
                 }
             })

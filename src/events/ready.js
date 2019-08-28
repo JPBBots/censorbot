@@ -28,6 +28,7 @@ module.exports = async (client) => {
         client.shard.fetchClientValues('guilds.size').then(results => {
             let gc = results.reduce((prev, guildCount) => prev + guildCount, 0)
             client.shard.broadcastEval(`this.user.setActivity('For Bad Words | ${gc} servers', {type: 'WATCHING'});`)
+            // client.shard.broadcastEval(`this.user.setActivity('My development', {type: 'STREAMING', url: "https://twitch.tv/jpbberry"});`)
             client.shard.broadcastEval(`let g = this.channels.get('512369661849894947'); if(g) g.setName("Server Count: ${gc}")`)
             getStuff().then(me => {
                 require('../../assets/db.js').db.db("botinfo").table("bots").update({
@@ -63,8 +64,8 @@ module.exports = async (client) => {
                 .then(resolve)
         })
     }
-    setInterval(async () => {
-        if (client.shard.id != 0) return;
+    
+    if(client.shard.id == 0) setInterval(async () => {
         let vv = await client.shard.fetchClientValues('guilds.size')
         dbl.postStats(vv);
         client.shard.fetchClientValues('guilds.size').then(results => {
@@ -72,6 +73,10 @@ module.exports = async (client) => {
             client.shard.broadcastEval(`this.user.setActivity("For Bad Words | ${aa} servers", {
                 type: 'WATCHING'
             });`)
+            // client.shard.broadcastEval(`this.user.setActivity("My Development!", {
+            //     type: 'STREAMING',
+            //     url: "https://twitch.tv/jpbberry"
+            // });`)
             getStuff().then(me => {
                 require('../../assets/db.js').db.db("botinfo").table("bots").update({
                     bot: "censorbot",
@@ -90,6 +95,10 @@ module.exports = async (client) => {
         // client.user.setActivity('In development mode')
         // client.user.setStatus('dnd')
         console.log(`Shard ${client.shard.id} | Updated ${vv.reduce((prev, guildCount) => prev + guildCount, 0)}`);
+        
+        client.shard.broadcastEval(`this.channels.forEach(x=>{if(x.messages) x.messages.clear()})`).then(a=>{
+            client.msg("log", "Sweeped all messages");
+        })
     }, 1800000);
     if (fs.existsSync('./r.json')) {
         let o = JSON.parse(fs.readFileSync('./r.json'))
@@ -100,7 +109,7 @@ module.exports = async (client) => {
             let ok = new Discord.MessageEmbed()
                 .setTitle('Restarted!')
                 .setColor("GREEN")
-                .setFooter("Success (Took: " + (((a.createdAt - new Date) * -1) / 1024).toFixed(2) + " seconds)")
+                .setFooter("Success (Took: " + (((a.createdAt.getTime() - new Date().getTime()) * -1) / 1024).toFixed(2) + " seconds)")
             a.edit(ok)
             setTimeout(() => {
                 a.delete()
@@ -127,62 +136,4 @@ module.exports = async (client) => {
         height: 400,
         width: 500
     };
-    // plotly.plot(data, layout, function (err, msg) {
-    //     if (err) return console.log(err);
-    //     console.log(">>> Submitted Demographic Stats to PLOTLY on bot startup");
-    // });
-    // setInterval(() => {
-    // plotly.plot(data, layout, function (err, msg) {
-    //     if (err) return console.log(err);
-    //     console.log("Submitted Demographic Stats to PLOTLY");
-    // });
-    // }, 1800000)
-    /**
-    if(client.shard.id == client.shard.count-1) {
-        const express = require("express");
-        var app = express();
-
-        app.get("/", (req,res) => {
-            res.send("infomatic censorbot endpoint");
-        })
-        
-        app.get("/info", (req,res) => {
-            res.header("Access-Control-Allow-Origin", "*")
-            var info = {shards: [], general: {
-                remainingIndentifys: client.ws.sessionStartLimit.remaining,
-                totalIdentifys: client.ws.sessionStartLimit.total
-            }};
-            client.shard.broadcastEval(`
-                function getValues(client) {
-                    return {
-                        shard: client.shard.id, 
-                        guilds: client.guilds.size,
-                        unavailable: client.guilds.filter(x=>!x.available).size,
-                        users: client.users.size, 
-                        ping: client.ws.ping.toFixed()
-                    }
-                }
-                getValues(this)`)
-                .then(resp=>{
-                    var pings = resp.map(x=>Number(x.ping));
-                    info.general.ping = (pings.reduce((a,b) => a + b, 0))/pings.length;
-                    info.general.guildCount = resp.map(x=>x.guilds).reduce((a,b) => a + b, 0)
-                    info.general.userCount = resp.map(x=>x.users).reduce((a,b) => a + b, 0)
-                    resp.forEach(guild => {
-                          info.shards.push(guild);
-                    })
-                    res.json(info);
-                })
-        })
-        app.get("/restart", (req,res) => {
-            if(req.query.auth == "6969") {
-                res.send(true);
-                process.exit()
-            } else res.send(false);
-        })
-        app.listen(1234, () => {
-            console.log("Endpoint open")
-        })
-    }
-    **/
 }

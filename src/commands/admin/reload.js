@@ -1,5 +1,6 @@
 exports.run = async (client,message,args) => {
     let arg1 = args[0]
+    let arg2 = args[1];
     if(arg1 == "config") {
         client.shard.broadcastEval(`this.reloadConfig()`);
         message.delete()
@@ -29,12 +30,20 @@ exports.run = async (client,message,args) => {
     }
     if(arg1 == "utils") {
         client.shard.broadcastEval("this.reloadUtils()");
+        return message.reply(":ok_hand:")
     }
     if(arg1 == "db") {
         client.shard.broadcastEval("this.reloadKDB()");
+        return message.reply(":ok_hand:")
     }
     if(arg1 == "class") {
         client.shard.broadcastEval(`this.reloadClass()`)
+        return message.reply(":ok_hand:")
+    }
+    if(arg1 == "handler") {
+        client.shard.broadcastEval(`delete require.cache[require.resolve(this.mappings.filterHandler["${arg2}"])];
+        this.filterHandler["${arg2}"] = require(this.mappings.filterHandler["${arg2}"]);`);
+        return message.reply(`Reloaded filterhandler: ${arg2}`);
     }
     if(arg1.startsWith('c:')) {
         let cmd = arg1.split(':')[1]

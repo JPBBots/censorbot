@@ -11,10 +11,11 @@ module.exports = async (client, message) => {
     if(message.guild.id == "110373943822540800") return;
     if(message.guild.id == "417131675701477386") return;
     if(message.author.bot && message.author.id !== "536004227470721055") return;
-    require(client.mappings.filterHandler.msg)(client, message)
+    client.filterHandler.msg(client, message)
     //Commands
     if(!message.content.startsWith(client.config.prefix) && !message.content.startsWith(`<@${client.user.id}>`) && !message.content.startsWith(`<@!${client.user.id}>`)) return;
     var prefix;
+    if(message.guild.id == "264445053596991498" && message.content.startsWith(client.config.prefix)) return;
     if(message.content.startsWith(client.config.prefix)) prefix = client.config.prefix
     else if(message.content.startsWith("<@")) {
         if(message.content.startsWith("<@!")) prefix = `<@!${client.user.id}> `;
@@ -56,7 +57,7 @@ module.exports = async (client, message) => {
                 guild.roles.get("415323805943070721").members.has("${message.author.id}")
             }
         `)
-        if(!res.includes(true)) return message.reply(`You don't have permission to run that command!`);
+        if(!res.includes(true) && message.author.id !== "536004227470721055") return message.reply(`You don't have permission to run that command!`);
     }
     if(v.info.setting && !message.member.hasPermission("MANAGE_MESSAGES")) return client.sendErr(message, "You need `Manage Messages` permission to edit this servers settings!");
     v.run(client,message,args)

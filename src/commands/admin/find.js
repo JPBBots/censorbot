@@ -1,6 +1,17 @@
 exports.run = async (client,message,args) => {
     let arg1 = args[0]
-    let gu = (await client.shard.broadcastEval(`var gu = this.guilds.get("${arg1}"); if(gu) gu.shard = this.shard.id; gu`)).filter(x=>x!=null)[0]
+    let res = (await client.shard.broadcastEval(`
+    var client = this;
+    function go() {
+        return {
+            "gu": client.guilds.get("${arg1}"), 
+            "shard": client.shard.id
+        }
+    };
+    go()`
+        ))
+    .filter(x=>x)[0]
+    var {gu, shard} = res;
     if (!gu) {
         let ok = await message.reply("Bot is not in guild")
         setTimeout(() => {
@@ -9,7 +20,14 @@ exports.run = async (client,message,args) => {
         return;
     }
     if (gu) {
-        message.reply(`Bot in guild => Shard ${gu.shard} | ${client.users.get(gu.ownerID)} | ${gu.name} | ${gu.id} | ${gu.memberCount}`)
+        var owner = await client.users.fetch(gu.ownerID) || {};
+        message.channel.send(
+            client.u.embed
+                .setTitle("Fetched guild")
+                .addField("Name", `${gu.name} | ${gu.id}`)
+                .addField("Owner", `${owner} (${owner.tag} | ${owner.id})`)
+                .addField("Member Count", `${gu.memberCount}`)
+        )
     }
 }
 exports.info = {

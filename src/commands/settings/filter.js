@@ -1,3 +1,4 @@
+const emojis = require("emoji-unicode-map");
 exports.run = async(client, message, args) => {
     const fs = require('fs')
     const Discord = require('discord.js')
@@ -25,11 +26,20 @@ exports.run = async(client, message, args) => {
                 client.sendErr(message, "Error, this word is already contained in the base filter! There is no need to add it!")
                 return;
             }
+            var emo = emojis.get(arg2);
+            if(emo) {
+                arg2 = emo;
+                if(arg2.includes("_")) arg2 = arg2.split("_")[0];
+            }
+            if(arg2.match(/<:.+:[0-9]+>/gi)) {
+                arg2 = arg2.split(":")[1];
+            }
             if (filter.includes(arg2.toLowerCase())) {
                 client.sendErr(message, "Error! This word is already in this servers filter! If it still isn't censoring contact support (" + client.config.prefix + "support)")
                 return;
             }
             else {
+                
                 if (arg2.toLowerCase().match(/[^a-zA-Z0-9 ]/gi)) return client.sendErr(message, "Invalid string! Make sure not to include any special characters");
                 var res = await client.sendSettings(message, ["Filter", "Added", arg2.toLowerCase()], ["Successfully added the word! Do +filter list to see your filter!", "Filter edited by " + message.author.username])
                 if (res == 200) {
@@ -53,7 +63,7 @@ exports.run = async(client, message, args) => {
             else {
                 var res = await client.sendSettings(message, ["Filter", "Removed", arg2.toLowerCase()], ["Successfully removed the word! Do +filter list to see your filter!", "Filter edited by " + message.author.username])
                 if (res == 200) {
-                    filter.pop(filter.indexOf(arg2.toLowerCase()));
+                    filter[filter.indexOf(arg2.toLowerCase())] = undefined;
                     filter = filter.filter(x => x);
                     client.rdb.get(message.guild.id).update({ 'filter': filter }).run();
                 }

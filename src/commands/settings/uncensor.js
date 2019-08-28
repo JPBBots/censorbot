@@ -49,7 +49,7 @@ exports.run = async(client, message, args) => {
             else {
                 var res = await client.sendSettings(message, ["Uncensor List", "Removed", arg2.toLowerCase()], ["Successfully removed the word! Do +uncensor list to see your uncensor list!", "Uncensor list edited by " + message.author.username])
                 if (res == 200) {
-                    filter.pop(filter.indexOf(arg2.toLowerCase()));
+                    filter[filter.indexOf(arg2.toLowerCase())] = undefined;
                     filter = filter.filter(x => x);
                     let r = await client.rdb.get(message.guild.id).update({ 'uncensor': filter }).run();
                 }

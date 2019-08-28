@@ -110,7 +110,9 @@ ipc.config.retry = 100;
 ipc.serve(() => {
     ipc.server.on("restart", (message) => {
         var shard = manager.shards.get(Number(message.shard));
-        if(!shard || message.shard == "all") return manager.respawnAll();
+        if(!shard || message.shard == "all") return manager.shards.forEach(shard=>{
+            shard.respawn();
+        });
         shard.respawn();
     });
 })

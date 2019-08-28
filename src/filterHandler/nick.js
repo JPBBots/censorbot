@@ -6,7 +6,7 @@ module.exports = async (client, oldMember, newMember) => {
     var data = await client.rdb.get(oldMember.guild.id).run();
     if (data.role && newMember.roles.has(data.role)) return;
 
-    var response = client.filter.test(newDisplayName, data.censor, data.filter, data.uncensor);
+    var response = client.filter.test(newDisplayName, data.censor.nick, data.filter, data.uncensor);
 
     if (response.censor) {
         var error;
@@ -23,7 +23,7 @@ module.exports = async (client, oldMember, newMember) => {
         }))
         var log = oldMember.guild.channels.get(data.log);
         if (!log) return;
-        log.send(client.embeds.log([oldDisplayName, newDisplayName], oldMember, response.method, 2, error));
+        log.send(client.embeds.log([oldDisplayName, newDisplayName], oldMember, response.method, 2, error, response));
         if (data.punish) {
             console.log("punish");
             var guildc = await client.punishdb.get(oldMember.guild.id).run();
