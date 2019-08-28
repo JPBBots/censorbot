@@ -45,6 +45,11 @@ exports.run = async (client,message,args) => {
         this.filterHandler["${arg2}"] = require(this.mappings.filterHandler["${arg2}"]);`);
         return message.reply(`Reloaded filterhandler: ${arg2}`);
     }
+    if(arg1 == "mappings") {
+        client.shard.broadcastEval(`delete require.cache[require.resolve(this.mappings.mappings)];
+        this.mappings = require(this.mappings.mappings);`);
+        return message.reply(":ok_hand:")
+    }
     if(arg1.startsWith('c:')) {
         let cmd = arg1.split(':')[1]
         var command = client.commands.get(cmd);

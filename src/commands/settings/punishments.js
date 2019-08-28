@@ -1,4 +1,4 @@
-exports.run = async (client, message, args) => {
+exports.run = async (client, message, args, db) => {
     message.delete();
     var type = args[0];
     if (!type) {
@@ -45,7 +45,7 @@ exports.run = async (client, message, args) => {
         else current = `Amount: ${cur.amount} | Role: ${message.guild.roles.get(cur.role)}`;
         var res = await client.sendSettings(message, ["Punishments", current, `Amount: ${amount} | Role ${message.mentions.roles.first()}`], [`Set new punishment data to ${amount} | @${message.mentions.roles.first().name}`, "Punishments set by " + message.author.tag], [false, false], )
         if (res == 200) {
-            client.rdb.get(message.guild.id).update({"punish": true});
+            db.set("punish", true)
             if (!cur) client.punishdb.insert({
                 id: message.guild.id,
                 amount: amount,
@@ -54,7 +54,7 @@ exports.run = async (client, message, args) => {
                     "placeholder": true
                 }
             }).run();
-            else client.punishdb.get(message.guild.id).update({
+            else client.punishdb.update(message.guild.id, {
                 amount: amount,
                 role: message.mentions.roles.first().id,
                 users: {
@@ -64,20 +64,20 @@ exports.run = async (client, message, args) => {
             return;
         }
     } else if (type == "toggle") {
-        var cur = (await client.rdb.get(message.guild.id).run()).punish;
+        var cur = await db.get("punish");
         var newT = cur.swap();
         if (newT == true) {
-            var pc = await client.punishdb.get(message.guild.id).run();
+            var pc = await client.punishdb.getAll(message.guild.id)
             if (!pc || !pc.role || !pc.amount) {
                 return client.sendErr(message, "Cannot toggle on without already being set. Try " + client.config.prefix + "punishments set");
             }
         }
         var res = await client.sendSettings(message, ["Punishment Toggle", cur, newT], [`Toggled Punishments ${newT ? "ON" : "OFF"}`, "Punishments toggled by " + message.author.tag]);
         if (res == 200) {
-            client.rdb.get(message.guild.id).update({"punish": newT}).run();
+            db.set("punish", newT)
         }
     } else if (type == "current") {
-        var cur = await client.punishdb.get(message.guild.id).run();
+        var cur = await client.punishdb.getAll(message.guild.id)
         if (!cur) return client.sendErr(message, "There is no set data! Try " + client.config.prefix + "punishments set");
         var embed = new client.discord.MessageEmbed()
             .setTitle("Current Punishment Setting")
@@ -85,7 +85,7 @@ exports.run = async (client, message, args) => {
             .addField("Role", message.guild.roles.get(cur.role), true);
         message.channel.send(embed);
     } else if (type == "user") {
-        var punishments = await client.punishdb.get(message.guild.id).run();
+        var punishments = await client.punishdb.getAll(message.guild.id);
         if(!punishments) return client.sendErr(message, "Cannot interact with users without punishments set up! Try " + client.config.prefix + "punishments set");
         var user = args[1];
         var etc = args[2];
@@ -116,14 +116,14 @@ exports.run = async (client, message, args) => {
             var res = await client.sendSettings(message, [`${user.tag} Warnings`, punishments.users[user.id] || "none", num], [`Set ${user.tag}'s warnigns to ${num}`, "Warnings changed by " + message.author.tag]);
                 if(res == 200) {
                     punishments.users[user.id] = num;
-                    client.punishdb.replace(punishments).run();
+                    client.punishdb.update(message.guild.id, punishments)
                 }
         } else if (etc == "reset") {
             if(!punishments.users[user.id]) return client.sendErr("User already doesn't have any warnings!");
             var res = await client.sendSettings(message, [`${user.tag} Warnings`, punishments.users[user.id], "none"], [`Set ${user.tag}'s warnigns to none`, "Warnings changed by " + message.author.tag]);
                 if(res == 200) {
                     delete punishments.users[user.id]
-                    client.punishdb.replace(punishments).run();
+                    client.punishdb.update(message.guild.id, punishments)
                 }
         }
     } else {

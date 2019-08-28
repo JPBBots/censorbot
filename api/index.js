@@ -3,6 +3,7 @@ var app = express.Router();
 const Discord = require('discord.js')
 const flake = require("simpleflake");
 const client = {}
+const guildDB = require("../assets/guildDB.js");
 client.config = require("../config.js");
 require("../assets/db.js").applyToObject(client);
 
@@ -206,7 +207,7 @@ async function getStuff(script, cb) {
     cb(res, i);
 }
 
-let getuser = async (tok) => {
+let getuser = async(tok) => {
     let e = await require('node-fetch')("https://discordapp.com/api/users/@me", {
         method: "GET",
         headers: {
@@ -258,7 +259,8 @@ function CHECK(res, callback, ifpost) {
                 const shard = manager.shards.get(Shard);
                 // response.shard = shard
                 response.guild = Guild;
-                response.channel = async function () {
+                response.db = new guildDB(Guild, client.rdb);
+                response.channel = async function() {
                     return await shard.eval(
                         `this.guilds.get("${Guild.id}").channels.array()
                             .filter(x=>!x.deleted && x.type == "text")
@@ -270,7 +272,7 @@ function CHECK(res, callback, ifpost) {
                             })`
                     );
                 }
-                response.roles = async function () {
+                response.roles = async function() {
                     return await shard.eval(
                         `this.guilds.get("${Guild.id}").roles.array()
                             .filter(x=>!x.managed && x.name != "@everyone")
@@ -319,26 +321,26 @@ app.get("/test", (req, res) => {
     })
 })
 
-app.get('/inserver', async (req, res) => {
+app.get('/inserver', async(req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET");
     getStuff(`this.guilds.get("${req.query.serverid}")`, (result, i) => {
-        if(!result) return res.send("0");
+        if (!result) return res.send("0");
         else res.send("1");
     })
 });
-app.post("/inserver", async (req, res) => {
+app.post("/inserver", async(req, res) => {
     if (!req.headers.authorization) return res.send("0");
     var [server, token] = req.headers.authorization.split(" ");
     if (!server) return res.send("0");
     getStuff(`this.guilds.get("${server}")`, (result, i) => {
-        if(!result) return res.send("0");
+        if (!result) return res.send("0");
         else res.send("1");
     })
 })
 
 function dbHandler(res, cb) {
-    return function (response) {
+    return function(response) {
         if (!response || (!response.replaced && !response.inserted && !response.deleted)) return res.json({
             error: errors["databaseError"]
         });
@@ -355,12 +357,12 @@ app.get("/auth", (req, res) => {
 //log
 
 app.get("/log", (req, res) => {
-    CHECK(res, async (response) => {
+    CHECK(res, async(response) => {
         var Channels = await response.channel();
         if (!Channels[0].id) return res.json({
             error: errors["noChannels"]
         });
-        var channel = (await client.rdb.get(response.guild.id).run()).log
+        var channel = await response.db.get("log");
         if (!channel || channel == "none") return res.json({
             name: "none",
             id: "0"
@@ -385,17 +387,15 @@ app.post("/log", (req, res) => {
             if (!channel) return res.json({
                 error: errors["logInvalidChannel"]
             });
-            client.rdb.get(response.guild.id).update({
-                id: response.guild.id,
-                log: req.body.value
-            }).run().then(dbHandler(res, () => {
-                res.json({
-                    newValue: {
-                        name: `#${channel.name}`,
-                        id: channel.id
-                    }
-                });
-            }))
+            response.db.set("log", req.body.value)
+                .then(dbHandler(res, () => {
+                    res.json({
+                        newValue: {
+                            name: `#${channel.name}`,
+                            id: channel.id
+                        }
+                    });
+                }))
         })
     }, true)
 })
@@ -409,9 +409,9 @@ app.get("/channels", (req, res) => {
 
 //uncensor role
 app.get("/role", (req, res) => {
-    CHECK(res, async (response) => {
+    CHECK(res, async(response) => {
         var roles = await response.roles();
-        var role = (await client.rdb.get(response.guild.id).run()).role
+        var role = await response.db.get("role");
         if (!role) return res.json({
             name: "none",
             id: "0"
@@ -430,7 +430,7 @@ app.get("/role", (req, res) => {
     })
 })
 app.post("/role", (req, res) => {
-    CHECK(res, async (response) => {
+    CHECK(res, async(response) => {
         var roles = await response.roles()
         let Role = roles[roles.map(x => x.id).indexOf(req.body.value)];
         if (!Role) return res.json({
@@ -439,34 +439,32 @@ app.post("/role", (req, res) => {
         if (Role.managed) return res.json({
             error: errors["roleInvalidRoles"]
         })
-        client.rdb.get(response.guild.id).update({
-            role: req.body.value
-        }).run().then(dbHandler(res, () => {
-            res.json({
-                newValue: {
-                    name: `@${Role.name}`,
-                    id: Role.id
-                }
-            });
-        }))
+        response.db.set("role", req.body.value)
+            .then(dbHandler(res, () => {
+                res.json({
+                    newValue: {
+                        name: `@${Role.name}`,
+                        id: Role.id
+                    }
+                });
+            }))
     }, true)
 })
 app.delete("/role", (req, res) => {
     CHECK(res, (response) => {
-        client.rdb.get(response.guild.id).update({
-            role: null
-        }).run().then(dbHandler(res, () => {
-            res.json({
-                newValue: {
-                    name: `none`,
-                    id: "0"
-                }
-            })
-        }))
+        response.db.set("role", null)
+            .then(dbHandler(res, () => {
+                res.json({
+                    newValue: {
+                        name: `none`,
+                        id: "0"
+                    }
+                })
+            }))
     })
 })
 app.get("/roles", (req, res) => {
-    CHECK(res, async (response) => {
+    CHECK(res, async(response) => {
         var roles = await response.roles();
         res.json(roles)
     })
@@ -475,11 +473,12 @@ app.get("/roles", (req, res) => {
 //Censor
 app.get("/censor", (req, res) => {
     CHECK(res, (response) => {
-        client.rdb.get(response.guild.id).run().then(respo => {
-            res.json({
-                censor: respo && respo.censor.msg
-            });
-        })
+        response.db.get("censor")
+            .then(respo => {
+                res.json({
+                    censor: respo && respo.msg
+                });
+            })
     })
 })
 app.post("/censor", (req, res) => {
@@ -488,26 +487,25 @@ app.post("/censor", (req, res) => {
             error: errors["invalidBoolean"]
         })
         var piece = req.body.value == "0" ? false : true;
-        client.rdb.get(response.guild.id).update({
-            censor: {
+        response.db.set("censor", {
                 msg: piece,
                 emsg: piece,
                 nick: piece,
                 react: piece
-            }
-        }).run().then(dbHandler(res, () => {
-            res.json({
-                newValue: req.body.value == "0" ? false : true
             })
-        }))
+            .then(dbHandler(res, () => {
+                res.json({
+                    newValue: req.body.value == "0" ? false : true
+                })
+            }))
     })
 })
 
 //Filter
 app.get("/filter", (req, res) => {
     CHECK(res, (response) => {
-        client.rdb.get(response.guild.id).then(respo => {
-            res.send(respo.filter);
+        response.db.get("filter").then(respo => {
+            res.send(respo);
         })
     })
 })
@@ -520,44 +518,41 @@ app.put("/filter", (req, res) => { //adding
         if (filter.censor) return res.json({
             error: errors["alreadyCensored"]
         });
-        client.rdb.get(response.guild.id)("filter").run().then(Filter => {
+        response.db.get("filter").then(Filter => {
             if (Filter.includes(req.body.value.toLowerCase())) return res.json({
                 error: errors["alreadyInFilter"]
             });
             Filter.push(req.body.value.toLowerCase());
-            client.rdb.get(response.guild.id).update({
-                filter: Filter
-            }).run().then(dbHandler(res, () => {
-                res.json({
-                    newValue: Filter
-                });
-            }))
+            response.db.set("filter", Filter)
+                .then(dbHandler(res, () => {
+                    res.json({
+                        newValue: Filter
+                    });
+                }))
         })
     }, true)
 })
 app.patch("/filter", (req, res) => { //removing
     CHECK(res, (response) => {
-        client.rdb.get(response.guild.id)("filter").run().then(Filter => {
+        response.db.get("filter").then(Filter => {
             Filter = Filter.filter(x => x != req.body.value.toLowerCase());
-            client.rdb.get(response.guild.id).update({
-                filter: Filter
-            }).run().then(dbHandler(res, () => {
-                res.json({
-                    newValue: Filter
-                });
-            }))
+            response.db.set("filter", Filter)
+                .then(dbHandler(res, () => {
+                    res.json({
+                        newValue: Filter
+                    });
+                }))
         })
     }, true)
 })
 app.delete("/filter", (req, res) => { //clearing
     CHECK(res, (response) => {
-        client.rdb.get(response.guild.id).update({
-            filter: []
-        }).run().then(dbHandler(res, () => {
-            res.json({
-                newValue: []
-            });
-        }))
+        response.db.set("filter", [])
+            .then(dbHandler(res, () => {
+                res.json({
+                    newValue: []
+                });
+            }))
     })
 })
 
@@ -565,11 +560,12 @@ app.delete("/filter", (req, res) => { //clearing
 
 app.get("/agp", (req, res) => {
     CHECK(res, (response) => {
-        client.rdb.get(response.guild.id).run().then(respo => {
-            res.json({
-                agp: respo && respo.antighostping ? true : false
-            });
-        })
+        response.db.get("antighostping")
+            .then(respo => {
+                res.json({
+                    agp: respo || false
+                });
+            })
     })
 })
 
@@ -578,20 +574,19 @@ app.post("/agp", (req, res) => {
         if (!["0", "1"].includes(req.body.value)) return res.json({
             error: errors["invalidBoolean"]
         })
-        client.rdb.get(response.guild.id).update({
-            antighostping: req.body.value == "0" ? false : true
-        }).run().then(dbHandler(res, () => {
-            res.json({
-                newValue: req.body.value == "0" ? false : true
-            })
-        }))
+        response.db.set("antighostping", req.body.value == "0" ? false : true)
+            .then(dbHandler(res, () => {
+                res.json({
+                    newValue: req.body.value == "0" ? false : true
+                })
+            }))
     }, true)
 })
 
 // Pop Message
 app.get("/popmessage", (req, res) => {
     CHECK(res, (response) => {
-        client.rdb.get(response.guild.id).run()
+        response.db.getAll()
             .then(result => {
                 res.json({
                     msg: result.msg,
@@ -603,10 +598,10 @@ app.get("/popmessage", (req, res) => {
 
 app.get("/popmessage/msg", (req, res) => {
     CHECK(res, (response) => {
-        client.rdb.get(response.guild.id).run()
-            .then(result => {
+        response.db.get("msg")
+            .then(result=>{
                 res.json({
-                    msg: result.msg
+                    msg: result
                 })
             })
     })
@@ -614,10 +609,10 @@ app.get("/popmessage/msg", (req, res) => {
 
 app.get("/popmessage/time", (req, res) => {
     CHECK(res, (response) => {
-        client.rdb.get(response.guild.id).run()
-            .then(result => {
+        response.db.get("pop_delete")
+            .then(result=>{
                 res.json({
-                    time: result.time
+                    msg: result
                 })
             })
     })
@@ -625,9 +620,8 @@ app.get("/popmessage/time", (req, res) => {
 
 app.post("/popmessage/msg", (req, res) => {
     CHECK(res, (response) => {
-        client.rdb.get(response.guild.id).update({
-            msg: String(req.body.value)
-        }).run().then(dbHandler(res, () => {
+        response.db.set("msg", String(req.body.value))
+        .then(dbHandler(res, () => {
             res.json({
                 newValue: String(req.body.value)
             })
@@ -637,9 +631,8 @@ app.post("/popmessage/msg", (req, res) => {
 
 app.delete("/popmessage/msg", (req, res) => {
     CHECK(res, (response) => {
-        client.rdb.get(response.guild.id).update({
-            msg: false
-        }).run().then(dbHandler(res, () => {
+        response.db.set("msg", false)
+        .then(dbHandler(res, () => {
             res.json({
                 newValue: false
             })
@@ -649,9 +642,8 @@ app.delete("/popmessage/msg", (req, res) => {
 
 app.patch("/popmessage/msg", (req, res) => {
     CHECK(res, (response) => {
-        client.rdb.get(response.guild.id).update({
-            msg: null
-        }).run().then(dbHandler(res, () => {
+        response.db.set("msg", null)
+        .then(dbHandler(res, () => {
             res.json({
                 newValue: null
             })
@@ -664,9 +656,8 @@ app.post("/popmessage/time", (req, res) => {
         if (isNaN(req.body.value)) return res.json({
             error: errors["notANumber"]
         });
-        client.rdb.get(response.guild.id).update({
-            pop_delete: Number(req.body.value)
-        }).run().then(dbHandler(res, () => {
+        response.db.set("pop_delete", Number(req.body.value))
+        .then(dbHandler(res, () => {
             res.json({
                 newValue: Number(req.body.value)
             })
@@ -684,10 +675,11 @@ app.post("/popmessage", (req, res) => {
         if (time !== null && isNaN(time)) return res.json({
             error: errors["notANumber"]
         });
-        client.rdb.get(response.guild.id).update({
+        response.db.update({
             msg: !msg || msg === true ? msg : String(msg),
             pop_delete: time === null ? null : Number(time)
-        }).run().then(dbHandler(res, () => {
+        })
+        .then(dbHandler(res, () => {
             res.json({
                 newValue: {
                     msg: msg === false ? false : String(msg),
@@ -700,10 +692,10 @@ app.post("/popmessage", (req, res) => {
 
 app.delete("/popmessage", (req, res) => {
     CHECK(res, (response) => {
-        client.rdb.get(response.guild.id).update({
+        response.db.update({
             msg: null,
             pop_delete: 3000
-        }).run().then(dbHandler(res, () => {
+        }).then(dbHandler(res, () => {
             res.json({
                 newValue: {
                     msg: null,
@@ -760,8 +752,8 @@ app.get("/admin/guild/:id", (req, res) => {
                 }
             });
 
-            getStuff(`this.guilds.get("${req.params.id}")`, async (Guild, Shard) => {
-                let data = await client.rdb.get(Guild.id).run();
+            getStuff(`this.guilds.get("${req.params.id}")`, async(Guild, Shard) => {
+                let data = await client.rdb.getAll(Guild.id);
                 res.json({
                     info: {
                         name: Guild.name,

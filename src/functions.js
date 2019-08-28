@@ -186,7 +186,7 @@ module.exports = (client) => {
         var grave2 = "\`";
         if(ifGrave[1] == false) grave2 = ""
         console.log(grave1, grave2)
-        var LOG = await client.q_log(msg.guild);
+        var LOG = await msg.guild.db().get("log")
         if(!LOG) return client.sendErr(msg, "You need to set a log channel before changing settings! (" + client.config.prefix + "setlog)")
         let newEmbed = client.u.embed
             .setTitle(`Setting Was Changed!`)

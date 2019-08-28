@@ -12,8 +12,8 @@ exports.run = async(client, message, args) => {
     if (message.guild.id !== "399688888739692552") {
         return message.reply('!!! The ticket feature is not longer supported outside of the support server, please do ' + client.config.prefix + 'support and run your tickets there, thanks!')
     }
-    var banUser = await client.ticketerdb.get(message.author.id).run();
-    if (banUser ? banUser.banned : false) {
+    var banUser = await client.ticketerdb.get(message.author.id, "banned");
+    if (banUser || false) {
         let banno = await message.reply("Hello! We are sorry to inform you but you have been banned from using this feature! This was most likely caused by you abusing the command, if you would like to appeal or find out exactly why you were banned feel free to do " + client.config.prefix + "support and talk to the owner, Sorry! -" + client.config.name + " Support Team")
         setTimeout(() => {
             banno.delete()
@@ -67,12 +67,11 @@ exports.run = async(client, message, args) => {
                 .addField("Word", content)
             );
 
-            client.ticketdb.insert({
-                id: ticid,
+            client.ticketdb.create(ticid, {
                 author: message.author.id,
                 ticmsg: ticmsg.id,
                 word: content
-            }).run();
+            });
             console.log("Ticket was sent!")
             let ticconfirm = new Discord.MessageEmbed()
                 .setTitle("Ticket Submitted!")

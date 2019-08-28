@@ -1,7 +1,7 @@
 module.exports = async (client, oldMessage, newMessage) => {
     if (oldMessage.guild && oldMessage.guild.id == "264445053596991498") return;
     if (oldMessage.channel.nsfw) return;
-    var data = await client.rdb.get(oldMessage.guild.id).run();
+    var data = await client.rdb.getAll(oldMessage.guild.id);
     if (data.role && newMessage.member.roles.has(data.role)) return;
 
     var response = client.filter.test(newMessage.content, data.censor.emsg, data.filter, data.uncensor);

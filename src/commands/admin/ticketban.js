@@ -14,7 +14,7 @@ exports.run = async (client,message,args) => {
     }
     var user = client.users.get(arg1);
     client.msg("ticketBanned", `${message.author} banned user (${user})${user ? user.username : "Could not access username"} from the ticket command for ${reason}`)
-    client.ticketerdb.get(arg1).update({banned: true, reason: reason, when: new Date()}).run();
+    client.ticketerdb.update(arg1, {banned: true, reason: reason, when: new Date()});
 }
 exports.info = {
     name: 'ticketban',

@@ -71,3 +71,7 @@ const init = async () => {
 }
 init()
 client.login(client.config.token)
+
+let guildDB = require(mappings.assets.guildDB);
+
+Discord.Guild.prototype.db = function() { return new guildDB(this, client.rdb) }

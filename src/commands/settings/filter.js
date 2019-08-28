@@ -1,5 +1,5 @@
 const emojis = require("emoji-unicode-map");
-exports.run = async(client, message, args) => {
+exports.run = async(client, message, args,db) => {
     const fs = require('fs')
     const Discord = require('discord.js')
     let arg1 = args[0]
@@ -15,7 +15,7 @@ exports.run = async(client, message, args) => {
             .setFooter("The filter command is used to add, remove, and see custom censor words to be added to the server!\nThis only affect your server! No one elses and cannot change the hard locked filter!")
         )
     }
-    let filter = (await client.rdb.get(message.guild.id).run()).filter
+    let filter = await db.get("filter");
     if (arg1 == "add") {
         if (!arg2) {
             message.reply("Add a word to the filter! Format: +filter add `word`")
@@ -44,7 +44,7 @@ exports.run = async(client, message, args) => {
                 var res = await client.sendSettings(message, ["Filter", "Added", arg2.toLowerCase()], ["Successfully added the word! Do +filter list to see your filter!", "Filter edited by " + message.author.username])
                 if (res == 200) {
                     filter.push(arg2.toLowerCase());
-                    client.rdb.get(message.guild.id).update({ 'filter': filter }).run();
+                    db.set("filter", filter);
                 }
                 else return console.log("Error: " + res)
             }
@@ -65,7 +65,7 @@ exports.run = async(client, message, args) => {
                 if (res == 200) {
                     filter[filter.indexOf(arg2.toLowerCase())] = undefined;
                     filter = filter.filter(x => x);
-                    client.rdb.get(message.guild.id).update({ 'filter': filter }).run();
+                    db.set("filter", filter);
                 }
                 else return console.log("Error: " + res);
             }
@@ -79,7 +79,7 @@ exports.run = async(client, message, args) => {
         else {
             var res = await client.sendSettings(message, ["Filter", "Cleared", `${filter.length} words -> 0 words`], ["Successfully removed all words from the filter!", "Filter edited by " + message.author.username])
             if (res == 200) {
-                let r = client.rdb.get(message.guild.id).update({ 'filter': [] }).run();
+                db.set("filter", []);
             }
             else return console.log("Error: " + res);
         }

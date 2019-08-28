@@ -5,7 +5,7 @@ module.exports = async (client, reaction, user) => {
 
     let member = message.guild.members.get(user.id) || await message.guild.members.fetch(user.id);
 
-    var data = await client.rdb.get(message.guild.id).run();
+    var data = await client.rdb.getAll(message.guild.id);
     if (data.role && member.roles.has(data.role)) return;
 
     var response = client.filter.test(reaction.emoji.name, data.censor.react, data.filter, data.uncensor);

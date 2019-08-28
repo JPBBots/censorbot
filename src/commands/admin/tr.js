@@ -28,7 +28,7 @@ exports.run = async (client, message, args) => {
     const author = message.mentions.users.first() || message.author;
     arg2.forEach(async arg2 => {
         let ticketid = arg2
-        let ticketfile = await client.ticketdb.get(ticketid).run();
+        let ticketfile = await client.ticketdb.getAll(ticketid);
         let ticketsender = client.users.get(ticketfile.author);
         let wordgo = ticketfile.word
         var y = ""
@@ -47,19 +47,16 @@ exports.run = async (client, message, args) => {
             }
         }
         if (arg1 == "no") {
-            var ticketUser = await client.ticketerdb.get(ticketfile.author).run();
+            var ticketUser = await client.ticketerdb.getAll(ticketfile.author);
             if (!ticketUser) {
-                await client.ticketerdb.insert({
-                    id: ticketfile.author,
+                await client.ticketerdb.create(ticketfile.author, {
                     banned: false,
                     no: 0
-                }).run();
-                ticketUser = await client.ticketerdb.get(ticketfile.author).run();
+                })
+                ticketUser = await client.ticketerdb.getAll(ticketfile.author);
             }
             var warning = ticketUser.no + 1;
-            client.ticketerdb.get(ticketfile.author).update({
-                no: warning
-            }).run();
+            client.ticketerdb.set(ticketfile.author, "no", warning);
             if (warning > 2) {
                 message.reply('This user has ' + warning + ' warnings. Ban suggested. (' + ticketfile.author + ')')
             }
@@ -93,7 +90,7 @@ exports.run = async (client, message, args) => {
         }
         const ticmsg = await client.channels.get("509886529729200128").messages.fetch(ticketfile['ticmsg'])
         ticmsg.delete()
-        client.ticketdb.get(ticketid).delete().run();
+        client.ticketdb.delete(ticketid)
         client.msg("ticketLog", `(${ticketid}) ${author} responded \`${arg1}\` to (${ticketsender})${ticketsender ? ticketsender.username : "inaccessible"}'s ${y} ticket of the word; ${wordgo}`)
     })
 }

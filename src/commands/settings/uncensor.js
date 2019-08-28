@@ -1,4 +1,4 @@
-exports.run = async(client, message, args) => {
+exports.run = async(client, message, args, db) => {
     const fs = require('fs')
     const Discord = require('discord.js')
     let arg1 = args[0]
@@ -11,7 +11,7 @@ exports.run = async(client, message, args) => {
             .setFooter("The uncensor command is used to add, remove, and see custom uncensor words to be added to the server!\nThis only affect your server! No one elses and cannot change the hard locked filter!")
         message.channel.send(o)
     }
-    let filter = (await client.rdb.get(message.guild.id).run()).uncensor;
+    let filter = await db.get("uncensor");
     if (arg1 == "add") {
         if (!arg2) {
             message.reply("Add a word to the uncensor list! Format: +uncensor add `word`")
@@ -31,7 +31,7 @@ exports.run = async(client, message, args) => {
                 var res = await client.sendSettings(message, ["Uncensor List", "Added", arg2.toLowerCase()], ["Successfully added the word! Do +uncensor list to see your uncensor list!", "Uncensor list edited by " + message.author.username])
                 if (res == 200) {
                     filter.push(arg2.toLowerCase());
-                    let r = await client.rdb.get(message.guild.id).update({ 'uncensor': filter }).run();
+                    let r = await db.set("uncensor", filter)
                 }
                 else return console.log("Error: " + res)
             }
@@ -51,7 +51,7 @@ exports.run = async(client, message, args) => {
                 if (res == 200) {
                     filter[filter.indexOf(arg2.toLowerCase())] = undefined;
                     filter = filter.filter(x => x);
-                    let r = await client.rdb.get(message.guild.id).update({ 'uncensor': filter }).run();
+                    let r = await db.set("uncensor", filter)
                 }
                 else return console.log("Error: " + res)
             }
@@ -65,7 +65,7 @@ exports.run = async(client, message, args) => {
         else {
             var res = await client.sendSettings(message, ["Uncensor List", "Cleared", `${filter.length} words -> 0 words`], ["Successfully removed all words from the uncensor list!", "Uncensor list edited by " + message.author.username])
             if (res == 200) {
-                let r = client.rdb.get(message.guild.id).update({ 'uncensor': [] }).run()
+                    let r = await db.set("uncensor", [])
             }
             else return console.log("Error: " + res);
         }

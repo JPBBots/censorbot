@@ -6,10 +6,10 @@ var convert = {
     react: "Reactions"
 }
 
-exports.run = async (client,message,args) => {
+exports.run = async (client,message,args, db) => {
     message.delete()
     // return message.reply("This command is currently being reworked. Please wait!")
-    let logc = await client.q_log(message.guild)
+    let logc = await db.get("log");
     if(!logc) {
         client.sendErr(message, "Error, please set a log channel before toggling the filter! (" + client.config.prefix + "setlog)")
         return;
@@ -33,7 +33,7 @@ exports.run = async (client,message,args) => {
     }
     args[0] = args[0].toLowerCase();
 
-    let k = (await client.rdb.get(message.guild.id).run()).censor;
+    let k = await db.get("censor")
     
     if(!Object.keys(convert).includes(args[0]))
         return client.sendErr(message, `Error, invalid filter to toggle, please choose from ${Object.keys(convert).join(", ")}`);
@@ -56,7 +56,7 @@ exports.run = async (client,message,args) => {
 
     var res = await client.sendSettings(message, [`Filter Toggle (${convert[args[0]]} Filter)`, "ON", "OFF"],[`Successfully toggled the ${convert[args[0]]} Filter off!`, "Filter Toggled by " + message.author.username])
         if(res == 200) {
-            client.rdb.get(message.guild.id).update({censor: obj}).run();
+            db.set("censor", obj);
                 console.log(`Shard ${client.shard.id} | Turned off Filter for ${message.guild.name}`.grey)
         } else return console.log("Error: " + res);
 }

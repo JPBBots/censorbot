@@ -1,10 +1,10 @@
-exports.run = async (client,message,args) => {
+exports.run = async (client,message,args,db) => {
     message.delete()
     let arg1 = args[0]
     if(!arg1) {
         return client.sendErr(message, 'Correct format: +msgtime `new time in seconds` OR +msgtime `none` to disable deleting.')
     }
-    var popt = (await client.rdb.get(message.guild.id).run())["pop_delete"]
+    var popt = await db.get("pop_delete");
     var s1 = "s";
     if(popt instanceof Number) {
         if(popt/1000 == 1) s1 = ""
@@ -12,7 +12,7 @@ exports.run = async (client,message,args) => {
     } else popt = "none";
     if(arg1 == "none") {
         var res = await client.sendSettings(message, ["Message Pop Time", popt, "none"], ['Successfully set new pop message time to `none`','Command ran by ' + message.author.username]);
-        if(res == 200) return client.rdb.get(message.guild.id).update({'pop_delete': null}).run()
+        if(res == 200) return db.set("pop_delete", null);
         else return console.log("Error: " + res);
     }
     let v = Number(arg1)
@@ -22,7 +22,7 @@ exports.run = async (client,message,args) => {
     var s = "s"
     if(v == 1) s = "";
     var res = await client.sendSettings(message, ["Message Pop Time", popt, `${v} second${s}`], ['Successfully set new pop message time to ' + v.toString() + ' seconds!','Command ran by ' + message.author.username])
-        if(res == 200) return client.rdb.get(message.guild.id).update({'pop_delete':v*1000})
+        if(res == 200) return db.set("pop_delete", v*1000);
         else return console.log("Error: " + res); 
 }
 exports.info = {

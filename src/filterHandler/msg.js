@@ -24,10 +24,10 @@ module.exports = async (client, message) => {
             //arg.push(a.replace(/(_|\.)/g, " "))
         })
     }
-    var data = await client.rdb.get(message.guild.id).run();
+    var data = await client.rdb.getAll(message.guild.id)
     if(!data) {
         var newConfig = new client.config.serverConfig(message.guild.id);
-        client.rdb.insert(newConfig).run();
+        client.rdb.create(message.guild.id, newConfig)
         data = newConfig;
     }
     if (data.role && message.member.roles.has(data.role)) return;

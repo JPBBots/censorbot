@@ -8,7 +8,7 @@ exports.run = async (client,message,args) => {
         client.sendErr(message, "User could not be DM'd (still unbanned)")
     }
     client.msg("ticketBanned", `${message.author} unbanned user (${client.users.get(arg1)})${client.users.get(arg1).username} from the ticket command.`)
-    client.ticketerdb.get(arg1).update({banned: false, reason: undefined, when: undefined}).run();
+    client.ticketerdb.update(arg1, {banned: false, reason: undefined, when: undefined});
 }
 exports.info = {
     name: 'ticketunban',

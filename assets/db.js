@@ -1,4 +1,5 @@
 const rethink = require("rethinkdbdash");
+const dbi = require("./dbi.js");
 
 class jdb {
     constructor() {
@@ -12,15 +13,15 @@ class jdb {
     }
 
     get data() {
-        return this.db.table("data");
+        return new dbi(this.db.table("data"));
     }
 
     get ticketer() {
-        return this.db.table("ticketer");
+        return new dbi(this.db.table("ticketer"));
     }
 
     get punish() {
-        return this.db.table("punishments");
+        return new dbi(this.db.table("punishments"));
     }
 
     get config() {
@@ -28,7 +29,7 @@ class jdb {
     }
 
     get ticket() {
-        return this.db.table("tickets");
+        return new dbi(this.db.table("tickets"));
     }
 
     applyToObject(obj) {

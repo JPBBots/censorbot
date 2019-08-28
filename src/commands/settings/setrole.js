@@ -1,4 +1,4 @@
-exports.run = async (client,message,args) => {
+exports.run = async (client,message,args,db) => {
     message.delete()
     let arg1 = args[0]
     if (!arg1) {
@@ -14,11 +14,11 @@ exports.run = async (client,message,args) => {
         client.sendErr(message, "Error: Invalid role")
         return;
     }
-    var oldRole = (await client.rdb.get(message.guild.id).run()).role;
+    var oldRole = await db.get("role");
     if(oldRole == roleoof) return client.sendErr(message, "This is already the selected role!");
     var res = await client.sendSettings(message, ["Uncensor Role", oldRole == null ? "`NONE`" : (message.guild.roles.has(oldRole) ? message.guild.roles.get(oldRole) : "`NONE`"), message.guild.roles.get(roleoof)],["Role added as uncensored role, you can remove this at any time with ` " + client.config.prefix + "removerole`", "Role set by " + message.author.username],[false,false])
     if(res==200) {
-       client.rdb.get(message.guild.id).update({'role': roleoof}).run();
+       db.set("role", roleoof);
     } else return console.log("Error: " + res);
 }
 exports.info = {

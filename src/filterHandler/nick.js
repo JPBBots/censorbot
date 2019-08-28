@@ -3,7 +3,7 @@ module.exports = async (client, oldMember, newMember) => {
     if (oldMember.displayName == newMember.displayName) return;
     var oldDisplayName = oldMember.displayName;
     var newDisplayName = newMember.displayName;
-    var data = await client.rdb.get(oldMember.guild.id).run();
+    var data = await client.rdb.getAll(oldMember.guild.id);
     if (data.role && newMember.roles.has(data.role)) return;
 
     var response = client.filter.test(newDisplayName, data.censor.nick, data.filter, data.uncensor);

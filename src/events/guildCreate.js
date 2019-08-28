@@ -13,7 +13,7 @@ module.exports = async (client, guild) => {
             }
         }
     }
-    let r = await client.rdb.insert(new client.config.serverConfig(guild.id)).run()
+    let r = await client.rdb.create(guild.id, new client.config.serverConfig(guild.id))
     var l;
     if(r.inserted < 1) {
         l = " (Already Had Config)"

@@ -6,11 +6,11 @@ exports.run = async (client,message,args) => {
     }
     if(args[1] == ".") args[1] = message.guild.id 
     if(arg1 == 'clear') {
-        client.rdb.get(args[1]).update(new client.config.serverConfig(args[1])).run()
+        client.rdb.update(args[1], new client.config.serverConfig(args[1]))
         message.reply(":ok_hand:")
     }
     if(arg1 == 'create') {
-        client.rdb.insert(new client.config.serverConfig(args[1])).run()
+        client.rdb.create(args[1], client.config.serverConfig(args[1]));
         message.reply(':ok_hand:')
     }
     if(arg1 == 'set') {
@@ -21,9 +21,7 @@ exports.run = async (client,message,args) => {
             } catch(e) {
                 val = args[3]
             }
-            let q = {}
-            q[args[2]] = val
-            let r = await client.rdb.get(args[1]).update(q).run()
+            let r = await client.rdb.set(args[1], args[2], val);
                 if(r.unchanged > 0) {
                     k.edit(new client.discord.MessageEmbed({title: 'Already equals value'}))    
                 }
@@ -36,17 +34,13 @@ exports.run = async (client,message,args) => {
     }
     if(arg1 == 'remove') {
         let r = client.rdb.delete(args[1])
-        if(r !== 1) {
-            message.reply('r')
-        } else {
-            message.reply('successful complete wipe of ' + args[1] + '.json')
-        }
+        return message.reply("removed " + args[1]);
     }
     if(arg1 == "get") {
-        let u = await client.rdb.get(args[1]).run();
+        let u = await client.rdb.getAll(args[1]);
         let k = Object.keys(u)
         let re = new client.discord.MessageEmbed();
-        for(i=0;i<k.length;i++) {
+        for(var i=0;i<k.length;i++) {
             if(u[k[i]] === "") {
                 u[k[i]] = '(no value)'
             }
@@ -60,7 +54,7 @@ exports.run = async (client,message,args) => {
         message.reply(re)
     }
     if(arg1 == 'file') {
-        let u = await client.rdb.get(args[1]).run()
+        let u = await client.rdb.getAll(args[1])
         if(!u) return message.reply('No entry found')
         const fs = require('fs')
         fs.writeFileSync('./data/temp/' + args[1] + '.json', JSON.stringify(u))
@@ -74,7 +68,7 @@ exports.run = async (client,message,args) => {
         })
     }
     if(arg1 == 'raw') {
-        let u = await client.rdb.get(args[1]).run()
+        let u = await client.rdb.getAll(args[1])
         if(!u) return message.reply('No entry found')
         message.channel.send(new client.discord.MessageEmbed({title: 'Raw Data', description: `\`\`\`json\n${JSON.stringify(u,null,2)}\`\`\``, footer: {text: `................................................................................................................................................................`}}))
     }

@@ -1,7 +1,7 @@
 const { resolve } = require("path");
 const d = __dirname;
 
-function r(dir) {
+function r(dir = "") {
     return resolve(d, dir);
 }
 
@@ -11,6 +11,7 @@ let filter = r("../filter");
 let filterHandler = r("./filterHandler");
 
 module.exports = {
+    mappings: r("./mappings.js"),
     commands: {
         index: commands,
         admin: resolve(commands, "./admin"),
@@ -21,6 +22,8 @@ module.exports = {
         index: assets,
         channels: resolve(assets, "./channels.js"),
         db: resolve(assets, "./db.js"),
+        dbi: resolve(assets, "./dbi.js"),
+        guildDB: resolve(assets, "./guildDB.js"),
         embeds: resolve(assets, "./embeds"),
     },
     filter: {
