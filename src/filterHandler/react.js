@@ -7,9 +7,10 @@ module.exports = async (client, reaction, user) => {
 
     var data = await client.rdb.getAll(message.guild.id);
     if (data.role && member.roles.has(data.role)) return;
+    if(!data.censor.react) return;
 
-    var response = client.filter.test(reaction.emoji.name, data.censor.react, data.filter, data.uncensor);
-    if (response.censor.react) {
+    var response = client.filter.test(reaction.emoji.name, data.base, data.filter, data.uncensor);
+    if (response.censor) {
         var msg = message;
         var error;
         try {
@@ -24,7 +25,7 @@ module.exports = async (client, reaction, user) => {
         log.send(client.embeds.log([reaction.emoji.name, reaction.emoji.url || ""], reaction.message, response.method, 3, error));
         if (data.punish) {
             console.log("punish");
-            var guildc = await client.punishdb.get(message.guild.id).run();
+            var guildc = await client.punishdb.getAll(message.guild.id);
             if (!guildc || !guildc.amount) return;
             var role = message.guild.roles.get(guildc.role);
             if (!role) return;
@@ -41,7 +42,7 @@ module.exports = async (client, reaction, user) => {
                     .setFooter("This system is heavily WIP!")
                 log.send(embed);
             }
-            client.punishdb.replace(guildc).run();
+            client.punishdb.update(msg.guild.id, guildc);
         }
     }
 

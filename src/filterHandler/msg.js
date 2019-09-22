@@ -1,20 +1,16 @@
 module.exports = async (client, message) => {
     if (message.guild && message.guild.id == "264445053596991498") return;
-    if (message.content.toLowerCase().split(' ')[0] == client.config.prefix + "ticket") {
-        message.delete();
-        return;
+    var prefix = message.content.startsWith(client.config.prefix) ? client.config.prefix
+    : message.content.startsWith("<@")
+    if(message.guild.id == "264445053596991498" && message.content.startsWith(client.config.prefix)) return;
+    if(message.content.startsWith(client.config.prefix)) prefix = client.config.prefix
+    else if(message.content.startsWith("<@")) {
+        if(message.content.startsWith("<@!")) prefix = `<@!${client.user.id}> `;
+        else prefix = `<@${client.user.id}> `;
     }
-    if (message.content.toLowerCase().split(' ')[0] == client.config.prefix + "filter") {
-        message.delete();
-        return;
-    }
-    if (message.content.toLowerCase().split(' ')[0] == client.config.prefix + "f") {
-        message.delete();
-        return;
-    }
-    if (message.content.toLowerCase().split(' ')[0] == client.config.prefix + "uncensor") {
-        message.delete();
-        return;
+    if(prefix) { const args = message.content.slice(prefix.length).split(' ');
+        const command = args.shift().toLowerCase();
+        if(client.config.delc.includes(command)) return message.delete().catch(()=>{})
     }
     if (message.channel.nsfw) return;
     let attachments = message.attachments.map(x => x.name)
@@ -31,8 +27,10 @@ module.exports = async (client, message) => {
         data = newConfig;
     }
     if (data.role && message.member.roles.has(data.role)) return;
+    if (data.channels && data.channels.includes(message.channel.id)) return;
+    if(!data.censor.msg) return;
 
-    var response = client.filter.test(message.content, data.censor.msg, data.filter, data.uncensor);
+    var response = client.filter.test(message.content, data.base, data.filter, data.uncensor);
 
     if (response.censor) {
         var msg = message;
@@ -81,7 +79,7 @@ module.exports = async (client, message) => {
             log.send(client.embeds.log([msg.content], msg, response.method, 0, error, response));
             if (data.punish) {
                 console.log("punish");
-                var guildc = await client.punishdb.get(msg.guild.id).run();
+                var guildc = await client.punishdb.getAll(msg.guild.id);
                 if (!guildc || !guildc.amount) return;
                 var role = msg.guild.roles.get(guildc.role);
                 if (!role) return;
@@ -98,21 +96,10 @@ module.exports = async (client, message) => {
                         .setFooter("This system is heavily WIP!")
                     log.send(embed);
                 }
-                client.punishdb.replace(guildc).run();
+                client.punishdb.replace(msg.guild.id, guildc);
             }
             if(data.webhook) {
-                var cc = msg.content.split(" ");
-                for(var z = 0; z < cc.length; z++) {
-                    var s = false;
-                    response.arg.forEach(arg=>{
-                        if(s) return;
-                        if(cc[z].match(arg)) {
-                            cc[z] = `||${cc[z]}||`;
-                            s = true;
-                        }
-                    })
-                }
-                var content = cc.join(" ").replace(/\`\`\`/gi, "");
+                var content = "Contains curse: \n" + "||" + message.content.replace(/\`\`\`/gi, "").replace(/\|/g, "") + "||"
                 client.u.sendAsWebhook(msg.author, msg.channel, content);
             }
         }

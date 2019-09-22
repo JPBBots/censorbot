@@ -2,7 +2,7 @@ exports.run = async (client,message,args) => {
     message.delete()
     const Discord = require('discord.js')
     let helpstring = ""
-    let cmds = client.commands.map(x=>x.info.name).sort().map(x=>client.commands.get(x).info)
+    let cmds = client.commands.filter(x=>!(x.info.setting && !["settings", "setlog"].includes(x.info.name))).map(x=>x.info.name).sort().map(x=>client.commands.get(x).info)
     for(var i=0;i<cmds.length; i++) {
         if(cmds[i].admin) continue;
         helpstring += `__${client.config.prefix}${cmds[i].name}__: ${cmds[i].description.replace('{name}', client.config.name).replace('{prefix}', client.config.prefix)}\n`

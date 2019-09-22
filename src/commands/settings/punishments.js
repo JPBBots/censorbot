@@ -39,28 +39,27 @@ exports.run = async (client, message, args, db) => {
         if (amount < 1) {
             return client.sendErr(message, "Amount must be more than 0");
         }
-        var cur = await client.punishdb.get(message.guild.id).run();
+        var cur = await client.punishdb.getAll(message.guild.id);
         var current = "";
         if (!cur) current = "None";
         else current = `Amount: ${cur.amount} | Role: ${message.guild.roles.get(cur.role)}`;
         var res = await client.sendSettings(message, ["Punishments", current, `Amount: ${amount} | Role ${message.mentions.roles.first()}`], [`Set new punishment data to ${amount} | @${message.mentions.roles.first().name}`, "Punishments set by " + message.author.tag], [false, false], )
         if (res == 200) {
             db.set("punish", true)
-            if (!cur) client.punishdb.insert({
-                id: message.guild.id,
+            if (!cur) client.punishdb.create(message.guild.id, {
                 amount: amount,
                 role: message.mentions.roles.first().id,
                 users: {
                     "placeholder": true
                 }
-            }).run();
+            });
             else client.punishdb.update(message.guild.id, {
                 amount: amount,
                 role: message.mentions.roles.first().id,
                 users: {
                     "placeholder": true
                 }
-            }).run();
+            })
             return;
         }
     } else if (type == "toggle") {

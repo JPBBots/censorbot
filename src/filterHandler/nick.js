@@ -5,15 +5,15 @@ module.exports = async (client, oldMember, newMember) => {
     var newDisplayName = newMember.displayName;
     var data = await client.rdb.getAll(oldMember.guild.id);
     if (data.role && newMember.roles.has(data.role)) return;
-
-    var response = client.filter.test(newDisplayName, data.censor.nick, data.filter, data.uncensor);
+    if(!data.censor.nick) return;
+    var response = client.filter.test(newDisplayName, data.base, data.filter, data.uncensor);
 
     if (response.censor) {
         var error;
         try {
             await newMember.setNickname("");
         } catch (err) {
-            console.log(`Shard ${client.shard.id} | ${oldMember.guild.name} ${oldMember.guild.id} ${error.message}`.red)
+            console.log(`Shard ${client.shard.id} | ${oldMember.guild.name} ${oldMember.guild.id} ${err.message}`.red)
             error = "Error! Missing permission to manage messages!";
         }
         console.log(`Shard ${client.shard.id} | Changed innapropriate nickname of ${newMember.user} ${newMember.user.username}: `.yellow + `${newDisplayName}`.yellow.underline)
@@ -26,7 +26,7 @@ module.exports = async (client, oldMember, newMember) => {
         log.send(client.embeds.log([oldDisplayName, newDisplayName], oldMember, response.method, 2, error, response));
         if (data.punish) {
             console.log("punish");
-            var guildc = await client.punishdb.get(oldMember.guild.id).run();
+            var guildc = await client.punishdb.getAll(oldMember.guild.id);
             if (!guildc || !guildc.amount) return;
             var role = oldMember.guild.roles.get(guildc.role);
             if (!role) return;
@@ -43,7 +43,7 @@ module.exports = async (client, oldMember, newMember) => {
                     .setFooter("This system is heavily WIP!")
                 log.send(embed);
             }
-            client.punishdb.replace(guildc).run();
+            client.punishdb.update(oldMember.guild.id, guildc);
         }
     }
 }

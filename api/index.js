@@ -187,6 +187,12 @@ var errors = {
         message: "Missing Message or Time",
         debug: "While attempting to set, missing msg or time in value",
         when: 12
+    },
+    timeToHigh: {
+        code: 422,
+        message: "Time is too high < 120 seconds",
+        debug: "Time is too high, mut be below 120 seconds",
+        when: 13
     }
 }
 
@@ -656,6 +662,7 @@ app.post("/popmessage/time", (req, res) => {
         if (isNaN(req.body.value)) return res.json({
             error: errors["notANumber"]
         });
+        if(Number(req.body.value) > 120*1000) return res.json({error: errors["timeToHigh"]})
         response.db.set("pop_delete", Number(req.body.value))
         .then(dbHandler(res, () => {
             res.json({
@@ -675,6 +682,7 @@ app.post("/popmessage", (req, res) => {
         if (time !== null && isNaN(time)) return res.json({
             error: errors["notANumber"]
         });
+        if(Number(time) > 120*1000) return res.json({error: errors["timeToHigh"]})
         response.db.update({
             msg: !msg || msg === true ? msg : String(msg),
             pop_delete: time === null ? null : Number(time)

@@ -13,15 +13,15 @@ class jdb {
     }
 
     get data() {
-        return new dbi(this.db.table("data"));
+        return new dbi(this.db.table("data"), this.db);
     }
 
     get ticketer() {
-        return new dbi(this.db.table("ticketer"));
+        return new dbi(this.db.table("ticketer"), this.db);
     }
 
     get punish() {
-        return new dbi(this.db.table("punishments"));
+        return new dbi(this.db.table("punishments"), this.db);
     }
 
     get config() {
@@ -29,7 +29,23 @@ class jdb {
     }
 
     get ticket() {
-        return new dbi(this.db.table("tickets"));
+        return new dbi(this.db.table("tickets"), this.db);
+    }
+    
+    get premium() {
+        return new dbi(this.db.table("premium"), this.db)
+    }
+
+    get voter() {
+         return new dbi(this.db.table("voters"), this.db)
+    }
+    
+    get premiumuser() {
+        return new dbi(this.db.table("premiumusers"), this.db);
+    }
+    
+    get rawdb() {
+        return this.db;
     }
 
     applyToObject(obj) {
@@ -37,6 +53,10 @@ class jdb {
         obj.ticketerdb = this.ticketer;
         obj.punishdb = this.punish;
         obj.ticketdb = this.ticket;
+        obj.pdb = this.premium;
+        obj.vdb = this.voter;
+        obj.pudb = this.premiumuser;
+        obj.rawdb = this.rawdb;
     };
 }
 

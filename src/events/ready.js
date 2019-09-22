@@ -1,3 +1,5 @@
+const { Collection } = require("discord.js");
+
 module.exports = async (client) => {
     const ipc = require("node-ipc")
     ipc.config.id = "cbShard"+client.shard.id;

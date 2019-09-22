@@ -60,6 +60,7 @@ module.exports = async (client, message) => {
         if(!res.includes(true) && message.author.id !== "536004227470721055") return message.reply(`You don't have permission to run that command!`);
     }
     if(v.info.setting && !message.member.hasPermission("MANAGE_MESSAGES")) return client.sendErr(message, "You need `Manage Messages` permission to edit this servers settings!");
+    if(v.info.setting && !["settings", "setlog", "punishments"].includes(v.info.name)) return message.reply("These commands are now fully deprecated, please use the NEW `+settings` command!").then(x=>x.delete({timeout: 10000}))
     v.run(client,message,args,message.guild.db());
     // require('../modules/commands/helpcmds.js')(client, command, args, message)
     // require('../modules/commands/admincmds.js')(client, command, args, message)

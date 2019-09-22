@@ -3,8 +3,9 @@ module.exports = async (client, oldMessage, newMessage) => {
     if (oldMessage.channel.nsfw) return;
     var data = await client.rdb.getAll(oldMessage.guild.id);
     if (data.role && newMessage.member.roles.has(data.role)) return;
+    if(!data.censor.emsg) return;
 
-    var response = client.filter.test(newMessage.content, data.censor.emsg, data.filter, data.uncensor);
+    var response = client.filter.test(newMessage.content, data.base, data.filter, data.uncensor);
 
     if (response.censor) {
         var msg = newMessage;
@@ -53,7 +54,7 @@ module.exports = async (client, oldMessage, newMessage) => {
             log.send(client.embeds.log([oldMessage.content, newMessage.content], msg, response.method, 1, error, response));
             if (data.punish) {
                 console.log("punish");
-                var guildc = await client.punishdb.get(msg.guild.id).run();
+                var guildc = await client.punishdb.getAll(msg.guild.id);
                 if (!guildc || !guildc.amount) return;
                 var role = msg.guild.roles.get(guildc.role);
                 if (!role) return;
@@ -70,7 +71,11 @@ module.exports = async (client, oldMessage, newMessage) => {
                         .setFooter("This system is heavily WIP!")
                     log.send(embed);
                 }
-                client.punishdb.replace(guildc).run();
+                client.punishdb.update(msg.guild.id, guildc);
+            }
+            if(data.webhook) {
+                var content = "Contains curse: \n" + "||" + newMessage.content.replace(/\`\`\`/gi, "") + "||"
+                client.u.sendAsWebhook(msg.author, msg.channel, content);
             }
         }
     }

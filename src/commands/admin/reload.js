@@ -32,8 +32,12 @@ exports.run = async (client,message,args) => {
         client.shard.broadcastEval("this.reloadUtils()");
         return message.reply(":ok_hand:")
     }
+    if(arg1 == "dbi") {
+        client.shard.broadcastEval(`delete require.cache[require.resolve(this.mappings.assets.dbi)]`);
+        arg1 = "db";
+    }
     if(arg1 == "db") {
-        client.shard.broadcastEval("this.reloadKDB()");
+        client.shard.broadcastEval("delete require.cache[require.resolve(this.mappings.assets.db)]; require(this.mappings.assets.db).applyToObject(this)");
         return message.reply(":ok_hand:")
     }
     if(arg1 == "class") {

@@ -24,8 +24,8 @@ exports.run = async (client,message,args) => {
             },
             "fields": [
                 {
-                    "name": ":chart_with_downwards_trend: Memory Usage",
-                    "value": (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2) + " MB",
+                    "name": ":chart_with_downwards_trend: Memory Usage (This Shard)",
+                    "value": (await client.shard.broadcastEval("(process.memoryUsage().heapUsed) / 1024 / 1024")).reduce((a = 0,b)=>a+b,0).toFixed(2) + " MB",
                     "inline": true
                 },
                 {
@@ -65,7 +65,7 @@ exports.run = async (client,message,args) => {
                 },
                 {
                     "name": ":wastebasket: Messages Deleted",
-                    "value": Number(require('fs').readFileSync('./num', "utf-8")).toLocaleString(),
+                    "value": (await client.vdb.get("1", "amount")).toLocaleString(),
                     "inline": true
                 }   
             ]

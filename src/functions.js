@@ -110,8 +110,8 @@ module.exports = (client) => {
     }
     //Reload config
     client.reloadConfig = () => {
-        delete require.cache[require.resolve(`../config.js`)];
-        client.config = require('../config.js')(client);
+        delete require.cache[require.resolve(client.mappings.config)];
+        client.config = require(client.mappings.config);
         return;
     }
     //Reload filter

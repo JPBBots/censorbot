@@ -108,12 +108,12 @@ module.exports = class JPBFilter {
             }
         }
         init();
-        if(res.censor) this.addNum();
+        if(res.censor && this.client) this.addNum();
         return res;
     }
     removeAccents(str) {
-        var accents = "$ÀÁÂÃÄÅĄĀāàáâãäåąßβÒÓÔÕÕÖØŐòóôőõöøĎďDŽdžÈÉÊËĘèéêëęðÇçČčĆćÐÌÍÎÏĪìíîïīÙÚÛÜŰùűúûüĽĹŁľĺłÑŇŃňñńŔŕŠŚŞšśşŤťŸÝÿýŽŻŹžżźđĢĞģğµ§ṈṉΑΒΝΗΕΙΤƎ△ıскР¡"
-        var accentsOut = "sAAAAAAAAaaaaaaaabbOOOOOOOOoooooooDdDZdzEEEEEeeeeeeCcCcCcDIIIIIiiiiiUUUUUuuuuuLLLlllNNNnnnRrSSSsssTtYYyyZZZzzzdGGggusNnABNHEITeaickpi";
+        var accents = "$ÀÁÂÃÄÅĄĀāàáâãäåąßβÒÓÔÕÕÖØŐòóôőõöøĎďDŽdžÈÉÊËĘèéêëęðÇçČčĆćÐÌÍÎÏĪìíîïīÙÚÛÜŰùűúûüĽĹŁľĺłÑŇŃňñńŔŕŠŚŞšśşŤťŸÝÿýŽŻŹžżźđĢĞģğµ§ṈṉΑΒΝΗΕΙΤƎ△ıскР¡0İĩį"
+        var accentsOut = "sAAAAAAAAaaaaaaaabbOOOOOOOOoooooooDdDZdzEEEEEeeeeeeCcCcCcDIIIIIiiiiiUUUUUuuuuuLLLlllNNNnnnRrSSSsssTtYYyyZZZzzzdGGggusNnABNHEITeaickpioiii";
         str = str.split('');
         var strLen = str.length;
         var i, x;
@@ -261,9 +261,6 @@ module.exports = class JPBFilter {
         return arr;
     }
     addNum() {
-        var n = require("path").resolve(__dirname, "../num")
-        var num = Number(require("fs").readFileSync(n, "utf-8"));
-        num++;
-        require("fs").writeFileSync(n, String(num))
+       this.client.vdb.add("1", "amount", 1)
     }
 }

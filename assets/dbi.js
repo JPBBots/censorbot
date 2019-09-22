@@ -1,8 +1,9 @@
 //db interface
 
 module.exports = class jdbi {
-    constructor(table) {
+    constructor(table, r) {
         this.db = table;
+        this.r = r;
     }
     async getAll(place) {
         if(!place) {
@@ -23,7 +24,11 @@ module.exports = class jdbi {
         obj[row] = value;
         return await this.update(place, obj);
     }
-    
+    async add(place, row, amount) {
+        let obj = {};
+        obj[row] = this.r.row(row).add(amount);
+        return await this.db.get(place).update(obj).run()
+    }
     async delete(place) {
         return await this.db.get(place).delete().run()
     }
@@ -31,5 +36,9 @@ module.exports = class jdbi {
     async create(place, obj) {
         obj.id = place;
         return await this.db.insert(obj).run()
+    }
+    
+    async replace(place, obj) {
+        return await this.db.get(place).replace(obj).run();
     }
 }

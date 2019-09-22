@@ -27,6 +27,7 @@ exports.run = async (client,message,args) => {
                 .addField("Name", `${gu.name} | ${gu.id}`)
                 .addField("Owner", `${owner} (${owner.tag} | ${owner.id})`)
                 .addField("Member Count", `${gu.memberCount}`)
+                .addField("Shard", `${shard}`)
         )
     }
 }

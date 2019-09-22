@@ -1,14 +1,13 @@
 exports.run = async (client, message, args) => {
     client.shard.fetchClientValues(`ws.reconnecting`)
         .then(result=>{
-            var out = false;
-            for(var i=0; i<result.length;i++) {
-                if(result[i] === true) {
-                    message.reply(`Shard ${i} out`);
-                    out = true;
-                }
-            }
-            if(!out) return message.reply("No shards out");
+            
+            var str = "Shard test\n"
+            Object.keys(result).forEach(x=>{
+                str+=`Shard ${x} | ${result[x] ? "DISCONNECTED" : "CONNECTED"}\n`
+            })
+            
+            message.reply(str, {code: true})
         })
 }
 exports.info = {
