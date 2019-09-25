@@ -11,7 +11,8 @@ client.mappings = mappings;
 
 client.config = require(mappings.config)
 client.msg = require(mappings.assets.channels);
-require(mappings.assets.db).applyToObject(client);
+let db = require(mappings.assets.db);
+db.init().then(_=>{ db.applyToObject(client) })
 client.filterfile = require(mappings.filter.filter)
 client.jpbfilter = require(mappings.filter.class);
 client.embeds = require(mappings.assets.embeds)

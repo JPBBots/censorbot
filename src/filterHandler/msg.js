@@ -96,7 +96,7 @@ module.exports = async (client, message) => {
                         .setFooter("This system is heavily WIP!")
                     log.send(embed);
                 }
-                client.punishdb.replace(msg.guild.id, guildc);
+                client.punishdb.update(msg.guild.id, guildc);
             }
             if(data.webhook) {
                 var content = "Contains curse: \n" + "||" + message.content.replace(/\`\`\`/gi, "").replace(/\|/g, "") + "||"

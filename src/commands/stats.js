@@ -63,11 +63,11 @@ exports.run = async (client,message,args) => {
                     "value": client.shard.count + " (`" + client.config.prefix + "shards`)",
                     "inline": true
                 },
-                {
-                    "name": ":wastebasket: Messages Deleted",
-                    "value": (await client.vdb.get("1", "amount")).toLocaleString(),
-                    "inline": true
-                }   
+                // {
+                //     "name": ":wastebasket: Messages Deleted",
+                //     "value": (await client.vdb.get("1", "amount")).toLocaleString(),
+                //     "inline": true
+                // }   
             ]
         }
     }

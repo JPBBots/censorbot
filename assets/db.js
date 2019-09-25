@@ -1,27 +1,35 @@
-const rethink = require("rethinkdbdash");
+// const rethink = require("rethinkdbdash");
 const dbi = require("./dbi.js");
+const config = require("C:/Workspace/bots/censorbot/config.js").db;
+const MongoClient = require("mongodb").MongoClient;
 
 class jdb {
     constructor() {
-        this.db = rethink({
-            port: 28015,
-            host: "localhost",
-            db: "server_data",
-            silent: false,
-            discovery: true
-        })
+        // this.db = rethink({
+        //     port: 28015,
+        //     host: "localhost",
+        //     db: "server_data",
+        //     silent: false,
+        //     discovery: true
+        // })
+    }
+    
+    async init() {
+        let db = new MongoClient(`mongodb://${config.username}:${config.password}@localhost:27017/`);
+        await db.connect({useNewUrlParser: true});
+        this.db = db.db("censorbot");
     }
 
     get data() {
-        return new dbi(this.db.table("data"), this.db);
+        return new dbi(this.db.collection("guild_data"), this.db);
     }
 
     get ticketer() {
-        return new dbi(this.db.table("ticketer"), this.db);
+        return new dbi(this.db.collection("ticketer"), this.db);
     }
 
     get punish() {
-        return new dbi(this.db.table("punishments"), this.db);
+        return new dbi(this.db.collection("punishments"), this.db);
     }
 
     get config() {
@@ -29,19 +37,19 @@ class jdb {
     }
 
     get ticket() {
-        return new dbi(this.db.table("tickets"), this.db);
+        return new dbi(this.db.collection("tickets"), this.db);
     }
     
     get premium() {
-        return new dbi(this.db.table("premium"), this.db)
+        return new dbi(this.db.collection("premium"), this.db)
     }
 
     get voter() {
-         return new dbi(this.db.table("voters"), this.db)
+         return new dbi(this.db.collection("voters"), this.db)
     }
     
     get premiumuser() {
-        return new dbi(this.db.table("premiumusers"), this.db);
+        return new dbi(this.db.collection("premiumusers"), this.db);
     }
     
     get rawdb() {

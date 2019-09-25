@@ -5,7 +5,9 @@ const flake = require("simpleflake");
 const client = {}
 const guildDB = require("../assets/guildDB.js");
 client.config = require("../config.js");
-require("../assets/db.js").applyToObject(client);
+let db = require("../assets/db.js")
+
+db.init().then(x=> db.applyToObject(client) );
 
 
 var fetch = require('node-fetch');

@@ -261,6 +261,6 @@ module.exports = class JPBFilter {
         return arr;
     }
     addNum() {
-       this.client.vdb.add("1", "amount", 1)
+    //   this.client.vdb.add("1", "amount", 1)
     }
 }
