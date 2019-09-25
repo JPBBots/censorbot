@@ -37,11 +37,16 @@ module.exports = class jdbi {
         obj[row] = value;
         return await this.update(place, obj);
     }
-    // async add(place, row, amount) {
-    //     let obj = {};
-    //     obj[row] = this.r.row(row).add(amount);
-    //     return await this.db.get(place).update(obj).run()
-    // }
+    async add(place, row, amount) {
+        var obj = {};
+        obj[row] = amount;
+        return await this.db.updateOne(
+            {id: place},
+            {
+                $inc: obj
+            }
+        )
+    }
     async delete(place) {
         return await this.db.deleteOne({id: place});
     }
