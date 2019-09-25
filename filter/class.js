@@ -9,7 +9,7 @@ module.exports = class JPBFilter {
         this.client = client;
         this.replaceSpots = {
             spaces: /(\_|\/|\\|\.|\n|\&|\-|\+|\=|\:|\~|\,)/gi,
-            nothing: /(\"|\*|\'|\||\`|\<|\>|\@|\#|\!|\(|\)|\[|\]|\{|\}|\;|\%)/gi
+            nothing: /(\"|\*|\'|\||\`|\<|\>|\#|\!|\(|\)|\[|\]|\{|\}|\;|\%)/gi
         }
         this.emoji_lookup = {
             "🇦": "a",
@@ -112,8 +112,8 @@ module.exports = class JPBFilter {
         return res;
     }
     removeAccents(str) {
-        var accents = "$ÀÁÂÃÄÅĄĀāàáâãäåąßβÒÓÔÕÕÖØŐòóôőõöøĎďDŽdžÈÉÊËĘèéêëęðÇçČčĆćÐÌÍÎÏĪìíîïīÙÚÛÜŰùűúûüĽĹŁľĺłÑŇŃňñńŔŕŠŚŞšśşŤťŸÝÿýŽŻŹžżźđĢĞģğµ§ṈṉΑΒΝΗΕΙΤƎ△ıскР¡0İĩį"
-        var accentsOut = "sAAAAAAAAaaaaaaaabbOOOOOOOOoooooooDdDZdzEEEEEeeeeeeCcCcCcDIIIIIiiiiiUUUUUuuuuuLLLlllNNNnnnRrSSSsssTtYYyyZZZzzzdGGggusNnABNHEITeaickpioiii";
+        var accents = "$ÀÁÂÃÄÅĄĀāàáâãäåąßβÒÓÔÕÕÖØŐòóôőõöøĎďDŽdžÈÉÊËĘèéêëęðÇçČčĆćÐÌÍÎÏĪìíîïīÙÚÛÜŰùűúûüĽĹŁľĺłÑŇŃňñńŔŕŠŚŞšśşŤťŸÝÿýŽŻŹžżźđĢĞģğµ§ṈṉΑΒΝΗΕΙΤƎ△ıскР¡0İĩį@"
+        var accentsOut = "sAAAAAAAAaaaaaaaabbOOOOOOOOoooooooDdDZdzEEEEEeeeeeeCcCcCcDIIIIIiiiiiUUUUUuuuuuLLLlllNNNnnnRrSSSsssTtYYyyZZZzzzdGGggusNnABNHEITeaickpioiiia";
         str = str.split('');
         var strLen = str.length;
         var i, x;
