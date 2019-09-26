@@ -48,7 +48,7 @@ module.exports = class jdbi {
         )
     }
     async delete(place) {
-        return await this.db.deleteOne({id: place});
+        return await this.db.deleteOne({id: place})
     }
     
     async create(place, obj) {

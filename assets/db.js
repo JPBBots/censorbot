@@ -49,7 +49,7 @@ class jdb {
     }
     
     get premiumuser() {
-        return new dbi(this.db.collection("premiumusers"), this.db);
+        return new dbi(this.db.collection("premium_users"), this.db);
     }
     
     get rawdb() {

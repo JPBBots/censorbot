@@ -349,7 +349,7 @@ app.post("/inserver", async(req, res) => {
 
 function dbHandler(res, cb) {
     return function(response) {
-        if (!response || (!response.replaced && !response.inserted && !response.deleted)) return res.json({
+        if (!response || response.n < 1) return res.json({
             error: errors["databaseError"]
         });
         cb();

@@ -33,11 +33,11 @@ exports.run = async (client,message,args) => {
         return message.reply(":ok_hand:")
     }
     if(arg1 == "dbi") {
-        client.shard.broadcastEval(`delete require.cache[require.resolve(this.mappings.assets.dbi)]`);
+        await client.shard.broadcastEval(`delete require.cache[require.resolve(this.mappings.assets.dbi)]`);
         arg1 = "db";
     }
     if(arg1 == "db") {
-        client.shard.broadcastEval("delete require.cache[require.resolve(this.mappings.assets.db)]; require(this.mappings.assets.db).applyToObject(this)");
+        client.shard.broadcastEval("delete require.cache[require.resolve(this.mappings.assets.db)]; var db = require(this.mappings.assets.db); db.init().then(_=>db.applyToObject(this))");
         return message.reply(":ok_hand:")
     }
     if(arg1 == "class") {
