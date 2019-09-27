@@ -5,8 +5,6 @@ exports.run = async (client,message,args) => {
         msg.delete()
     }, 6000);
     message.author.send(client.config.support)
-    console.log(`Shard ${client.shard.id} | ${message.author} ${message.author.username} Requested Support...`)
-    client.msg("log", `${message.author} ${message.author.username} Requested Support...`)
 }
 exports.info = {
     name: 'support',

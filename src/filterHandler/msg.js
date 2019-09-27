@@ -68,7 +68,7 @@ module.exports = async (client, message) => {
             if (msg.attachments.map(x => x.name).length > 0 && msg.content == 0) {
                 content = "File: " + msg.attachments.map(x => x.name)[0]
             }
-            client.msg("log", `Shard ${client.shard.id} | Deleted message from ${msg.author.tag} ${msg.author.username}: | Server: ${msg.guild.name} ${msg.guild.id} | Channel: ${msg.channel.name} ${msg.channel.id}`, client.embeds.adminLog(content, msg.author, {
+            client.webhooks.log.send(`Shard ${client.shard.id} | Deleted message from ${msg.author.tag} ${msg.author.username}: | Server: ${msg.guild.name} ${msg.guild.id} | Channel: ${msg.channel.name} ${msg.channel.id}`, client.embeds.adminLog(content, msg.author, {
                 arg: response.arg,
                 word: response.word
             }))

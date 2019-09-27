@@ -6,5 +6,12 @@ module.exports = async (client, message) => {
         user = message.channel
     }
     if (message.channel.recipient.id == "142408079177285632") return;
-    client.msg("DMs", `At ${message.createdAt} ${message.author} DM'd ${user}: ${message.content}`)
+    client.webhooks.dms.send(
+        client.u.embed
+            .setTitle("DM")
+            .setDescription(message.content)
+            .addField("From", `${message.author} ${message.author.tag}`, true)
+            .addField("To", `${user} ${user.tag}`, true)
+            .setTimestamp(message.createdAt)
+    );
 }

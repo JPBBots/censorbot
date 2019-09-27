@@ -10,6 +10,7 @@ const mappings = require("./mappings.js");
 client.mappings = mappings;
 
 client.config = require(mappings.config)
+client.webhooks = require(mappings.assets.webhooks)(client);
 client.msg = require(mappings.assets.channels);
 let db = require(mappings.assets.db);
 db.init().then(_=>{ db.applyToObject(client) })

@@ -21,7 +21,6 @@ exports.run = async (client,message,args) => {
             helpmsg.delete()
         }, 5000);
     }, 25000);
-    client.msg("log", `${message.author} ${message.author.username} Requested Help...`)
 }
 exports.info = {
     name: 'help',

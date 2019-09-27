@@ -5,8 +5,6 @@ exports.run = async (client,message,args) => {
         msg.delete()
     }, 6000);
     message.author.send(client.config.github)
-    console.log(`Shard ${client.shard.id} | ${message.author} ${message.author.username} Requested GitHub...`)
-    client.msg("log", `${message.author} ${message.author.username} Requested GitHub...`)
 }
 exports.info = {
     name: 'github',
