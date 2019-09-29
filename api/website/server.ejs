@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="<%= base %>/style.css">
+    </head>
+    <body>
+        <h1><%= data.name %></h1>
+        <div>
+            <div>
+                <h3>Base Filter</h3>
+                <input type="checkbox" id="base" <%= data.db.base ? "checked" : "" %>>
+            </div>
+            <div>
+                <h3>Log Channel</h3>
+                    <select id="log">
+                        <% data.c.forEach(channel=>{ %>
+                            <option value="<%= channel.id %>">#<%=channel.name%></option>
+                        <% }) %>
+                    </select>
+            </div>
+            <div>
+                <h3>Uncensor Role</h3>
+                    <select id="role">
+                        <option value="null">None</option>
+                        <% data.r.forEach(role=>{ %>
+                            <option value="<%= role.id %>">@<%=role.name%></option>
+                        <% }) %>
+                    </select>
+            </div>
+            <div>
+                <h3>Censor Methods</h3>
+                    <h5>Messages</h5><input type="checkbox" id="censor-msg" <%= data.db.censor.msg ? "checked" : "" %>>
+                    <h5>Edited Messages</h5><input type="checkbox" id="censor-emsg" <%= data.db.censor.emsg ? "checked" : "" %>>
+                    <h5>Nicknames</h5><input type="checkbox" id="censor-nick" <%= data.db.censor.nick ? "checked" : "" %>>
+                    <h5>Reactions</h5><input type="checkbox" id="censor-react" <%= data.db.censor.react ? "checked" : "" %>>
+            </div>
+        </div>
+        <script>
+            document.getElementById("log").value = "<%= data.db.log %>"
+            document.getElementById("role").value = "<%= data.db.role || "null"%>"
+        </script>
+    </body>
+</html>

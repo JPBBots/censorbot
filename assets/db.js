@@ -1,4 +1,5 @@
 // const rethink = require("rethinkdbdash");
+delete require.cache[require.resolve("./dbi.js")];
 const dbi = require("./dbi.js");
 const config = require("C:/Workspace/bots/censorbot/config.js").db;
 const MongoClient = require("mongodb").MongoClient;
@@ -52,6 +53,10 @@ class jdb {
         return new dbi(this.db.collection("premium_users"), this.db);
     }
     
+    get dash() {
+        return new dbi(this.db.collection("dashboard_users"), this.db);
+    }
+    
     get rawdb() {
         return this.db;
     }
@@ -65,6 +70,7 @@ class jdb {
         obj.vdb = this.voter;
         obj.pudb = this.premiumuser;
         obj.rawdb = this.rawdb;
+        obj.dashdb = this.dash;
     };
 }
 

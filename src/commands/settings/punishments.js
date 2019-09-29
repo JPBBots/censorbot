@@ -39,92 +39,78 @@ exports.run = async (client, message, args, db) => {
         if (amount < 1) {
             return client.sendErr(message, "Amount must be more than 0");
         }
-        var cur = await client.punishdb.getAll(message.guild.id);
+        var cur = await db.get("punishment");
         var current = "";
         if (!cur) current = "None";
         else current = `Amount: ${cur.amount} | Role: ${message.guild.roles.get(cur.role)}`;
         var res = await client.sendSettings(message, ["Punishments", current, `Amount: ${amount} | Role ${message.mentions.roles.first()}`], [`Set new punishment data to ${amount} | @${message.mentions.roles.first().name}`, "Punishments set by " + message.author.tag], [false, false], )
         if (res == 200) {
-            db.set("punish", true)
-            if (!cur) client.punishdb.create(message.guild.id, {
+            db.set("punishment", {
+                on: true,
                 amount: amount,
-                role: message.mentions.roles.first().id,
-                users: {
-                    "placeholder": true
-                }
-            });
-            else client.punishdb.update(message.guild.id, {
-                amount: amount,
-                role: message.mentions.roles.first().id,
-                users: {
-                    "placeholder": true
-                }
+                role: message.mentions.roles.first().id
             })
             return;
         }
     } else if (type == "toggle") {
-        var cur = await db.get("punish");
-        var newT = cur.swap();
-        if (newT == true) {
-            var pc = await client.punishdb.getAll(message.guild.id)
-            if (!pc || !pc.role || !pc.amount) {
-                return client.sendErr(message, "Cannot toggle on without already being set. Try " + client.config.prefix + "punishments set");
-            }
-        }
+        var cur = (await db.get("punishment"));
+        var newT = cur.on.swap();
+        if(cur.role.length < 2) return client.sendErr(message, "Cannot toggle without already being set, try " + client.config.prefix + "punishments set");
         var res = await client.sendSettings(message, ["Punishment Toggle", cur, newT], [`Toggled Punishments ${newT ? "ON" : "OFF"}`, "Punishments toggled by " + message.author.tag]);
         if (res == 200) {
-            db.set("punish", newT)
+            db.set("punishment.on", newT)
         }
     } else if (type == "current") {
-        var cur = await client.punishdb.getAll(message.guild.id)
-        if (!cur) return client.sendErr(message, "There is no set data! Try " + client.config.prefix + "punishments set");
+        var cur = await db.get("punishment");
+        if (!cur.on) return client.sendErr(message, "There is no set data! Try " + client.config.prefix + "punishments set");
         var embed = new client.discord.MessageEmbed()
             .setTitle("Current Punishment Setting")
             .addField("Amount", cur.amount, true)
             .addField("Role", message.guild.roles.get(cur.role), true);
         message.channel.send(embed);
     } else if (type == "user") {
-        var punishments = await client.punishdb.getAll(message.guild.id);
-        if(!punishments) return client.sendErr(message, "Cannot interact with users without punishments set up! Try " + client.config.prefix + "punishments set");
-        var user = args[1];
-        var etc = args[2];
-        if (!user) {
-            var embed = new client.discord.MessageEmbed()
-                .setTitle("Punishment info on user")
-                .setDescription(`Commands:\n\n...user @User: Displays user warnings.\n...user @User set <NUMBER>: Set's warnings to <NUMBER>\n...user @User reset: Resets users warnings.`)
-                .setFooter("Heavily WIP!")
-                .setColor("DARK_VIVID_PINK")
-            return message.channel.send(embed).then(client.d(7000))
-        }
-        if (!message.mentions.users.first() || !user.match(/<@.+>/g)) return client.sendErr(message, "Invalid user mention.")
-        var user = message.mentions.users.first();
-        if (!etc) {
-            var embed = new client.discord.MessageEmbed()
-                .setTitle("User punishment info")
-                .setDescription(`${user} warnings: ${punishments.users[user.id] || "none"}`)
-                .setFooter("WIP")
-                .setThumbnail(user.displayAvatarURL());
-            return message.channel.send(embed).then(client.d(4000))
-        } else if (etc == "set") {
-            var num = args[3];
-            if (!num) return client.sendErr(message, "Format: ...user @User set <NUMBER>");
-            num = Number(num);
-            if (isNaN(num)) return client.sendErr(message, "Invalid number given");
-            if(num < 1) return client.sendErr(message, "Warnings can't be 0 or under (Use ...user @User reset)");
-            if(num >= punishments.amount) return client.sendErr(message, "You can't set a users warnings more than or equal too the punish amount!");
-            var res = await client.sendSettings(message, [`${user.tag} Warnings`, punishments.users[user.id] || "none", num], [`Set ${user.tag}'s warnigns to ${num}`, "Warnings changed by " + message.author.tag]);
-                if(res == 200) {
-                    punishments.users[user.id] = num;
-                    client.punishdb.update(message.guild.id, punishments)
-                }
-        } else if (etc == "reset") {
-            if(!punishments.users[user.id]) return client.sendErr("User already doesn't have any warnings!");
-            var res = await client.sendSettings(message, [`${user.tag} Warnings`, punishments.users[user.id], "none"], [`Set ${user.tag}'s warnigns to none`, "Warnings changed by " + message.author.tag]);
-                if(res == 200) {
-                    delete punishments.users[user.id]
-                    client.punishdb.update(message.guild.id, punishments)
-                }
-        }
+        return message.reply("This part of the command is being REWRITTEN. Sorry for the inconvenience!")
+        // var punishments = await client.punishdb.getAll(message.guild.id);
+        // if(!punishments) return client.sendErr(message, "Cannot interact with users without punishments set up! Try " + client.config.prefix + "punishments set");
+        // var user = args[1];
+        // var etc = args[2];
+        // if (!user) {
+        //     var embed = new client.discord.MessageEmbed()
+        //         .setTitle("Punishment info on user")
+        //         .setDescription(`Commands:\n\n...user @User: Displays user warnings.\n...user @User set <NUMBER>: Set's warnings to <NUMBER>\n...user @User reset: Resets users warnings.`)
+        //         .setFooter("Heavily WIP!")
+        //         .setColor("DARK_VIVID_PINK")
+        //     return message.channel.send(embed).then(client.d(7000))
+        // }
+        // if (!message.mentions.users.first() || !user.match(/<@.+>/g)) return client.sendErr(message, "Invalid user mention.")
+        // var user = message.mentions.users.first();
+        // if (!etc) {
+        //     var embed = new client.discord.MessageEmbed()
+        //         .setTitle("User punishment info")
+        //         .setDescription(`${user} warnings: ${punishments.users[user.id] || "none"}`)
+        //         .setFooter("WIP")
+        //         .setThumbnail(user.displayAvatarURL());
+        //     return message.channel.send(embed).then(client.d(4000))
+        // } else if (etc == "set") {
+        //     var num = args[3];
+        //     if (!num) return client.sendErr(message, "Format: ...user @User set <NUMBER>");
+        //     num = Number(num);
+        //     if (isNaN(num)) return client.sendErr(message, "Invalid number given");
+        //     if(num < 1) return client.sendErr(message, "Warnings can't be 0 or under (Use ...user @User reset)");
+        //     if(num >= punishments.amount) return client.sendErr(message, "You can't set a users warnings more than or equal too the punish amount!");
+        //     var res = await client.sendSettings(message, [`${user.tag} Warnings`, punishments.users[user.id] || "none", num], [`Set ${user.tag}'s warnigns to ${num}`, "Warnings changed by " + message.author.tag]);
+        //         if(res == 200) {
+        //             punishments.users[user.id] = num;
+        //             client.punishdb.update(message.guild.id, punishments)
+        //         }
+        // } else if (etc == "reset") {
+        //     if(!punishments.users[user.id]) return client.sendErr("User already doesn't have any warnings!");
+        //     var res = await client.sendSettings(message, [`${user.tag} Warnings`, punishments.users[user.id], "none"], [`Set ${user.tag}'s warnigns to none`, "Warnings changed by " + message.author.tag]);
+        //         if(res == 200) {
+        //             delete punishments.users[user.id]
+        //             client.punishdb.update(message.guild.id, punishments)
+        //         }
+        // }
     } else {
         return client.sendErr(message, "Invalid type `" + type + "`");
     }

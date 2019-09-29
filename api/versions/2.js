@@ -4,12 +4,9 @@ const express = require("express");
 var app = express.Router();
 const Discord = require('discord.js')
 const flake = require("simpleflake");
-const client = {}
+const client = global.db;
 const guildDB = require(mappings.assets.guildDB);
 client.config = require(mappings.config);
-let db = require(mappings.assets.db)
-
-db.init().then(x=> db.applyToObject(client) );
 
 function checkShard(guildID, shardamount) {
 	guildID = String(guildID);

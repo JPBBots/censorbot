@@ -592,7 +592,7 @@ const settings = {
                     message: `Toggled normal message filter ${a ? "on" : "off"}`
                 }
             }, (embed) => {
-                db.set("censor", { msg: a })
+                db.set("censor.msg", a)
             })
         },
         emsg: async(message, arg, db, client) => {
@@ -611,7 +611,7 @@ const settings = {
                     message: `Toggled edited message filter ${a ? "on" : "off"}`
                 }
             }, (embed) => {
-                db.set("censor", { emsg: a })
+                db.set("censor.emsg", a)
             })
         },
         nick: async(message, arg, db, client) => {
@@ -630,7 +630,7 @@ const settings = {
                     message: `Toggled nickname filter ${a ? "on" : "off"}`
                 }
             }, (embed) => {
-                db.set("censor", { nick: a })
+                db.set("censor.nick", a)
             })
         },
         react: async(message, arg, db, client) => {
@@ -649,7 +649,7 @@ const settings = {
                     message: `Toggled reaction filter ${a ? "on" : "off"}`
                 }
             }, (embed) => {
-                db.set("censor", { react: a })
+                db.set("censor.react", a)
             })
         }
     },

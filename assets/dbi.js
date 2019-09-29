@@ -23,6 +23,9 @@ module.exports = class jdbi {
     async get(place, row) {
         return (await this.getAll(place))[row];
     }
+    async find(query) {
+        return (await psmw(this.db.find(query || {})))[0];
+    }
     
     async update(place, obj) {
         return await this.db.updateOne(
@@ -41,14 +44,14 @@ module.exports = class jdbi {
         var obj = {};
         obj[row] = amount;
         return await this.db.updateOne(
-            {id: place},
+            typeof place == "object" ? place : {id: place},
             {
                 $inc: obj
             }
         )
     }
     async delete(place) {
-        return await this.db.deleteOne({id: place})
+        return await this.db.deleteOne(typeof place == "object" ? place : {id: place})
     }
     
     async create(place, obj) {

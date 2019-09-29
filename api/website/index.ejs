@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head></head>
+
+<body>
+    <h1>
+        <div>
+            <ul>
+                <% guilds.forEach(x=> {%>
+                    <li class="guild" value="<%=x.i%>">
+                        <a href="<%=base%>/<%=x.i%>">
+                            <%=x.n%>
+                        </a>
+                    </li>
+                <% }) %>
+            </ul>
+        </div>
+    </h1>
+    <script>
+        var token = "<%= token %>"
+        document.querySelectorAll(".guild").forEach(function(guild) {
+            guild.setAttribute("href", `./${guild.getAttribute("value")}`)
+        })
+    </script>
+</body>
+
+</html>

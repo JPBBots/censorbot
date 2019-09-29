@@ -87,26 +87,24 @@ module.exports = async (client, message) => {
                 return client.sendErr(msg, "Error no log channel found! Do +setlog in the desired log channel")
             }
             log.send(client.embeds.log([msg.content], msg, response.method, 0, error, response));
-            if (data.punish) {
+            if (data.punishment.on) {
                 console.log("punish");
-                var guildc = await client.punishdb.getAll(msg.guild.id);
-                if (!guildc || !guildc.amount) return;
-                var role = msg.guild.roles.get(guildc.role);
+                var role = msg.guild.roles.get(data.punishment.role);
                 if (!role) return;
-                if (!guildc.users[msg.author.id]) guildc.users[msg.author.id] = 1;
-                else guildc.users[msg.author.id]++;
-                if (guildc.users[msg.author.id] >= guildc.amount) {
+                var user = await client.punishdb.find({u: msg.author.id, g: msg.guild.id});
+                if(!user) return client.punishdb.create(null, {u: msg.author.id, g: msg.guild.id, a: 1});
+                if (user.a + 1 >= data.punishment.amount) {
                     msg.member.roles.add(role);
-                    delete guildc.users[msg.author.id];
-                    console.log(guildc)
+                    client.punishdb.delete({u: msg.author.id, g: msg.guild.id});
                     var embed = new client.discord.MessageEmbed()
                         .setTitle("User Punished")
-                        .setDescription(`${msg.author} Reached the max ${guildc.amount} warnings.\n\nThey have received the ${role} role as punishment!`)
+                        .setDescription(`${msg.author} Reached the max ${data.punishment.amount} warnings.\n\nThey have received the ${role} role as punishment!`)
                         .setColor("RED")
                         .setFooter("This system is heavily WIP!")
                     log.send(embed);
+                } else {
+                    client.punishdb.add({u: msg.author.id, g: msg.guild.id}, "a", 1);
                 }
-                client.punishdb.update(msg.guild.id, guildc);
             }
             if(data.webhook) {
                 var content = "Contains curse: \n" + "||" + message.content.replace(/\`\`\`/gi, "").replace(/\|/g, "") + "||"
