@@ -288,11 +288,15 @@ const settings = {
             main: "Change the amount of time it takes for the popup message to delete",
             current: async(client, db) => {
                 var cur = await db.get("pop_delete");
-                return `${cur / 1000} seconds`
+                return cur === null ? "Never" : `${cur / 1000} seconds`
             },
             set: {
                 desc: "Set's the amount of time it takes to delete the message after it's sent",
                 takes: " [Time in Seconds]"
+            },
+            never: {
+                desc: "Set's to never delete the pop message",
+                takes: ""
             },
             reset: {
                 desc: "Reset's the time to default time, (3 Seconds)",
@@ -301,6 +305,7 @@ const settings = {
         },
         able: {
             set: /^[0-9]+$/gi,
+            never: null,
             reset: null
         },
         set: async (message, arg, db, client) => {
@@ -317,7 +322,7 @@ const settings = {
             sendSettings(client, message, {
                 data: {
                     setting: settings["poptime"].desc.name,
-                    then: `${cur / 1000} seconds`,
+                    then: cur === null ? "Never" : `${cur / 1000} seconds`,
                     now: `${num} seconds`,
                 },
                 graves: {
@@ -331,12 +336,31 @@ const settings = {
                 db.set("pop_delete", num*1000);
             })
         },
+        never: async (message, arg, db, client) => {
+          var cur = await db.get("pop_delete");
+            sendSettings(client, message, {
+                data: {
+                    setting: settings["poptime"].desc.name,
+                    then: `${cur / 1000} seconds`,
+                    now: "Never",
+                },
+                graves: {
+                    then: true,
+                    now: true,
+                },
+                reply: {
+                    message: `Set pop time to never`
+                }
+            }, (embed) => {
+                db.set("pop_delete", null);
+            })
+        },
         reset: async (message, arg, db, client) => {
             var cur = await db.get("pop_delete");
             sendSettings(client, message, {
                 data: {
                     setting: settings["poptime"].desc.name,
-                    then: `${cur / 1000} seconds`,
+                    then: cur === null ? "Never" : `${cur / 1000} seconds`,
                     now: "3 seconds",
                 },
                 graves: {

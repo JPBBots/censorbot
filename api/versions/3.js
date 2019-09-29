@@ -11,6 +11,7 @@ const fetch = require("node-fetch");
 const baseURL = "https://censorbot.jt3ch.net";
 const redirectURL = "https://api.jt3ch.net/censorbot/v3/auth/callback";
 
+var bit = 0x0000008
 /*
     global RR
     global manager
@@ -126,6 +127,167 @@ app.get("/auth/callback", async (req, res) => {
 delete require.cache[require.resolve("../website/router.js")];
 var website = require("../website/router.js");
 app.use("/website", website);
+
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+global.userCache = new Map();
+global.clientRequest = (endpoint, method, body, token, cb) => {
+    fetch("https://discordapp.com/api/v6" + endpoint, {
+            method: method || "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: body ? JSON.stringify(body) : null
+        })
+        .then(x => x.json())
+        .then(res => cb(res));
+}
+
+global.getGuilds = (token) => {
+    return new Promise(res => {
+        global.clientRequest("/users/@me/guilds", "GET", null, token, (response) => {
+            if (response.code == 0) return res(false);
+            res(response.filter(x => ((x.permissions & bit) != 0 || x.owner)).map(x => { return { n: x.name, i: x.id } }));
+        })
+    })
+}
+
+global.goToLogin = (res) => { res.redirect("https://api.jt3ch.net/censorbot/v3/auth"); }
+global.getUser = async(token, res) => {
+    if (!token) { global.goToLogin(res); return false };
+    let cache = global.userCache.get(token);
+    if (cache) return cache;
+    var user = await global.db.dashdb.find({ token: token });
+    if (!user) {
+        res.clearCookie("token");
+        global.goToLogin(res);
+        return false;
+    }
+    var guilds = await global.getGuilds(user.bearer);
+    if (!guilds) {
+        global.goToLogin(res);
+        return false;
+    }
+
+    global.userCache.set(token, guilds);
+    setTimeout(() => { global.userCache.delete(token) }, 300000);
+
+    return guilds;
+}
+
+async function backendGuild(token, res) {
+    if (!token) { 
+        res.status(403);
+        res.json({error: "unauthorized"});
+    console.log("b")
+        return false;
+    };
+    console.log("c")
+    let cache = global.userCache.get(token);
+    if (cache) return cache;
+    var user = await global.db.dashdb.find({ token: token });
+    console.log("a")
+    if (!user) {
+    console.log("d")
+        res.status(403);
+        res.json({error: "unauthorized"});
+        return false;
+    }
+    var guilds = await global.getGuilds(user.bearer);
+    console.log("e")
+    if (!guilds) {
+        res.status(403);
+        res.json({error: "unauthorized"});
+        return false;
+    }
+    console.log("f")
+
+    global.userCache.set(token, guilds);
+    setTimeout(() => { global.userCache.delete(token) }, 300000);
+
+    return guilds;
+} 
+
+function checkValidity(obj, guild) {
+    if(typeof obj.base !== "boolean") return false;
+    if(typeof obj.censor.msg !== "boolean") return false;
+    if(typeof obj.censor.emsg !== "boolean") return false;
+    if(typeof obj.censor.nick !== "boolean") return false;
+    if(typeof obj.censor.react !== "boolean") return false;
+    if(typeof obj.antighostping !== "boolean") return false;
+    if(typeof obj.log !== "string" || !guild.c.some(x=>x.id === obj.log)) return false;
+    if(typeof obj.role !== "string" && obj.role !== null) return false;
+    if(!(obj.filter instanceof Array)) return false;
+    if(obj.filter.some(x=>x.match(/[^a-zA-Z0-9 ]/gi))) return false;
+    if(obj.pop_delete !== null && typeof obj.pop_delete !== "number") return false;
+    if(typeof obj.pop_delete == "number" && obj.pop_delete > 120 * 1000) return false;
+    
+    return true;
+}
+
+app.post("/guilds/:serverid/settings", async (req, res) => {
+    let guilds = await backendGuild(req.headers.authorization, res);
+    if(!guilds) return;
+    var guild = guilds.find(x=>x.i == req.params.serverid);
+    if(!guild) return res.json({error: "unauthorized"});
+    let stuff = await manager.shards.get(checkShard(req.params.serverid, config.shardCount)).eval(`
+        function getStuff(client) {
+            var guild = client.guilds.get("${guild.i}");
+            if(!guild) return false;
+            return {
+                c: guild.channels
+                    .filter(x=>!x.deleted && x.type == "text")
+                    .map(x=>{
+                        return {
+                            id: x.id, 
+                            name: x.name
+                        }
+                    }),
+                r: guild.roles
+                    .filter(x=>!x.managed && x.name != "@everyone")
+                    .map(x=>{
+                        return {
+                            id: x.id,
+                            name: x.name
+                        }
+                    })
+            }
+        }
+        getStuff(this);
+    `)
+    if(!checkValidity(req.body || {}, stuff)) return res.json({error: "invalid object"});
+    
+    var o = req.body;
+    global.db.rdb.update(req.params.serverid, {
+        base: o.base,
+        censor: {
+            msg: o.censor.msg,
+            emsg: o.censor.emsg,
+            nick: o.censor.nick,
+            react: o.censor.react,
+        },
+        log: o.log,
+        role: o.role,
+        filter: o.filter,
+        antighostping: o.antighostping,
+        pop_delete: o.pop_delete,
+        msg: o.msg
+    }) 
+    .then(x=>{
+        if(!x || x.n < 1) return res.json({error: "db error"});
+        res.json(true);
+    })
+    .catch(err=>{
+        res.json({error: err});
+    })
+})
+
 
 // app.get("*", (req,res) => {
 //     res.status(403);

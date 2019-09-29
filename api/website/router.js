@@ -45,57 +45,10 @@ function checkShard(guildID, shardamount) {
     return shard;
 }
 
-let clientRequest = (endpoint, method, body, token, cb) => {
-    fetch("https://discordapp.com/api/v6" + endpoint, {
-            method: method || "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: body ? JSON.stringify(body) : null
-        })
-        .then(x => x.json())
-        .then(res => cb(res));
-}
-var bit = 0x0000008
 
-
-function getGuilds(token) {
-    return new Promise(res => {
-        clientRequest("/users/@me/guilds", "GET", null, token, (response) => {
-            if (response.code == 0) return res(false);
-            res(response.filter(x => ((x.permissions & bit) != 0 || x.owner)).map(x => { return { n: x.name, i: x.id } }));
-        })
-    })
-}
-
-const userCache = new Map();
-
-const goToLogin = (res) => { res.redirect("https://api.jt3ch.net/censorbot/v3/auth"); }
-const getUser = async(token, res) => {
-    if (!token) { goToLogin(res); return false };
-    let cache = userCache.get(token);
-    if (cache) return cache;
-    var user = await global.db.dashdb.find({ token: token });
-    if (!token) {
-        res.clearCookie("token");
-        goToLogin(res);
-        return false;
-    }
-    var guilds = await getGuilds(user.bearer);
-    if (!guilds) {
-        goToLogin(res);
-        return false;
-    }
-
-    userCache.set(token, guilds);
-    setTimeout(() => { userCache.delete(token) }, 300000);
-
-    return guilds;
-}
 
 app.get("/", async(req, res) => {
-    let guilds = await getUser(req.cookies.token, res);
+    let guilds = await global.getUser(req.cookies.token, res);
     if (!guilds) return;
     res.render("index", { guilds: guilds, token: req.cookies.token, base: base });
 })
@@ -112,8 +65,9 @@ app.get("/reload", (req, res) => {
     res.send(":ok_hand:")
 })
 
+
 app.use("/:serverid", async(req, res, next) => {
-    var guilds = await getUser(req.cookies.token, res);
+    var guilds = await global.getUser(req.cookies.token, res);
     if (!guilds) return;
     
     let id = req.params.serverid.split(".")[0];
@@ -168,7 +122,7 @@ app.get("/:serverid", async(req, res) => {
         db: db
     };
     if(type == "json") return res.json(obj);
-    res.render("server", { data: obj, base: base });
+    res.render("server", { data: obj, base: base, token: req.cookies.token });
 })
 
 module.exports = app;
