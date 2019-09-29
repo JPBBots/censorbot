@@ -28,6 +28,11 @@ client.broken = false
 client.discord = Discord;
 // require("./modules/functions.js")(client);
 
+client.serverFilters = {};
+Object.keys(client.config.extraFilters).forEach(x=>{
+  client.serverFilters[x] = new client.jpbfilter(client, client.config.extraFilters[x], "./linkbyp.json");
+})
+
 client.commands = new Discord.Collection();
 const init = async () => {
   const evtFiles = await readdir(mappings.events);

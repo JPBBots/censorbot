@@ -65,23 +65,6 @@ app.get("/info", (req, res) => {
             })
     });
 })
-app.get("/restart", (req, res) => {
-    if (req.query.auth == config.auth) {
-        if(req.query.shard == "all") {
-            res.send(true)
-            manager.respawnAll();
-        } else if(req.query.shard == "process") {
-            res.send(true)
-            process.exit()
-        } else {
-            var shard = manager.shards.get(req.query.shard)
-            if(!shard) return res.send(false);
-            res.send(true);
-            shard.respawn();
-        }
-    }
-    else res.send(false);
-})
 
 const RR = require("express-router-reload");
 
@@ -91,12 +74,6 @@ app.use("/api", require("./api/index.js"));
 
 global.RR = reloader;
 global.manager = manager;
-
-app.get("/reload", (req, res) => {
-    if(!req.query || req.query.a != config.auth) return res.send("err");
-    reloader.reloadFromFile("/api", require("path").resolve(__dirname, "./api/index.js"));
-    res.send("success");
-})
 
 app.listen(1234, () => {
     console.log("Censorbot Informatic Started")

@@ -6,7 +6,10 @@ module.exports = async (client, oldMember, newMember) => {
     var data = await client.rdb.getAll(oldMember.guild.id);
     if (data.role && newMember.roles.has(data.role)) return;
     if(!data.censor.nick) return;
-    var response = client.filter.test(newDisplayName, data.base, data.filter, data.uncensor);
+    
+    var response;
+    if(client.serverFilters[newMember.guild.id]) response = client.serverFilters[newMember.guild.id].test(newDisplayName, true, data.filter, data.uncensor)
+    else response = client.filter.test(newDisplayName, data.base, data.filter, data.uncensor);
 
     if (response.censor) {
         var error;

@@ -5,7 +5,9 @@ module.exports = async (client, oldMessage, newMessage) => {
     if (data.role && newMessage.member.roles.has(data.role)) return;
     if(!data.censor.emsg) return;
 
-    var response = client.filter.test(newMessage.content, data.base, data.filter, data.uncensor);
+    var response;
+    if(client.serverFilters[newMessage.guild.id]) response = client.serverFilters[newMessage.guild.id].test(newMessage.content, true, data.filter, data.uncensor)
+    else response = client.filter.test(newMessage.content, data.base, data.filter, data.uncensor);
 
     if (response.censor) {
         var msg = newMessage;
@@ -16,6 +18,14 @@ module.exports = async (client, oldMessage, newMessage) => {
             console.log(`Shard ${client.shard.id} | ${msg.guild.name} ${msg.guild.id} ${error.message}`.red)
             error = "Error! Missing permission to manage messages!";
         }
+        if(newMessage.guild.id == "448194623580667916") newMessage.author.send(
+            client.u.embed
+                .setColor("RED")
+                .setTitle("Your message was deleted in Krunker Bunker")
+                .setDescription(`Please ping <@142408079177285632> if you believe this was a mistake`)
+                .addField("Message", newMessage.content)
+                .setTimestamp()
+        )
 
         if (data.msg !== false) {
             try {
@@ -31,6 +41,7 @@ module.exports = async (client, oldMessage, newMessage) => {
             } catch (err) {
                 console.error(err);
             }
+        }
             console.log(`Shard ${client.shard.id} | Deleted message from ${msg.author} ${msg.author.username}: `.yellow + `${msg.content}`.yellow.underline)
             var content = "";
             if (msg.content !== 0) {
@@ -77,6 +88,5 @@ module.exports = async (client, oldMessage, newMessage) => {
                 var content = "Contains curse: \n" + "||" + newMessage.content.replace(/\`\`\`/gi, "") + "||"
                 client.u.sendAsWebhook(msg.author, msg.channel, content);
             }
-        }
     }
 }

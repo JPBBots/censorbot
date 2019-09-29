@@ -1,3 +1,5 @@
+const fetch = require("node-fetch");
+
 module.exports = async (client, message) => {
     if(message.channel.type == 'dm') return client.emit("dm", message);
     // if(/(privatepage\.vip.+|nakedphotos\.club.+|viewc.site.+)/.exec(message.content)) {
@@ -50,16 +52,8 @@ module.exports = async (client, message) => {
         if(client.commands.map(x=>x.info.aliases).filter(x=>x).flat().includes(command)) v = client.commands.find(x=>x.info.aliases && x.info.aliases.includes(command))
         else return;
     }
-    if(v.info.admin) {
-        var res = await client.shard.broadcastEval(`
-            const guild = this.guilds.get("399688888739692552");
-            if(guild) {
-                guild.roles.get("415323805943070721").members.has("${message.author.id}")
-            }
-        `)
-        if(!res.includes(true) && message.author.id !== "536004227470721055") return message.reply(`You don't have permission to run that command!`);
-    }
-    if(v.info.setting && !message.member.hasPermission("MANAGE_MESSAGES")) return client.sendErr(message, "You need `Manage Messages` permission to edit this servers settings!");
+    if(v.info.admin && !(await client.adminRequest(message.author.id))) return message.reply(`You don't have permission to run that command!`);
+    if(v.info.setting && !message.member.hasPermission("MANAGE_MESSAGES") && !(await client.adminRequest(message.author.id))) return client.sendErr(message, "You need `Manage Messages` permission to edit this servers settings!");
     if(v.info.setting && !["settings", "setlog", "punishments"].includes(v.info.name)) return message.reply("These commands are now fully deprecated, please use the NEW `+settings` command!").then(x=>x.delete({timeout: 10000}))
     v.run(client,message,args,message.guild.db());
     // require('../modules/commands/helpcmds.js')(client, command, args, message)

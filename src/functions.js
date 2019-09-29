@@ -9,6 +9,18 @@ module.exports = (client) => {
         client.shard.id = client.options.shards[0];
         client.shard.count = client.options.shardCount;
     }
+    
+    client.adminRequest = function(id) {
+    return new Promise((r) => {
+        fetch(`http://localhost:1234/api/admin/${id || "1"}`)
+            .then(x=>x.text())
+            .then(response=>{
+                r(response == 1 ? true : false);
+            })
+        })
+    }
+
+    
     client.RemoveAccents = (str) => {
           var accents = "$ÀÁÂÃÄÅĄĀāàáâãäåąßβÒÓÔÕÕÖØŐòóôőõöøĎďDŽdžÈÉÊËĘèéêëęðÇçČčĆćÐÌÍÎÏĪìíîïīÙÚÛÜŰùűúûüĽĹŁľĺłÑŇŃňñńŔŕŠŚŞšśşŤťŸÝÿýŽŻŹžżźđĢĞģğµ§ṈṉΑΒΝΗΕΙΤƎ△ıскР¡"
           var accentsOut = "sAAAAAAAAaaaaaaaabbOOOOOOOOoooooooDdDZdzEEEEEeeeeeeCcCcCcDIIIIIiiiiiUUUUUuuuuuLLLlllNNNnnnRrSSSsssTtYYyyZZZzzzdGGggusNnABNHEITeaickpi";

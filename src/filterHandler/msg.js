@@ -29,8 +29,10 @@ module.exports = async (client, message) => {
     if (data.role && message.member.roles.has(data.role)) return;
     if (data.channels && data.channels.includes(message.channel.id)) return;
     if(!data.censor.msg) return;
-
-    var response = client.filter.test(message.content, data.base, data.filter, data.uncensor);
+    
+    var response;
+    if(client.serverFilters[message.guild.id]) response = client.serverFilters[message.guild.id].test(message.content, true, data.filter, data.uncensor)
+    else response = client.filter.test(message.content, data.base, data.filter, data.uncensor);
 
     if (response.censor) {
         var msg = message;
@@ -41,7 +43,14 @@ module.exports = async (client, message) => {
             console.log(`Shard ${client.shard.id} | ${msg.guild.name} ${msg.guild.id} ${err.message}`.red)
             error = "Error! Missing permission to manage messages!";
         }
-
+        if(message.guild.id == "448194623580667916") message.author.send(
+            client.u.embed
+                .setColor("RED")
+                .setTitle("Your message was deleted in Krunker Bunker")
+                .setDescription(`Please ping <@142408079177285632> if you believe this was a mistake`)
+                .addField("Message", message.content)
+                .setTimestamp()
+        )
         if (data.msg !== false) {
             try {
                 const popmsg = await message.reply(data.msg || client.config.defaultMsg);
@@ -56,6 +65,7 @@ module.exports = async (client, message) => {
             } catch (err) {
                 console.error(err);
             }
+        }
             console.log(`Shard ${client.shard.id} | Deleted message from ${msg.author} ${msg.author.username}: `.yellow + `${msg.content}`.yellow.underline)
             var content = "";
             if (msg.content !== 0) {
@@ -102,6 +112,5 @@ module.exports = async (client, message) => {
                 var content = "Contains curse: \n" + "||" + message.content.replace(/\`\`\`/gi, "").replace(/\|/g, "") + "||"
                 client.u.sendAsWebhook(msg.author, msg.channel, content);
             }
-        }
     }
 }
