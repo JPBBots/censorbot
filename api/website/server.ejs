@@ -116,6 +116,17 @@
                     
             </div>
             <div>
+                <h3>Punishments</h3>
+                    <h5>Toggle</h5><input type="checkbox" id="punishon" <%= data.db.punishment.on ? "checked" : "" %>>
+                    <h5>Role</h5> <select id="punishrole">
+                        <option value="null">None</option>
+                            <% data.r.forEach(role=>{ %>
+                                <option value="<%= role.id %>">@<%=role.name%></option>
+                            <% }) %>
+                    </select>
+                    <h5>Amount</h5><input type="number" min="1" placeholder="Never" id="punishamount" value="<%= data.db.punishment.amount || 0%>">
+            </div>
+            <div>
                 <h3>Anti-GhostPing</h3>
                 <input type="checkbox" id="agp" <%= data.db.antighostping ? "checked" : "" %>>
             </div>
@@ -124,6 +135,7 @@
         <script>
             document.getElementById("log").value = "<%= data.db.log %>"
             document.getElementById("role").value = "<%= data.db.role || "null"%>"
+            document.getElementById("punishrole").value = "<%= data.db.punishment.role || "null"%>"
             function buildObject() {
                 var obj = {
                     "antighostping": false,
@@ -148,11 +160,11 @@
             
                     // ],
                     // "webhook": false,
-                    // "punishment": {
-                    //     "amount": 3,
-                    //     "role": "",
-                    //     "on": false
-                    // }
+                    "punishment": {
+                        "amount": 3,
+                        "role": "",
+                        "on": false
+                    }
                 }
                 
                 obj.base     = document.getElementById("base").checked;
@@ -171,6 +183,11 @@
                 var msgtype = document.getElementById("msgtype").value;
                 if(msgtype == 3 && !document.getElementById("custommsg").value) return alert("Can't be an empty string");
                 obj.msg = msgtype == 1 ? null : msgtype == 2 ? false : document.getElementById("custommsg").value;
+                
+                obj.punishment.amount = Number(document.getElementById("punishamount").value);
+                obj.punishment.on = document.getElementById("punishon").checked || false;
+                obj.punishment.role = document.getElementById("punishrole").value;
+                if(obj.punishment.role == "null") obj.punishment.role = null;
                 
                 return obj;
             }

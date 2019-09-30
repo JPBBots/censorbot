@@ -215,18 +215,22 @@ async function backendGuild(token, res) {
 } 
 
 function checkValidity(obj, guild) {
-    if(typeof obj.base !== "boolean") return false;
-    if(typeof obj.censor.msg !== "boolean") return false;
-    if(typeof obj.censor.emsg !== "boolean") return false;
-    if(typeof obj.censor.nick !== "boolean") return false;
-    if(typeof obj.censor.react !== "boolean") return false;
-    if(typeof obj.antighostping !== "boolean") return false;
-    if(typeof obj.log !== "string" || !guild.c.some(x=>x.id === obj.log)) return false;
-    if(typeof obj.role !== "string" && obj.role !== null) return false;
-    if(!(obj.filter instanceof Array)) return false;
-    if(obj.filter.some(x=>x.match(/[^a-zA-Z0-9 ]/gi))) return false;
-    if(obj.pop_delete !== null && typeof obj.pop_delete !== "number") return false;
-    if(typeof obj.pop_delete == "number" && obj.pop_delete > 120 * 1000) return false;
+    if(typeof obj.base !== "boolean") return 1;
+    if(typeof obj.censor.msg !== "boolean") return 2;
+    if(typeof obj.censor.emsg !== "boolean") return 3;
+    if(typeof obj.censor.nick !== "boolean") return 4;
+    if(typeof obj.censor.react !== "boolean") return 5;
+    if(typeof obj.antighostping !== "boolean") return 6;
+    if(typeof obj.log !== "string" || !guild.c.some(x=>x.id === obj.log)) return 7;
+    if((typeof obj.role !== "string" && obj.role !== null) || (typeof obj.role == "string" && !guild.r.some(x=>x.id == obj.role))) return 8;
+    if(!(obj.filter instanceof Array)) return 9;
+    if(obj.filter.some(x=>x.match(/[^a-zA-Z0-9 ]/gi))) return 10;
+    if(obj.pop_delete !== null && typeof obj.pop_delete !== "number") return 11;
+    if(typeof obj.pop_delete == "number" && obj.pop_delete > 120 * 1000) return 12;
+    if(typeof obj.punishment.on !== "boolean") return 13;
+    if(typeof obj.punishment.amount !== "number" || obj.punishment.amount < 1) return 14;
+    if((typeof obj.punishment.role !== "string" && obj.punishment.role !== null) || (typeof obj.punishment.role == "string" && !guild.r.some(x=>x.id == obj.punishment.role))) return 15;
+    
     
     return true;
 }
@@ -261,7 +265,8 @@ app.post("/guilds/:serverid/settings", async (req, res) => {
         }
         getStuff(this);
     `)
-    if(!checkValidity(req.body || {}, stuff)) return res.json({error: "invalid object"});
+    var check = checkValidity(req.body || {}, stuff)
+    if(check !== true) return res.json({error: "invalid object", place: check});
     
     var o = req.body;
     global.db.rdb.update(req.params.serverid, {
@@ -277,7 +282,12 @@ app.post("/guilds/:serverid/settings", async (req, res) => {
         filter: o.filter,
         antighostping: o.antighostping,
         pop_delete: o.pop_delete,
-        msg: o.msg
+        msg: o.msg,
+        punishment: {
+            on: o.punishment.on,
+            amount: o.punishment.amount,
+            role: o.punishment.role
+        }
     }) 
     .then(x=>{
         if(!x || x.n < 1) return res.json({error: "db error"});
