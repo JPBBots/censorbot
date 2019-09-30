@@ -235,6 +235,11 @@ function checkValidity(obj, guild) {
     return true;
 }
 
+app.get("/guilds", (req, res) => {
+    if(req.query.a !== config.auth) return res.send("err");
+    res.json([...global.userCache.values()]);
+})
+
 app.post("/guilds/:serverid/settings", async (req, res) => {
     let guilds = await backendGuild(req.headers.authorization, res);
     if(!guilds) return;

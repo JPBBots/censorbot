@@ -1,0 +1,16 @@
+.setting {
+    border: beige 1px dotted;
+    width: fit-content;
+    text-align: center;
+    padding: 5px;
+    float: left;
+}
+
+.checksWrap {
+    float: left;
+}
+
+.checks {
+    border: beige 1px dotted;
+    padding: 3px;
+}

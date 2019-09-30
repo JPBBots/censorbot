@@ -33,11 +33,11 @@
     <body style="background-color: #2C2F33">
         <h1><%= data.name %></h1>
         <div>
-            <div>
+            <div class="setting">
                 <h3>Base Filter</h3>
                 <input type="checkbox" id="base" <%= data.db.base ? "checked" : "" %>>
             </div>
-            <div>
+            <div class="setting">
                 <h3>Log Channel</h3>
                     <select id="log">
                         <% data.c.forEach(channel=>{ %>
@@ -45,7 +45,7 @@
                         <% }) %>
                     </select>
             </div>
-            <div>
+            <div class="setting">
                 <h3>Uncensor Role</h3>
                     <select id="role">
                         <option value="null">None</option>
@@ -54,16 +54,20 @@
                         <% }) %>
                     </select>
             </div>
-            <div>
+            <div class="setting">
                 <h3>Censor Methods</h3>
-                    <h5>Messages</h5><input type="checkbox" id="censor-msg" <%= data.db.censor.msg ? "checked" : "" %>>
-                    <h5>Edited Messages</h5><input type="checkbox" id="censor-emsg" <%= data.db.censor.emsg ? "checked" : "" %>>
-                    <h5>Nicknames</h5><input type="checkbox" id="censor-nick" <%= data.db.censor.nick ? "checked" : "" %>>
-                    <h5>Reactions</h5><input type="checkbox" id="censor-react" <%= data.db.censor.react ? "checked" : "" %>>
+                    <div class="checksWrap">
+                        <div class="checks"><h5>Messages</h5><input type="checkbox" id="censor-msg" <%= data.db.censor.msg ? "checked" : "" %>></div>
+                        <div class="checks"><h5>Edited Messages</h5><input type="checkbox" id="censor-emsg" <%= data.db.censor.emsg ? "checked" : "" %>></div>
+                    </div>
+                    <div class="checksWrap">
+                        <div class="checks"><h5>Nicknames</h5><input type="checkbox" id="censor-nick" <%= data.db.censor.nick ? "checked" : "" %>></div>
+                        <div class="checks"><h5>Reactions</h5><input type="checkbox" id="censor-react" <%= data.db.censor.react ? "checked" : "" %>></div>
+                    </div>
             </div>
-            <div>
+            <div class="setting">
                 <h3>Filter</h3>
-                    <input id="filterin" placeholder="Add to filter"><button onclick="addToFilter()">Add</button><div />
+                    <input id="filterin" placeholder="Add to filter"><button onclick="addToFilter()">Add</button><div></div>
                     <script>
                         document.getElementById("filterin").onkeydown = function(event) {
                             if(event.keyCode == 13) addToFilter();
@@ -77,9 +81,9 @@
                     <button onclick="removeWord()">Remove</button>
                     <button onclick="clearAll()">Clear All</button>
             </div>
-            <div>
+            <div class="setting">
                 <h3>Pop message</h3>
-                <h5>Seconds until delete</h5> <input type="number" min="0" max="120" placeholder="Never" id="poptime" value="<%= data.db.pop_time / 1000%>">
+                <div class="checks"><h5>Seconds until delete</h5> <input type="number" min="0" max="120" placeholder="Never" id="poptime" value="<%= data.db.pop_time / 1000%>"></div>
                 <script>
                     document.getElementById("poptime").onchange = function() {
                         if(document.getElementById("poptime").value == 0) {
@@ -90,14 +94,14 @@
                         }
                     }
                 </script>
-                <div />
-                <h5>Message</h5> 
+                <div></div>
+                <div class="checks"><h5>Message</h5> 
                     <select id="msgtype">
                         <option value="1">Default</option>
                         <option value="2">Disabled</option>
                         <option value="3">Custom</option>
                     </select>
-                    <input type="text" id="custommsg" placeholder="Message">
+                    <input type="text" id="custommsg" placeholder="Message"></div>
                     <script>
                         document.getElementById("msgtype").value = "<%= data.db.msg === null ? "1" : data.db.msg === false ? "2" : "3" %>"
                         <% if(data.db.msg) { %>
@@ -115,18 +119,18 @@
                     </script>
                     
             </div>
-            <div>
+            <div class="setting">
                 <h3>Punishments</h3>
-                    <h5>Toggle</h5><input type="checkbox" id="punishon" <%= data.db.punishment.on ? "checked" : "" %>>
-                    <h5>Role</h5> <select id="punishrole">
+                    <div class="checks"><h5>Toggle</h5><input type="checkbox" id="punishon" <%= data.db.punishment.on ? "checked" : "" %>></div>
+                    <div class="checks"><p>Amount</p><input type="number" min="1" style="width:20%" placeholder="Never" id="punishamount" value="<%= data.db.punishment.amount || 0%>"></div>
+                    <div class="checks"><h5>Role</h5> <select id="punishrole">
                         <option value="null">None</option>
                             <% data.r.forEach(role=>{ %>
                                 <option value="<%= role.id %>">@<%=role.name%></option>
                             <% }) %>
-                    </select>
-                    <h5>Amount</h5><input type="number" min="1" placeholder="Never" id="punishamount" value="<%= data.db.punishment.amount || 0%>">
+                    </select></div>
             </div>
-            <div>
+            <div class="setting">
                 <h3>Anti-GhostPing</h3>
                 <input type="checkbox" id="agp" <%= data.db.antighostping ? "checked" : "" %>>
             </div>
