@@ -31,14 +31,14 @@
         </script>
     </head>
     <body style="background-color: #2C2F33">
-        <h1><%= data.name %></h1>
+        <h1 class="name"><%= data.name %></h1>
         <div>
             <div class="setting">
-                <h3>Base Filter</h3>
+                <h3 class="name">Base Filter</h3>
                 <input type="checkbox" id="base" <%= data.db.base ? "checked" : "" %>>
             </div>
             <div class="setting">
-                <h3>Log Channel</h3>
+                <h3 class="name">Log Channel</h3>
                     <select id="log">
                         <% data.c.forEach(channel=>{ %>
                             <option value="<%= channel.id %>">#<%=channel.name%></option>
@@ -46,7 +46,7 @@
                     </select>
             </div>
             <div class="setting">
-                <h3>Uncensor Role</h3>
+                <h3 class="name">Uncensor Role</h3>
                     <select id="role">
                         <option value="null">None</option>
                         <% data.r.forEach(role=>{ %>
@@ -55,7 +55,7 @@
                     </select>
             </div>
             <div class="setting">
-                <h3>Censor Methods</h3>
+                <h3 class="name">Censor Methods</h3>
                     <div class="checksWrap">
                         <div class="checks"><h5>Messages</h5><input type="checkbox" id="censor-msg" <%= data.db.censor.msg ? "checked" : "" %>></div>
                         <div class="checks"><h5>Edited Messages</h5><input type="checkbox" id="censor-emsg" <%= data.db.censor.emsg ? "checked" : "" %>></div>
@@ -66,7 +66,7 @@
                     </div>
             </div>
             <div class="setting">
-                <h3>Filter</h3>
+                <h3 class="name">Filter</h3>
                     <input id="filterin" placeholder="Add to filter"><button onclick="addToFilter()">Add</button><div></div>
                     <script>
                         document.getElementById("filterin").onkeydown = function(event) {
@@ -82,7 +82,7 @@
                     <button onclick="clearAll()">Clear All</button>
             </div>
             <div class="setting">
-                <h3>Pop message</h3>
+                <h3 class="name">Pop message</h3>
                 <div class="checks"><h5>Seconds until delete</h5> <input type="number" min="0" max="120" placeholder="Never" id="poptime" value="<%= data.db.pop_time / 1000%>"></div>
                 <script>
                     document.getElementById("poptime").onchange = function() {
@@ -120,7 +120,7 @@
                     
             </div>
             <div class="setting">
-                <h3>Punishments</h3>
+                <h3 class="name">Punishments</h3>
                     <div class="checks"><h5>Toggle</h5><input type="checkbox" id="punishon" <%= data.db.punishment.on ? "checked" : "" %>></div>
                     <div class="checks"><p>Amount</p><input type="number" min="1" style="width:20%" placeholder="Never" id="punishamount" value="<%= data.db.punishment.amount || 0%>"></div>
                     <div class="checks"><h5>Role</h5> <select id="punishrole">
@@ -131,7 +131,7 @@
                     </select></div>
             </div>
             <div class="setting">
-                <h3>Anti-GhostPing</h3>
+                <h3 class="name">Anti-GhostPing</h3>
                 <input type="checkbox" id="agp" <%= data.db.antighostping ? "checked" : "" %>>
             </div>
         </div>

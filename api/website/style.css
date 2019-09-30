@@ -1,5 +1,5 @@
 .setting {
-    border: beige 1px dotted;
+    border: solid beige 1px;
     width: fit-content;
     text-align: center;
     padding: 5px;
@@ -13,4 +13,9 @@
 .checks {
     border: beige 1px dotted;
     padding: 3px;
+}
+
+.name {
+    color: white;
+    font-weight: bold;
 }
