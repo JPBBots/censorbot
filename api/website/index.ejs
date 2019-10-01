@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html>
 
-<head></head>
+<head>
+    
+    <style>
+        .guild {
+            float: left;
+        }
+    </style>
+    
+</head>
 
 <body>
     <h1>
         <div>
-            <ul>
                 <% guilds.forEach(x=> {%>
-                    <li class="guild" value="<%=x.i%>">
+                    <div class="guild" value="<%=x.i%>">
                         <a href="<%=base%>/<%=x.i%>">
-                            <%=x.n%>
+                            <img src="https://cdn.discordapp.com/icons/<%= x.i%>/<%= x.a %>" alt="<%=x.n%>">
                         </a>
-                    </li>
+                    </div>
                 <% }) %>
-            </ul>
         </div>
     </h1>
     <script>

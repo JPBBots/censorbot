@@ -153,7 +153,7 @@ global.getGuilds = (token) => {
     return new Promise(res => {
         global.clientRequest("/users/@me/guilds", "GET", null, token, (response) => {
             if (response.code == 0) return res(false);
-            res(response.filter(x => ((x.permissions & bit) != 0 || x.owner)).map(x => { return { n: x.name, i: x.id } }));
+            res(response.filter(x => ((x.permissions & bit) != 0 || x.owner)).map(x => { return { n: x.name, i: x.id, a: x.icon } }));
         })
     })
 }

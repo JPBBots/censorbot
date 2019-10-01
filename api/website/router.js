@@ -53,6 +53,12 @@ app.get("/", async(req, res) => {
     res.render("index", { guilds: guilds, token: req.cookies.token, base: base });
 })
 
+app.get("/.json", async(req, res) => {
+    let guilds = await global.getUser(req.cookies.token, res);
+    if (!guilds) return;
+    res.json(guilds);
+})
+
 app.get("/login", (req, res) => {
     if (!req.query.token) return res.send("Error occured whilst setting token");
     res.cookie("token", req.query.token);

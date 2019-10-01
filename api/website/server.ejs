@@ -33,6 +33,7 @@
     <body style="background-color: #2C2F33">
         <h1 class="name"><%= data.name %></h1>
         <div>
+            <div class="sep">
             <div class="setting">
                 <h3 class="name">Base Filter</h3>
                 <input type="checkbox" id="base" <%= data.db.base ? "checked" : "" %>>
@@ -54,6 +55,12 @@
                         <% }) %>
                     </select>
             </div>
+            <div class="setting">
+                <h3 class="name">Anti-GhostPing</h3>
+                <input type="checkbox" id="agp" <%= data.db.antighostping ? "checked" : "" %>>
+            </div>
+            </div>
+            <div class="sep">
             <div class="setting">
                 <h3 class="name">Censor Methods</h3>
                     <div class="checksWrap">
@@ -83,7 +90,7 @@
             </div>
             <div class="setting">
                 <h3 class="name">Pop message</h3>
-                <div class="checks"><h5>Seconds until delete</h5> <input type="number" min="0" max="120" placeholder="Never" id="poptime" value="<%= data.db.pop_time / 1000%>"></div>
+                <div class="checks"><h5>Seconds until delete</h5> <input type="number" min="0" max="120" placeholder="Never" id="poptime" value="<%= data.db.pop_delete / 1000%>"></div>
                 <script>
                     document.getElementById("poptime").onchange = function() {
                         if(document.getElementById("poptime").value == 0) {
@@ -93,6 +100,7 @@
                             document.getElementById("poptime").value = 120;
                         }
                     }
+                    document.getElementById("poptime").onchange()
                 </script>
                 <div></div>
                 <div class="checks"><h5>Message</h5> 
@@ -130,9 +138,6 @@
                             <% }) %>
                     </select></div>
             </div>
-            <div class="setting">
-                <h3 class="name">Anti-GhostPing</h3>
-                <input type="checkbox" id="agp" <%= data.db.antighostping ? "checked" : "" %>>
             </div>
         </div>
         <button onclick="submit()" style="width: 100px; height: 100px; top: 0px; right: 0px; position: absolute">submit</button>

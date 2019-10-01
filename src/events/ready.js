@@ -99,7 +99,7 @@ module.exports = async (client) => {
         console.log(`Shard ${client.shard.id} | Updated ${vv.reduce((prev, guildCount) => prev + guildCount, 0)}`);
         
         client.shard.broadcastEval(`this.channels.forEach(x=>{if(x.messages) x.messages.clear()})`).then(a=>{
-            client.webhooks.log.send("Sweeped all messages");
+            client.msg("log", "Sweeped all messages");
         })
     }, 1800000);
     if (fs.existsSync('./r.json')) {
