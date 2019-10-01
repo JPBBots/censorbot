@@ -3,9 +3,14 @@
     <head>
         <link rel="stylesheet" href="<%= base %>/style.css">
         <script>
+            function causeChange() {
+                console.log("change");
+                document.getElementById("save").style.display = "unset";
+            }
             function addToFilter() {
                 var newWord = document.getElementById("filterin").value;
                 if(!newWord) return;
+                causeChange();
                 if(newWord.match(/[^a-zA-Z0-9 ]/gi)) return alert("Illegal character. Make sure to only use letters");
                 
                 let newDom = document.createElement("option");
@@ -18,7 +23,7 @@
             }
             function removeWord() {
                 var wordToRemove = document.getElementById("filter").value;
-                
+                if(wordToRemove) causeChange();
                 document.getElementById("filter")
                     .removeChild(
                         [...document.getElementById("filter")]
@@ -27,16 +32,17 @@
             }
             function clearAll() {
                 document.getElementById("filter").innerHTML = "";
+                causeChange();
             }
         </script>
     </head>
     <body style="background-color: #2C2F33">
-        <h1 class="name"><%= data.name %></h1>
-        <div>
+        <div class="box">
+        <h1 class="name servername"><%= data.name %></h1>
             <div class="sep">
             <div class="setting">
                 <h3 class="name">Base Filter</h3>
-                <input type="checkbox" id="base" <%= data.db.base ? "checked" : "" %>>
+                <label class="switch"><input type="checkbox" id="base" <%= data.db.base ? "checked" : "" %>><span class="slider round"></span></label>
             </div>
             <div class="setting">
                 <h3 class="name">Log Channel</h3>
@@ -57,19 +63,30 @@
             </div>
             <div class="setting">
                 <h3 class="name">Anti-GhostPing</h3>
-                <input type="checkbox" id="agp" <%= data.db.antighostping ? "checked" : "" %>>
+                <label class="switch"><input type="checkbox" id="agp" <%= data.db.antighostping ? "checked" : "" %>><span class="slider round"></span></label>
             </div>
             </div>
             <div class="sep">
             <div class="setting">
+                <h3 class="name">Punishments</h3>
+                    <div class="checks"><h5>Toggle</h5><label class="switch"><input type="checkbox" id="punishon" <%= data.db.punishment.on ? "checked" : "" %>><span class="slider round"></span></div>
+                    <div class="checks"><h5>Amount</h5><input type="number" min="1" style="width:20%" placeholder="Never" id="punishamount" value="<%= data.db.punishment.amount || 0%>"></div>
+                    <div class="checks"><h5>Role</h5> <select id="punishrole">
+                        <option value="null">None</option>
+                            <% data.r.forEach(role=>{ %>
+                                <option value="<%= role.id %>">@<%=role.name%></option>
+                            <% }) %>
+                    </select></div>
+            </div>
+            <div class="setting">
                 <h3 class="name">Censor Methods</h3>
                     <div class="checksWrap">
-                        <div class="checks"><h5>Messages</h5><input type="checkbox" id="censor-msg" <%= data.db.censor.msg ? "checked" : "" %>></div>
-                        <div class="checks"><h5>Edited Messages</h5><input type="checkbox" id="censor-emsg" <%= data.db.censor.emsg ? "checked" : "" %>></div>
+                        <div class="checks"><h5>Messages</h5><label class="switch"><input type="checkbox" id="censor-msg" <%= data.db.censor.msg ? "checked" : "" %>><span class="slider round"></span></label></div>
+                        <div class="checks"><h5>Edited Messages</h5><label class="switch"><input type="checkbox" id="censor-emsg" <%= data.db.censor.emsg ? "checked" : "" %>><span class="slider round"></span></label></div>
                     </div>
                     <div class="checksWrap">
-                        <div class="checks"><h5>Nicknames</h5><input type="checkbox" id="censor-nick" <%= data.db.censor.nick ? "checked" : "" %>></div>
-                        <div class="checks"><h5>Reactions</h5><input type="checkbox" id="censor-react" <%= data.db.censor.react ? "checked" : "" %>></div>
+                        <div class="checks"><h5>Nicknames</h5><label class="switch"><input type="checkbox" id="censor-nick" <%= data.db.censor.nick ? "checked" : "" %>><span class="slider round"></span></label></div>
+                        <div class="checks"><h5>Reactions</h5><label class="switch"><input type="checkbox" id="censor-react" <%= data.db.censor.react ? "checked" : "" %>><span class="slider round"></span></label></div>
                     </div>
             </div>
             <div class="setting">
@@ -88,6 +105,9 @@
                     <button onclick="removeWord()">Remove</button>
                     <button onclick="clearAll()">Clear All</button>
             </div>
+            </div>
+            <div class="sep">
+                
             <div class="setting">
                 <h3 class="name">Pop message</h3>
                 <div class="checks"><h5>Seconds until delete</h5> <input type="number" min="0" max="120" placeholder="Never" id="poptime" value="<%= data.db.pop_delete / 1000%>"></div>
@@ -121,26 +141,16 @@
                             } else {
                                 document.getElementById("custommsg").hidden = true;
                             }
+                            causeChange()
                         }
                         document.getElementById("msgtype").onchange = chngMSG
                         chngMSG();
                     </script>
                     
             </div>
-            <div class="setting">
-                <h3 class="name">Punishments</h3>
-                    <div class="checks"><h5>Toggle</h5><input type="checkbox" id="punishon" <%= data.db.punishment.on ? "checked" : "" %>></div>
-                    <div class="checks"><p>Amount</p><input type="number" min="1" style="width:20%" placeholder="Never" id="punishamount" value="<%= data.db.punishment.amount || 0%>"></div>
-                    <div class="checks"><h5>Role</h5> <select id="punishrole">
-                        <option value="null">None</option>
-                            <% data.r.forEach(role=>{ %>
-                                <option value="<%= role.id %>">@<%=role.name%></option>
-                            <% }) %>
-                    </select></div>
-            </div>
             </div>
         </div>
-        <button onclick="submit()" style="width: 100px; height: 100px; top: 0px; right: 0px; position: absolute">submit</button>
+        <button onclick="submit()" style="width: 100px; height: 100px; top: 0px; left: 0px; position: absolute; display: none;" id="save" hidden>Save</button>
         <script>
             document.getElementById("log").value = "<%= data.db.log %>"
             document.getElementById("role").value = "<%= data.db.role || "null"%>"
@@ -215,8 +225,18 @@
             }
             
             function submit() {
-                request("/guilds/<%= data.id %>/settings", "POST", buildObject(), console.log);
+                document.getElementById("save").innerHTML = "Saving...";
+                request("/guilds/<%= data.id %>/settings", "POST", buildObject(), function(x) {
+                    if(x.error) return alert("Error: " + x.error);
+                    if(x) {
+                        document.getElementById("save").style.display = "none";
+                        document.getElementById("save").innerHTML = "Save";
+                    } else {
+                        alert("Error!");
+                    }
+                });
             }
+            document.querySelectorAll("input, select, button").forEach(function(x) { if(x.id !== "msgtype") x.onchange = causeChange })
         </script>
     </body>
 </html>
