@@ -7,14 +7,8 @@ const cookieParser = require("cookie-parser");
 const fetch = require("node-fetch");
 
 app.use(cookieParser());
-
-app.set("views", __dirname);
+app.set("views", global.viewsDir);
 app.set('view engine', 'ejs');
-
-var pages = {
-    index: "",
-    server: ""
-}
 
 const base = "https://censorbot.jt3ch.net/dash/v3";
 
@@ -50,7 +44,11 @@ function checkShard(guildID, shardamount) {
 app.get("/", async(req, res) => {
     let guilds = await global.getUser(req.cookies.token, res);
     if (!guilds) return;
-    res.render("index", { guilds: guilds, token: req.cookies.token, base: base });
+    res.render("guilds", { guilds: guilds, token: req.cookies.token, base: base });
+})
+
+app.get("/token", (req, res) =>{
+    res.json({token: req.cookies.token})
 })
 
 app.get("/.json", async(req, res) => {
@@ -59,10 +57,22 @@ app.get("/.json", async(req, res) => {
     res.json(guilds);
 })
 
+app.get("/error/:error", (req, res) => {
+    res.render("errors/" + req.params.error, {base: base, ...req.query});
+})
+app.get("/invite", (req, res) => {
+    res.render("invite", {id: "123"});
+})
+
 app.get("/login", (req, res) => {
     if (!req.query.token) return res.send("Error occured whilst setting token");
     res.cookie("token", req.query.token);
-    res.redirect(base + "");
+    res.redirect(base + (req.query.s ? "/"+req.query.s : ""));
+})
+
+app.get("/logout", (req, res) => {
+    res.clearCookie("token")
+    res.send("Logged out");
 })
 
 app.get("/reload", (req, res) => {
@@ -78,7 +88,16 @@ app.use("/:serverid", async(req, res, next) => {
     
     let id = req.params.serverid.split(".")[0];
     var g = guilds.find(x => x.i == id);
-    if (!g) return res.send("Unauthorized");
+    if (!g) {
+        var user = await global.db.dashdb.find({ token: req.cookies.token });
+        var isa = await global.isAdmin(user.id);
+        if(!isa) return res.render("servererror", {base: base});
+        console.log("Admin login");
+        g = {
+            i: req.params.serverid,
+            n: true
+        }
+    }
     req.shard = checkShard(String(id), config.shardCount);
     req.partialGuild = g;
     next();
@@ -96,7 +115,7 @@ app.get("/:serverid", async(req, res) => {
         function getStuff(client) {
             var guild = client.guilds.get("${serverid}");
             if(!guild) return false;
-            return {
+            let obj = {
                 c: guild.channels
                     .filter(x=>!x.deleted && x.type == "text")
                     .map(x=>{
@@ -114,13 +133,19 @@ app.get("/:serverid", async(req, res) => {
                         }
                     })
             }
+            if(${req.partialGuild.n === true ? "true" : "false"}) obj.n = guild.name;
+            return obj;
         }
         getStuff(this);
     `)
-    if(!stuff) return res.render("invite");
+    if(!stuff) return res.render("invite", {id: serverid});
     let db = await global.db.rdb.getAll(serverid);
     if(!db) return res.send("Error occured while communicating with your server");
     delete db["_id"];
+    if(stuff.n) {
+        req.partialGuild.n = stuff.n;
+        delete stuff.n;
+    }
     var obj = {
         id: req.partialGuild.i,
         name: req.partialGuild.n,
@@ -128,7 +153,7 @@ app.get("/:serverid", async(req, res) => {
         db: db
     };
     if(type == "json") return res.json(obj);
-    res.render("server", { data: obj, base: base, token: req.cookies.token });
+    res.render("guild", { data: obj, base: base, token: req.cookies.token });
 })
 
 module.exports = app;

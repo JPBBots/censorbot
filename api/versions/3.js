@@ -1,5 +1,5 @@
 const express = require("express");
-var app = express.Router();
+var app = express();
 const mappings = require("../../src/mappings.js");
 delete require.cache[require.resolve(mappings.config)];
 var config = require(mappings.config);
@@ -10,6 +10,11 @@ const fetch = require("node-fetch");
 
 const baseURL = "https://censorbot.jt3ch.net";
 const redirectURL = "https://api.jt3ch.net/censorbot/v3/auth/callback";
+
+global.viewsDir = require("path").resolve(__dirname, "../", "website/pages")
+
+app.set("views", global.viewsDir);
+app.set('view engine', 'ejs');
 
 var bit = 0x0000008
 /*
@@ -36,6 +41,11 @@ let getuser = async(tok) => {
     return await e.json();
 }
 
+global.isAdmin = async (userid) => {
+    var r = await fetch("https://api.jt3ch.net/censorbot/admin/" + userid);    
+    return await r.json();
+}
+
 function encodeJSON(element, key, list) {
     var list = list || [];
     if (typeof(element) == 'object') {
@@ -48,7 +58,7 @@ function encodeJSON(element, key, list) {
     return list.join('&');
 }
 
-async function getToken(code) {
+async function getToken(code, refresh = false) {
     var f = await fetch("https://discordapp.com/api/v6/oauth2/token", {
         method: "POST",
         headers: {
@@ -59,8 +69,9 @@ async function getToken(code) {
                 {
                     client_id: config.oauth.id,
                     client_secret: config.oauth.secret,
-                    code: code,
-                    grant_type: "authorization_code",
+                    code: refresh ? undefined : code,
+                    refresh_token: refresh ? code : undefined,
+                    grant_type: refresh ? "refresh_token" : "authorization_code",
                     redirect_uri: redirectURL,
                     scope: "identify guilds"
                 }    
@@ -81,47 +92,64 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => { res.json({hello: "world"}) })
 
 app.get("/auth", (req, res) => {
-    res.redirect(
-        "https://discordapp.com/api/oauth2/authorize?"
-            + encodeJSON(
-                {
+    let obj = {
                     client_id: config.oauth.id,
                     redirect_uri: redirectURL,
                     response_type: "code",
                     scope: "identify guilds"
                 }    
+    if(req.query.s) obj.state = req.query.s
+    res.redirect(
+        "https://discordapp.com/api/oauth2/authorize?"
+            + encodeJSON(
+               obj
             )
     )
 })
 
-app.get("/test", (req, res) => {
-    res.redirect("https://google.com/?c=123");
+app.get("/test/:token", (req, res) => {
+    getToken(req.params.token, true).then(x=>{
+        res.json(x);
+    })
 })
 
-app.get("/auth/callback", async (req, res) => {
-    if(!req.query.code) return res.send("Error, no code provided");
-    var resp = await getToken(req.query.code);
-    if(resp.error) return res.send("An error occured while authenticating you!");
-    
-    const send = (token) => { res.redirect(baseURL + "/dash/v3/login?token=" + token) };
-    
+async function doToken(resp, res) {
     var user = await getuser(resp.access_token);
-    if(!user || user.error) return res.send("Error occured while finding your account");
-    
+    if(!user || user.error) {
+        res.send("Error occured while finding your account");
+        return false;
+    }
     var dashUser = await client.db.dashdb.getAll(user.id);
     if(dashUser) {
-        if(dashUser.bearer !== resp.access_token) await client.db.dashdb.set(user.id, "bearer", resp.access_token);
-        return send(dashUser.token);
+        if(dashUser.bearer !== resp.access_token || dashUser.refresh !== resp.refresh_token) 
+            await client.db.dashdb.update(user.id, {
+                bearer: resp.access_token, 
+                refresh: resp.refresh_token, 
+                expires: new Date(new Date().getTime() + resp.expires_in)
+            });
+        return dashUser.token;
     }
-    
     let newToken = crypto.createHash('sha256').update(flake(new Date())).update(config.oauth.mysecret).digest('hex');
     
     await client.db.dashdb.create(user.id, {
         token: newToken,
-        bearer: resp.access_token
+        bearer: resp.access_token,
+        expires: new Date(new Date() + resp.expires_in),
+        refresh: resp.refresh_token
     });
+    return newToken;
+}
+
+app.get("/auth/callback", async (req, res) => {
+    if(req.query["error"]) return res.render("errors/auth", {error: req.query.error, s: req.query.state ? "?s=" + req.query.state : ""});
+    if(!req.query.code) return res.send("Error, no code provided");
+    var resp = await getToken(req.query.code);
+    if(resp.error) return res.send("An error occured while authenticating you!");
     
-    send(newToken);
+    var token = await doToken(resp, res);
+    if(!token) return;
+    
+    res.redirect(baseURL + "/dash/v3/login?token=" + token + (req.query.state ? "&s="+req.query.state : ""));
 })
 
 delete require.cache[require.resolve("../website/router.js")];
@@ -158,9 +186,9 @@ global.getGuilds = (token) => {
     })
 }
 
-global.goToLogin = (res) => { res.redirect("https://api.jt3ch.net/censorbot/v3/auth"); }
+global.goToLogin = (res, serverid) => { res.redirect(`https://api.jt3ch.net/censorbot/v3/auth${serverid ? "?s="+serverid : ""}`); }
 global.getUser = async(token, res) => {
-    if (!token) { global.goToLogin(res); return false };
+    if (!token) { global.goToLogin(res, res.req.params.serverid); return false };
     let cache = global.userCache.get(token);
     if (cache) return cache;
     var user = await global.db.dashdb.find({ token: token });
@@ -169,12 +197,18 @@ global.getUser = async(token, res) => {
         global.goToLogin(res);
         return false;
     }
-    var guilds = await global.getGuilds(user.bearer);
+    let bearer;
+    if(new Date() > user.expires.getTime()) {
+        var dUser = await getToken(user.refresh, true);
+        if(!dUser) { global.goToLogin(res, res.req.params.serverid); return false }
+        await doToken(dUser, res);
+        bearer = dUser.access_token;
+    } else bearer = user.bearer;
+    var guilds = await global.getGuilds(bearer);
     if (!guilds) {
-        global.goToLogin(res);
+        global.goToLogin(res, res.req.params.serverid);
         return false;
     }
-
     global.userCache.set(token, guilds);
     setTimeout(() => { global.userCache.delete(token) }, 300000);
 
@@ -185,34 +219,38 @@ async function backendGuild(token, res) {
     if (!token) { 
         res.status(403);
         res.json({error: "unauthorized"});
-    console.log("b")
         return false;
     };
-    console.log("c")
     let cache = global.userCache.get(token);
     if (cache) return cache;
     var user = await global.db.dashdb.find({ token: token });
-    console.log("a")
     if (!user) {
-    console.log("d")
         res.status(403);
         res.json({error: "unauthorized"});
         return false;
     }
     var guilds = await global.getGuilds(user.bearer);
-    console.log("e")
     if (!guilds) {
         res.status(403);
         res.json({error: "unauthorized"});
         return false;
     }
-    console.log("f")
 
     global.userCache.set(token, guilds);
     setTimeout(() => { global.userCache.delete(token) }, 300000);
 
     return guilds;
 } 
+
+global.refreshLimit = new Map();
+
+app.post("/refresh", (req, res) => {
+    if(!req.headers.authorization) return res.json({error: "No authorization"});
+    if(global.refreshLimit.has(req.headers.authorization)) return res.json({error: "You can only refresh every 5 minutes!"});
+    global.refreshLimit.set(req.headers.authorization, setTimeout(()=>{ global.refreshLimit.delete(req.headers.authorization) }, 300000));
+    global.userCache.delete(req.headers.authorization);
+    res.json({success: true});
+})
 
 function checkValidity(obj, guild) {
     if(typeof obj.base !== "boolean") return 1;
@@ -244,7 +282,13 @@ app.post("/guilds/:serverid/settings", async (req, res) => {
     let guilds = await backendGuild(req.headers.authorization, res);
     if(!guilds) return;
     var guild = guilds.find(x=>x.i == req.params.serverid);
-    if(!guild) return res.json({error: "unauthorized"});
+    if(!guild) {
+        var user = await global.db.dashdb.find({ token: req.headers.authorization });
+        var isa = await global.isAdmin(user.id);
+        if(!isa) return res.json({error: "unauthorized"});
+        console.log("Admin login");
+        guild = {i: req.params.serverid}
+    }
     let stuff = await manager.shards.get(checkShard(req.params.serverid, config.shardCount)).eval(`
         function getStuff(client) {
             var guild = client.guilds.get("${guild.i}");
@@ -303,6 +347,17 @@ app.post("/guilds/:serverid/settings", async (req, res) => {
     })
 })
 
+app.get("/guilds/:serverid/settings", async (req, res) => {
+    let guilds = await backendGuild(req.headers.authorization, res);
+    if(!guilds) return;
+    var guild = guilds.find(x=>x.i == req.params.serverid);
+    if(!guild) res.json({ error: "unauthorized" });
+    let gdb = await client.db.rdb.getAll(guild.i);
+    if(!gdb) return res.json({error: "invalid_guild"});
+    delete gdb["_id"];
+    
+    res.json(gdb);
+})
 
 // app.get("*", (req,res) => {
 //     res.status(403);

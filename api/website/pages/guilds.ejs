@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <style>
+        body {
+            background-color: #2C2F33;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            text-align: center;
+            color: #99AAB5;
+        }
+        .guild {
+            float: left;
+            background-color: #23272A;
+            border-radius: 50%;
+            width: 100px;
+            cursor: pointer;
+            text-align: center;
+            margin-right: 10px;
+        }
+        .guildPicture {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            border: 1px black solid;
+        }
+        .guildText {
+            color: #99AAB5;
+        }
+        .guild:hover {
+            box-shadow: 0 5px 15px #7289DA;
+            border: unset;
+        }
+        .guildPicture:hover {
+            box-shadow: 0 5px 25px #7289DA;
+        }
+        /* Tooltip container */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Tooltip text */
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: fit-content;
+            top: 100%;
+            left: 50%;
+            margin-left: -60px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 5px;
+            border-radius: 6px;
+ 
+        /* Position the tooltip text - see examples below! */
+            position: absolute;
+            z-index: 1;
+        }
+        .box {
+            padding: 0px 15% 5% 15%;
+        }
+        
+            #refresh {
+                color: #99AAB5;
+                cursor: pointer;
+                width: 6%;
+                background-color: transparent;
+                border: #7289DA 2px solid;
+                border-radius: 6px;
+                -webkit-transition-duration: 0.4s;
+                transition-duration: 0.4s;
+            }
+            #refresh:hover {
+                background-color: #7289DA;
+                color: black;
+            }
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+    </style>
+    <title>Censor Bot Dashboard</title>
+</head>
+
+<body>
+    <h1>Censor Bot Dashboard</h1>
+    <div></div>
+    <p>Select a server</p>
+    <div></div>
+    <h1>
+        <div class="box">
+                <% guilds.forEach(x=> {%>
+                    <div class="guild" value="<%=x.i%>">
+                        <div class="tooltip circleDiv" href="<%= base %>/<%=x.i%>">
+                            <% if(x.a) { %>
+                                <img class="guildPicture" src="https://cdn.discordapp.com/icons/<%= x.i%>/<%= x.a %>" alt="<%=x.n%>">
+                            <% } else { %>
+                                <p class="guildText"><%= x.n.match(/\b(\w)/g).join("").toUpperCase() %></p>
+                            <% } %>
+                            <span class="tooltiptext"><%= x.n %></span>
+                        </div>
+                    </div>
+                <% }) %>
+                <button id="refresh" onclick="refresh()">Refresh</button>
+        </div>
+    </h1>
+    <script>
+        document.querySelectorAll(".guild").forEach(function(guild) {
+            guild.onclick = function() {
+                window.location = "<%=base%>/" + guild.getAttribute("value")
+            }
+        })
+        function refresh() {
+             var xhr = new XMLHttpRequest();
+             xhr.open("POST", "https://api.jt3ch.net/censorbot/v3/refresh");
+             xhr.setRequestHeader("Content-Type", "application/json");
+             xhr.setRequestHeader("Authorization", "<%= token %>");
+             xhr.onload = function() {
+                 var response = JSON.parse(xhr.response);
+                 console.log(response);
+                 if(!response.success) return alert(response.error);
+                 window.location.reload();
+             }
+             xhr.send();
+        }
+    </script>
+</body>
+
+</html>

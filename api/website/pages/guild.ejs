@@ -35,8 +35,10 @@
                 causeChange();
             }
         </script>
+        <title>Dashboard - <%= data.name %></title>
     </head>
     <body style="background-color: #2C2F33">
+        <a href="<%=base%>">Back</a>
         <div class="box">
         <h1 class="name servername"><%= data.name %></h1>
             <div class="sep">
@@ -150,7 +152,7 @@
             </div>
             </div>
         </div>
-        <button onclick="submit()" style="width: 100px; height: 100px; top: 0px; left: 0px; position: absolute; display: none;" id="save" hidden>Save</button>
+        <button onclick="submit()" style="width: 100px; height: 100px; top: 0px; left: 0px; display: none;" id="save" hidden>Save</button>
         <script>
             document.getElementById("log").value = "<%= data.db.log %>"
             document.getElementById("role").value = "<%= data.db.role || "null"%>"
