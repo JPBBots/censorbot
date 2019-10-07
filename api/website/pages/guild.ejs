@@ -38,7 +38,6 @@
         <title>Dashboard - <%= data.name %></title>
     </head>
     <body style="background-color: #2C2F33">
-        <a href="<%=base%>">Back</a>
         <div class="box">
         <h1 class="name servername"><%= data.name %></h1>
             <div class="sep">
@@ -93,7 +92,7 @@
             </div>
             <div class="setting">
                 <h3 class="name">Filter</h3>
-                    <input id="filterin" placeholder="Add to filter"><button onclick="addToFilter()">Add</button><div></div>
+                    <input id="filterin" placeholder="Add to filter"><button class="sb" onclick="addToFilter()">Add</button><div></div>
                     <script>
                         document.getElementById("filterin").onkeydown = function(event) {
                             if(event.keyCode == 13) addToFilter();
@@ -104,8 +103,8 @@
                             <option value="<%= x %>"><%= x %></option>
                         <% }) %>
                     </select>
-                    <button onclick="removeWord()">Remove</button>
-                    <button onclick="clearAll()">Clear All</button>
+                    <button class="sb" onclick="removeWord()">Remove</button>
+                    <button class="sb" onclick="clearAll()">Clear All</button>
             </div>
             </div>
             <div class="sep">
@@ -152,7 +151,8 @@
             </div>
             </div>
         </div>
-        <button onclick="submit()" style="width: 100px; height: 100px; top: 0px; left: 0px; display: none;" id="save" hidden>Save</button>
+        <button id="tl" class="but" onclick="back()">Back</button>
+        <button id="tr" class="but" onclick="logout()">Logout</button>
         <script>
             document.getElementById("log").value = "<%= data.db.log %>"
             document.getElementById("role").value = "<%= data.db.role || "null"%>"
@@ -239,6 +239,12 @@
                 });
             }
             document.querySelectorAll("input, select, button").forEach(function(x) { if(x.id !== "msgtype") x.onchange = causeChange })
+            function back() {
+                window.location.replace("<%=base%>")
+            }
+            function logout() {
+                window.location = "<%=base%>/logout"
+            }
         </script>
     </body>
 </html>

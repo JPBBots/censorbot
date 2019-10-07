@@ -72,7 +72,7 @@ app.get("/login", (req, res) => {
 
 app.get("/logout", (req, res) => {
     res.clearCookie("token")
-    res.send("Logged out");
+    res.render("logout", {base: base})
 })
 
 app.get("/reload", (req, res) => {

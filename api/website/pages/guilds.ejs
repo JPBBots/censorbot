@@ -66,21 +66,36 @@
         .box {
             padding: 0px 15% 5% 15%;
         }
-        
-            #refresh {
-                color: #99AAB5;
-                cursor: pointer;
-                width: 6%;
-                background-color: transparent;
-                border: #7289DA 2px solid;
-                border-radius: 6px;
-                -webkit-transition-duration: 0.4s;
-                transition-duration: 0.4s;
-            }
-            #refresh:hover {
-                background-color: #7289DA;
-                color: black;
-            }
+        .but {
+            color: #99AAB5;
+            cursor: pointer;
+            width: 6%;
+            background-color: transparent;
+            border: #7289DA 2px solid;
+            border-radius: 6px;
+            -webkit-transition-duration: 0.4s;
+            transition-duration: 0.4s;
+            width: 10%;
+            height: 5%;
+        }
+
+.but:hover {
+  background-color: #7289DA;
+  color: black;
+}
+
+#tr {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+#tl {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
 
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
@@ -109,7 +124,8 @@
                         </div>
                     </div>
                 <% }) %>
-                <button id="refresh" onclick="refresh()">Refresh</button>
+                <button id="tr" class="but" onclick="refresh()">Refresh</button>
+                <button id="tl" class="but" onclick="logout()">Logout</button>
         </div>
     </h1>
     <script>
@@ -130,6 +146,9 @@
                  window.location.reload();
              }
              xhr.send();
+        }
+        function logout() {
+            window.location.replace("<%= base %>/logout")
         }
     </script>
 </body>

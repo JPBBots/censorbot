@@ -1,44 +1,46 @@
 .setting {
-    border: solid beige 1px;
-    width: fit-content;
-    text-align: center;
-    padding: 5px;
-    float: left;
+  border: solid beige 1px;
+  width: fit-content;
+  text-align: center;
+  padding: 5px;
+  float: left;
 }
 
 .checksWrap {
-    float: left;
+  float: left;
 }
 
 .checks {
-    border: beige 1px dotted;
-    padding: 3px;
+  border: beige 1px dotted;
+  padding: 3px;
 }
 
 .name {
-    color: white;
-    font-weight: bold;
+  color: white;
+  font-weight: bold;
 }
 
 .servername {
-    margin-left: 30%;
+  margin-left: 30%;
 }
 
 h5 {
-    color: white;
-    font-family: 'Roboto', sans-serif;
+  color: white;
+  font-family: 'Roboto', sans-serif;
 }
 
 .sep {
-    float: left;
+  float: left;
 }
 
 .box {
-    width: 40%;
-    left: 30%;
-    position: absolute;
+  width: 40%;
+  left: 30%;
+  position: absolute;
 }
+
 /* The switch - the box around the slider */
+
 .switch {
   position: relative;
   display: inline-block;
@@ -47,6 +49,7 @@ h5 {
 }
 
 /* Hide default HTML checkbox */
+
 .switch input {
   opacity: 0;
   width: 0;
@@ -54,6 +57,7 @@ h5 {
 }
 
 /* The slider */
+
 .slider {
   position: absolute;
   cursor: pointer;
@@ -78,21 +82,22 @@ h5 {
   transition: .4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: #2196F3;
 }
 
-input:focus + .slider {
+input:focus+.slider {
   box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
 }
 
 /* Rounded sliders */
+
 .slider.round {
   border-radius: 34px;
 }
@@ -102,23 +107,24 @@ input:checked + .slider:before {
 }
 
 input {
-    width: 41%;
-    padding-left: 10px;
-    border-radius: 10px;
-    background-color: #23272A;
-    color: white;
+  width: 41%;
+  padding-left: 10px;
+  border-radius: 10px;
+  background-color: #23272A;
+  color: white;
 }
 
 select {
-    padding: 3px;
-    width: fit-content;
-    border-radius: 10px;
-    background-color: #23272A;
-    color: white;
+  padding: 3px;
+  width: fit-content;
+  border-radius: 10px;
+  background-color: #23272A;
+  color: white;
 }
 
-button {
-  background-color: #23272A; /* Green */
+.sb {
+  background-color: #23272A;
+  /* Green */
   border: none;
   color: white;
   padding: 3px 5px;
@@ -128,12 +134,43 @@ button {
   display: inline-block;
   font-size: 16px;
   margin: 4px 2px;
-  -webkit-transition-duration: 0.4s; /* Safari */
+  -webkit-transition-duration: 0.4s;
+  /* Safari */
   transition-duration: 0.4s;
   cursor: pointer;
 }
 
-button:hover {
+.sb:hover {
   background-color: #4CAF50;
   color: white;
+}
+
+.but {
+  color: #99AAB5;
+  cursor: pointer;
+  width: 6%;
+  background-color: transparent;
+  border: #7289DA 2px solid;
+  border-radius: 6px;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  width: 10%;
+  height: 5%;
+}
+
+.but:hover {
+  background-color: #7289DA;
+  color: black;
+}
+
+#tr {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+#tl {
+  position: absolute;
+  top: 5px;
+  left: 5px;
 }
