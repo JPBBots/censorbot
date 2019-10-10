@@ -6,30 +6,12 @@ exports.run = async (client, message, args) => {
     if (!arg1) return;
     if (!arg2) return;
 
-    if (arg1 == "ntyes") {
-        arg3 = args[2]
-        let wordgo = arg3
-        let ticketsender = client.users.get(arg2)
-        try {
-            ticketsender.send(`Hey! We noticed that you have said a word/phrase that was censored. This word was \`\`\`\n${wordgo.replace(/{n}/gi, "\n")}\`\`\` You did not submit a ticket but we noticed it on our own! This word is no longer censored, sorry for the inconvenience -${client.config.name} Support Team (Word Patched by ${message.author.username})`)
-            console.log("NTAccept")
-        } catch (err) {
-            let msg = await message.reply("Error, user has DMs disabled or is no longer in a server containing the bot!")
-            setTimeout(function () {
-                msg.edit(":boom:")
-                setTimeout(function () {
-                    msg.delete()
-                }, 500)
-            }, 5000);
-        }
-        return;
-    }
     arg2 = arg2.split(',')
     const author = message.mentions.users.first() || message.author;
     arg2.forEach(async arg2 => {
         let ticketid = arg2
         let ticketfile = await client.ticketdb.getAll(ticketid);
-        let ticketsender = client.users.get(ticketfile.author);
+        let ticketsender = await client.users.fetch(ticketfile.author, false);
         let wordgo = ticketfile.word
         var y = ""
         if (arg1 == "yes") {

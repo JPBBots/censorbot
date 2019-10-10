@@ -10,7 +10,7 @@ app.use(cookieParser());
 app.set("views", global.viewsDir);
 app.set('view engine', 'ejs');
 
-const base = "https://censorbot.jt3ch.net/dash/v3";
+const base = "https://censorbot.jt3ch.net/dash";
 
 // function loadAll() {
 //     pages.index = readFileSync(__dirname + "/index.html", "utf-8");
@@ -81,6 +81,14 @@ app.get("/reload", (req, res) => {
     res.send(":ok_hand:")
 })
 
+app.get("/admin", async (req, res) => {
+    var user = await global.db.dashdb.find({ token: req.cookies.token });
+    if(!user) return global.goToLogin(res, "admin");
+    var isa = await global.isAdmin(user.id);
+    if(!isa) return res.render("errors/notadmin", {base: base});
+    
+    res.render("admin", {token: req.cookies.token});
+})
 
 app.use("/:serverid", async(req, res, next) => {
     var guilds = await global.getUser(req.cookies.token, res);
@@ -91,7 +99,7 @@ app.use("/:serverid", async(req, res, next) => {
     if (!g) {
         var user = await global.db.dashdb.find({ token: req.cookies.token });
         var isa = await global.isAdmin(user.id);
-        if(!isa) return res.render("servererror", {base: base});
+        if(!isa) return res.render("errors/server", {base: base});
         console.log("Admin login");
         g = {
             i: req.params.serverid,

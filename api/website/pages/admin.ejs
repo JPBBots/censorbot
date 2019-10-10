@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                background-color: #2C2F33;
+                text-align: center;
+            }
+        </style>
+        <title>Admin page</title>
+    </head>
+    <body>
+        <h1>Admin</h1>
+        <div>
+            <h3>Get user guilds</h3>
+            <input id="getguild" placeholder="User ID"><button onclick="getUserGuilds()">Get</button>
+            <div>
+                <ul id="response">
+                </ul>
+            </div>
+        </div>
+        <script>
+            function getUserGuilds() {
+                var userID = document.getElementById("getguild").value;
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "https://api.jt3ch.net/censorbot/v3/users/"+userID+"/guilds");
+                xhr.onload = function() {
+                    var guilds = JSON.parse(xhr.response);
+                    document.getElementById("response").innerHTML = "";
+                    guilds.forEach(function(guild) {
+                        var li = document.createElement("li");
+                        var a = document.createElement("a");
+                        a.href = "https://censorbot.jt3ch.net/dash/"+guild.id;
+                        a.innerText = guild.name;
+                        
+                        li.appendChild(a);
+                        
+                        document.getElementById("response").appendChild(li);
+                    })
+                }
+                xhr.setRequestHeader("Authorization", "<%=token%>");
+                xhr.send();
+            }
+        </script>
+    </body>
+</html>

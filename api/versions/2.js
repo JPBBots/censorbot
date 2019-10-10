@@ -40,34 +40,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.get("/site/updates", (req, res) => {
-    var url = "https://censorbot.jt3ch.net/updates"
-    res.redirect(url);
-})
-
-delete require.cache[require.resolve("C:/Workspace/websites/censorbot/updates/updates.js")]
-
-app.get("/site/updates/:v", (req, res) => {
-    var url = "https://censorbot.jt3ch.net/updates"
-    var z = require("C:/Workspace/websites/censorbot/updates/updates.js");
-    var the = z.find((x) => x.v == req.params.v);
-    res.send(`
-  <!DOCTYPE html>
-  <html>
-    <head>
-        <meta property="og:title" content="Update v${the.v}">
-        <meta property="og:url" content="https://censorbot.jt3ch.net/updates/v/${req.params.v}">
-        <meta property="og:description" content="${the.desc}">
-    </head>
-    <body>
-        <h1>${req.params.v}</h1>
-    </body>
-    <script>
-        window.location.replace("${url}#${req.params.v}");
-    </script>
-  </html>`)
-})
-
 var errors = {
     //402's
     missingValue: {

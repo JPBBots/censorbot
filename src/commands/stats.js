@@ -65,7 +65,7 @@ exports.run = async (client,message,args) => {
                 },
                 {
                     "name": ":wastebasket: Messages Deleted",
-                    "value": (await client.vdb.get("1", "amount")).toLocaleString(),
+                    "value": (await client.statdb.get("deleted", "amount")).toLocaleString(),
                     "inline": true
                 }   
             ]

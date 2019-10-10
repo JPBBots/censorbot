@@ -33,12 +33,12 @@ module.exports = async (client) => {
             // client.shard.broadcastEval(`this.user.setActivity('My development', {type: 'STREAMING', url: "https://twitch.tv/jpbberry"});`)
             client.shard.broadcastEval(`let g = this.channels.get('512369661849894947'); if(g) g.setName("Server Count: ${gc}")`)
             getStuff().then(me => {
-                require('../../assets/db.js').db.db("botinfo").table("bots").update({
-                    bot: "censorbot",
-                    server_count: gc,
-                    avatar: client.user.avatar,
-                    votes: me.points
-                }).run();
+                // require('../../assets/db.js').db.db("botinfo").table("bots").update({
+                //     bot: "censorbot",
+                //     server_count: gc,
+                //     avatar: client.user.avatar,
+                //     votes: me.points
+                // }).run();
                 fs.writeFileSync("C:/Workspace/websites/censorbot/stats.js", `document.getElementById("servercount").innerHTML = "${gc} SERVERS | ${me.points} VOTES"`);
                 fetch(client.user.avatarURL())
                     .then(x => x.buffer())
@@ -80,12 +80,12 @@ module.exports = async (client) => {
             //     url: "https://twitch.tv/jpbberry"
             // });`)
             getStuff().then(me => {
-                require('../../assets/db.js').db.db("botinfo").table("bots").update({
-                    bot: "censorbot",
-                    server_count: aa,
-                    avatar: client.user.avatar,
-                    votes: me.points
-                }).run();
+                // require('../../assets/db.js').db.db("botinfo").table("bots").update({
+                //     bot: "censorbot",
+                //     server_count: aa,
+                //     avatar: client.user.avatar,
+                //     votes: me.points
+                // }).run();
                 fs.writeFileSync("C:/Workspace/websites/censorbot/stats.js", `document.getElementById("servercount").innerHTML = "${aa} SERVERS | ${me.points} VOTES"`);
                 fetch(client.user.avatarURL())
                     .then(x => x.buffer())

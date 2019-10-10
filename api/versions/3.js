@@ -149,7 +149,7 @@ app.get("/auth/callback", async (req, res) => {
     var token = await doToken(resp, res);
     if(!token) return;
     
-    res.redirect(baseURL + "/dash/v3/login?token=" + token + (req.query.state ? "&s="+req.query.state : ""));
+    res.redirect(baseURL + "/dash/login?token=" + token + (req.query.state ? "&s="+req.query.state : ""));
 })
 
 delete require.cache[require.resolve("../website/router.js")];
@@ -357,6 +357,42 @@ app.get("/guilds/:serverid/settings", async (req, res) => {
     delete gdb["_id"];
     
     res.json(gdb);
+})
+
+app.get("/users/:userid/guilds", async (req, res) => {
+    var user = await global.db.dashdb.find({ token: req.headers.authorization });
+    if(!user) {
+        res.status(403);
+        return res.json({error: "unauthorized"});
+    }
+    var isa = await global.isAdmin(user.id);
+    if(!isa) {
+        res.status(403);
+        return res.json({error: "unauthorized"});
+    }
+    
+    var resp = await manager.broadcastEval(`
+        function getStuff(client) {
+            var gs = client.guilds
+                .array()
+                .filter(guild=>{
+                    var member = guild.members.get("${req.params.userid}")
+                    if(!member) return false;
+                    if(member.hasPermission(${bit}) || member.owner) return true;
+                    else return false;
+                })
+                .map(x=>{
+                    return {
+                        id: x.id,
+                        name: x.name
+                    }
+                })
+            if(!gs) return [];
+            return gs;
+        }
+        getStuff(this);
+    `)
+    res.json(resp.flat());
 })
 
 // app.get("*", (req,res) => {

@@ -16,8 +16,8 @@ class jdb {
     }
     
     async init() {
-        let db = new MongoClient(`mongodb://${config.username}:${config.password}@localhost:27017/`);
-        await db.connect({useNewUrlParser: true});
+        let db = new MongoClient(`mongodb://${config.username}:${config.password}@localhost:27017/`, {useNewUrlParser: true});
+        await db.connect();
         this.db = db.db("censorbot");
     }
 
@@ -57,6 +57,10 @@ class jdb {
         return new dbi(this.db.collection("dashboard_users"), this.db);
     }
     
+    get stats() {
+        return new dbi(this.db.collection("stats"), this.db);
+    }
+    
     get rawdb() {
         return this.db;
     }
@@ -71,6 +75,7 @@ class jdb {
         obj.pudb = this.premiumuser;
         obj.rawdb = this.rawdb;
         obj.dashdb = this.dash;
+        obj.statdb = this.stats;
     };
 }
 
