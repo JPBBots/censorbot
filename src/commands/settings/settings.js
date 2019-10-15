@@ -1077,7 +1077,8 @@ exports.run = async (client, message, args, db) => {
         Object.keys(settings).forEach(key=>{
             str += `**${key}**${settings[key].premium ? " **`(PREMIUM)`**" : ""}\n__${settings[key].desc.main}__\n\n`;
         })
-        str+=`(PREMIUM) = Features locked behind paywall, check out ${client.config.prefix}premium for more info`
+        str+=`(PREMIUM) = Features locked behind paywall, check out ${client.config.prefix}premium for more info\n\n`
+        str+='We recommend using the [dashboard](https://censorbot.jt3ch.net/dash)'
         embed.setDescription(str);
         // Object.keys(settings).forEach(key => {
         //     str += `  ${key}${" ".repeat(am-key.length)}=> ${settings[key].desc.main}\n\n`;
