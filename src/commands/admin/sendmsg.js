@@ -1,13 +1,12 @@
-exports.run = (client,message,args) => {
-    let arg1 = args[0]
-    let arg2 = args[1]
-    let user = client.users.get(arg1)
-    let msg = args.slice(1).join(' ');
-    user.send(msg)
-    return;
+exports.run = (client, message, args) => {
+  const arg1 = args[0]
+  const arg2 = args[1]
+  const user = client.users.get(arg1)
+  const msg = args.slice(1).join(' ')
+  user.send(msg)
 }
 exports.info = {
-    name: 'sendmsg',
-    description: 'Used to send message to user',
-    format: "{prefix}sendmsg [userid] [message]"
+  name: 'sendmsg',
+  description: 'Used to send message to user',
+  format: '{prefix}sendmsg [userid] [message]'
 }

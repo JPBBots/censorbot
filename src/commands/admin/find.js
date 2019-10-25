@@ -1,6 +1,6 @@
-exports.run = async (client,message,args) => {
-    let arg1 = args[0]
-    let res = (await client.shard.broadcastEval(`
+exports.run = async (client, message, args) => {
+  const arg1 = args[0]
+  const res = (await client.shard.broadcastEval(`
     var client = this;
     function go() {
         return {
@@ -9,31 +9,31 @@ exports.run = async (client,message,args) => {
         }
     };
     go()`
-        ))
-    .filter(x=>x)[0]
-    var {gu, shard} = res;
-    if (!gu) {
-        let ok = await message.reply("Bot is not in guild")
-        setTimeout(() => {
-            ok.delete()
-        }, 3000);
-        return;
-    }
-    if (gu) {
-        var owner = await client.users.fetch(gu.ownerID) || {};
-        message.channel.send(
-            client.u.embed
-                .setTitle("Fetched guild")
-                .addField("Name", `${gu.name} | ${gu.id}`)
-                .addField("Owner", `${owner} (${owner.tag} | ${owner.id})`)
-                .addField("Member Count", `${gu.memberCount}`)
-                .addField("Shard", `${shard}`)
-        )
-    }
+  ))
+    .filter(x => x)[0]
+  var { gu, shard } = res
+  if (!gu) {
+    const ok = await message.reply('Bot is not in guild')
+    setTimeout(() => {
+      ok.delete()
+    }, 3000)
+    return
+  }
+  if (gu) {
+    var owner = await client.users.fetch(gu.ownerID) || {}
+    message.channel.send(
+      client.u.embed
+        .setTitle('Fetched guild')
+        .addField('Name', `${gu.name} | ${gu.id}`)
+        .addField('Owner', `${owner} (${owner.tag} | ${owner.id})`)
+        .addField('Member Count', `${gu.memberCount}`)
+        .addField('Shard', `${shard}`)
+    )
+  }
 }
 exports.info = {
-    name: 'find',
-    description: 'Finds guild and if the bot is in it, returns guild stats/info',
-    format: "{prefix}find [serverid]",
-    aliases: ["getguild", "findguild"]
+  name: 'find',
+  description: 'Finds guild and if the bot is in it, returns guild stats/info',
+  format: '{prefix}find [serverid]',
+  aliases: ['getguild', 'findguild']
 }

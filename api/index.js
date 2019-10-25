@@ -1,20 +1,20 @@
-const express = require("express");
-var app = express.Router();
-const mappings = require("../src/mappings.js");
-delete require.cache[require.resolve(mappings.config)];
-var config = require(mappings.config);
-let shardOfSupport;
+const express = require('express')
+var app = express.Router()
+const mappings = require('../src/mappings.js')
+delete require.cache[require.resolve(mappings.config)]
+var config = require(mappings.config)
+let shardOfSupport
 
-function checkShard(guildID, shardamount) {
-    guildID = String(guildID);
-    var shard;
-    for (var i = 0; i < shardamount; i++) {
-        if ((BigInt(guildID) >> BigInt(22)) % BigInt(shardamount) == i) { shard = i; break; }
-    }
-    return shard;
+function checkShard (guildID, shardamount) {
+  guildID = String(guildID)
+  var shard
+  for (var i = 0; i < shardamount; i++) {
+    if ((BigInt(guildID) >> BigInt(22)) % BigInt(shardamount) == i) { shard = i; break }
+  }
+  return shard
 }
 
-shardOfSupport = checkShard(config.server, config.shardCount);
+shardOfSupport = checkShard(config.server, config.shardCount)
 
 /*
     global RR
@@ -22,90 +22,86 @@ shardOfSupport = checkShard(config.server, config.shardCount);
     global BigInt
 */
 
-let db = {};
-delete require.cache[require.resolve(mappings.assets.db)];
-let dbf = require(mappings.assets.db);
+const db = {}
+delete require.cache[require.resolve(mappings.assets.db)]
+const dbf = require(mappings.assets.db)
 dbf.init().then(_ => {
-    dbf.applyToObject(db);
-    global.db = db;
+  dbf.applyToObject(db)
+  global.db = db
 
-    var { resolve } = require("path");
+  var { resolve } = require('path')
 
-    require("fs").readdirSync(resolve(__dirname, "./versions")).forEach(file => {
-        if (!file.endsWith(".js")) return;
-        var name = file.split(".")[0];
+  require('fs').readdirSync(resolve(__dirname, './versions')).forEach(file => {
+    if (!file.endsWith('.js')) return
+    var name = file.split('.')[0]
 
-        delete require.cache[require.resolve(resolve(__dirname, "./versions", file))];
+    delete require.cache[require.resolve(resolve(__dirname, './versions', file))]
 
-        var route = require(resolve(__dirname, "./versions", file));
+    var route = require(resolve(__dirname, './versions', file))
 
-        app.use(`/v${name}`, route);
-    })
-});
-
-
-app.get("/reload", (req, res) => {
-    if (!req.query || req.query.a != config.auth) return res.send("err");
-    RR.reloadFromFile("/api", require("path").resolve(__dirname, "./index.js"));
-    res.send("success");
+    app.use(`/v${name}`, route)
+  })
 })
 
-app.get("/restart", (req, res) => {
-    if (req.query.auth == config.auth) {
-        if (req.query.shard == "all") {
-            res.send(true)
-            manager.respawnAll();
-        }
-        else if (req.query.shard == "process") {
-            res.send(true)
-            process.exit()
-        }
-        else {
-            var shard = manager.shards.get(req.query.shard)
-            if (!shard) return res.send(false);
-            res.send(true);
-            shard.respawn();
-        }
+app.get('/reload', (req, res) => {
+  if (!req.query || req.query.a != config.auth) return res.send('err')
+  RR.reloadFromFile('/api', require('path').resolve(__dirname, './index.js'))
+  res.send('success')
+})
+
+app.get('/restart', (req, res) => {
+  if (req.query.auth == config.auth) {
+    if (req.query.shard == 'all') {
+      res.send(true)
+      manager.respawnAll()
+    } else if (req.query.shard == 'process') {
+      res.send(true)
+      process.exit()
+    } else {
+      var shard = manager.shards.get(req.query.shard)
+      if (!shard) return res.send(false)
+      res.send(true)
+      shard.respawn()
     }
-    else res.send(false);
+  } else res.send(false)
 })
 
-app.get("/admin/:id", (req, res) => {
-    if (req.params.id == "536004227470721055") return res.send("1");
-    manager.shards.get(shardOfSupport).eval(`
+app.get('/admin/:id', (req, res) => {
+  if (req.params.id == '536004227470721055') return res.send('1')
+  manager.shards.get(shardOfSupport).eval(`
         var member = this.guilds.get("399688888739692552").members.get("${req.params.id}");
         member ? member.roles.has(this.config.adminRole) : false
     `).then(x => {
-        if (x) res.send("1");
-        else res.send("0");
-    })
+    if (x) res.send('1')
+    else res.send('0')
+  })
 })
 
-app.get("/shard/:id", (req, res) => {
-    res.send(`${checkShard(req.params.id, config.shardCount)}`)
+app.get('/shard/:id', (req, res) => {
+  res.send(`${checkShard(req.params.id, config.shardCount)}`)
 })
 
-app.get("/cmds", async (req, res) => {
-    res.json((await global.db.statdb.getAll()).filter(x=>x.id.startsWith("cmd-")).map(x=>{
-        return {
-            cmd: x.id.split("-")[1],
-            amount: x.amount
-        }
-    }).sort((a, b) => { if(a.amount < b.amount) { return 1 } else if(a.amount > b.amount) { return -1 } else {return 0} }));
+app.get('/cmds', async (req, res) => {
+  res.json((await global.db.statdb.getAll()).filter(x => x.id.startsWith('cmd-')).map(x => {
+    return {
+      cmd: x.id.split('-')[1],
+      amount: x.amount
+    }
+  }).sort((a, b) => { if (a.amount < b.amount) { return 1 } else if (a.amount > b.amount) { return -1 } else { return 0 } }))
 })
 
-app.get("/site/updates", (req, res) => {
-    var url = "https://censorbot.jt3ch.net/updates"
-    res.redirect(url);
+app.get('/site/updates', (req, res) => {
+  var url = 'https://censorbot.jt3ch.net/updates'
+  res.redirect(url)
 })
 
-delete require.cache[require.resolve("C:/Workspace/websites/censorbot/updates/updates.js")]
+delete require.cache[require.resolve('C:/Workspace/websites/censorbot/updates/updates.js')]
 
-app.get("/site/updates/:v", (req, res) => {
-    var url = "https://censorbot.jt3ch.net/updates"
-    var z = require("C:/Workspace/websites/censorbot/updates/updates.js");
-    var the = z.find((x) => x.v == req.params.v);
-    res.send(`
+app.get('/site/updates/:v', (req, res) => {
+  var url = 'https://censorbot.jt3ch.net/updates'
+  var z = require('C:/Workspace/websites/censorbot/updates/updates.js')
+  var the = z.find((x) => x.v == req.params.v)
+  res.send(`
   <!DOCTYPE html>
   <html>
     <head>
@@ -122,5 +118,4 @@ app.get("/site/updates/:v", (req, res) => {
   </html>`)
 })
 
-
-module.exports = app;
+module.exports = app
