@@ -40,7 +40,12 @@ exports.run = async (client, message, args) => {
       var warning = ticketUser.no + 1
       client.ticketerdb.set(ticketfile.author, 'no', warning)
       if (warning > 2) {
-        message.reply('This user has ' + warning + ' warnings. Ban suggested. (' + ticketfile.author + ')')
+        message.channel.send(
+          client.u.embed
+            .setTitle('Ban')
+            .setDescription(`This user has ${warning} warnings. Ban suggested (${ticketfile.author}`)
+            .addField('id', ticketfile.author)
+        )
       }
       try {
         ticketsender.send(`Hey! After careful evaluation with the team your ticket on the word \`\`\`\n${wordgo.replace(/{n}/gi, '\n')}\`\`\` was denied! Sorry, If you believe this was a mistake be sure to join the support server (${client.config.prefix}support) and message the person who denied your ticket (listed at the end of this response). -${client.config.name} Support Team (Ticket Denied By ${author.username})`)
@@ -54,7 +59,6 @@ exports.run = async (client, message, args) => {
           }, 500)
         }, 5000)
       }
-      y = '(' + warning + ' warnings )'
     }
     if (arg1 == 'notcensor') {
       try {
@@ -73,7 +77,15 @@ exports.run = async (client, message, args) => {
     const ticmsg = await client.channels.get('509886529729200128').messages.fetch(ticketfile.ticmsg)
     ticmsg.delete()
     client.ticketdb.delete(ticketid)
-    client.msg('ticketLog', `(${ticketid}) ${author} responded \`${arg1}\` to (${ticketsender})${ticketsender ? ticketsender.username : 'inaccessible'}'s ${y} ticket of the word; ${wordgo}`)
+    client.msg('ticketLog', '',
+      client.u.embed
+        .setColor(arg1 === 'no' ? 'RED' : arg1 === 'yes' ? 'GREEN' : 'BLUE')
+        .setTitle('Ticket Response')
+        .setDescription(`${author} responded \`${arg1}\` to ${ticketsender} (${(ticketsender || {}).username})`)
+        .addField('Warnings', warning, true)
+        .addField('Ticket ID', ticketid, true)
+        .addField('Word', wordgo)
+    )
   })
 }
 exports.info = {
