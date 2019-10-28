@@ -174,3 +174,47 @@ select {
   top: 5px;
   left: 5px;
 }
+@media only screen and (max-device-width: 480px) {
+  body {
+    padding: 5px;
+  }
+  .box {
+    position: absolute;
+    font-size: 100px;
+    left: 0px;
+    width: 100%;
+  }
+  .servername {
+    margin-left: 15%;
+  }
+  .sep {
+    width: 100%;
+    height: 50%;
+  }
+  .setting {
+    width: 100%;
+    height: 100%;
+  }
+  select {
+    font-size: 40px;
+    padding: 20px;
+  }
+  #save {
+    position: absolute;
+    top: 1px;
+    right: 45%;
+  }
+  .switch {
+    width: 20%;
+    height: 34%;
+  }
+  .slider.round:before {
+    height: 90%;
+    width: 50%;
+    transform: translateX(100px);
+    margin-left: -10%;
+  }
+  .checksWrap {
+    width: 100%;
+  }
+}

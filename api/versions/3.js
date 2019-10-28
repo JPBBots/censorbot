@@ -183,7 +183,10 @@ global.getGuilds = (token) => {
   })
 }
 
-global.goToLogin = (res, serverid) => { res.redirect(`https://api.jt3ch.net/censorbot/v3/auth${serverid ? '?s=' + serverid : ''}`) }
+global.goToLogin = (res, serverid) => { 
+  const link = `https://api.jt3ch.net/censorbot/v3/auth${serverid ? '?s=' + serverid : ''}`
+  res.render('errors/gotologin', { link: link })
+}
 global.getUser = async (token, res) => {
   if (!token) { global.goToLogin(res, res.req.params.serverid); return false };
   const cache = global.userCache.get(token)
