@@ -159,7 +159,7 @@ app.get('/:serverid', async (req, res) => {
     db: db
   }
   if (type == 'json') return res.json(obj)
-  res.render('guild', { data: obj, base: base, token: req.cookies.token })
+  res.render(req.query.d ? 'devguild' : 'guild', { data: obj, base: base, token: req.cookies.token })
 })
 
 module.exports = app
