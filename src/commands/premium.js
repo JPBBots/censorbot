@@ -29,7 +29,7 @@ exports.run = async (client, message, args) => {
         .setDescription('Premium is a version of the bot that is completely the same, but unlocks a multitude of other features\n' +
                 'These can come with, faster response time, extra settings, extra commands, and premium support.\n' +
                 '**How do I get premium?**\n' +
-                'Support us on [patreon](https://censorbot.jt3ch.net), and be in the support server!\n' +
+                `Support us on [patreon](${client.config.patreon}), and be in the support server!\n` +
                 'Once you do this, you can choose 3 different servers to give premium too (may vary with member count)\n' +
                 "These servers will have their premium setting flipped on, and anything that's tagged with `(PREMIUM)` will be unlocked!\n" +
                 '**New Option** Boost our support discord (`+support`) to get 1 premium server!'
