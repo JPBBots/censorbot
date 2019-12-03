@@ -118,4 +118,46 @@ app.get('/site/updates/:v', (req, res) => {
   </html>`)
 })
 
+app.get('/premium', (req, res) => {
+  res.json({
+    hello: 'world'
+  })
+})
+
+async function isPremium (user) {
+  var res = await manager.shards.get(shardOfSupport).broadcastEval(`
+        function getValues(c) {
+            var g = c.guilds.get("399688888739692552");
+            if(!g) return null;
+            var mem = g.members.get("${user}");
+            if(!mem) return null;
+            return mem.roles.keyArray();
+        }
+        getValues(this);
+    `)
+  res = res.find(x => x)
+  if (!res) return false
+  var amount = 0
+  res.forEach(x => {
+    if (config.premiumRoles[x]) amount += config.premiumRoles[x]
+  })
+  const pudb = await global.db.pudb.getAll(user)
+  if (pudb) amount =- pudb.guilds.length
+  return { a: amount, g: pudb.guilds }
+}
+
+app.get('/:userid', async (req, res) => {
+  const user = await isPremium(req.params.userid)
+  if (!user) return res.json({
+    premium: false,
+    amount: null,
+    guilds: []
+  })
+  res.json({
+    premium: true,
+    amount: user.a,
+    guilds: user.g
+  })
+})
+
 module.exports = app
