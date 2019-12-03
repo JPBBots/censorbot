@@ -325,6 +325,7 @@
                 request("/guilds/<%= data.id %>/settings", "POST", obj, function(x) {
                     if(x.error) return alert("Error: " + x.error);
                     if(x) {
+                        if(x.refresh) window.location.reload()
                         button.style["background-color"] = "#2eb340"
                         document.getElementById('save').classList.remove('show')
                         document.getElementById('save').classList.add('hide')

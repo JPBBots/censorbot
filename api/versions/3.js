@@ -315,10 +315,15 @@ app.post('/guilds/:serverid/settings', async (req, res) => {
         }
         getStuff(this);
     `)
+  let refresh = false
   let isPremium = await global.db.pdb.getAll(req.params.serverid)
   isPremium = isPremium ? isPremium.premium : false
   req.body = req.body || {}
-  if (!isPremium && (req.body.resend || req.body.channels.length > 0)) return res.json({ error: 'server is not premium' })
+  if (!isPremium) {
+    if (req.body.webhook || req.body.channels.length > 0) refresh = true
+    req.body.webhook = false
+    req.body.channels = []
+  }
   var check = checkValidity(req.body, stuff)
   if (check !== true) return res.json({ error: 'invalid object', place: check })
 
@@ -347,7 +352,7 @@ app.post('/guilds/:serverid/settings', async (req, res) => {
   })
     .then(x => {
       if (!x || x.n < 1) return res.json({ error: 'db error' })
-      res.json(true)
+      res.json({ refresh: refresh })
     })
     .catch(err => {
       res.json({ error: err })
