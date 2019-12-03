@@ -125,7 +125,7 @@ app.get('/premium', (req, res) => {
 })
 
 async function isPremium (user) {
-  var res = await manager.shards.get(shardOfSupport).broadcastEval(`
+  var res = await manager.shards.get(shardOfSupport).eval(`
         function getValues(c) {
             var g = c.guilds.get("399688888739692552");
             if(!g) return null;
@@ -146,7 +146,7 @@ async function isPremium (user) {
   return { a: amount, g: pudb.guilds }
 }
 
-app.get('/:userid', async (req, res) => {
+app.get('/premium/:userid', async (req, res) => {
   const user = await isPremium(req.params.userid)
   if (!user) return res.json({
     premium: false,
