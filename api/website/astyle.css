@@ -143,6 +143,10 @@ select {
   color: white;
 }
 
+.premb {
+  cursor: pointer;
+}
+
 .sb {
   background-color: #23272A;
   /* Green */
@@ -261,7 +265,7 @@ select {
 @media only screen and (max-device-width: 720px) {
   .box {
     grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(9, 0.5fr);
+    grid-template-rows: repeat(11, 0.5fr);
     grid-template-areas:
       "back servername servername servername logout"
       ". base-filter base-filter base-filter ."
@@ -272,6 +276,8 @@ select {
       ". popmsg popmsg popmsg ."
       ". filter filter filter ."
       ". uncensor uncensor uncensor ."
+      ". resend resend resend ."
+      ". channels channels channels . ";
   }
   #save {
     height: 2%;
