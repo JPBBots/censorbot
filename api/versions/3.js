@@ -264,13 +264,12 @@ function checkValidity (obj, guild) {
   if (!(obj.filter instanceof Array)) return 9
   if (obj.filter.some(x => x.match(/[^a-zA-Z0-9 ]/gi))) return 10
   if (obj.pop_delete !== null && typeof obj.pop_delete !== 'number') return 11
-  if (typeof obj.pop_delete === 'number' && obj.pop_delete > 120 * 1000) return 12
-  if (typeof obj.punishment.on !== 'boolean') return 13
-  if (typeof obj.punishment.amount !== 'number' || obj.punishment.amount < 1) return 14
-  if ((typeof obj.punishment.role !== 'string' && obj.punishment.role !== null) || (typeof obj.punishment.role === 'string' && !guild.r.some(x => x.id == obj.punishment.role))) return 15
-  if (typeof obj.webhook !== 'boolean') return 16
-  if (!(obj.channels instanceof Array)) return 17
-  if (obj.channels.some(x => !guild.c.some(c => c.id === x))) return 18
+  if (typeof obj.punishment.on !== 'boolean') return 12
+  if (typeof obj.punishment.amount !== 'number' || obj.punishment.amount < 1) return 13
+  if ((typeof obj.punishment.role !== 'string' && obj.punishment.role !== null) || (typeof obj.punishment.role === 'string' && !guild.r.some(x => x.id == obj.punishment.role))) return 14
+  if (typeof obj.webhook !== 'boolean') return 15
+  if (!(obj.channels instanceof Array)) return 16
+  if (obj.channels.some(x => !guild.c.some(c => c.id === x))) return 17
   return true
 }
 
@@ -320,9 +319,17 @@ app.post('/guilds/:serverid/settings', async (req, res) => {
   isPremium = isPremium ? isPremium.premium : false
   req.body = req.body || {}
   if (!isPremium) {
-    if (req.body.webhook || req.body.channels.length > 0) refresh = true
+    if (req.body.filter.length > 150) return res.json({ error: "Non-premium servers can only have maximum 150 words in their filter" })
+    if (req.body.webhook || req.body.channels.length > 0 || req.body.pop_delete > 120 * 1000) refresh = true
     req.body.webhook = false
     req.body.channels = []
+    if (req.body.pop_delete > 120 * 1000) req.body.pop_delete = 120*1000
+  } else {
+    if (req.body.filter.length > 500) return res.json({ error: "Premium servers can only have maximum 500 words in their filter" })
+    if (req.body.pop_delete > 600 * 1000) {
+      refresh = true
+      req.body.pop_delete = 600 * 1000
+    }
   }
   var check = checkValidity(req.body, stuff)
   if (check !== true) return res.json({ error: 'invalid object', place: check })

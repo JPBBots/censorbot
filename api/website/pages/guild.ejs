@@ -3,6 +3,7 @@
     <head>
         <link rel="stylesheet" href="<%= base %>/style.css">
         <script>
+            var isPremium = <%= premium %>
             function buildObject() {
                 var obj = {
                     "antighostping": false,
@@ -217,14 +218,17 @@
                 
             <div class="setting" style="grid-area: popmsg">
                 <h3 class="name">Pop message</h3>
-                <div class="checks"><h5>Seconds until delete</h5> <input type="number" min="0" max="120" placeholder="Never" id="poptime" value="<%= data.db.pop_delete / 1000%>"></div>
+                <div class="checks"><h5>Seconds until delete</h5> <input type="number" min="0" max="<%= premium ? "600" : "120" %>" placeholder="Never" id="poptime" value="<%= data.db.pop_delete / 1000%>"></div>
                 <script>
                     document.getElementById("poptime").onchange = function() {
                         if(document.getElementById("poptime").value == 0) {
                             document.getElementById("poptime").value = "";
                         }
-                        if(document.getElementById("poptime").value > 120) {
+                        if(!premium && document.getElementById("poptime").value > 120) {
                             document.getElementById("poptime").value = 120;
+                        }
+                        if(premium && document.getElementById("poptime").value > 600) {
+                            document.getElementById("poptime").value = 600;
                         }
                     }
                     document.getElementById("poptime").onchange()
@@ -240,7 +244,7 @@
                     <script>
                         document.getElementById("msgtype").value = "<%= data.db.msg === null ? "1" : data.db.msg === false ? "2" : "3" %>"
                         <% if(data.db.msg) { %>
-                            document.getElementById("custommsg").value = "<%=data.db.msg%>"
+                            document.getElementById("custommsg").value = "<%= data.db.msg %>"
                         <% } %>
                         function chngMSG() {
                             if(document.getElementById("msgtype").value == 3) {
@@ -284,7 +288,6 @@
         <button id="tr" class="but" onclick="logout()" style="grid-area: logout">Logout</button>
         </div>
         <script>
-            var isPremium = <%= premium %>
             document.querySelectorAll(".premium").forEach(function(elm) {
                 elm.onclick = function() {
                     // if(!isPremium) return alert("This is a premium feature!")
