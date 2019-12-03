@@ -135,15 +135,17 @@ async function isPremium (user) {
         }
         getValues(this);
     `)
-  res = res.find(x => x)
   if (!res) return false
   var amount = 0
+  let isPrem = false
   res.forEach(x => {
-    if (config.premiumRoles[x]) amount += config.premiumRoles[x]
+    if (config.premiumRoles[x]) {
+      amount += config.premiumRoles[x]
+      isPrem = true
+    }
   })
   const pudb = await global.db.pudb.getAll(user)
-  if (pudb) amount =- pudb.guilds.length
-  return { a: amount, g: pudb.guilds }
+  return { p: isPrem, a: amount, g: pudb ? pudb.guilds : [] }
 }
 
 app.get('/premium/:userid', async (req, res) => {
@@ -154,7 +156,7 @@ app.get('/premium/:userid', async (req, res) => {
     guilds: []
   })
   res.json({
-    premium: true,
+    premium: user.p,
     amount: user.a,
     guilds: user.g
   })
