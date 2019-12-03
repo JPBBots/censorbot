@@ -154,7 +154,7 @@
     </head>
     <body style="background-color: #2C2F33">
         <div class="box">
-        <h1 class="name servername" style="grid-area: servername"><%= data.name %></h1>
+        <h1 class="name servername" style="grid-area: servername"><%= data.name %><% if(premium) { %> <img title="Premium" class="premb" src="/premium.png" width="30"> <% } %></h1>
             <div class="setting" style="grid-area: base-filter">
                 <h3 class="name">Base Filter</h3>
                 <label class="switch"><input type="checkbox" id="base" <%= data.db.base ? "checked" : "" %>><span class="slider round"></span></label>
@@ -258,7 +258,7 @@
             <!--premium-->
             <div class="setting premium" style="grid-area: resend">
                 <h3 class="name"> Resend <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
-                <label class="switch"><input type="checkbox" class="prem" id="resend" <%= data.db.webhook ? "checked" : "" %>><span class="slider round"></span></label>
+                <label class="switch" id="reslabel"><input type="checkbox" class="prem" id="resend" <%= data.db.webhook ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
             </div>
             <div class="setting premium" style="grid-area: channels">
                 <h3 class="name"> Ignore Channels <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
@@ -267,15 +267,15 @@
                         <option value="<%= channel.name %> <%= channel.id %>">#<%=channel.name%></option>
                     <% }) %>
                 </select>
-                <button class="sb prem" onclick="addToChannels()">Add</button><div></div>
+                <button class="sb prem" onclick="<%= premium ? "addToChannels()" : "premError()" %>">Add</button><div></div>
                 <select id="channels">
                     <% data.db.channels.forEach(channel => { %>
                         <% const chan = data.c.find(x => x.id === channel) %>
                         <option value="<%= channel %>">#<%= chan ? chan.name : "error" %></option>
                     <% }) %>
                 </select>
-                <button class="sb prem" onclick="removeChannel()">Remove</button>
-                <button class="sb prem" onclick="clearChannels()">Clear</button>
+                <button class="sb prem" onclick="<%= premium ? "removeChannel()" : "premError()" %>">Remove</button>
+                <button class="sb prem" onclick="<%= premium ? "clearChannels()" : "premError()" %>">Clear</button>
             </div>
             
         <div id="save" class="hide"> You have unsaved changes.  <button class="save" style="background-color: #2eb340" onclick="submit()">Save</button> </div>
@@ -291,17 +291,19 @@
                 }
             })
         
-            if(!isPremium) {
-                document.querySelectorAll(".prem").forEach(function(elm) {
-                    elm.setAttribute("disabled", "");
-                });
+            document.getElementById("reslabel").onclick = function() {
+                if(!isPremium) premError()
             }
             document.querySelectorAll(".premb").forEach(function(elm) {
                 elm.onclick = function() {
                     window.open("/premium", "_blank")
                 }
             })
-        
+            
+            function premError() {
+                alert("This is a premium only feature")
+            }
+            
             document.getElementById("log").value = "<%= data.db.log %>"
             document.getElementById("role").value = "<%= data.db.role || "null"%>"
             document.getElementById("punishrole").value = "<%= data.db.punishment.role || "null"%>"
