@@ -32,7 +32,11 @@
                         "amount": 3,
                         "role": "",
                         "on": false
-                    }
+                    },
+                    "webhook": false,
+                    "channels": [
+                        
+                    ]
                 }
                 
                 obj.base     = document.getElementById("base").checked;
@@ -56,6 +60,8 @@
                 obj.punishment.on = document.getElementById("punishon").checked || false;
                 obj.punishment.role = document.getElementById("punishrole").value;
                 if(obj.punishment.role == "null") obj.punishment.role = null;
+                obj.webhook = document.getElementById("resend").checked || false
+                obj.channels = [...document.getElementById("channels").children].map(x=>x.value)
                 
                 return obj;
             }
@@ -111,9 +117,37 @@
                     );
                 if(wordToRemove) causeChange();
             }
-            function clearAll() {
+            function clearFilter() {
                 document.getElementById("filter").innerHTML = "";
                 causeChange();
+            }
+            function addToChannels() {
+                var newChannel = document.getElementById("channeladd").value.split(" ")
+                var has = false
+                var channels = document.getElementById("channels")
+                for (var i = 0; i < channels.childElementCount; i++) {
+                    if (channels.children[i].value == newChannel[1]) has = true
+                }
+                if(has) return alert("Channel is already ignored")
+                var option = document.createElement("option")
+                option.value = newChannel[1]
+                option.innerText = "#" + newChannel[0]
+                
+                document.getElementById("channels").appendChild(option)
+                causeChange()
+            }
+            function removeChannel() {
+                var channelToRemove = document.getElementById("channels").value;
+                document.getElementById("channels")
+                    .removeChild(
+                        [...document.getElementById("channels")]
+                            .find(function(x) { return x.value == channelToRemove })
+                    );
+                if(channelToRemove) causeChange();
+            }
+            function clearChannels() {
+                document.getElementById("channels").innerHTML = "";
+                causeChange()
             }
         </script>
         <title>Dashboard - <%= data.name %></title>
@@ -178,7 +212,7 @@
                         <% }) %>
                     </select>
                     <button class="sb" onclick="removeWord()">Remove</button>
-                    <button class="sb" onclick="clearAll()">Clear All</button>
+                    <button class="sb" onclick="clearFilter()">Clear All</button>
             </div>
                 
             <div class="setting" style="grid-area: popmsg">
@@ -221,12 +255,48 @@
                     </script>
                     
             </div>
+            <!--premium-->
+            <div class="setting premium" style="grid-area: resend">
+                <h3 class="name"> Resend </h3>
+                <label class="switch"><input type="checkbox" class="prem" id="resend" <%= data.db.webhook ? "checked" : "" %>><span class="slider round"></span></label>
+            </div>
+            <div class="setting premium" style="grid-area: channels">
+                <h3 class="name"> Ignore Channels </h3>
+                <select id="channeladd">
+                    <% data.c.forEach(channel=>{ %>
+                        <option value="<%= channel.name %> <%= channel.id %>">#<%=channel.name%></option>
+                    <% }) %>
+                </select>
+                <button class="sb prem" onclick="addToChannels()">Add</button><div></div>
+                <select id="channels">
+                    <% data.db.channels.forEach(channel => { %>
+                        <% const chan = data.c.find(x => x.id === channel) %>
+                        <option value="<%= channel %>">#<%= chan ? chan.name : "error" %></option>
+                    <% }) %>
+                </select>
+                <button class="sb prem" onclick="removeChannel()">Remove</button>
+                <button class="sb prem" onclick="clearChannels()">Clear</button>
+            </div>
+            
         <div id="save" class="hide"> You have unsaved changes.  <button class="save" style="background-color: #2eb340" onclick="submit()">Save</button> </div>
         <!--<button id="save" class="but" style="display: none" onclick="submit()">Save</button>-->
         <button id="tl" class="but" onclick="back()" style="grid-area: back">Back</button>
         <button id="tr" class="but" onclick="logout()" style="grid-area: logout">Logout</button>
         </div>
         <script>
+            var isPremium = <%= premium %>
+            document.querySelectorAll(".premium").forEach(function(elm) {
+                elm.onclick = function() {
+                    if(!isPremium) return alert("This is a premium feature!")
+                }
+            })
+        
+            if(!isPremium) {
+                document.querySelectorAll(".prem").forEach(function(elm) {
+                    elm.setAttribute("disabled", "");
+                });
+            }
+        
             document.getElementById("log").value = "<%= data.db.log %>"
             document.getElementById("role").value = "<%= data.db.role || "null"%>"
             document.getElementById("punishrole").value = "<%= data.db.punishment.role || "null"%>"

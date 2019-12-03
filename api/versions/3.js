@@ -268,7 +268,9 @@ function checkValidity (obj, guild) {
   if (typeof obj.punishment.on !== 'boolean') return 13
   if (typeof obj.punishment.amount !== 'number' || obj.punishment.amount < 1) return 14
   if ((typeof obj.punishment.role !== 'string' && obj.punishment.role !== null) || (typeof obj.punishment.role === 'string' && !guild.r.some(x => x.id == obj.punishment.role))) return 15
-
+  if (typeof obj.webhook !== 'boolean') return 16
+  if (!(obj.channels instanceof Array)) return 17
+  if (obj.channels.some(x => !guild.c.some(c => c.id === x))) return 18
   return true
 }
 
@@ -313,7 +315,11 @@ app.post('/guilds/:serverid/settings', async (req, res) => {
         }
         getStuff(this);
     `)
-  var check = checkValidity(req.body || {}, stuff)
+  let isPremium = await global.db.pdb.getAll(req.params.serverid)
+  isPremium = isPremium ? isPremium.premium : false
+  req.body = req.body || {}
+  if (!isPremium && (req.body.resend || req.body.channels.length > 0)) return res.json({ error: 'server is not premium' })
+  var check = checkValidity(req.body, stuff)
   if (check !== true) return res.json({ error: 'invalid object', place: check })
 
   var o = req.body
@@ -335,7 +341,9 @@ app.post('/guilds/:serverid/settings', async (req, res) => {
       on: o.punishment.on,
       amount: o.punishment.amount,
       role: o.punishment.role
-    }
+    },
+    webhook: o.webhook,
+    channels: o.channels
   })
     .then(x => {
       if (!x || x.n < 1) return res.json({ error: 'db error' })

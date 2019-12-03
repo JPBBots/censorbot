@@ -159,7 +159,9 @@ app.get('/:serverid', async (req, res) => {
     db: db
   }
   if (type == 'json') return res.json(obj)
-  res.render(req.query.d ? 'devguild' : 'guild', { data: obj, base: base, token: req.cookies.token })
+  let isPremium = await global.db.pdb.getAll(req.partialGuild.i)
+  isPremium = isPremium ? isPremium.premium : false
+  res.render(req.query.d ? 'devguild' : 'guild', { data: obj, base: base, token: req.cookies.token, premium: isPremium })
 })
 
 module.exports = app

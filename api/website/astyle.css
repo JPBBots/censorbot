@@ -1,13 +1,15 @@
 .box {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(12, 1fr);
   grid-template-rows: repeat(3, 0.5fr);
   grid-template-areas:
-    "back save . servername servername servername servername . . logout"
-    ". . base-filter base-filter logchannel logchannel agp agp . ."
-    ". . base-filter base-filter logchannel logchannel agp agp . ."
-    ". . punish punish censor censor popmsg popmsg . ."
-    ". . filter filter uncensor uncensor . . . .";
+    "back save . . servername servername servername servername . . . logout"
+    ". . base-filter base-filter logchannel logchannel agp agp filter filter. ."
+    ". . base-filter base-filter logchannel logchannel agp agp filter filter . ."
+    ". . punish punish censor censor popmsg popmsg resend resend . ."
+    ". . punish punish censor censor popmsg popmsg channels channels . ."
+    ". . . . uncensor uncensor . . . . . ."
+    ". . . . . . . . . . . .";
   text-align: center;
   grid-gap: 1rem;
   color: white;
@@ -59,7 +61,7 @@
     grid-template-areas:
       ". ptitle ptitle ."
       ". ptoggle pamount ."
-      ". prole prole .";
+      "prole prole prole prole";
     grid-gap: 0.5rem
 }
 .punish > div {
