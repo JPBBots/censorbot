@@ -257,11 +257,11 @@
             </div>
             <!--premium-->
             <div class="setting premium" style="grid-area: resend">
-                <h3 class="name"> Resend </h3>
+                <h3 class="name"> Resend <img title="Premium" src="/premium.png" width="30"></h3>
                 <label class="switch"><input type="checkbox" class="prem" id="resend" <%= data.db.webhook ? "checked" : "" %>><span class="slider round"></span></label>
             </div>
             <div class="setting premium" style="grid-area: channels">
-                <h3 class="name"> Ignore Channels </h3>
+                <h3 class="name"> Ignore Channels <img title="Premium" src="/premium.png" width="30"></h3>
                 <select id="channeladd">
                     <% data.c.forEach(channel=>{ %>
                         <option value="<%= channel.name %> <%= channel.id %>">#<%=channel.name%></option>

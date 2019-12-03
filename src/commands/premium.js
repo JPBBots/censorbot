@@ -27,17 +27,12 @@ exports.run = async (client, message, args) => {
       client.u.embed
         .setTitle('Premium')
         .setDescription('Premium is a version of the bot that is completely the same, but unlocks a multitude of other features\n' +
-                'These can come with, faster response time, extra settings, extra commands, and premium support.\n' +
-                '**How do I get premium?**\n' +
-                `Support us on [patreon](${client.config.patreon}), and be in the support server!\n` +
-                'Once you do this, you can choose 3 different servers to give premium too (may vary with member count)\n' +
-                "These servers will have their premium setting flipped on, and anything that's tagged with `(PREMIUM)` will be unlocked!\n" +
-                '**New Option** Boost our support discord (`+support`) to get 1 premium server!'
+                'Learn more about, and how to get, premium [here](https://censorbot.jt3ch.net/premium).'
         )
         .addField('Is this server premium', cur ? 'true' : 'false', true)
         .addField('Are you premium', curUser ? 'true' : 'false', true)
         .setColor('BLURPLE')
-        .setFooter('https://patreon.com/censorbot')
+        .setFooter('https://censorbot.jt3ch.net/premium')
     )
   }
   if (args[0] == 'set') {
