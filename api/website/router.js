@@ -88,6 +88,11 @@ app.get('/admin', async (req, res) => {
   res.render('admin', { token: req.cookies.token })
 })
 
+app.get('/premium', async (req, res) => {
+  const guilds = await global.getUser(req.cookies.token, res)
+  res.json(guilds)
+})
+
 app.use('/:serverid', async (req, res, next) => {
   var guilds = await global.getUser(req.cookies.token, res)
   if (!guilds) return

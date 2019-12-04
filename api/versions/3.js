@@ -421,4 +421,49 @@ app.get('/users/:userid/guilds', async (req, res) => {
 //     })
 // })
 
+function getPremium(userID) {
+  return fetch(`https://api.jt3ch.net/censorbot/premium/${userID}`).then(x=>x.json())
+}
+
+app.put('/premium/:serverid', async (req, res) => {
+  if (!req.headers.authorization) return res.json({ error: 'Missing authorization' })
+  const user = await global.db.dashdb.find({ token: req.headers.authorization })
+  if (!user) return res.json({ error: 'Invalid user' })
+  const premium = await getPremium(user.id)
+  if (!premium.premium) return res.json({ error: 'User is not premium' })
+  if (premium.guilds.length >= premium.amount) return res.json({ error: 'Already used amount of servers' })
+  
+  const guild = await global.db.pdb.getAll(req.params.serverid)
+  if (guild && guild.premium) return res.json({ error: 'Server is already premium' })
+  
+  premium.guilds.push(req.params.serverid)
+  
+  await global.db.pdb.create(req.params.serverid, { premium: true })
+  await global.db.pudb.set(user.id, 'guilds', premium.guilds)
+  
+  res.json({
+    success: true
+  })
+})
+
+app.delete('/premium/:serverid', async (req, res) => {
+  if (!req.headers.authorization) return res.json({ error: 'Missing authorization' })
+  const user = await global.db.dashdb.find({ token: req.headers.authorization })
+  if (!user) return res.json({ error: 'Invalid user' })
+  const premium = await getPremium(user.id)
+  if (!premium.premium) return res.json({ error: 'User is not premium' })
+  
+  if (!premium.guilds.includes(req.params.serverid)) return res.json({ error: 'User did not put premium on this server' })
+  
+  const guild = await global.db.pdb.getAll(req.params.serverid)
+  if (!guild || !guild.premium) return res.json({ error: 'Server is not premium' })
+  
+  await global.db.pdb.delete(req.params.serverid)
+  await global.db.pudb.set(user.id, 'guilds', premium.guilds.filter(x => x !== req.params.serverid))
+  
+  res.json({
+    success: true
+  })
+})
+
 module.exports = app
