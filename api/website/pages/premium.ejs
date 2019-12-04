@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Premium Servers Dashboard</title>
+    </head>
+    <body>
+        <h1>Used <i><%= premium.guilds.length %> / <%= premium.amount %></i> servers</h1>
+        <select>
+            <% guilds.filter(x => !premium.guilds.includes(x.i)).forEach(g => { %>
+                <option value="<%= g.i %>"><%= g.n %></option>
+            <% }) %>
+        </select>
+        <div>
+            <% premium.guilds.forEach(g => { %>
+                <div class="guild" id="<%= g %>">
+                    <% const guild = guilds.find(x => x.i === g) %>
+                    <h3><%= guild ? guild.n : "Error" %></h3>
+                    <p><%= g %></p>
+                </div>
+            <% }) %>
+        </div>
+        
+        <script>
+            function request(endpoint, method, body, cb) {
+                var xhr = new XMLHttpRequest();
+                xhr.open(method, "https://api.jt3ch.net/censorbot/v3"+endpoint);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader("Authorization", "<%= token %>");
+                xhr.onload = function() {
+                    cb(JSON.parse(xhr.response));
+                    console.log(xhr.response);
+                }
+                xhr.send(body ? JSON.stringify(body) : null);
+            }
+        </script>
+    </body>
+</html>

@@ -421,7 +421,7 @@ app.get('/users/:userid/guilds', async (req, res) => {
 //     })
 // })
 
-function getPremium(userID) {
+global.getPremium = (userID) => {
   return fetch(`https://api.jt3ch.net/censorbot/premium/${userID}`).then(x=>x.json())
 }
 
@@ -429,7 +429,7 @@ app.put('/premium/:serverid', async (req, res) => {
   if (!req.headers.authorization) return res.json({ error: 'Missing authorization' })
   const user = await global.db.dashdb.find({ token: req.headers.authorization })
   if (!user) return res.json({ error: 'Invalid user' })
-  const premium = await getPremium(user.id)
+  const premium = await global.getPremium(user.id)
   if (!premium.premium) return res.json({ error: 'User is not premium' })
   if (premium.guilds.length >= premium.amount) return res.json({ error: 'Already used amount of servers' })
   
