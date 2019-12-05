@@ -98,7 +98,7 @@ app.get('/premium', async (req, res) => {
   const premium = await global.db.pudb.getAll(user.id)
   if (!premium) await global.db.pudb.create(user.id, { guilds: [] })
   
-  res.render('premium', { guilds, premium: isPremium, token: req.cookies.token })
+  res.render('premium', { guilds, premium: isPremium, token: req.cookies.token, base: base })
 })
 
 app.use('/:serverid', async (req, res, next) => {

@@ -2,22 +2,34 @@
 <html>
     <head>
         <title>Premium Servers Dashboard</title>
+        <link rel="stylesheet" href="<%= base %>/premium.css">
     </head>
-    <body>
-        <h1>Used <i><%= premium.guilds.length %> / <%= premium.amount %></i> servers</h1>
-        <select>
-            <% guilds.filter(x => !premium.guilds.includes(x.i)).forEach(g => { %>
-                <option value="<%= g.i %>"><%= g.n %></option>
-            <% }) %>
-        </select>
-        <div>
-            <% premium.guilds.forEach(g => { %>
-                <div class="guild" id="<%= g %>">
-                    <% const guild = guilds.find(x => x.i === g) %>
-                    <h3><%= guild ? guild.n : "Error" %></h3>
-                    <p><%= g %></p>
-                </div>
-            <% }) %>
+    <body style="background-color: #2C2F33">
+        <div class="box">
+            <h1 style="grid-area: usage">Used <i><%= premium.guilds.length %> / <%= premium.amount %></i> servers</h1>
+            <div style="grid-area: add">
+                <select id="add">
+                    <% guilds.filter(x => !premium.guilds.includes(x.i)).forEach(g => { %>
+                        <option value="<%= g.i %>"><%= g.n %></option>
+                    <% }) %>
+                </select>
+                <button onclick="add()">Add</button>
+            </div>
+            <div class="guilds" style="grid-area: current">
+                <% premium.guilds.forEach(g => { %>
+                    <div class="guild" id="<%= g %>">
+                        <% const guild = guilds.find(x => x.i === g) %>
+                        <% if (guild && guild.a) { %> 
+                            <img style="grid-area: pic" src="https://cdn.discordapp.com/icons/<%= g %>/<%= guild.a %>">
+                        <% } %>
+                        <div>
+                            <h3 style="grid-area: name"><%= guild ? guild.n : "Error" %></h3>
+                            <p style="grid-area: id"><%= g %></p>
+                        </div>
+                        <button onclick="remove('<%= g %>')">Remove</button>
+                    </div>
+                <% }) %>
+            </div>
         </div>
         
         <script>
@@ -31,6 +43,21 @@
                     console.log(xhr.response);
                 }
                 xhr.send(body ? JSON.stringify(body) : null);
+            }
+            function add() {
+                var newGuild = document.getElementById("add").value;
+                request("/premium/" + newGuild, "PUT", null, function(data) {
+                    if(!data) return
+                    if(data.error) return alert(data.error)
+                    window.location.reload()
+                })
+            }
+            function remove(id) {
+                request("/premium/" + id, "DELETE", null, function(data) {
+                    if(!data) return
+                    if(data.error) return alert(data.error)
+                    window.location.reload()
+                })
             }
         </script>
     </body>

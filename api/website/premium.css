@@ -1,0 +1,23 @@
+.box {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-template-areas: 
+      "back . usage . signout"
+      ". . add . ."
+      ". current current current ."
+      ". current current current ."
+      ". current current current .";
+  text-align: center;
+  color: white;
+}
+
+.guild {
+    border: 1px black solid;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas: 
+        "pic name name"
+        "pic id id";
+}
