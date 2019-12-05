@@ -16,17 +16,17 @@
                 <button onclick="add()">Add</button>
             </div>
             <div class="guilds" style="grid-area: current">
+                <% let i = 0 %>
                 <% premium.guilds.forEach(g => { %>
-                    <div class="guild" id="<%= g %>">
+                    <% i++ %>
+                    <div style="grid-area: <%= i %>" class="guild" id="<%= g %>">
                         <% const guild = guilds.find(x => x.i === g) %>
                         <% if (guild && guild.a) { %> 
-                            <img style="grid-area: pic" src="https://cdn.discordapp.com/icons/<%= g %>/<%= guild.a %>">
+                            <img class="pic" style="grid-area: pic" src="https://cdn.discordapp.com/icons/<%= g %>/<%= guild.a %>">
                         <% } %>
-                        <div>
-                            <h3 style="grid-area: name"><%= guild ? guild.n : "Error" %></h3>
-                            <p style="grid-area: id"><%= g %></p>
-                        </div>
-                        <button onclick="remove('<%= g %>')">Remove</button>
+                        <h3 style="grid-area: name"><%= guild ? guild.n : "Error" %></h3>
+                        <p style="grid-area: id"><%= g %></p>
+                        <button style="grid-area: remove" onclick="remove('<%= g %>')">Remove</button>
                     </div>
                 <% }) %>
             </div>

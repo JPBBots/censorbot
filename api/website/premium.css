@@ -5,19 +5,30 @@
   grid-template-areas: 
       "back . usage . signout"
       ". . add . ."
-      ". current current current ."
-      ". current current current ."
-      ". current current current .";
+      "current current current current current"
+      "current current current current current"
+      "current current current current current";
   text-align: center;
   color: white;
 }
 
+
 .guild {
     border: 1px black solid;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(1, 1fr);
     grid-template-areas: 
-        "pic name name"
-        "pic id id";
+        "pic name name remove"
+        "pic id id remove";
+    padding: 3px;
+    width: fit-content;
+    height: fit-content;
+    float: left;
+    margin: 3px;
+}
+
+.pic {
+    width: 7em;
+    height: 7em;
 }
