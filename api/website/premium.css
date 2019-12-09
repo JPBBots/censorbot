@@ -3,7 +3,7 @@
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(6, 1fr);
   grid-template-areas: 
-      "back . usage . signout"
+      "back . usage . logout"
       ". . add . ."
       "current current current current current"
       "current current current current current"
@@ -11,6 +11,14 @@
       "current current current current current";
   text-align: center;
   color: white;
+}
+
+.adder {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas:
+        ". do do so .";
 }
 
 .guilds {
@@ -39,7 +47,7 @@
     height: 7em;
 }
 
-button:not(.add) {
+button:not(#tr):not(#tl) {
   color: #99AAB5;
   cursor: pointer;
   background-color: transparent;
@@ -51,7 +59,14 @@ button:not(.add) {
   height: 100%;
 }
 
-button:hover:not(.add) {
+.add {
+    color: white;
+    cursor: pointer;
+    width: auto;
+    height: auto;
+}
+
+button:hover:not(#tr):not(#tl) {
   background-color: #7289DA;
   color: black;
 }
@@ -62,6 +77,22 @@ select {
   border-radius: 10px;
   background-color: #23272A;
   color: white;
+}
+
+#tl, #tr {
+  width: 100%;
+  height: 60%;
+  font-size: 2em;
+  border-radius: 0px;
+  transition-duration: 0.5s;
+  background-color: #40444a;
+  color: white;
+  border: 3px #454a52 solid;
+  cursor: pointer;
+}
+
+#tl:hover, #tr:hover {
+  opacity: 0.5;
 }
 
 @media (max-device-width: 1040px) {
@@ -85,10 +116,17 @@ select {
     .guild {
         font-size: 2em;
     }
-    button:not(.add) {
+    button {
         font-size: 2em;
     }
     select {
-        
+        font-size: 1em;
+        width: 15em;
+        height: 4em;
+    }
+    .adder {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-areas:
+            "do do do do so so";
     }
 }

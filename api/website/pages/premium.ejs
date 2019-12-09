@@ -7,14 +7,16 @@
     </head>
     <body style="background-color: #2C2F33">
         <div class="box">
+            <button id="tl" class="but" onclick="back()" style="grid-area: back">Back</button>
+            <button id="tr" class="but" onclick="logout()" style="grid-area: logout">Logout</button>
             <h1 style="grid-area: usage">Used <i><%= premium.guilds.length %> / <%= premium.amount %></i> servers</h1>
-            <div style="grid-area: add">
-                <select id="add">
+            <div class="adder" style="grid-area: add">
+                <select style="grid-area: do; width: auto" id="add">
                     <% guilds.filter(x => !premium.guilds.includes(x.i)).forEach(g => { %>
                         <option value="<%= g.i %>"><%= g.n %></option>
                     <% }) %>
                 </select>
-                <button class="add" onclick="add()">Add</button>
+                <button style="grid-area: so" class="add" onclick="add()">Add</button>
             </div>
             <div class="guilds" style="grid-area: current">
                 <% let i = -1 %>
@@ -59,6 +61,13 @@
                     if(data.error) return alert(data.error)
                     window.location.reload()
                 })
+            }
+            
+            function back() {
+                window.location.replace("<%=base%>")
+            }
+            function logout() {
+                window.location = "<%=base%>/logout"
             }
         </script>
     </body>

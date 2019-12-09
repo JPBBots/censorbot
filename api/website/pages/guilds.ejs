@@ -124,7 +124,7 @@
                         </div>
                     </div>
                 <% }) %>
-                <button id="tr" class="but" onclick="refresh()">Refresh Servers</button>
+                <button id="tr" class="but" onclick="prem()">Premium</button>
                 <button id="tl" class="but" onclick="logout()">Logout</button>
         </div>
     </h1>
@@ -134,18 +134,21 @@
                 window.location = "<%=base%>/" + guild.getAttribute("value")
             }
         })
-        function refresh() {
-             var xhr = new XMLHttpRequest();
-             xhr.open("POST", "https://api.jt3ch.net/censorbot/v3/refresh");
-             xhr.setRequestHeader("Content-Type", "application/json");
-             xhr.setRequestHeader("Authorization", "<%= token %>");
-             xhr.onload = function() {
-                 var response = JSON.parse(xhr.response);
-                 console.log(response);
-                 if(!response.success) return alert(response.error);
-                 window.location.reload();
-             }
-             xhr.send();
+        // function refresh() {
+        //      var xhr = new XMLHttpRequest();
+        //      xhr.open("POST", "https://api.jt3ch.net/censorbot/v3/refresh");
+        //      xhr.setRequestHeader("Content-Type", "application/json");
+        //      xhr.setRequestHeader("Authorization", "<%= token %>");
+        //      xhr.onload = function() {
+        //          var response = JSON.parse(xhr.response);
+        //          console.log(response);
+        //          if(!response.success) return alert(response.error);
+        //          window.location.reload();
+        //      }
+        //      xhr.send();
+        // }
+        function prem() {
+            window.location = "<%=base%>/premium";
         }
         function logout() {
             window.location.replace("<%= base %>/logout")

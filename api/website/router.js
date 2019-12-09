@@ -94,7 +94,7 @@ app.get('/premium', async (req, res) => {
   const user = await global.db.dashdb.find({ token: req.cookies.token })
   if (!user) return res.json({ error: 'User error' })
   const isPremium = await global.getPremium(user.id)
-  if (!isPremium.premium) return res.render('errors/notpremium')
+  if (!isPremium.premium || req.query.e) return res.render('errors/notpremium')
   const premium = await global.db.pudb.getAll(user.id)
   if (!premium) await global.db.pudb.create(user.id, { guilds: [] })
   
