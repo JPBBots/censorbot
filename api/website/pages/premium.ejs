@@ -1,3 +1,4 @@
+<% const convert = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'] %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,13 +14,13 @@
                         <option value="<%= g.i %>"><%= g.n %></option>
                     <% }) %>
                 </select>
-                <button onclick="add()">Add</button>
+                <button class="add" onclick="add()">Add</button>
             </div>
             <div class="guilds" style="grid-area: current">
-                <% let i = 0 %>
+                <% let i = -1 %>
                 <% premium.guilds.forEach(g => { %>
                     <% i++ %>
-                    <div style="grid-area: <%= i %>" class="guild" id="<%= g %>">
+                    <div style="grid-area: <%= convert[i] %>" class="guild" id="<%= g %>">
                         <% const guild = guilds.find(x => x.i === g) %>
                         <% if (guild && guild.a) { %> 
                             <img class="pic" style="grid-area: pic" src="https://cdn.discordapp.com/icons/<%= g %>/<%= guild.a %>">

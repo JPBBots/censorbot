@@ -1,10 +1,11 @@
 .box {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(5, 1fr);
+  grid-template-rows: repeat(6, 1fr);
   grid-template-areas: 
       "back . usage . signout"
       ". . add . ."
+      "current current current current current"
       "current current current current current"
       "current current current current current"
       "current current current current current";
@@ -12,6 +13,15 @@
   color: white;
 }
 
+.guilds {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-areas: 
+        "one two three"
+        "four five six"
+        "seven eight nine";
+}
 
 .guild {
     border: 1px black solid;
@@ -22,13 +32,63 @@
         "pic name name remove"
         "pic id id remove";
     padding: 3px;
-    width: fit-content;
-    height: fit-content;
-    float: left;
-    margin: 3px;
 }
 
 .pic {
     width: 7em;
     height: 7em;
+}
+
+button:not(.add) {
+  color: #99AAB5;
+  cursor: pointer;
+  background-color: transparent;
+  border: #7289DA 2px solid;
+  border-radius: 6px;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  width: 100%;
+  height: 100%;
+}
+
+button:hover:not(.add) {
+  background-color: #7289DA;
+  color: black;
+}
+
+select {
+  padding: 3px;
+  width: fit-content;
+  border-radius: 10px;
+  background-color: #23272A;
+  color: white;
+}
+
+@media (max-device-width: 1040px) {
+    .guilds {
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-rows: repeat(9, 1fr);
+        grid-template-areas: 
+            "one"
+            "two"
+            "three"
+            "four"
+            "five"
+            "six"
+            "seven"
+            "eight"
+            "nine";
+    }
+    .box {
+        grid-template-rows: repeat(2, 1fr);
+    }
+    .guild {
+        font-size: 2em;
+    }
+    button:not(.add) {
+        font-size: 2em;
+    }
+    select {
+        
+    }
 }
