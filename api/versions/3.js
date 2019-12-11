@@ -187,8 +187,8 @@ global.goToLogin = (res, serverid) => {
   const link = `https://api.jt3ch.net/censorbot/v3/auth${serverid ? '?s=' + serverid : ''}`
   res.render('errors/gotologin', { link: link })
 }
-global.getUser = async (token, res) => {
-  if (!token) { global.goToLogin(res, res.req.params.serverid); return false };
+global.getUser = async (token, res, s) => {
+  if (!token) { global.goToLogin(res, s); return false };
   const cache = global.userCache.get(token)
   if (cache) return cache
   var user = await global.db.dashdb.find({ token: token })
@@ -200,13 +200,13 @@ global.getUser = async (token, res) => {
   let bearer
   if (new Date() > user.expires.getTime()) {
     var dUser = await getToken(user.refresh, true)
-    if (!dUser) { global.goToLogin(res, res.req.params.serverid); return false }
+    if (!dUser) { global.goToLogin(res, s); return false }
     await doToken(dUser, res)
     bearer = dUser.access_token
   } else bearer = user.bearer
   var guilds = await global.getGuilds(bearer)
   if (!guilds) {
-    global.goToLogin(res, res.req.params.serverid)
+    global.goToLogin(res, s)
     return false
   }
   global.userCache.set(token, guilds)

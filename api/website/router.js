@@ -89,7 +89,7 @@ app.get('/admin', async (req, res) => {
 })
 
 app.get('/premium', async (req, res) => {
-  const guilds = await global.getUser(req.cookies.token, res)
+  const guilds = await global.getUser(req.cookies.token, res, 'premium')
   if (!guilds) return
   const user = await global.db.dashdb.find({ token: req.cookies.token })
   if (!user) return res.json({ error: 'User error' })
@@ -102,7 +102,7 @@ app.get('/premium', async (req, res) => {
 })
 
 app.use('/:serverid', async (req, res, next) => {
-  var guilds = await global.getUser(req.cookies.token, res)
+  var guilds = await global.getUser(req.cookies.token, res, req.params.serverid)
   if (!guilds) return
 
   const id = req.params.serverid.split('.')[0]
