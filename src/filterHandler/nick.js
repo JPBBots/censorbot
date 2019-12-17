@@ -9,7 +9,7 @@ module.exports = async (client, oldMember, newMember) => {
 
   var response
   if (client.serverFilters[newMember.guild.id]) response = client.serverFilters[newMember.guild.id].test(newDisplayName, true, data.filter, data.uncensor)
-  else response = client.filter.test(newDisplayName, data.base, data.filter, data.uncensor)
+  else response = await client.filter.test(newDisplayName, data.base, data.filter, data.uncensor)
 
   if (response.censor) {
     var error

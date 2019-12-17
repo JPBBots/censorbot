@@ -7,7 +7,7 @@ module.exports = async (client, oldMessage, newMessage) => {
 
   var response
   if (client.serverFilters[newMessage.guild.id]) response = client.serverFilters[newMessage.guild.id].test(newMessage.content, true, data.filter, data.uncensor)
-  else response = client.filter.test(newMessage.content, data.base, data.filter, data.uncensor)
+  else response = await client.filter.test(newMessage.content, data.base, data.filter, data.uncensor)
 
   if (response.censor) {
     var msg = newMessage

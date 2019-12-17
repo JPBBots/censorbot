@@ -79,6 +79,8 @@ app.listen(1234, () => {
     console.log("Censorbot Informatic Started")
 })
 
+require("child_process").fork('./filter/api.js')
+
 const ipc = require("node-ipc");
 
 ipc.config.id = "censorbotmanager";

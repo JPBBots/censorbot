@@ -1,5 +1,5 @@
 exports.run = async (client, message, args) => {
-  var res = client.filter.test(message.content, true)
+  var res = await client.filter.test(message.content, true)
   if (res.word) res.word = res.word.toString()
   message.channel.send(client.u.embed
     .setTitle('Filter Test')

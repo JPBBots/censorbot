@@ -11,7 +11,7 @@ module.exports = async (client, reaction, user) => {
 
   var response
   if (client.serverFilters[message.guild.id]) response = client.serverFilters[message.guild.id].test(reaction.emoji.name, true, data.filter, data.uncensor)
-  else response = response = client.filter.test(reaction.emoji.name, data.base, data.filter, data.uncensor)
+  else response = response = await client.filter.test(reaction.emoji.name, data.base, data.filter, data.uncensor)
   if (response.censor) {
     var msg = message
     var error

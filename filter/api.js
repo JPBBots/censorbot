@@ -1,0 +1,21 @@
+const express = require('express')
+const app = express()
+
+const Filter = require('./class.js')
+const filter = new Filter(null, './filter.json', './linkbyp.json')
+
+const bodyParser = require('body-parser')
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
+
+app.post('/', (req, res) => {
+  const response = filter.test(req.body.content, req.body.global, req.body.server, req.body.uncensor)
+  res.json(response)
+})
+
+app.listen(6993, () => {
+  console.log("Filter started")
+})

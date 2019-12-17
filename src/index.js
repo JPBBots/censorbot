@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const client = new Discord.Client()
+const fetch = require("node-fetch")
 const {
   promisify
 } = require('util')
@@ -22,7 +23,25 @@ require('./functions.js')(client)
 
 global.client = client
 
-client.filter = new client.jpbfilter(client, './filter.json', './linkbyp.json')
+// client.filter = new client.jpbfilter(client, './filter.json', './linkbyp.json')
+client.filter = {
+  test: async (content, global, server, uncensor) => {
+    const response = await fetch("http://localhost:6993", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        content,
+        global,
+        server,
+        uncensor
+      })
+    }).then(x=>x.json())
+    if (response.censor) client.statdb.add('deleted', 'amount', 1)
+    return response
+  }
+}
 
 client.broken = false
 client.discord = Discord
