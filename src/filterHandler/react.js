@@ -22,26 +22,36 @@ module.exports = async (client, reaction, user) => {
       error = 'Error! Missing permission to manage messages!'
     }
     console.log(`Shard ${client.shard.id} | Removed reaction from ${user} ${user.username}: `.yellow + `${reaction.emoji.name}`.yellow.underline)
-    var log = msg.guild.channels.get(data.log)
-    if (!log) return
-    log.send(client.embeds.log([reaction.emoji.name, reaction.emoji.url || ''], reaction.message, response.method, 3, error))
+    var log 
+    if (data.log) {
+      log = msg.guild.channels.get(data.log)
+      if (log) log.send(client.embeds.log([reaction.emoji.name, reaction.emoji.url || ''], reaction.message, response.method, 3, error))
+    }
     if (data.punishment.on) {
       console.log('punish')
       var role = msg.guild.roles.get(data.punishment.role)
       if (!role) return
-      var use = await client.punishdb.find({ u: msg.author.id, g: msg.guild.id })
-      if (!use) return client.punishdb.create(null, { u: msg.author.id, g: msg.guild.id, a: 1 })
+      var use = await client.punishdb.find({ u: user.id, g: msg.guild.id })
+      if (!use) {
+        use = {
+          u: user.id,
+          g: msg.guild.id,
+          a: 0
+        }
+        await client.punishdb.create(null, { u: user.id, g: msg.guild.id, a: 0 })
+      }
       if (use.a + 1 >= data.punishment.amount) {
-        msg.member.roles.add(role)
-        client.punishdb.delete({ u: msg.author.id, g: msg.guild.id })
-        var embed = new client.discord.MessageEmbed()
+        const mem = msg.guild.members.get(user.id)
+        if (mem) mem.roles.add(role)
+        client.punishdb.delete({ u: user.id, g: msg.guild.id })
+        if (log) log.send(client.u.embed
           .setTitle('User Punished')
-          .setDescription(`${msg.author} Reached the max ${data.punishment.amount} warnings.\n\nThey have received the ${role} role as punishment!`)
+          .setDescription(`${user} Reached the max ${data.punishment.amount} warnings.\n\nThey have received the ${role} role as punishment!`)
           .setColor('RED')
           .setFooter('This system is heavily WIP!')
-        log.send(embed)
+        )
       } else {
-        client.punishdb.add({ u: msg.author.id, g: msg.guild.id }, 'a', 1)
+        client.punishdb.add({ u: user.id, g: msg.guild.id }, 'a', 1)
       }
     }
   }

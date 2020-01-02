@@ -60,26 +60,33 @@ module.exports = async (client, oldMessage, newMessage) => {
       arg: response.arg,
       word: response.word
     }))
-    var log = msg.guild.channels.get(data.log)
-    if (!log) {
-      return client.sendErr(msg, 'Error no log channel found! Do +setlog in the desired log channel')
+    var log 
+    if (data.log) {
+      log = msg.guild.channels.get(data.log)
+      if (log) log.send(client.embeds.log([oldMessage.content, newMessage.content], msg, response.method, 1, error, response))
     }
-    log.send(client.embeds.log([oldMessage.content, newMessage.content], msg, response.method, 1, error, response))
     if (data.punishment.on) {
       console.log('punish')
       var role = msg.guild.roles.get(data.punishment.role)
       if (!role) return
       var user = await client.punishdb.find({ u: msg.author.id, g: msg.guild.id })
-      if (!user) return client.punishdb.create(null, { u: msg.author.id, g: msg.guild.id, a: 1 })
+      if (!user) {
+        user = {
+          u: msg.author.id,
+          g: msg.guild.id,
+          a: 0
+        }
+        await client.punishdb.create(null, { u: msg.author.id, g: msg.guild.id, a: 0 })
+      }
       if (user.a + 1 >= data.punishment.amount) {
         msg.member.roles.add(role)
         client.punishdb.delete({ u: msg.author.id, g: msg.guild.id })
-        var embed = new client.discord.MessageEmbed()
+        if(log) log.send(client.u.embed
           .setTitle('User Punished')
           .setDescription(`${msg.author} Reached the max ${data.punishment.amount} warnings.\n\nThey have received the ${role} role as punishment!`)
           .setColor('RED')
           .setFooter('This system is heavily WIP!')
-        log.send(embed)
+        )
       } else {
         client.punishdb.add({ u: msg.author.id, g: msg.guild.id }, 'a', 1)
       }

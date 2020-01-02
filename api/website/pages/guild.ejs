@@ -48,6 +48,7 @@
                     react: document.getElementById("censor-react").checked || false,
                 };
                 obj.log      = document.getElementById("log").value;
+                if (obj.log == "null") obj.log = null
                 obj.role     = document.getElementById("role").value;
                 if(obj.role == "null") obj.role = null;
                 obj.filter   = [...document.getElementById("filter").children].map(x=>x.value);
@@ -163,6 +164,7 @@
             <div class="setting" style="grid-area: logchannel">
                 <h3 class="name">Log Channel</h3>
                     <select id="log">
+                        <option value="null">None</option>
                         <% data.c.forEach(channel=>{ %>
                             <option value="<%= channel.id %>">#<%=channel.name%></option>
                         <% }) %>
@@ -307,7 +309,7 @@
                 alert("This is a premium only feature")
             }
             
-            document.getElementById("log").value = "<%= data.db.log %>"
+            document.getElementById("log").value = "<%= data.db.log || "null"%>"
             document.getElementById("role").value = "<%= data.db.role || "null"%>"
             document.getElementById("punishrole").value = "<%= data.db.punishment.role || "null"%>"
             function request(endpoint, method, body, cb) {

@@ -40,6 +40,10 @@ client.filter = {
     }).then(x=>x.json())
     if (response.censor) client.statdb.add('deleted', 'amount', 1)
     return response
+  },
+  reload: async () => {
+    await fetch(`http://localhost:6993/reload`).catch(()=>{})
+    return true
   }
 }
 

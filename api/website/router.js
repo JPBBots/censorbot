@@ -158,8 +158,11 @@ app.get('/:serverid', async (req, res) => {
         getStuff(this);
     `)
   if (!stuff) return res.render('invite', { id: serverid })
-  const db = await global.db.rdb.getAll(serverid)
-  if (!db) return res.send('Error occured while communicating with your server')
+  let db = await global.db.rdb.getAll(serverid)
+  if (!db) {
+    db = new config.serverConfig(serverid)
+    await global.db.rdb.create(serverid, db)
+  }
   delete db._id
   if (stuff.n) {
     req.partialGuild.n = stuff.n

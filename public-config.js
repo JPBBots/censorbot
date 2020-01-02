@@ -24,7 +24,7 @@ const config = {
                 "webhook": false,
                 "base": true,
                 "role": null,
-                "log": "none",
+                "log": null,
                 "filter": [],
                 "msg": null,
                 "pop_delete": 3000,
@@ -33,7 +33,7 @@ const config = {
                 "punishment": {
                     on: false,
                     amount: 3,
-                    role: ""
+                    role: null
                 },
                 ...newOptions
             }
@@ -43,7 +43,9 @@ const config = {
     premiumRoles: {
         "617037486719238185": 3, // patron
         "621810419643973642": 1, // booster
-        "651523919962177546": 1 // premium
+        "651523919962177546": 1, // premium
+        "623947910274482177": 1, // senior helper
+        "623847890628116504": 99 // head helper
     }
 }
 

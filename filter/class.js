@@ -236,7 +236,7 @@ module.exports = class JPBFilter {
           })
           if (!stop) {
             res.stopped = true
-            res.args.push(word)
+            res.args.push(word.toString())
           }
         }
       })

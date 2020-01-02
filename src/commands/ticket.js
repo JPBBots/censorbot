@@ -8,9 +8,6 @@ function createid () {
 }
 exports.run = async (client, message, args) => {
   const fs = require('fs')
-  // if (message.guild.id !== "399688888739692552") {
-  //     return message.reply('!!! The ticket feature is not longer supported outside of the support server, please do ' + client.config.prefix + 'support and run your tickets there, thanks!')
-  // }
   var banUser = await client.ticketerdb.getAll(message.author.id)
   if (banUser && banUser.banned) {
     const banno = await message.reply('Hello! We are sorry to inform you but you have been banned from using this feature! This was most likely caused by you abusing the command, if you would like to appeal or find out exactly why you were banned feel free to do ' + client.config.prefix + 'support and talk to the owner, Sorry! -' + client.config.name + ' Support Team')
@@ -40,7 +37,7 @@ exports.run = async (client, message, args) => {
     return
   }
   var content = args.join(' ')
-  var response = client.filter.test(content, true)
+  var response = await client.filter.test(content, true)
   if (response.censor == false) {
     const notcensorres = await message.reply("Ticket stopped! The automatic detection system found you tried to submit a ticket of a word that isn't censored! If this isn't true then please join the support server (" + client.config.prefix + 'support)!')
     setTimeout(function () {

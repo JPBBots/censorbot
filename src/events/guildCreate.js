@@ -2,7 +2,7 @@ module.exports = async (client, guild) => {
   const fs = require('fs')
   if (client.broken) return
   client.update_count()
-  // const botowner = client.users.get("142408079177285632")
+  
   client.webhooks.joinAndLeave.send(
     client.u.embed
       .setColor('GREEN')
@@ -12,22 +12,17 @@ module.exports = async (client, guild) => {
       .addField('Member Count', guild.memberCount, true)
       .setTimestamp()
   )
-  // botowner.send(`${guild.owner.user.username} and ${guild.name} | ${guild.owner} ${guild.ownerID} ${guild.owner.user.username} Invited ${client.config.name} to server ${guild.name} ${guild.id}... Awaiting Approval`)
-  if (guild.channels.map(a => a.name).includes('general')) {
-    var newguildchannel = guild.channels.find(a => a.name === 'general')
-    if (newguildchannel.type == 'text') {
-      if (!newguildchannel) {
-        client.msg('serverList', `${guild.name} Owned By ${guild.owner}`)
-      }
-    }
-  }
-  const r = await client.rdb.create(guild.id, new client.config.serverConfig(guild.id))
-  var l
-  if (r.inserted < 1) {
-    l = ' (Already Had Config)'
+  
+  const db = await client.rdb.getAll(guild.id)
+  if (db) {
+    console.log(`Shard ${client.shard.id} | Joined ${guild.name} | Already Had Config`.green)
   } else {
-    l = ' (New config made for server)'
+    await client.rdb.create(guild.id, new client.config.serverConfig(guild.id))
+    guild.owner.send(client.u.embed
+      .setTitle(`Thanks for inviting me to your server! (${guild.name})`)
+      .setDescription(`We hope you enjoy your time, and hope we can make your server a cleaner place!\n\nHere are some useful resources:\nDashboard: https://censorbot.jt3ch.net/dash\n[Support Server](${client.config.support})\n[Premium](https://censorbot.jt3ch.net/premium)\n\nThanks again!`)
+      .setColor('GREEN')
+      .setFooter(guild.id)
+    )
   }
-  console.log(`Shard ${client.shard.id} | Joined ${guild.name} ${l}`.green)
-  guild.owner.send('Hello! Thanks for inviting me to your server! Please join the support server to be updated about bot updates and problems and so you can get help if you find a problem')
 }

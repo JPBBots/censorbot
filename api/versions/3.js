@@ -259,7 +259,7 @@ function checkValidity (obj, guild) {
   if (typeof obj.censor.nick !== 'boolean') return 4
   if (typeof obj.censor.react !== 'boolean') return 5
   if (typeof obj.antighostping !== 'boolean') return 6
-  if (typeof obj.log !== 'string' || !guild.c.some(x => x.id === obj.log)) return 7
+  if (obj.log !== null && ((typeof obj.log !== 'string') || !guild.c.some(x => x.id === obj.log))) return 7
   if ((typeof obj.role !== 'string' && obj.role !== null) || (typeof obj.role === 'string' && !guild.r.some(x => x.id == obj.role))) return 8
   if (!(obj.filter instanceof Array)) return 9
   if (obj.filter.some(x => x.match(/[^a-zA-Z0-9 ]/gi))) return 10

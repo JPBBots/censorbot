@@ -24,24 +24,33 @@ module.exports = async (client, oldMember, newMember) => {
       arg: response.arg,
       word: response.word
     }))
-    var log = oldMember.guild.channels.get(data.log)
-    if (!log) return
-    log.send(client.embeds.log([oldDisplayName, newDisplayName], oldMember, response.method, 2, error, response))
+    var log 
+    if(data.log) {
+      log = oldMember.guild.channels.get(data.log)
+      if (log) log.send(client.embeds.log([oldDisplayName, newDisplayName], oldMember, response.method, 2, error, response))
+    }
     if (data.punishment.on) {
       console.log('punish')
       var role = oldMember.guild.roles.get(data.punishment.role)
       if (!role) return
       var user = await client.punishdb.find({ u: oldMember.user.id, g: oldMember.guild.id })
-      if (!user) return client.punishdb.create(null, { u: oldMember.user.id, g: oldMember.guild.id, a: 1 })
+      if (!user) if (!user) {
+        user = {
+          u: oldMember.user.id,
+          g: oldMember.guild.id,
+          a: 0
+        }
+        await client.punishdb.create(null, { u: oldMember.user.id, g: oldMember.guild.id, a: 0 })
+      }
       if (user.a + 1 >= data.punishment.amount) {
         oldMember.roles.add(role)
         client.punishdb.delete({ u: oldMember.user.id, g: oldMember.guild.id })
-        var embed = new client.discord.MessageEmbed()
+        if(log) log.send(client.u.embed
           .setTitle('User Punished')
           .setDescription(`${oldMember.user} Reached the max ${data.punishment.amount} warnings.\n\nThey have received the ${role} role as punishment!`)
           .setColor('RED')
           .setFooter('This system is heavily WIP!')
-        log.send(embed)
+        )
       } else {
         client.punishdb.add({ u: oldMember.user.id, g: oldMember.guild.id }, 'a', 1)
       }

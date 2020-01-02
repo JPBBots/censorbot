@@ -1061,6 +1061,11 @@ function getLimit (obj, filter = (x) => { return x }, map = (x) => { return x })
 }
 
 exports.run = async (client, message, args, db) => {
+  return message.channel.send(client.u.embed
+    .setTitle('This command no longer exists')
+    .setColor('GREEN')
+    .setDescription('It has been replaced with the new dashboard!\nCheck it out here: https://censorbot.jt3ch.net/dash')
+  )
   if (!args[0]) {
     // var str = `Change settings for this server!\n\nCategories:\n`;
     // var am = getLimit(settings);

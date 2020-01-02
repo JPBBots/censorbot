@@ -1,4 +1,9 @@
 exports.run = async (client, message, args, db) => {
+  return message.channel.send(client.u.embed
+    .setTitle('This command no longer exists')
+    .setColor('GREEN')
+    .setDescription('It has been replaced with the new dashboard!\nCheck it out here: https://censorbot.jt3ch.net/dash')
+  )
   message.delete()
   var type = args[0]
   if (!type) {

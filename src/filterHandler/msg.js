@@ -1,7 +1,7 @@
-module.exports = async (client, message) => {
+module.exports = async(client, message) => {
   if (message.guild && message.guild.id == '264445053596991498') return
-  var prefix = message.content.startsWith(client.config.prefix) ? client.config.prefix
-    : message.content.startsWith('<@')
+  var prefix = message.content.startsWith(client.config.prefix) ? client.config.prefix :
+    message.content.startsWith('<@')
   if (message.guild.id == '264445053596991498' && message.content.startsWith(client.config.prefix)) return
   if (message.content.startsWith(client.config.prefix)) prefix = client.config.prefix
   else if (message.content.startsWith('<@')) {
@@ -40,18 +40,19 @@ module.exports = async (client, message) => {
     var error
     try {
       await msg.delete()
-    } catch (err) {
+    }
+    catch (err) {
       console.log(`Shard ${client.shard.id} | ${msg.guild.name} ${msg.guild.id} ${err.message}`.red)
       error = 'Error! Missing permission to manage messages!'
     }
     if (message.guild.id == '448194623580667916') {
       message.author.send(
         client.u.embed
-          .setColor('RED')
-          .setTitle('Your message was deleted in Krunker Bunker')
-          .setDescription('Please ping <@142408079177285632> if you believe this was a mistake')
-          .addField('Message', message.content)
-          .setTimestamp()
+        .setColor('RED')
+        .setTitle('Your message was deleted in Krunker Bunker')
+        .setDescription('Please ping <@142408079177285632> if you believe this was a mistake')
+        .addField('Message', message.content)
+        .setTimestamp()
       )
     }
     if (data.msg !== false) {
@@ -65,7 +66,8 @@ module.exports = async (client, message) => {
             msg.channel.send(`ANTI-GHOSTPING:::Attention ${msg.mentions.users.filter(b => !b.bot).map(x => x.tag).join(' ')} you might've been ghost pinged by ${msg.author} (Don't want this message. Run +agp)`)
           }
         }
-      } catch (err) {
+      }
+      catch (err) {
         console.error(err)
       }
     }
@@ -74,7 +76,8 @@ module.exports = async (client, message) => {
     if (msg.content !== 0) {
       if (msg.content.length > 256) {
         content = 'Message too long to include in embed!'
-      } else {
+      }
+      else {
         content = msg.content
       }
     }
@@ -85,27 +88,35 @@ module.exports = async (client, message) => {
       arg: response.arg,
       word: response.word
     }))
-    var log = msg.guild.channels.get(data.log)
-    if (!log) {
-      return client.sendErr(msg, 'Error no log channel found! Do +setlog in the desired log channel')
+    var log
+    if (data.log) {
+      log = msg.guild.channels.get(data.log)
+      if (log) log.send(client.embeds.log([msg.content], msg, response.method, 0, error, response))
     }
-    log.send(client.embeds.log([msg.content], msg, response.method, 0, error, response))
     if (data.punishment.on) {
       console.log('punish')
       var role = msg.guild.roles.get(data.punishment.role)
       if (!role) return
       var user = await client.punishdb.find({ u: msg.author.id, g: msg.guild.id })
-      if (!user) return client.punishdb.create(null, { u: msg.author.id, g: msg.guild.id, a: 1 })
+      if (!user) {
+        user = {
+          u: msg.author.id,
+          g: msg.guild.id,
+          a: 0
+        }
+        await client.punishdb.create(null, { u: msg.author.id, g: msg.guild.id, a: 0 })
+      }
       if (user.a + 1 >= data.punishment.amount) {
         msg.member.roles.add(role)
         client.punishdb.delete({ u: msg.author.id, g: msg.guild.id })
-        var embed = new client.discord.MessageEmbed()
+        if (log) log.send(client.u.embed
           .setTitle('User Punished')
           .setDescription(`${msg.author} Reached the max ${data.punishment.amount} warnings.\n\nThey have received the ${role} role as punishment!`)
           .setColor('RED')
           .setFooter('This system is heavily WIP!')
-        log.send(embed)
-      } else {
+        )
+      }
+      else {
         client.punishdb.add({ u: msg.author.id, g: msg.guild.id }, 'a', 1)
       }
     }

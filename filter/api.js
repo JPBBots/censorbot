@@ -16,6 +16,12 @@ app.post('/', (req, res) => {
   res.json(response)
 })
 
+app.get('/reload', (req, res) => {
+  res.json({ restart: true })
+  console.log('Filter restarting...')
+  process.exit()
+})
+
 app.listen(6993, () => {
   console.log("Filter started")
 })

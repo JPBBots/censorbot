@@ -79,7 +79,14 @@ app.listen(1234, () => {
     console.log("Censorbot Informatic Started")
 })
 
-require("child_process").fork('./filter/api.js')
+function spawnFilter() {
+    const proc = require("child_process").fork('./filter/api.js')
+    proc.once('exit', () => {
+        console.log('Filter has been shut down.')
+        spawnFilter()
+    })
+}
+spawnFilter()
 
 const ipc = require("node-ipc");
 

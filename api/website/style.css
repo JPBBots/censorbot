@@ -262,7 +262,7 @@ select {
   opacity: 0.5;
 }
 
-@media only screen and (max-device-width: 720px) {
+@media only screen and (max-device-width: 1160px) {
   .box {
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(11, 0.5fr);
