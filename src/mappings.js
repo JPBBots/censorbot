@@ -12,6 +12,7 @@ const filterHandler = r('./filterHandler')
 
 module.exports = {
   mappings: r('./mappings.js'),
+  presences: r('./presences.js'),
   commands: {
     index: commands,
     admin: resolve(commands, './admin'),

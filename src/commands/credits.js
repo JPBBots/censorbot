@@ -22,6 +22,6 @@ exports.run = async (client, message, args) => {
 exports.info = {
   name: 'credits',
   description: "Displays {name}'s Developers and contributers",
-  format: '{prefix}',
+  format: '{prefix}credits',
   aliases: ['creds']
 }

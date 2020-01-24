@@ -14,7 +14,7 @@ exports.run = async (client, message, args) => {
   const stats = {
     embed: {
       title: client.config.name + ' Stats',
-      description: client.config.name + ' Is In ' + gc + ' servers and serving ' + uc + ' users!',
+      description: client.config.name + ' Is In ' + gc.toLocaleString() + ' servers and serving ' + uc.toLocaleString() + ' users!',
       url: client.config.invitesite + '',
       color: 14976715,
       author: {

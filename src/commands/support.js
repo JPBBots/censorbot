@@ -9,5 +9,6 @@ exports.run = async (client, message, args) => {
 exports.info = {
   name: 'support',
   description: 'Sends invite to support server to DMs',
-  format: '{prefix}support'
+  format: '{prefix}support',
+  aliases: ['s', 'server']
 }

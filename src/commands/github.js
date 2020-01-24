@@ -9,5 +9,6 @@ exports.run = async (client, message, args) => {
 exports.info = {
   name: 'github',
   description: 'Displays the github link',
-  format: '{prefix}github'
+  format: '{prefix}github',
+  aliases: ['git']
 }

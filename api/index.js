@@ -90,6 +90,12 @@ app.get('/cmds', async (req, res) => {
   }).sort((a, b) => { if (a.amount < b.amount) { return 1 } else if (a.amount > b.amount) { return -1 } else { return 0 } }))
 })
 
+const Reader = require("read-last-lines")
+
+app.get("/err", async (req, res) => {
+  res.send(await Reader.read("C:/Users/Administrator/.pm2/logs/censorbot-error.log", 50))
+})
+
 app.get('/site/updates', (req, res) => {
   var url = 'https://censorbot.jt3ch.net/updates'
   res.redirect(url)

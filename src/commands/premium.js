@@ -109,5 +109,6 @@ exports.run = async (client, message, args) => {
 exports.info = {
   name: 'premium',
   description: 'See how to get premium version of the bot',
-  format: '{prefix}premium'
+  format: '{prefix}premium',
+  aliases: ['p', 'patreon', 'donate']
 }

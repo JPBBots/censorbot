@@ -8,7 +8,7 @@
     ". . base-filter base-filter logchannel logchannel agp agp filter filter . ."
     ". . punish punish censor censor popmsg popmsg resend resend . ."
     ". . punish punish censor censor popmsg popmsg channels channels . ."
-    ". . . . uncensor uncensor . . . . . ."
+    ". . . . role role uncensor uncensor . . . ."
     ". . . . . . . . . . . .";
   text-align: center;
   grid-gap: 1rem;
@@ -275,6 +275,7 @@ select {
       ". censor censor censor ."
       ". popmsg popmsg popmsg ."
       ". filter filter filter ."
+      ". role role role ."
       ". uncensor uncensor uncensor ."
       ". resend resend resend ."
       ". channels channels channels . ";

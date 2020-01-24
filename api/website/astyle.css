@@ -8,7 +8,7 @@
     ". . base-filter base-filter logchannel logchannel agp agp filter filter . ."
     ". . punish punish censor censor popmsg popmsg resend resend . ."
     ". . punish punish censor censor popmsg popmsg channels channels . ."
-    ". . . . uncensor uncensor . . . . . ."
+    ". . . . role role uncensor uncensor . . . ."
     ". . . . . . . . . . . .";
   text-align: center;
   grid-gap: 1rem;
@@ -262,7 +262,7 @@ select {
   opacity: 0.5;
 }
 
-@media only screen and (max-device-width: 720px) {
+@media only screen and (max-device-width: 1160px) {
   .box {
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(11, 0.5fr);

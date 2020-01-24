@@ -11,5 +11,6 @@ exports.run = async (client, message, args) => {
 exports.info = {
   name: 'vote',
   description: 'Gives link to vote for {name} On discordbots.org, It really helps!!',
-  format: '{prefix}vote'
+  format: '{prefix}vote',
+  aliases: ['v']
 }

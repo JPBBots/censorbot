@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+      
+      table td, table th {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      
+      <% if (dbl) { %>
+        table tr:nth-child(even){background-color: #363636;}
+        table tr:nth-child(odd){background-color: #4a4a4a;}
+        
+        table tr:hover {background-color: #121212;}
+      
+        table th {
+          padding-top: 12px;
+          padding-bottom: 12px;
+          text-align: left;
+          background-color: #f44646;
+        }
+        
+        table tr {
+          color: white;
+        }
+      <% } else { %>
+        table tr:nth-child(even){background-color: #f2f2f2;}
+        table tr:nth-child(odd){background-color: white;}
+        
+        table tr:hover {background-color: #ddd;}
+      
+        table th {
+          padding-top: 12px;
+          padding-bottom: 12px;
+          text-align: left;
+          background-color: #f44646;
+          color: white;
+        }
+      <% } %>
+    </style>
+  </head>
+  <body>
+    <table style="width: 100%">
+      <tr>
+        <th>Command</th>
+        <th>Description</th>
+        <th>Usage</th>
+        <th>Aliases</th>
+      </tr>
+        <% commands.filter(x=>!x.admin || admin).forEach(cmd => { %>
+          <tr>
+            <td><%= cmd.name %></th>
+            <td><%= cmd.description.replace(/{name}/, name) %></th>
+            <td><%= (cmd.format || "none").replace(/{prefix}/, prefix) %></th>
+            <td><%= (cmd.aliases || ["None"]).join(", ") %></th>
+        </tr>
+        <% }) %>
+    </table>
+  </body>
+</html>

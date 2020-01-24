@@ -49,6 +49,12 @@ app.get('/token', (req, res) => {
   res.json({ token: req.cookies.token })
 })
 
+app.get(/\/cmd(\.json)?/, async (req, res) => {
+  const commands = await manager.shards.get(0).eval(`this.commands.filter(x => !(x.info.setting && !['punishments'].includes(x.info.name))).map(x=>x.info)`)
+  if (req.url.endsWith(".json")) return res.json(commands)
+  res.render("commands", { commands, prefix: config.prefix, name: config.name, admin: req.url.includes("admin"), dbl: req.url.includes("dbl") })
+})
+
 app.get('/.json', async (req, res) => {
   const guilds = await global.getUser(req.cookies.token, res)
   if (!guilds) return
@@ -177,7 +183,7 @@ app.get('/:serverid', async (req, res) => {
   if (type == 'json') return res.json(obj)
   let isPremium = await global.db.pdb.getAll(req.partialGuild.i)
   isPremium = isPremium ? isPremium.premium : false
-  res.render(req.query.d ? 'devguild' : 'guild', { data: obj, base: base, token: req.cookies.token, premium: isPremium })
+  res.render(req.query.d ? 'devguild' : 'guild', { data: obj, base: base, token: req.cookies.token, premium: isPremium, dev: req.query.d })
 })
 
 module.exports = app

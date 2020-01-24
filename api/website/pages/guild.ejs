@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="<%= base %>/style.css">
+        <link rel="stylesheet" href="<%= base %>/<%= dev ? "a" : "" %>style.css">
         <script>
             var isPremium = <%= premium %>
             function buildObject() {
@@ -52,6 +52,7 @@
                 obj.role     = document.getElementById("role").value;
                 if(obj.role == "null") obj.role = null;
                 obj.filter   = [...document.getElementById("filter").children].map(x=>x.value);
+                obj.uncensor = [...document.getElementById("uncensor").children].map(x=>x.value);
                 obj.antighostping = document.getElementById("agp").checked || false
                 obj.pop_delete    = ["", 0, undefined].includes(document.getElementById("poptime").value) ? null : document.getElementById("poptime").value * 1000;
                 var msgtype = document.getElementById("msgtype").value;
@@ -151,6 +152,34 @@
                 document.getElementById("channels").innerHTML = "";
                 causeChange()
             }
+            
+            function addToUncensor() {
+                var newWord = document.getElementById("uncensorin").value;
+                if(!newWord) return;
+                if(newWord.match(/[^a-zA-Z0-9 ]/gi)) return alert("Illegal character. Make sure to only use letters");
+                
+                let newDom = document.createElement("option");
+                newDom.value = newWord;
+                newDom.innerText = newWord;
+                
+                document.getElementById("uncensor").appendChild(newDom);
+                
+                document.getElementById("uncensorin").value = "";
+                causeChange();
+            }
+            function removeUncensor() {
+                var wordToRemove = document.getElementById("uncensor").value;
+                document.getElementById("uncensor")
+                    .removeChild(
+                        [...document.getElementById("uncensor")]
+                            .find(function(x) { return x.value == wordToRemove })
+                    );
+                if(wordToRemove) causeChange();
+            }
+            function clearUncensor() {
+                document.getElementById("uncensor").innerHTML = "";
+                causeChange();
+            }
         </script>
         <title>Dashboard - <%= data.name %></title>
     </head>
@@ -170,7 +199,7 @@
                         <% }) %>
                     </select>
             </div>
-            <div class="setting" style="grid-area: uncensor">
+            <div class="setting" style="grid-area: role">
                 <h3 class="name">Uncensor Role</h3>
                     <select id="role">
                         <option value="null">None</option>
@@ -282,6 +311,22 @@
                 </select>
                 <button class="sb prem" onclick="<%= premium ? "removeChannel()" : "premError()" %>">Remove</button>
                 <button class="sb prem" onclick="<%= premium ? "clearChannels()" : "premError()" %>">Clear</button>
+            </div>
+            <div class="setting" style="grid-area: uncensor">
+                <h3 class="name">Uncensor words</h3>
+                <input id="uncensorin" placeholder="Add to uncensor"><button class="sb" onclick="addToUncensor()">Add</button><div></div>
+                <script>
+                    document.getElementById("uncensorin").onkeydown = function(event) {
+                        if(event.keyCode == 13) addToUncensor();
+                    }
+                </script>
+                <select id="uncensor">
+                    <% data.db.uncensor.forEach(x=>{ %>
+                        <option value="<%= x %>"><%= x %></option>
+                    <% }) %>
+                </select>
+                <button class="sb" onclick="removeUncensor()">Remove</button>
+                <button class="sb" onclick="clearUncensor()">Clear All</button>
             </div>
             
         <div id="save" class="hide"> You have unsaved changes.  <button class="save" style="background-color: #2eb340" onclick="submit()">Save</button> </div>

@@ -270,6 +270,8 @@ function checkValidity (obj, guild) {
   if (typeof obj.webhook !== 'boolean') return 15
   if (!(obj.channels instanceof Array)) return 16
   if (obj.channels.some(x => !guild.c.some(c => c.id === x))) return 17
+  if (!(obj.uncensor instanceof Array)) return 18
+  if (obj.uncensor.some(x => x.match(/[^a-zA-Z0-9 ]/gi))) return 19
   return true
 }
 
@@ -346,6 +348,7 @@ app.post('/guilds/:serverid/settings', async (req, res) => {
     log: o.log,
     role: o.role,
     filter: o.filter,
+    uncensor: o.uncensor,
     antighostping: o.antighostping,
     pop_delete: o.pop_delete,
     msg: o.msg,

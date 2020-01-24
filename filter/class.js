@@ -80,13 +80,13 @@ module.exports = class JPBFilter {
       arg: null
     }
     const init = () => {
-      if (UNCENSOR && UNCENSOR[0]) {
-        var uncensorRes = this.testAgainstArray(this.resolveContent(content).join(' '), UNCENSOR)
-        if (uncensorRes[0]) {
-          res.censor = false
-          return
-        };
-      }
+      // if (UNCENSOR && UNCENSOR[0]) {
+      //   var uncensorRes = this.testAgainstArray(this.resolveContent(content).join(' '), UNCENSOR)
+      //   if (uncensorRes[0]) {
+      //     res.censor = false
+      //     return
+      //   };
+      // }
       if (SERVER && SERVER[0]) {
         var serverFilter = this.testAgainstArray(this.resolveContent(content).join(' '), SERVER)
         if (serverFilter[0]) {
@@ -99,7 +99,7 @@ module.exports = class JPBFilter {
       }
 
       if (GLOBAL) {
-        var baseFilter = this.testWithBypass(this.resolveContent(content), this.filter)
+        var baseFilter = this.testWithBypass(this.resolveContent(content), this.filter, UNCENSOR)
         if (baseFilter.stopped) {
           res.censor = true
           res.method = 'base'
@@ -128,7 +128,7 @@ module.exports = class JPBFilter {
   }
   ;
   resolveContent (str) {
-    return this.resolvePlusCharacters(this.resolveTwos(this.resolveOnes(this.removeAccents(this.removeLinks(this.resolveEmoji(str.split(' '))).join(' ').replace(this.replaceSpots.spaces, ' ').replace(this.replaceSpots.nothing, '')).slice().trim().split(/ +/g))))
+    return this.resolveTwos(this.resolveOnes(this.resolvePlusCharacters(this.removeAccents(this.removeLinks(this.resolveEmoji(str.split(' '))).join(' ').replace(this.replaceSpots.spaces, ' ').replace(this.replaceSpots.nothing, '')).slice().trim().split(/ +/g))))
   }
 
   resolveEmoji (arr) {
@@ -182,16 +182,7 @@ module.exports = class JPBFilter {
   }
 
   resolvePlusCharacters (arr) {
-    for (var i = 0; i < arr.length; i++) {
-      if (arr[i].match(/(.)\1+\1+\1+/)) {
-        if (/s/.test(arr[i])) continue
-        arr[i] = arr[i].replace(arr[i].match(/(.)\1+\1+\1+/)[0], arr[i].match(/(.)\1+\1+\1+/)[1])
-      }
-      if (/^\d+$/.test(arr[i])) {
-        arr[i] = ''
-      }
-    }
-    return arr
+    return arr.join(' ').replace(/(.)\1{3,}/g, '$1').split(' ')
   }
 
   testAgainstArray (content, arr) {
@@ -216,13 +207,14 @@ module.exports = class JPBFilter {
     return [res, site, arg]
   }
 
-  testWithBypass (args, obj) {
+  testWithBypass (args, obj, uncensor) {
     var res = {
       stopped: false,
       args: []
     }
     args.forEach(arg => {
       Object.keys(obj).forEach(wrd => {
+        if (uncensor.some(u => u.match(wrd))) return
         const word = new RegExp(wrd, 'gi')
         if (arg.match(word)) {
           const array = obj[wrd.toLowerCase()]
