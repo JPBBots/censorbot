@@ -46,20 +46,17 @@ module.exports = {
       .setFooter(tikem, client.user.avatarURL())
 
     if (type !== 2) {
-      embed.setThumbnail(message.author.displayAvatarURL())
-      embed.addField('User', `${message.author}`, true)
-      embed.addField('Channel', `${message.channel}`, true)
+      embed.addField('User', `<@${message.author ? message.author.id : message.user_id}>`, true)
+      embed.addField('Channel', `<#${message.channel ? message.channel.id : message.channel_id}>`, true)
     } else {
-      embed.setThumbnail(message.user.displayAvatarURL())
-      embed.addField('User', `${message.user}`)
+      // embed.setThumbnail(message.user.displayAvatarURL())
+      embed.addField('User', `<@${message.user.id}>`)
     }
 
     if (type == 1) {
-      embed.addField('Before Edit', content[0], true)
-      embed.addField('After Edit', content[1], true)
+      embed.addField('After Edit', content[0], true)
     } else if (type == 2) {
-      embed.addField('Before Change', content[0], true)
-      embed.addField('After Change', content[1], true)
+      embed.addField('Nickname Content', content[0], true)
     } else if (type == 3) {
       embed.addField('Reaction Name', content[0], true)
       embed.addField('Reaction URL', `[Here](${content[1]})`, true)

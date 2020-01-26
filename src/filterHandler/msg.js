@@ -93,33 +93,7 @@ module.exports = async(client, message) => {
       log = msg.guild.channels.get(data.log)
       if (log) log.send(client.embeds.log([msg.content], msg, response.method, 0, error, response))
     }
-    if (data.punishment.on) {
-      console.log('punish')
-      var role = msg.guild.roles.get(data.punishment.role)
-      if (!role) return
-      var user = await client.punishdb.find({ u: msg.author.id, g: msg.guild.id })
-      if (!user) {
-        user = {
-          u: msg.author.id,
-          g: msg.guild.id,
-          a: 0
-        }
-        await client.punishdb.create(null, { u: msg.author.id, g: msg.guild.id, a: 0 })
-      }
-      if (user.a + 1 >= data.punishment.amount) {
-        msg.member.roles.add(role)
-        client.punishdb.delete({ u: msg.author.id, g: msg.guild.id })
-        if (log) log.send(client.u.embed
-          .setTitle('User Punished')
-          .setDescription(`${msg.author} Reached the max ${data.punishment.amount} warnings.\n\nThey have received the ${role} role as punishment!`)
-          .setColor('RED')
-          .setFooter('This system is heavily WIP!')
-        )
-      }
-      else {
-        client.punishdb.add({ u: msg.author.id, g: msg.guild.id }, 'a', 1)
-      }
-    }
+    if (data.punishment.on) client.punishments.addOne(message.guild.id, message.author.id, data)
     if (data.webhook) {
       var content = 'Contains curse: \n' + '||' + message.content.replace(/\`\`\`/gi, '').replace(/\|/g, '') + '||'
       client.u.sendAsWebhook(msg.author, msg.channel, content)

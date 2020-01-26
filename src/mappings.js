@@ -26,7 +26,8 @@ module.exports = {
     dbi: resolve(assets, './dbi.js'),
     guildDB: resolve(assets, './guildDB.js'),
     embeds: resolve(assets, './embeds.js'),
-    webhooks: resolve(assets, './webhooks.js')
+    webhooks: resolve(assets, './webhooks.js'),
+    punishments: resolve(assets, './punishments.js')
   },
   filter: {
     index: filter,

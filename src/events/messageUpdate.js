@@ -1,7 +1,6 @@
 module.exports = async (client, oldMessage, newMessage) => {
   if (oldMessage.author.bot) return
   if (!oldMessage.guild) return
-  if (!['264445053596991498', '110373943822540800', '417131675701477386'].includes(oldMessage.guild.id)) client.filterHandler.emsg(client, oldMessage, newMessage)
 
   if (!newMessage.content.startsWith(client.config.prefix) && !newMessage.content.startsWith(`<@${client.user.id}>`) && !newMessage.content.startsWith(`<@!${client.user.id}>`)) return
   var prefix

@@ -40,6 +40,13 @@ exports.run = async (client, message, args) => {
     client.shard.broadcastEval('delete require.cache[require.resolve(this.mappings.assets.db)]; var db = require(this.mappings.assets.db); db.init().then(_=>db.applyToObject(this))')
     return message.reply(':ok_hand:')
   }
+  if (arg1 == 'punishments') {
+    await client.shard.broadcastEval(`delete require.cache[require.resolve(this.mappings.assets.punishments)];
+    const PunishmentsHandler = require(this.mappings.assets.punishments);
+    this.punishments = new PunishmentsHandler(this, this.punishdb.db)`)
+    
+    message.reply(":ok_hand:")
+  }
   if (arg1 == 'class') {
     client.shard.broadcastEval('this.reloadClass()')
     return message.reply(':ok_hand:')

@@ -10,11 +10,16 @@ const readdir = promisify(require('fs').readdir)
 const mappings = require('./mappings.js')
 client.mappings = mappings
 
+
+const PunishmentsHandler = require(mappings.assets.punishments)
 client.config = require(mappings.config)
 client.webhooks = require(mappings.assets.webhooks)(client)
 client.msg = require(mappings.assets.channels)
 const db = require(mappings.assets.db)
-db.init().then(_ => { db.applyToObject(client) })
+db.init().then(_ => { 
+  db.applyToObject(client) 
+  client.punishments = new PunishmentsHandler(client, client.punishdb.db)
+})
 client.filterfile = require(mappings.filter.filter)
 client.jpbfilter = require(mappings.filter.class)
 client.embeds = require(mappings.assets.embeds)
