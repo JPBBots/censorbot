@@ -1,5 +1,6 @@
 module.exports = (client, guild) => {
   if (client.broken) return
+  if (!guild.available) return
   client.update_count()
   client.webhooks.joinAndLeave.send(
     client.u.embed
@@ -9,6 +10,7 @@ module.exports = (client, guild) => {
       .addField('OwnerID', guild.ownerID, true)
       .addField('Member Count', guild.memberCount, true)
       .setTimestamp()
+      .setFooter(`Shard ${client.shard.id}`)
   )
   // client.msg("joinAndLeave", `${guild.owner} ${guild.ownerID} removed from server ${guild.name} ${guild.id}`)
   console.log(`Shard ${client.shard.id} | Left ${guild.name}`.magenta)

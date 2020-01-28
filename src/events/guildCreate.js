@@ -3,6 +3,20 @@ module.exports = async (client, guild) => {
   if (client.broken) return
   client.update_count()
   
+  if (client.unavailables.has(guild.id)) {
+    client.unavailables.delete(guild.id)
+    return client.webhooks.joinAndLeave.send(
+      client.u.embed
+        .setColor('ORANGE')
+        .setTitle('Server Available')
+        .setDescription(`${guild.name} (${guild.id})`)
+        .addField('OwnerID', guild.ownerID, true)
+        .addField('Member Count', guild.memberCount, true)
+        .setTimestamp()
+        .setFooter(`Shard ${client.shard.id}`)
+    )
+  }
+  
   client.webhooks.joinAndLeave.send(
     client.u.embed
       .setColor('GREEN')
@@ -11,6 +25,7 @@ module.exports = async (client, guild) => {
       .addField('OwnerID', guild.ownerID, true)
       .addField('Member Count', guild.memberCount, true)
       .setTimestamp()
+      .setFooter(`Shard ${client.shard.id}`)
   )
   
   const db = await client.rdb.getAll(guild.id)

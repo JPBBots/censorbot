@@ -53,6 +53,9 @@ client.filter = {
 }
 
 client.broken = false
+
+client.unavailables = new Discord.Collection()
+
 client.discord = Discord
 // require("./modules/functions.js")(client);
 
