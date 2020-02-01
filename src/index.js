@@ -10,9 +10,16 @@ const readdir = promisify(require('fs').readdir)
 const mappings = require('./mappings.js')
 client.mappings = mappings
 
+const DB = require('C:/Workspace/db.js')
 
 const PunishmentsHandler = require(mappings.assets.punishments)
 client.config = require(mappings.config)
+
+DB(client.config.db.username, client.config.db.password, 'censorbot')
+  .then(db => {
+    client.db = db
+  })
+
 client.webhooks = require(mappings.assets.webhooks)(client)
 client.msg = require(mappings.assets.channels)
 const db = require(mappings.assets.db)

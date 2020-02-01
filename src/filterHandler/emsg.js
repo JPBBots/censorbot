@@ -1,5 +1,5 @@
 module.exports = async(client, message) => {
-  if (!message.guild_id) return
+  if (!message.guild_id || (message.author && message.author.bot)) return
   
   const channel = client.channels.get(message.channel_id)
   if (channel && channel.nsfw) return
