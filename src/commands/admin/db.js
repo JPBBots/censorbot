@@ -46,6 +46,7 @@ exports.run = async (client, message, args) => {
       if (u[k[i]] instanceof Array) rko = 'array'
       else rko = typeof u[k[i]]
       if (k[i] == 'censor') u[k[i]] = JSON.stringify(u[k[i]])
+      if (k[i] == 'punishment') u[k[i]] = JSON.stringify(u[k[i]])
       re.addField(k[i], u[k[i]] + `(${rko})`, true)
     }
     re.setColor('RANDOM')

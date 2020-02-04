@@ -1,5 +1,5 @@
 module.exports = async(client, member) => {
-  if (!member.nick) return
+  if (!member.nick || member.user.bot) return
 
   const data = await client.rdb.getAll(member.guild_id)
 
@@ -35,6 +35,6 @@ module.exports = async(client, member) => {
       if (log) log.send(client.embeds.log([member.nick], member, response.method, 2, error, response))
     }
     
-    if (data.punishment.on) client.punishments.addOne(member.guild_id, member.user.id, data)
+    client.punishments.addOne(member.guild_id, member.user.id, data)
   }
 }

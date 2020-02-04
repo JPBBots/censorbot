@@ -60,7 +60,7 @@
     grid-template-rows: repeat(4, 0.1fr);
     grid-template-areas:
       ". ptitle ptitle ."
-      ". ptoggle pamount ."
+      ". ptype pamount ."
       "prole prole prole prole";
     grid-gap: 0.5rem
 }
@@ -185,6 +185,10 @@ select {
 .but:hover:not(#tr):not(#tl):not(#save) {
   background-color: #7289DA;
   color: black;
+}
+
+.hidden {
+  display: none !important;
 }
 
 #tl, #tr {

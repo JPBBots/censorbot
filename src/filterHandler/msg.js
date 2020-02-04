@@ -93,7 +93,7 @@ module.exports = async(client, message) => {
       log = msg.guild.channels.get(data.log)
       if (log) log.send(client.embeds.log([msg.content], msg, response.method, 0, error, response))
     }
-    if (data.punishment.on) client.punishments.addOne(message.guild.id, message.author.id, data)
+    client.punishments.addOne(message.guild.id, message.author.id, data)
     if (data.webhook) {
       var content = 'Contains curse: \n' + '||' + message.content.replace(/\`\`\`/gi, '').replace(/\|/g, '') + '||'
       client.u.sendAsWebhook(msg.author, msg.channel, content)

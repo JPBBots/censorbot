@@ -36,12 +36,19 @@ exports.run = async (client, message, args) => {
     await client.shard.broadcastEval('delete require.cache[require.resolve(this.mappings.assets.dbi)]')
     arg1 = 'db'
   }
+  if (arg1 == 'embeds') {
+    await client.shard.broadcastEval(`
+      delete require.cache[require.resolve(this.mappings.assets.embeds)]
+      this.embeds = require(this.mappings.assets.embeds)
+    `)
+    return message.reply(":ok_hand:")
+  }
   if (arg1 == 'db') {
     client.shard.broadcastEval('delete require.cache[require.resolve(this.mappings.assets.db)]; var db = require(this.mappings.assets.db); db.init().then(_=>db.applyToObject(this))')
     return message.reply(':ok_hand:')
   }
   if (arg1 == 'punishments') {
-    await client.shard.broadcastEval(`delete require.cache[require.resolve(this.mappings.assets.punishments)];
+    client.shard.broadcastEval(`delete require.cache[require.resolve(this.mappings.assets.punishments)];
     const PunishmentsHandler = require(this.mappings.assets.punishments);
     this.punishments = new PunishmentsHandler(this, this.punishdb.db)`)
     

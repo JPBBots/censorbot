@@ -127,7 +127,7 @@ module.exports = class JPBFilter {
     return str.join('')
   }
   ;
-  resolveContent (str) {
+  resolveContent (str = '') {
     return this.resolveTwos(this.resolveOnes(this.resolvePlusCharacters(this.removeAccents(this.removeLinks(this.resolveEmoji(str.split(' '))).join(' ').replace(this.replaceSpots.spaces, ' ').replace(this.replaceSpots.nothing, '')).slice().trim().split(/ +/g))))
   }
 

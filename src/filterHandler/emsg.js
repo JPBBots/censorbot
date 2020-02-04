@@ -1,5 +1,5 @@
 module.exports = async(client, message) => {
-  if (!message.guild_id || (message.author && message.author.bot)) return
+  if (!message.guild_id || !message.member || (message.author && message.author.bot)) return
   
   const channel = client.channels.get(message.channel_id)
   if (channel && channel.nsfw) return
@@ -64,6 +64,6 @@ module.exports = async(client, message) => {
     const log = client.channels.get(data.log)
     if (log) log.send(client.embeds.log(message.content, message, response.method, 1, error, response))
     
-    if (data.punishment.on) client.punishments.addOne(message.guild_id, message.author.id, data)
+    client.punishments.addOne(message.guild_id, message.author.id, data)
   }
 }

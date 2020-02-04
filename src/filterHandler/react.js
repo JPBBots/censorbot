@@ -1,4 +1,5 @@
 module.exports = async(client, reaction) => {
+  if (reaction.member.user.bot) return
   const channel = client.channels.get(reaction.channel_id)
   if (channel && channel.nsfw) return
 
@@ -29,6 +30,6 @@ module.exports = async(client, reaction) => {
     const log = client.channels.get(data.log)
     if (log) log.send(client.embeds.log([reaction.emoji.name, reaction.emoji.id ? `https://cdn.discordapp.com/emojis/${reaction.emoji.id}` : ''], reaction, response.method, 3, error))
     
-    if (data.punishment.on) client.punishments.addOne(reaction.guild_id, reaction.user_id, data)
+    client.punishments.addOne(reaction.guild_id, reaction.user_id, data)
   }
 }

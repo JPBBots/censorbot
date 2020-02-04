@@ -264,7 +264,7 @@ function checkValidity (obj, guild) {
   if (!(obj.filter instanceof Array)) return 9
   if (obj.filter.some(x => x.match(/[^a-zA-Z0-9 ]/gi))) return 10
   if (obj.pop_delete !== null && typeof obj.pop_delete !== 'number') return 11
-  if (typeof obj.punishment.on !== 'boolean') return 12
+  if (![0,1,2,3].includes(obj.punishment.type)) return 12
   if (typeof obj.punishment.amount !== 'number' || obj.punishment.amount < 1) return 13
   if ((typeof obj.punishment.role !== 'string' && obj.punishment.role !== null) || (typeof obj.punishment.role === 'string' && !guild.r.some(x => x.id == obj.punishment.role))) return 14
   if (typeof obj.webhook !== 'boolean') return 15
@@ -353,7 +353,7 @@ app.post('/guilds/:serverid/settings', async (req, res) => {
     pop_delete: o.pop_delete,
     msg: o.msg,
     punishment: {
-      on: o.punishment.on,
+      type: o.punishment.type,
       amount: o.punishment.amount,
       role: o.punishment.role
     },

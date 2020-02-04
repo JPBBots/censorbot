@@ -54,7 +54,7 @@ module.exports = {
     }
 
     if (type == 1) {
-      embed.addField('After Edit', content[0], true)
+      embed.addField('After Edit', content, true)
     } else if (type == 2) {
       embed.addField('Nickname Content', content[0], true)
     } else if (type == 3) {

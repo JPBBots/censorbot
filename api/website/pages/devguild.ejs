@@ -32,7 +32,7 @@
                     "punishment": {
                         "amount": 3,
                         "role": "",
-                        "on": false
+                        "type": 0
                     },
                     "webhook": false,
                     "channels": [
@@ -60,8 +60,9 @@
                 obj.msg = msgtype == 1 ? null : msgtype == 2 ? false : document.getElementById("custommsg").value;
                 
                 obj.punishment.amount = Number(document.getElementById("punishamount").value);
-                obj.punishment.on = document.getElementById("punishon").checked || false;
-                obj.punishment.role = document.getElementById("punishrole").value;
+                obj.punishment.type = parseInt(document.getElementById("punishtype").value) || 0;
+                if (obj.punishment.type === 1) obj.punishment.role = document.getElementById("punishrole").value;
+                else obj.punishment.role = null
                 if(obj.punishment.role == "null") obj.punishment.role = null;
                 obj.webhook = document.getElementById("resend").checked || false
                 obj.channels = [...document.getElementById("channels").children].map(x=>x.value)
@@ -214,14 +215,33 @@
             </div>
             <div class="setting punish" style="grid-area: punish">
                 <h3 class="name" style="grid-area: ptitle">Punishments</h3>
-                    <div class="checks" style="grid-area: ptoggle"><h5>Toggle</h5><label class="switch"><input type="checkbox" id="punishon" <%= data.db.punishment.on ? "checked" : "" %>><span class="slider round"></span></div>
+                    <div class="checks" style="grid-area: ptype"><h5>Type</h5><select id="punishtype">
+                        <option value="0">Off</option>
+                        <option value="1">Mute</option>
+                        <option value="2">Kick</option>
+                        <option value="3">Ban</option>
+                    </select></div>
                     <div class="checks" style="grid-area: pamount"><h5>Amount</h5><input type="number" min="1" style="width:3em" placeholder="Never" id="punishamount" value="<%= data.db.punishment.amount || 0%>"></div>
-                    <div class="checks" style="grid-area: prole"><h5>Role</h5> <select id="punishrole">
+                    <div id="prolediv" class="checks" style="grid-area: prole"><h5>Role</h5> <select id="punishrole">
                         <option value="null">None</option>
                             <% data.r.forEach(role=>{ %>
                                 <option value="<%= role.id %>">@<%=role.name%></option>
                             <% }) %>
                     </select></div>
+                    
+                    <script>
+                        function onTypeChange() {
+                            var typeDiv = document.getElementById("prolediv");
+                            var type = document.getElementById("punishtype").value;
+                            if (type === "1") {
+                                typeDiv.classList.remove("hidden")
+                            } else {
+                                typeDiv.classList.add("hidden")
+                            }
+                        }
+                        onTypeChange()
+                        document.getElementById("punishtype").addEventListener("change", onTypeChange)
+                    </script>
             </div>
             <div class="setting censor" style="grid-area: censor">
                 <h3 style="grid-area: checktitle" class="name">Censor Methods</h3>
@@ -388,7 +408,7 @@
                     }
                 });
             }
-            document.querySelectorAll("input, select, button").forEach(function(x) { if(x.id !== "msgtype") x.onchange = causeChange })
+            document.querySelectorAll("input, select, button").forEach(function(x) { if(x.id !== "msgtype") x.addEventListener("change", causeChange) })
             function back() {
                 window.location.replace("<%=base%>")
             }
