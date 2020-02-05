@@ -188,11 +188,11 @@
         <div class="box">
         <h1 class="name servername" style="grid-area: servername"><%= data.name %><% if(premium) { %> <img title="Premium" class="premb" src="/premium.png" width="30"> <% } %></h1>
             <div class="setting" style="grid-area: base-filter">
-                <h3 class="name">Base Filter</h3>
+                <h3 class="name" title="Whether to use the bot's premade filter that is managed by staff.">Base Filter</h3>
                 <label class="switch"><input type="checkbox" id="base" <%= data.db.base ? "checked" : "" %>><span class="slider round"></span></label>
             </div>
             <div class="setting" style="grid-area: logchannel">
-                <h3 class="name">Log Channel</h3>
+                <h3 class="name" title="Channel to log infractions, as well as punishment outcomes.">Log Channel</h3>
                     <select id="log">
                         <option value="null">None</option>
                         <% data.c.forEach(channel=>{ %>
@@ -201,7 +201,7 @@
                     </select>
             </div>
             <div class="setting" style="grid-area: role">
-                <h3 class="name">Uncensor Role</h3>
+                <h3 class="name" title="Role to ignore completely with the filter.">Uncensor Role</h3>
                     <select id="role">
                         <option value="null">None</option>
                         <% data.r.forEach(role=>{ %>
@@ -210,11 +210,11 @@
                     </select>
             </div>
             <div class="setting" style="grid-area: agp">
-                <h3 class="name">Anti-GhostPing</h3>
+                <h3 class="name" title="When the censor bot censors a message that pings someone, it'll say who was pinged.">Anti-GhostPing</h3>
                 <label class="switch"><input type="checkbox" id="agp" <%= data.db.antighostping ? "checked" : "" %>><span class="slider round"></span></label>
             </div>
             <div class="setting punish" style="grid-area: punish">
-                <h3 class="name" style="grid-area: ptitle">Punishments</h3>
+                <h3 class="name" title="Punish people who curse too many times" style="grid-area: ptitle">Punishments</h3>
                     <div class="checks" style="grid-area: ptype"><h5>Type</h5><select id="punishtype">
                         <option value="0">Off</option>
                         <option value="1">Mute</option>
@@ -243,14 +243,14 @@
                     </script>
             </div>
             <div class="setting censor" style="grid-area: censor">
-                <h3 style="grid-area: checktitle" class="name">Censor Methods</h3>
+                <h3 style="grid-area: checktitle" title="Methods in which to scan with and take action on by censor bot." class="name">Censor Methods</h3>
                         <div style="grid-area: checkmsg" class="checks"><h5>Messages</h5><label class="switch"><input type="checkbox" id="censor-msg" <%= data.db.censor.msg ? "checked" : "" %>><span class="slider round"></span></label></div>
                         <div style="grid-area: checkemsg" class="checks"><h5>Edited Messages</h5><label class="switch"><input type="checkbox" id="censor-emsg" <%= data.db.censor.emsg ? "checked" : "" %>><span class="slider round"></span></label></div>
                         <div style="grid-area: checknick" class="checks"><h5>Nicknames</h5><label class="switch"><input type="checkbox" id="censor-nick" <%= data.db.censor.nick ? "checked" : "" %>><span class="slider round"></span></label></div>
                         <div style="grid-area: checkreact" class="checks"><h5>Reactions</h5><label class="switch"><input type="checkbox" id="censor-react" <%= data.db.censor.react ? "checked" : "" %>><span class="slider round"></span></label></div>
             </div>
             <div class="setting" style="grid-area: filter">
-                <h3 class="name">Filter</h3>
+                <h3 class="name" title="Custom filter that are bound to this server.">Filter</h3>
                     <input id="filterin" placeholder="Add to filter"><button class="sb" onclick="addToFilter()">Add</button><div></div>
                     <script>
                         document.getElementById("filterin").onkeydown = function(event) {
@@ -267,7 +267,7 @@
             </div>
                 
             <div class="setting" style="grid-area: popmsg">
-                <h3 class="name">Pop message</h3>
+                <h3 class="name" title="Settings for the message that comes up when someones message is deleted.">Pop message</h3>
                 <div class="checks"><h5>Seconds until delete</h5> <input type="number" min="0" max="<%= premium ? "600" : "120" %>" placeholder="Never" id="poptime" value="<%= data.db.pop_delete / 1000%>"></div>
                 <script>
                     document.getElementById("poptime").onchange = function() {
@@ -311,11 +311,11 @@
             </div>
             <!--premium-->
             <div class="setting premium" style="grid-area: resend">
-                <h3 class="name"> Resend <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
+                <h3 class="name" title="Resend someone censored message with the message censored in a spoiler."> Resend <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
                 <label class="switch" id="reslabel"><input type="checkbox" class="prem" id="resend" <%= data.db.webhook ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
             </div>
             <div class="setting premium" style="grid-area: channels">
-                <h3 class="name"> Ignore Channels <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
+                <h3 class="name" title="Ignore specific channels without having to make it NSFW."> Ignore Channels <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
                 <select id="channeladd">
                     <% data.c.forEach(channel=>{ %>
                         <option value="<%= channel.name %> <%= channel.id %>">#<%=channel.name%></option>
@@ -332,7 +332,7 @@
                 <button class="sb prem" onclick="<%= premium ? "clearChannels()" : "premError()" %>">Clear</button>
             </div>
             <div class="setting" style="grid-area: uncensor">
-                <h3 class="name">Uncensor words</h3>
+                <h3 class="name" title="Words to ignore from the base filter in this server.">Uncensor words</h3>
                 <input id="uncensorin" placeholder="Add to uncensor"><button class="sb" onclick="addToUncensor()">Add</button><div></div>
                 <script>
                     document.getElementById("uncensorin").onkeydown = function(event) {
