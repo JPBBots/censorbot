@@ -3,7 +3,7 @@
     <head>
         <link rel="stylesheet" href="<%= base %>/<%= dev ? "a" : "" %>style.css">
         <script>
-            var isPremium = <%= premium %>
+            var isPremium = <%= premium ? "true" : "false" %>
             function buildObject() {
                 var obj = {
                     "antighostping": false,
@@ -37,7 +37,8 @@
                     "webhook": false,
                     "channels": [
                         
-                    ]
+                    ],
+                    "multi": false
                 }
                 
                 obj.base     = document.getElementById("base").checked;
@@ -56,7 +57,6 @@
                 obj.antighostping = document.getElementById("agp").checked || false
                 obj.pop_delete    = ["", 0, undefined].includes(document.getElementById("poptime").value) ? null : document.getElementById("poptime").value * 1000;
                 var msgtype = document.getElementById("msgtype").value;
-                if(msgtype == 3 && !document.getElementById("custommsg").value) return alert("Can't be an empty string");
                 obj.msg = msgtype == 1 ? null : msgtype == 2 ? false : document.getElementById("custommsg").value;
                 
                 obj.punishment.amount = Number(document.getElementById("punishamount").value);
@@ -66,6 +66,7 @@
                 if(obj.punishment.role == "null") obj.punishment.role = null;
                 obj.webhook = document.getElementById("resend").checked || false
                 obj.channels = [...document.getElementById("channels").children].map(x=>x.value)
+                obj.multi = document.getElementById("multi").checked;
                 
                 return obj;
             }
@@ -88,24 +89,17 @@
                 }
                 return true;
             }
-            function causeChange() {
-                console.log("change");
-                if (isEquivalent(current, buildObject())) {
-                    document.getElementById('save').classList.remove('show')
-                    document.getElementById('save').classList.add('hide')
-                } else {
-                    document.getElementById('save').classList.remove('hide')
-                    document.getElementById('save').classList.add('show')
-                }
-            }
+            
+            function causeChange() {}
+            
             function addToFilter() {
                 var newWord = document.getElementById("filterin").value;
                 if(!newWord) return;
-                if(newWord.match(/[^a-zA-Z0-9 ]/gi)) return alert("Illegal character. Make sure to only use letters");
+                if(newWord.match(/[^\w]/gi)) return alert("Illegal character. Make sure to only use letters");
                 
                 let newDom = document.createElement("option");
-                newDom.value = newWord;
-                newDom.innerText = newWord;
+                newDom.value = newWord.toLowerCase();
+                newDom.innerText = newWord.toLowerCase();
                 
                 document.getElementById("filter").appendChild(newDom);
                 
@@ -157,11 +151,11 @@
             function addToUncensor() {
                 var newWord = document.getElementById("uncensorin").value;
                 if(!newWord) return;
-                if(newWord.match(/[^a-zA-Z0-9 ]/gi)) return alert("Illegal character. Make sure to only use letters");
+                if(newWord.match(/[^\w]/gi)) return alert("Illegal character. Make sure to only use letters");
                 
                 let newDom = document.createElement("option");
-                newDom.value = newWord;
-                newDom.innerText = newWord;
+                newDom.value = newWord.toLowerCase();
+                newDom.innerText = newWord.toLowerCase();
                 
                 document.getElementById("uncensor").appendChild(newDom);
                 
@@ -188,11 +182,11 @@
         <div class="box">
         <h1 class="name servername" style="grid-area: servername"><%= data.name %><% if(premium) { %> <img title="Premium" class="premb" src="/premium.png" width="30"> <% } %></h1>
             <div class="setting" style="grid-area: base-filter">
-                <h3 class="name">Base Filter</h3>
+                <h3 class="name" title="Whether to use the bot's premade filter that is managed by staff.">Base Filter</h3>
                 <label class="switch"><input type="checkbox" id="base" <%= data.db.base ? "checked" : "" %>><span class="slider round"></span></label>
             </div>
             <div class="setting" style="grid-area: logchannel">
-                <h3 class="name">Log Channel</h3>
+                <h3 class="name" title="Channel to log infractions, as well as punishment outcomes.">Log Channel</h3>
                     <select id="log">
                         <option value="null">None</option>
                         <% data.c.forEach(channel=>{ %>
@@ -201,7 +195,7 @@
                     </select>
             </div>
             <div class="setting" style="grid-area: role">
-                <h3 class="name">Uncensor Role</h3>
+                <h3 class="name" title="Role to ignore completely with the filter.">Uncensor Role</h3>
                     <select id="role">
                         <option value="null">None</option>
                         <% data.r.forEach(role=>{ %>
@@ -210,19 +204,19 @@
                     </select>
             </div>
             <div class="setting" style="grid-area: agp">
-                <h3 class="name">Anti-GhostPing</h3>
+                <h3 class="name" title="When the censor bot censors a message that pings someone, it'll say who was pinged.">Anti-GhostPing</h3>
                 <label class="switch"><input type="checkbox" id="agp" <%= data.db.antighostping ? "checked" : "" %>><span class="slider round"></span></label>
             </div>
             <div class="setting punish" style="grid-area: punish">
-                <h3 class="name" style="grid-area: ptitle">Punishments</h3>
-                    <div class="checks" style="grid-area: ptype"><h5>Type</h5><select id="punishtype">
+                <h3 class="name" title="Punish people who curse too many times" style="grid-area: ptitle">Punishments</h3>
+                    <div class="checks" style="grid-area: ptype"><h5 title="Type of punishment to perform once amount has been reached.">Type</h5><select id="punishtype">
                         <option value="0">Off</option>
                         <option value="1">Mute</option>
                         <option value="2">Kick</option>
                         <option value="3">Ban</option>
                     </select></div>
-                    <div class="checks" style="grid-area: pamount"><h5>Amount</h5><input type="number" min="1" style="width:3em" placeholder="Never" id="punishamount" value="<%= data.db.punishment.amount || 0%>"></div>
-                    <div id="prolediv" class="checks" style="grid-area: prole"><h5>Role</h5> <select id="punishrole">
+                    <div class="checks" style="grid-area: pamount"><h5 title="Amount of infractions that when met will perform the action on that user.">Amount</h5><input type="number" min="1" style="width:3em" placeholder="Never" id="punishamount" value="<%= data.db.punishment.amount || 0%>"></div>
+                    <div id="prolediv" class="checks" style="grid-area: prole"><h5 title="Role to give once amount reached, (Suggested: a muted role)">Role</h5> <select id="punishrole">
                         <option value="null">None</option>
                             <% data.r.forEach(role=>{ %>
                                 <option value="<%= role.id %>">@<%=role.name%></option>
@@ -239,19 +233,18 @@
                                 typeDiv.classList.add("hidden")
                             }
                         }
-                        onTypeChange()
                         document.getElementById("punishtype").addEventListener("change", onTypeChange)
                     </script>
             </div>
             <div class="setting censor" style="grid-area: censor">
-                <h3 style="grid-area: checktitle" class="name">Censor Methods</h3>
+                <h3 style="grid-area: checktitle" title="Methods in which to scan with and take action on by censor bot." class="name">Censor Methods</h3>
                         <div style="grid-area: checkmsg" class="checks"><h5>Messages</h5><label class="switch"><input type="checkbox" id="censor-msg" <%= data.db.censor.msg ? "checked" : "" %>><span class="slider round"></span></label></div>
                         <div style="grid-area: checkemsg" class="checks"><h5>Edited Messages</h5><label class="switch"><input type="checkbox" id="censor-emsg" <%= data.db.censor.emsg ? "checked" : "" %>><span class="slider round"></span></label></div>
                         <div style="grid-area: checknick" class="checks"><h5>Nicknames</h5><label class="switch"><input type="checkbox" id="censor-nick" <%= data.db.censor.nick ? "checked" : "" %>><span class="slider round"></span></label></div>
                         <div style="grid-area: checkreact" class="checks"><h5>Reactions</h5><label class="switch"><input type="checkbox" id="censor-react" <%= data.db.censor.react ? "checked" : "" %>><span class="slider round"></span></label></div>
             </div>
             <div class="setting" style="grid-area: filter">
-                <h3 class="name">Filter</h3>
+                <h3 class="name" title="Custom filter that are bound to this server.">Filter</h3>
                     <input id="filterin" placeholder="Add to filter"><button class="sb" onclick="addToFilter()">Add</button><div></div>
                     <script>
                         document.getElementById("filterin").onkeydown = function(event) {
@@ -268,17 +261,17 @@
             </div>
                 
             <div class="setting" style="grid-area: popmsg">
-                <h3 class="name">Pop message</h3>
+                <h3 class="name" title="Settings for the message that comes up when someones message is deleted.">Pop message</h3>
                 <div class="checks"><h5>Seconds until delete</h5> <input type="number" min="0" max="<%= premium ? "600" : "120" %>" placeholder="Never" id="poptime" value="<%= data.db.pop_delete / 1000%>"></div>
                 <script>
                     document.getElementById("poptime").onchange = function() {
                         if(document.getElementById("poptime").value == 0) {
                             document.getElementById("poptime").value = "";
                         }
-                        if(!premium && document.getElementById("poptime").value > 120) {
+                        if(!isPremium && document.getElementById("poptime").value > 120) {
                             document.getElementById("poptime").value = 120;
                         }
-                        if(premium && document.getElementById("poptime").value > 600) {
+                        if(isPremium && document.getElementById("poptime").value > 600) {
                             document.getElementById("poptime").value = 600;
                         }
                     }
@@ -312,11 +305,11 @@
             </div>
             <!--premium-->
             <div class="setting premium" style="grid-area: resend">
-                <h3 class="name"> Resend <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
-                <label class="switch" id="reslabel"><input type="checkbox" class="prem" id="resend" <%= data.db.webhook ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
+                <h3 class="name" title="Resend someone censored message with the message censored in a spoiler."> Resend <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
+                <label class="switch reslabel"><input type="checkbox" class="prem" id="resend" <%= data.db.webhook ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
             </div>
             <div class="setting premium" style="grid-area: channels">
-                <h3 class="name"> Ignore Channels <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
+                <h3 class="name" title="Ignore specific channels without having to make it NSFW."> Ignore Channels <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
                 <select id="channeladd">
                     <% data.c.forEach(channel=>{ %>
                         <option value="<%= channel.name %> <%= channel.id %>">#<%=channel.name%></option>
@@ -333,7 +326,7 @@
                 <button class="sb prem" onclick="<%= premium ? "clearChannels()" : "premError()" %>">Clear</button>
             </div>
             <div class="setting" style="grid-area: uncensor">
-                <h3 class="name">Uncensor words</h3>
+                <h3 class="name" title="Words to ignore from the base filter in this server.">Uncensor words</h3>
                 <input id="uncensorin" placeholder="Add to uncensor"><button class="sb" onclick="addToUncensor()">Add</button><div></div>
                 <script>
                     document.getElementById("uncensorin").onkeydown = function(event) {
@@ -348,6 +341,10 @@
                 <button class="sb" onclick="removeUncensor()">Remove</button>
                 <button class="sb" onclick="clearUncensor()">Clear All</button>
             </div>
+            <div class="setting premium" style="grid-area: multi">
+                <h3 class="name" title="Whether to censor multiple messages combined together to scan.">Multi-Line<img title="Premium" class="premb" src="/premium.png" width="30"></h3>
+                <label class="switch reslabel"><input class="prem" type="checkbox" id="multi" <%= data.db.multi ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
+            </div>
             
         <div id="save" class="hide"> You have unsaved changes.  <button class="save" style="background-color: #2eb340" onclick="submit()">Save</button> </div>
         <!--<button id="save" class="but" style="display: none" onclick="submit()">Save</button>-->
@@ -361,9 +358,9 @@
                 }
             })
         
-            document.getElementById("reslabel").onclick = function() {
+            document.querySelectorAll(".reslabel").forEach(function(x) { x.onclick = function() {
                 if(!isPremium) premError()
-            }
+            }})
             document.querySelectorAll(".premb").forEach(function(elm) {
                 elm.onclick = function() {
                     window.open("/premium", "_blank")
@@ -377,6 +374,9 @@
             document.getElementById("log").value = "<%= data.db.log || "null"%>"
             document.getElementById("role").value = "<%= data.db.role || "null"%>"
             document.getElementById("punishrole").value = "<%= data.db.punishment.role || "null"%>"
+            document.getElementById("punishtype").value = "<%= data.db.punishment.type  || "0" %>"
+            if (document.getElementById('punishtype').value !== "1") onTypeChange()
+            
             function request(endpoint, method, body, cb) {
                 var xhr = new XMLHttpRequest();
                 xhr.open(method, "https://api.jt3ch.net/censorbot/v3"+endpoint);
@@ -394,6 +394,9 @@
                 button.style["background-color"] = "#277a32"
                 button.innerText = 'Saving...'
                 var obj = buildObject()
+                
+                if(obj.msg === "") return alert("Pop message can't be an empty string");
+                
                 request("/guilds/<%= data.id %>/settings", "POST", obj, function(x) {
                     if(x.error) return alert("Error: " + x.error);
                     if(x) {
@@ -414,6 +417,17 @@
             }
             function logout() {
                 window.location = "<%=base%>/logout"
+            }
+            
+            function causeChange() {
+                console.log("change");
+                if (isEquivalent(current, buildObject())) {
+                    document.getElementById('save').classList.remove('show')
+                    document.getElementById('save').classList.add('hide')
+                } else {
+                    document.getElementById('save').classList.remove('hide')
+                    document.getElementById('save').classList.add('show')
+                }
             }
         </script>
     </body>

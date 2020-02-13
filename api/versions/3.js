@@ -262,7 +262,7 @@ function checkValidity (obj, guild) {
   if (obj.log !== null && ((typeof obj.log !== 'string') || !guild.c.some(x => x.id === obj.log))) return 7
   if ((typeof obj.role !== 'string' && obj.role !== null) || (typeof obj.role === 'string' && !guild.r.some(x => x.id == obj.role))) return 8
   if (!(obj.filter instanceof Array)) return 9
-  if (obj.filter.some(x => x.match(/[^a-zA-Z0-9 ]/gi))) return 10
+  if (obj.filter.some(x => x.match(/[^\w]/gi))) return 10
   if (obj.pop_delete !== null && typeof obj.pop_delete !== 'number') return 11
   if (![0,1,2,3].includes(obj.punishment.type)) return 12
   if (typeof obj.punishment.amount !== 'number' || obj.punishment.amount < 1) return 13
@@ -271,7 +271,8 @@ function checkValidity (obj, guild) {
   if (!(obj.channels instanceof Array)) return 16
   if (obj.channels.some(x => !guild.c.some(c => c.id === x))) return 17
   if (!(obj.uncensor instanceof Array)) return 18
-  if (obj.uncensor.some(x => x.match(/[^a-zA-Z0-9 ]/gi))) return 19
+  if (obj.uncensor.some(x => x.match(/[^\w]/gi))) return 19
+  if (typeof obj.multi !== 'boolean') return 20
   return true
 }
 
@@ -322,8 +323,9 @@ app.post('/guilds/:serverid/settings', async (req, res) => {
   req.body = req.body || {}
   if (!isPremium) {
     if (req.body.filter.length > 150) return res.json({ error: "Non-premium servers can only have maximum 150 words in their filter" })
-    if (req.body.webhook || req.body.channels.length > 0 || req.body.pop_delete > 120 * 1000) refresh = true
+    if (req.body.webhook || req.body.channels.length > 0 || req.body.pop_delete > 120 * 1000 || req.body.multi) refresh = true
     req.body.webhook = false
+    req.body.multi = false
     req.body.channels = []
     if (req.body.pop_delete > 120 * 1000) req.body.pop_delete = 120*1000
   } else {
@@ -358,7 +360,8 @@ app.post('/guilds/:serverid/settings', async (req, res) => {
       role: o.punishment.role
     },
     webhook: o.webhook,
-    channels: o.channels
+    channels: o.channels,
+    multi: o.multi
   })
     .then(x => {
       if (!x || x.n < 1) return res.json({ error: 'db error' })

@@ -3,7 +3,7 @@
     <head>
         <link rel="stylesheet" href="<%= base %>/<%= dev ? "a" : "" %>style.css">
         <script>
-            var isPremium = <%= premium %>
+            var isPremium = <%= premium ? "true" : "false" %>
             function buildObject() {
                 var obj = {
                     "antighostping": false,
@@ -37,7 +37,8 @@
                     "webhook": false,
                     "channels": [
                         
-                    ]
+                    ],
+                    "multi": false
                 }
                 
                 obj.base     = document.getElementById("base").checked;
@@ -56,7 +57,6 @@
                 obj.antighostping = document.getElementById("agp").checked || false
                 obj.pop_delete    = ["", 0, undefined].includes(document.getElementById("poptime").value) ? null : document.getElementById("poptime").value * 1000;
                 var msgtype = document.getElementById("msgtype").value;
-                if(msgtype == 3 && !document.getElementById("custommsg").value) return alert("Can't be an empty string");
                 obj.msg = msgtype == 1 ? null : msgtype == 2 ? false : document.getElementById("custommsg").value;
                 
                 obj.punishment.amount = Number(document.getElementById("punishamount").value);
@@ -66,6 +66,7 @@
                 if(obj.punishment.role == "null") obj.punishment.role = null;
                 obj.webhook = document.getElementById("resend").checked || false
                 obj.channels = [...document.getElementById("channels").children].map(x=>x.value)
+                obj.multi = document.getElementById("multi").checked;
                 
                 return obj;
             }
@@ -88,24 +89,17 @@
                 }
                 return true;
             }
-            function causeChange() {
-                console.log("change");
-                if (isEquivalent(current, buildObject())) {
-                    document.getElementById('save').classList.remove('show')
-                    document.getElementById('save').classList.add('hide')
-                } else {
-                    document.getElementById('save').classList.remove('hide')
-                    document.getElementById('save').classList.add('show')
-                }
-            }
+            
+            function causeChange() {}
+            
             function addToFilter() {
                 var newWord = document.getElementById("filterin").value;
                 if(!newWord) return;
-                if(newWord.match(/[^a-zA-Z0-9 ]/gi)) return alert("Illegal character. Make sure to only use letters");
+                if(newWord.match(/[^\w]/gi)) return alert("Illegal character. Make sure to only use letters");
                 
                 let newDom = document.createElement("option");
-                newDom.value = newWord;
-                newDom.innerText = newWord;
+                newDom.value = newWord.toLowerCase();
+                newDom.innerText = newWord.toLowerCase();
                 
                 document.getElementById("filter").appendChild(newDom);
                 
@@ -157,11 +151,11 @@
             function addToUncensor() {
                 var newWord = document.getElementById("uncensorin").value;
                 if(!newWord) return;
-                if(newWord.match(/[^a-zA-Z0-9 ]/gi)) return alert("Illegal character. Make sure to only use letters");
+                if(newWord.match(/[^\w]/gi)) return alert("Illegal character. Make sure to only use letters");
                 
                 let newDom = document.createElement("option");
-                newDom.value = newWord;
-                newDom.innerText = newWord;
+                newDom.value = newWord.toLowerCase();
+                newDom.innerText = newWord.toLowerCase();
                 
                 document.getElementById("uncensor").appendChild(newDom);
                 
@@ -215,17 +209,17 @@
             </div>
             <div class="setting punish" style="grid-area: punish">
                 <h3 class="name" title="Punish people who curse too many times" style="grid-area: ptitle">Punishments</h3>
-                    <div class="checks" style="grid-area: ptype"><h5>Type</h5><select id="punishtype">
+                    <div class="checks" style="grid-area: ptype"><h5 title="Type of punishment to perform once amount has been reached.">Type</h5><select id="punishtype">
                         <option value="0">Off</option>
                         <option value="1">Mute</option>
                         <option value="2">Kick</option>
                         <option value="3">Ban</option>
                     </select></div>
-                    <div class="checks" style="grid-area: pamount"><h5>Amount</h5><input type="number" min="1" style="width:3em" placeholder="Never" id="punishamount" value="<%= data.db.punishment.amount || 0%>"></div>
-                    <div id="prolediv" class="checks" style="grid-area: prole"><h5>Role</h5> <select id="punishrole">
+                    <div class="checks" style="grid-area: pamount"><h5 title="Amount of infractions that when met will perform the action on that user.">Amount</h5><input type="number" min="1" style="width:3em" placeholder="Never" id="punishamount" value="<%= data.db.punishment.amount || 0%>"></div>
+                    <div id="prolediv" class="checks" style="grid-area: prole"><h5 title="Role to give once amount reached, (Suggested: a muted role)">Role</h5> <select id="punishrole">
                         <option value="null">None</option>
                             <% data.r.forEach(role=>{ %>
-                                <option value="<%= role.id %>">@<%=role.name%></option>
+                                <option value="<%= role.id %>" <%= role.dis ? 'disabled' : '' %>>@<%=role.name%></option>
                             <% }) %>
                     </select></div>
                     
@@ -274,10 +268,10 @@
                         if(document.getElementById("poptime").value == 0) {
                             document.getElementById("poptime").value = "";
                         }
-                        if(!premium && document.getElementById("poptime").value > 120) {
+                        if(!isPremium && document.getElementById("poptime").value > 120) {
                             document.getElementById("poptime").value = 120;
                         }
-                        if(premium && document.getElementById("poptime").value > 600) {
+                        if(isPremium && document.getElementById("poptime").value > 600) {
                             document.getElementById("poptime").value = 600;
                         }
                     }
@@ -312,7 +306,7 @@
             <!--premium-->
             <div class="setting premium" style="grid-area: resend">
                 <h3 class="name" title="Resend someone censored message with the message censored in a spoiler."> Resend <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
-                <label class="switch" id="reslabel"><input type="checkbox" class="prem" id="resend" <%= data.db.webhook ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
+                <label class="switch reslabel"><input type="checkbox" class="prem" id="resend" <%= data.db.webhook ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
             </div>
             <div class="setting premium" style="grid-area: channels">
                 <h3 class="name" title="Ignore specific channels without having to make it NSFW."> Ignore Channels <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
@@ -347,6 +341,10 @@
                 <button class="sb" onclick="removeUncensor()">Remove</button>
                 <button class="sb" onclick="clearUncensor()">Clear All</button>
             </div>
+            <div class="setting premium" style="grid-area: multi">
+                <h3 class="name" title="Whether to censor multiple messages combined together to scan.">Multi-Message<img title="Premium" class="premb" src="/premium.png" width="30"></h3>
+                <label class="switch reslabel"><input class="prem" type="checkbox" id="multi" <%= data.db.multi ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
+            </div>
             
         <div id="save" class="hide"> You have unsaved changes.  <button class="save" style="background-color: #2eb340" onclick="submit()">Save</button> </div>
         <!--<button id="save" class="but" style="display: none" onclick="submit()">Save</button>-->
@@ -360,9 +358,9 @@
                 }
             })
         
-            document.getElementById("reslabel").onclick = function() {
+            document.querySelectorAll(".reslabel").forEach(function(x) { x.onclick = function() {
                 if(!isPremium) premError()
-            }
+            }})
             document.querySelectorAll(".premb").forEach(function(elm) {
                 elm.onclick = function() {
                     window.open("/premium", "_blank")
@@ -396,8 +394,11 @@
                 button.style["background-color"] = "#277a32"
                 button.innerText = 'Saving...'
                 var obj = buildObject()
+                
+                if(obj.msg === "") return alert("Pop message can't be an empty string");
+                
                 request("/guilds/<%= data.id %>/settings", "POST", obj, function(x) {
-                    if(x.error) return alert("Error: " + x.error);
+                    if(x.error) return alert("Error: " + x.error + x.place);
                     if(x) {
                         if(x.refresh) window.location.reload()
                         button.style["background-color"] = "#2eb340"
@@ -416,6 +417,17 @@
             }
             function logout() {
                 window.location = "<%=base%>/logout"
+            }
+            
+            function causeChange() {
+                console.log("change");
+                if (isEquivalent(current, buildObject())) {
+                    document.getElementById('save').classList.remove('show')
+                    document.getElementById('save').classList.add('hide')
+                } else {
+                    document.getElementById('save').classList.remove('hide')
+                    document.getElementById('save').classList.add('show')
+                }
             }
         </script>
     </body>

@@ -64,7 +64,7 @@ exports.run = async (client, message, args) => {
           inline: true
         },
         {
-          name: ':wastebasket: Messages Deleted',
+          name: ':wastebasket: Things Censored',
           value: (await client.statdb.get('deleted', 'amount')).toLocaleString(),
           inline: true
         }

@@ -22,13 +22,8 @@ exports.run = async (client, message, args) => {
       val = args[3]
     }
     const r = await client.rdb.set(args[1], args[2], val)
-    if (r.unchanged > 0) {
-      k.edit(new client.discord.MessageEmbed({ title: 'Already equals value' }))
-    } else if (r.replaced > 0) {
-      k.edit(new client.discord.MessageEmbed({ title: ':ok_hand:', description: `Replaced ${r.replaced} values. (${args[2]} => \`${args[3]}\`)`, footer: { text: `Took ${(((k.createdAt - new Date()) * -1) / 1024).toFixed(2)} seconds` } }))
-    } else {
-      k.edit(new client.discord.MessageEmbed({ title: 'Error!' }))
-    }
+    
+      k.edit(new client.discord.MessageEmbed({ title: ':ok_hand:', description: `Replaced values. (${args[2]} => \`${args[3]}\` (${typeof val}))`, footer: { text: `Took ${(((k.createdAt - new Date()) * -1) / 1024).toFixed(2)} seconds` } }))
   }
   if (arg1 == 'remove') {
     const r = client.rdb.delete(args[1])

@@ -140,6 +140,7 @@ app.get('/:serverid', async (req, res) => {
         function getStuff(client) {
             var guild = client.guilds.get("${serverid}");
             if(!guild) return false;
+            var pos = guild.me.roles.highest.rawPosition
             let obj = {
                 c: guild.channels
                     .filter(x=>!x.deleted && x.type == "text")
@@ -151,10 +152,12 @@ app.get('/:serverid', async (req, res) => {
                     }),
                 r: guild.roles
                     .filter(x=>!x.managed && x.name != "@everyone")
+                    .sort((a, b) => (a.rawPosition > b.rawPosition) ? -1 : (a.rawPosition === b.rawPosition) ? ((a.rawPosition > b.rawPosition) ? -1 : 1) : 1 )
                     .map(x=>{
                         return {
                             id: x.id,
-                            name: x.name
+                            name: x.name,
+                            dis: x.rawPosition > pos
                         }
                     })
             }

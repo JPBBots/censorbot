@@ -36,6 +36,7 @@ const config = {
                     amount: 3,
                     role: null
                 },
+                "multi": false,
                 ...newOptions
             }
             return brandNew

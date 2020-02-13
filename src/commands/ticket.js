@@ -37,7 +37,7 @@ exports.run = async (client, message, args) => {
     return
   }
   var content = args.join(' ')
-  var response = await client.filter.test(content, true)
+  var response = await client.filter.test(content, true, false, [])
   if (response.censor == false) {
     const notcensorres = await message.reply("Ticket stopped! The automatic detection system found you tried to submit a ticket of a word that isn't censored! If this isn't true then please join the support server (" + client.config.prefix + 'support)!')
     setTimeout(function () {

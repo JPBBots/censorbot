@@ -93,7 +93,7 @@ app.get('/cmds', async (req, res) => {
 const Reader = require("read-last-lines")
 
 app.get("/err", async (req, res) => {
-  res.send(await Reader.read("C:/Users/Administrator/.pm2/logs/censorbot-error.log", 50))
+  res.send(await Reader.read(`C:/Users/Administrator/.pm2/logs/${req.query.p || 'censorbot'}-error.log`, 50))
 })
 
 app.get('/site/updates', (req, res) => {

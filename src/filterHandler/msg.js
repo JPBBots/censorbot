@@ -31,29 +31,60 @@ module.exports = async(client, message) => {
   if (data.channels && data.channels.includes(message.channel.id)) return
   if (!data.censor.msg) return
 
+  let content = ""
+
+  const multi = client.multilines.get(message.channel.id)
+
+  if (data.multi) {
+    if (multi) {
+      if (multi.user !== message.author.id) {
+        client.multilines.delete(message.channel.id)
+      }
+      else {
+        content += multi.content
+        multi.content += message.content
+        multi.messages.push(message.id)
+        client.multilines.set(message.channel.id, multi)
+      }
+    }
+    else {
+      client.multilines.set(message.channel.id, {
+        user: message.author.id,
+        content: message.content,
+        messages: [message.id]
+      })
+    }
+  }
+
+  content += message.content
+
   var response
-  if (client.serverFilters[message.guild.id]) response = client.serverFilters[message.guild.id].test(message.content, true, data.filter, data.uncensor)
-  else response = await client.filter.test(message.content, data.base, data.filter, data.uncensor)
+  if (client.serverFilters[message.guild.id]) response = client.serverFilters[message.guild.id].test(content, true, data.filter, data.uncensor)
+  else response = await client.filter.test(content, data.base, data.filter, data.uncensor)
 
   if (response.censor) {
-    var msg = message
-    var error
-    try {
-      await msg.delete()
+      var msg = message
+    if (multi && multi.messages.length > 1) {
+      client.multilines.delete(message.channel.id)
+      
+      client.api
+        .channels[message.channel.id]
+        .messages("bulk-delete")
+        .post({
+          data: {
+            messages: multi.messages
+          }
+        })
     }
-    catch (err) {
-      console.log(`Shard ${client.shard.id} | ${msg.guild.name} ${msg.guild.id} ${err.message}`.red)
-      error = 'Error! Missing permission to manage messages!'
-    }
-    if (message.guild.id == '448194623580667916') {
-      message.author.send(
-        client.u.embed
-        .setColor('RED')
-        .setTitle('Your message was deleted in Krunker Bunker')
-        .setDescription('Please ping <@142408079177285632> if you believe this was a mistake')
-        .addField('Message', message.content)
-        .setTimestamp()
-      )
+    else {
+      var error
+      try {
+        await msg.delete()
+      }
+      catch (err) {
+        console.log(`Shard ${client.shard.id} | ${msg.guild.name} ${msg.guild.id} ${err.message}`.red)
+        error = 'Error! Missing permission to manage messages!'
+      }
     }
     if (data.msg !== false) {
       try {
@@ -72,13 +103,9 @@ module.exports = async(client, message) => {
       }
     }
     console.log(`Shard ${client.shard.id} | Deleted message from ${msg.author} ${msg.author.username}: `.yellow + `${msg.content}`.yellow.underline)
-    var content = ''
-    if (msg.content !== 0) {
-      if (msg.content.length > 256) {
+    if (content !== 0) {
+      if (content.length > 256) {
         content = 'Message too long to include in embed!'
-      }
-      else {
-        content = msg.content
       }
     }
     if (msg.attachments.map(x => x.name).length > 0 && msg.content == 0) {
@@ -91,12 +118,12 @@ module.exports = async(client, message) => {
     var log
     if (data.log) {
       log = msg.guild.channels.get(data.log)
-      if (log) log.send(client.embeds.log([msg.content], msg, response.method, 0, error, response))
+      if (log) log.send(client.embeds.log([content], msg, response.method, 0, error, response))
     }
     client.punishments.addOne(message.guild.id, message.author.id, data)
     if (data.webhook) {
-      var content = 'Contains curse: \n' + '||' + message.content.replace(/\`\`\`/gi, '').replace(/\|/g, '') + '||'
-      client.u.sendAsWebhook(msg.author, msg.channel, content)
+      var send = 'Contains curse: \n' + '||' + content.replace(/\`\`\`/gi, '').replace(/\|/g, '') + '||'
+      client.u.sendAsWebhook(msg.author, msg.channel, send)
     }
   }
 }
