@@ -25,6 +25,6 @@ module.exports.run = async (client, message, args, db) => {
 
 module.exports.info = {
   name: "debug",
-  desc: "Debugs the bots",
-  usage: "{prefix}debug"
+  description: "Debugs the bots",
+  format: "{prefix}debug"
 }

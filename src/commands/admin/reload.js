@@ -90,11 +90,10 @@ exports.run = async (client, message, args) => {
   if (arg1.startsWith('e:')) {
     const event = arg1.split(':')[1]
     client.shard.broadcastEval(`
-            this.off("${event}", require("../../../../bots/censorbot/src/events/${event}.js"));
-            
-            delete require.cache[require.resolve("../../../../bots/censorbot/events/${event}.js")];
+            const path = require('path').resolve(this.mappings.events, "${event}" + '.js')
+            delete require.cache[require.resolve(path)];
 
-            this.on("${event}", require("../../../../bots/censorbot/events/${event}.js"));
+            this.events["${event}"] = require(path);
         `)
     message.reply('Reloaded event ' + event)
   }

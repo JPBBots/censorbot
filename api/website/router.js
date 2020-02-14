@@ -50,9 +50,12 @@ app.get('/token', (req, res) => {
 })
 
 app.get(/\/cmd(\.json)?/, async (req, res) => {
-  const commands = await manager.shards.get(0).eval(`this.commands.filter(x => !(x.info.setting && !['punishments'].includes(x.info.name))).map(x=>x.info)`)
+  const commands = (await manager.shards.get(0).eval(`this.commands.filter(x => !(x.info.setting && !['punishments'].includes(x.info.name))).map(x=>x.info)`))
+    .sort((a, b) => (a.name > b.name) ? 1 : (a.name === b.name) ? ((a.name > b.name) ? 1 : -1) : -1 )
+  if (req.url.includes('dbla')) return res.send(`${await global.db.statdb.get('dbl', 'amount')}`)
   if (req.url.endsWith(".json")) return res.json(commands)
   res.render("commands", { commands, prefix: config.prefix, name: config.name, admin: req.url.includes("admin"), dbl: req.url.includes("dbl") })
+  if (req.url.includes('dbl')) global.db.statdb.add('dbl', 'amount', 1)
 })
 
 app.get('/.json', async (req, res) => {

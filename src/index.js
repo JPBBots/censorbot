@@ -73,6 +73,7 @@ Object.keys(client.config.extraFilters).forEach(x => {
 })
 
 client.commands = new Discord.Collection()
+client.events = {}
 const init = async () => {
   const evtFiles = await readdir(mappings.events)
   console.log(`>>> Loading ${evtFiles.length} events...`.bgRed)
@@ -80,7 +81,12 @@ const init = async () => {
     const eventName = file.split('.')[0]
     const event = require(`./events/${file}`)
     // This line is awesome by the way. Just sayin'.
-    client.on(eventName, event.bind(null, client))
+    
+    client.events[eventName] = event
+    
+    client.on(eventName, (...data) => {
+      client.events[eventName](client, ...data)
+    })
     delete require.cache[require.resolve(`./events/${file}`)]
   })
 
