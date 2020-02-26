@@ -44,7 +44,6 @@ module.exports = async(client, message) => {
         }
       }
       catch (err) {
-        console.error(err)
       }
     }
     console.log(`Shard ${client.shard.id} | Deleted message from ${message.author} ${message.author.username}: `.yellow + `${message.content}`.yellow.underline)

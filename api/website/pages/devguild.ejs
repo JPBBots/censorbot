@@ -1,181 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="<%= base %>/<%= dev ? "a" : "" %>style.css">
+        <link rel="stylesheet" href="<%= base %>/static/css/<%= dev ? "a" : "" %>style.css">
         <script>
             var isPremium = <%= premium ? "true" : "false" %>
-            function buildObject() {
-                var obj = {
-                    "antighostping": false,
-                    "base": true,
-                    "censor": {
-                        "react": true,
-                        "msg": true,
-                        "emsg": true,
-                        "nick": true
-                    },
-                    "channels": [
-            
-                    ],
-                    "filter": [
-            
-                    ],
-                    "id": "<%= data.id %>",
-                    "log": null,
-                    "msg": null,
-                    "pop_delete": 3000,
-                    "role": null,
-                    "uncensor": [
-            
-                    ],
-                    "webhook": false,
-                    "punishment": {
-                        "amount": 3,
-                        "role": "",
-                        "type": 0
-                    },
-                    "webhook": false,
-                    "channels": [
-                        
-                    ],
-                    "multi": false
-                }
-                
-                obj.base     = document.getElementById("base").checked;
-                obj.censor   = {
-                    msg: document.getElementById("censor-msg").checked     || false,
-                    emsg: document.getElementById("censor-emsg").checked   || false,
-                    nick: document.getElementById("censor-nick").checked   || false,
-                    react: document.getElementById("censor-react").checked || false,
-                };
-                obj.log      = document.getElementById("log").value;
-                if (obj.log == "null") obj.log = null
-                obj.role     = document.getElementById("role").value;
-                if(obj.role == "null") obj.role = null;
-                obj.filter   = [...document.getElementById("filter").children].map(x=>x.value);
-                obj.uncensor = [...document.getElementById("uncensor").children].map(x=>x.value);
-                obj.antighostping = document.getElementById("agp").checked || false
-                obj.pop_delete    = ["", 0, undefined].includes(document.getElementById("poptime").value) ? null : document.getElementById("poptime").value * 1000;
-                var msgtype = document.getElementById("msgtype").value;
-                obj.msg = msgtype == 1 ? null : msgtype == 2 ? false : document.getElementById("custommsg").value;
-                
-                obj.punishment.amount = Number(document.getElementById("punishamount").value);
-                obj.punishment.type = parseInt(document.getElementById("punishtype").value) || 0;
-                if (obj.punishment.type === 1) obj.punishment.role = document.getElementById("punishrole").value;
-                else obj.punishment.role = null
-                if(obj.punishment.role == "null") obj.punishment.role = null;
-                obj.webhook = document.getElementById("resend").checked || false
-                obj.channels = [...document.getElementById("channels").children].map(x=>x.value)
-                obj.multi = document.getElementById("multi").checked;
-                
-                return obj;
-            }
             var current = <%- JSON.stringify(data.db) %>
-            function isEquivalent(a, b) {
-                var aProps = Object.getOwnPropertyNames(a);
-                var bProps = Object.getOwnPropertyNames(b);
-	            if (!bProps || !aProps) return false
-                if (aProps.length != bProps.length) {
-                  return false;
-                }
-
-                for (var i = 0; i < aProps.length; i++) {
-                    var propName = aProps[i];
-		            if (typeof a[propName] === 'object' && a[propName] !== null) {
-			            if (!isEquivalent(a[propName], b[propName])) return false
-                    } else if (a[propName] !== b[propName]) {
-                        return false;
-                    }
-                }
-                return true;
-            }
             
             function causeChange() {}
-            
-            function addToFilter() {
-                var newWord = document.getElementById("filterin").value;
-                if(!newWord) return;
-                if(newWord.match(/[^\w]/gi)) return alert("Illegal character. Make sure to only use letters");
-                
-                let newDom = document.createElement("option");
-                newDom.value = newWord.toLowerCase();
-                newDom.innerText = newWord.toLowerCase();
-                
-                document.getElementById("filter").appendChild(newDom);
-                
-                document.getElementById("filterin").value = "";
-                causeChange();
-            }
-            function removeWord() {
-                var wordToRemove = document.getElementById("filter").value;
-                document.getElementById("filter")
-                    .removeChild(
-                        [...document.getElementById("filter")]
-                            .find(function(x) { return x.value == wordToRemove })
-                    );
-                if(wordToRemove) causeChange();
-            }
-            function clearFilter() {
-                document.getElementById("filter").innerHTML = "";
-                causeChange();
-            }
-            function addToChannels() {
-                var newChannel = document.getElementById("channeladd").value.split(" ")
-                var has = false
-                var channels = document.getElementById("channels")
-                for (var i = 0; i < channels.childElementCount; i++) {
-                    if (channels.children[i].value == newChannel[1]) has = true
-                }
-                if(has) return alert("Channel is already ignored")
-                var option = document.createElement("option")
-                option.value = newChannel[1]
-                option.innerText = "#" + newChannel[0]
-                
-                document.getElementById("channels").appendChild(option)
-                causeChange()
-            }
-            function removeChannel() {
-                var channelToRemove = document.getElementById("channels").value;
-                document.getElementById("channels")
-                    .removeChild(
-                        [...document.getElementById("channels")]
-                            .find(function(x) { return x.value == channelToRemove })
-                    );
-                if(channelToRemove) causeChange();
-            }
-            function clearChannels() {
-                document.getElementById("channels").innerHTML = "";
-                causeChange()
-            }
-            
-            function addToUncensor() {
-                var newWord = document.getElementById("uncensorin").value;
-                if(!newWord) return;
-                if(newWord.match(/[^\w]/gi)) return alert("Illegal character. Make sure to only use letters");
-                
-                let newDom = document.createElement("option");
-                newDom.value = newWord.toLowerCase();
-                newDom.innerText = newWord.toLowerCase();
-                
-                document.getElementById("uncensor").appendChild(newDom);
-                
-                document.getElementById("uncensorin").value = "";
-                causeChange();
-            }
-            function removeUncensor() {
-                var wordToRemove = document.getElementById("uncensor").value;
-                document.getElementById("uncensor")
-                    .removeChild(
-                        [...document.getElementById("uncensor")]
-                            .find(function(x) { return x.value == wordToRemove })
-                    );
-                if(wordToRemove) causeChange();
-            }
-            function clearUncensor() {
-                document.getElementById("uncensor").innerHTML = "";
-                causeChange();
-            }
         </script>
+        <script src="<%= base %>/static/js/extras.js"></script>
+        <script src="<%= base %>/static/js/<%= dev ? 'dev' : '' %>client.js"></script>
+        <script src="<%= base %>/static/js/<%= dev ? 'dev' : '' %>guild.js"></script>
         <title>Dashboard - <%= data.name %></title>
     </head>
     <body style="background-color: #2C2F33">
@@ -219,7 +54,7 @@
                     <div id="prolediv" class="checks" style="grid-area: prole"><h5 title="Role to give once amount reached, (Suggested: a muted role)">Role</h5> <select id="punishrole">
                         <option value="null">None</option>
                             <% data.r.forEach(role=>{ %>
-                                <option value="<%= role.id %>">@<%=role.name%></option>
+                                <option value="<%= role.id %>" <%= role.dis ? 'disabled' : '' %>>@<%=role.name%></option>
                             <% }) %>
                     </select></div>
                     
@@ -258,6 +93,7 @@
                     </select>
                     <button class="sb" onclick="removeWord()">Remove</button>
                     <button class="sb" onclick="clearFilter()">Clear All</button>
+                    <button class="sb">Backup</button>
             </div>
                 
             <div class="setting" style="grid-area: popmsg">
@@ -342,7 +178,7 @@
                 <button class="sb" onclick="clearUncensor()">Clear All</button>
             </div>
             <div class="setting premium" style="grid-area: multi">
-                <h3 class="name" title="Whether to censor multiple messages combined together to scan.">Multi-Line<img title="Premium" class="premb" src="/premium.png" width="30"></h3>
+                <h3 class="name" title="Whether to censor multiple messages combined together to scan.">Multi-Message<img title="Premium" class="premb" src="/premium.png" width="30"></h3>
                 <label class="switch reslabel"><input class="prem" type="checkbox" id="multi" <%= data.db.multi ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
             </div>
             
@@ -352,12 +188,6 @@
         <button id="tr" class="but" onclick="logout()" style="grid-area: logout">Logout</button>
         </div>
         <script>
-            document.querySelectorAll(".premium").forEach(function(elm) {
-                elm.onclick = function() {
-                    // if(!isPremium) return alert("This is a premium feature!")
-                }
-            })
-        
             document.querySelectorAll(".reslabel").forEach(function(x) { x.onclick = function() {
                 if(!isPremium) premError()
             }})
@@ -398,7 +228,7 @@
                 if(obj.msg === "") return alert("Pop message can't be an empty string");
                 
                 request("/guilds/<%= data.id %>/settings", "POST", obj, function(x) {
-                    if(x.error) return alert("Error: " + x.error);
+                    if(x.error) return alert("Error: " + x.error + x.place);
                     if(x) {
                         if(x.refresh) window.location.reload()
                         button.style["background-color"] = "#2eb340"
@@ -417,17 +247,6 @@
             }
             function logout() {
                 window.location = "<%=base%>/logout"
-            }
-            
-            function causeChange() {
-                console.log("change");
-                if (isEquivalent(current, buildObject())) {
-                    document.getElementById('save').classList.remove('show')
-                    document.getElementById('save').classList.add('hide')
-                } else {
-                    document.getElementById('save').classList.remove('hide')
-                    document.getElementById('save').classList.add('show')
-                }
             }
         </script>
     </body>

@@ -93,7 +93,7 @@ app.get('/cmds', async (req, res) => {
 const Reader = require("read-last-lines")
 
 app.get("/err", async (req, res) => {
-  res.send(await Reader.read(`C:/Users/Administrator/.pm2/logs/${req.query.p || 'censorbot'}-error.log`, 50))
+  res.send("<div>" + (await Reader.read(`C:/Users/Administrator/.pm2/logs/${req.query.p || 'censorbot'}-error.log`, 50)).split('\n').join('</div><div>') + "</div>")
 })
 
 app.get('/site/updates', (req, res) => {
@@ -101,11 +101,11 @@ app.get('/site/updates', (req, res) => {
   res.redirect(url)
 })
 
-delete require.cache[require.resolve('C:/Workspace/websites/censorbot/updates/updates.js')]
+delete require.cache[require.resolve('/home/jpb/websites/censorbot/updates/updates.js')]
 
 app.get('/site/updates/:v', (req, res) => {
   var url = 'https://censorbot.jt3ch.net/updates'
-  var z = require('C:/Workspace/websites/censorbot/updates/updates.js')
+  var z = require('/home/jpb/websites/censorbot/updates/updates.js')
   var the = z.find((x) => x.v == req.params.v)
   res.send(`
   <!DOCTYPE html>

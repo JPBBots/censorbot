@@ -1,0 +1,132 @@
+.box {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  grid-template-areas: 
+      "back . usage . logout"
+      ". . add . ."
+      "current current current current current"
+      "current current current current current"
+      "current current current current current"
+      "current current current current current";
+  text-align: center;
+  color: white;
+}
+
+.adder {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas:
+        ". do do so .";
+}
+
+.guilds {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-areas: 
+        "one two three"
+        "four five six"
+        "seven eight nine";
+}
+
+.guild {
+    border: 1px black solid;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+    grid-template-areas: 
+        "pic name name remove"
+        "pic id id remove";
+    padding: 3px;
+}
+
+.pic {
+    width: 7em;
+    height: 7em;
+}
+
+button:not(#tr):not(#tl) {
+  color: #99AAB5;
+  cursor: pointer;
+  background-color: transparent;
+  border: #7289DA 2px solid;
+  border-radius: 6px;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  width: 100%;
+  height: 100%;
+}
+
+.add {
+    color: white;
+    cursor: pointer;
+    width: auto;
+    height: auto;
+}
+
+button:hover:not(#tr):not(#tl) {
+  background-color: #7289DA;
+  color: black;
+}
+
+select {
+  padding: 3px;
+  width: fit-content;
+  border-radius: 10px;
+  background-color: #23272A;
+  color: white;
+}
+
+#tl, #tr {
+  width: 100%;
+  height: 60%;
+  font-size: 2em;
+  border-radius: 0px;
+  transition-duration: 0.5s;
+  background-color: #40444a;
+  color: white;
+  border: 3px #454a52 solid;
+  cursor: pointer;
+}
+
+#tl:hover, #tr:hover {
+  opacity: 0.5;
+}
+
+@media (max-device-width: 1040px) {
+    .guilds {
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-rows: repeat(9, 1fr);
+        grid-template-areas: 
+            "one"
+            "two"
+            "three"
+            "four"
+            "five"
+            "six"
+            "seven"
+            "eight"
+            "nine";
+    }
+    .box {
+        grid-template-rows: repeat(2, 1fr);
+    }
+    .guild {
+        font-size: 2em;
+    }
+    button {
+        font-size: 2em;
+    }
+    select {
+        font-size: 1em;
+        width: 15em;
+        height: 4em;
+    }
+    .adder {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-areas:
+            "do do do do so so";
+    }
+}

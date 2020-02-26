@@ -131,7 +131,7 @@
     <script>
         document.querySelectorAll(".guild").forEach(function(guild) {
             guild.onclick = function() {
-                window.location = "<%=base%>/" + guild.getAttribute("value")
+                window.location = "<%= base %>/" + guild.getAttribute("value")
             }
         })
         // function refresh() {

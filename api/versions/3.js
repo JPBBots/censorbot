@@ -3,7 +3,7 @@ var app = express()
 const mappings = require('../../src/mappings.js')
 delete require.cache[require.resolve(mappings.config)]
 var config = require(mappings.config)
-const flake = require('simpleflake')
+//const flake = require('simpleflake')
 const crypto = require('crypto')
 const client = { db: global.db }
 const fetch = require('node-fetch')
@@ -127,7 +127,7 @@ async function doToken (resp, res) {
     }
     return dashUser.token
   }
-  const newToken = crypto.createHash('sha256').update(flake(new Date())).update(config.oauth.mysecret).digest('hex')
+  const newToken = crypto.createHash('sha256').update(`${Math.random()}`).update(`${new Date().getTime()}`).update(config.oauth.mysecret).digest('hex')
 
   await client.db.dashdb.create(user.id, {
     token: newToken,

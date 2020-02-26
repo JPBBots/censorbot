@@ -53,11 +53,11 @@ module.exports = async(client) => {
         //     avatar: client.user.avatar,
         //     votes: me.points
         // }).run();
-        fs.writeFileSync('C:/Workspace/websites/censorbot/stats.js', `document.getElementById("servercount").innerHTML = "${gc} SERVERS | ${me.points} VOTES"`)
+        fs.writeFileSync('/home/jpb/websites/censorbot/stats.js', `document.getElementById("servercount").innerHTML = "${gc} SERVERS | ${me.points} VOTES"`)
         fetch(client.user.avatarURL())
           .then(x => x.buffer())
           .then(res => {
-            fs.writeFileSync('C:/Workspace/websites/censorbot/favicon.ico', res)
+            fs.writeFileSync('/home/jpb/websites/censorbot/favicon.ico', res)
           })
       })
     })
@@ -98,11 +98,11 @@ module.exports = async(client) => {
           //     avatar: client.user.avatar,
           //     votes: me.points
           // }).run();
-          fs.writeFileSync('C:/Workspace/websites/censorbot/stats.js', `document.getElementById("servercount").innerHTML = "${aa} SERVERS | ${me.points} VOTES"`)
+          fs.writeFileSync('/home/jpb/websites/censorbot/stats.js', `document.getElementById("servercount").innerHTML = "${aa} SERVERS | ${me.points} VOTES"`)
           fetch(client.user.avatarURL())
             .then(x => x.buffer())
             .then(res => {
-              fs.writeFileSync('C:/Workspace/websites/censorbot/favicon.ico', res)
+              fs.writeFileSync('/home/jpb/websites/censorbot/favicon.ico', res)
             })
         })
       })

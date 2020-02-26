@@ -1,7 +1,7 @@
 // const rethink = require("rethinkdbdash");
 delete require.cache[require.resolve('./dbi.js')]
 const dbi = require('./dbi.js')
-const config = require('C:/Workspace/bots/censorbot/config.js').db
+const config = require('/home/jpb/bots/censorbot/config.js').db
 const MongoClient = require('mongodb').MongoClient
 
 class jdb {

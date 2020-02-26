@@ -5,6 +5,7 @@ const config = require(mappings.config)
 const { readFileSync } = require('fs')
 const cookieParser = require('cookie-parser')
 const fetch = require('node-fetch')
+const path = require('path')
 
 app.use(cookieParser())
 app.set('views', global.viewsDir)
@@ -25,6 +26,7 @@ const base = 'https://censorbot.jt3ch.net/dash'
     global manager
 */
 
+app.use('/static', express.static(path.join(__dirname, 'static')))
 app.get('/test', (req, res) => {
   res.clearCookie('a')
   res.send('a')
@@ -43,6 +45,12 @@ app.get('/', async (req, res) => {
   const guilds = await global.getUser(req.cookies.token, res)
   if (!guilds) return
   res.render('guilds', { guilds: guilds, token: req.cookies.token, base: base })
+})
+
+app.get('/servercount', async (req, res) => {
+  const guilds = await global.getUser(req.cookies.token, res, 'servercount')
+  if (!guilds) return
+  res.send('gulds: ' + guilds.length)
 })
 
 app.get('/token', (req, res) => {

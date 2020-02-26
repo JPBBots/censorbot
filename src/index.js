@@ -10,7 +10,7 @@ const readdir = promisify(require('fs').readdir)
 const mappings = require('./mappings.js')
 client.mappings = mappings
 
-const DB = require('C:/Workspace/db.js')
+const DB = require('/home/jpb/db.js')
 
 const PunishmentsHandler = require(mappings.assets.punishments)
 client.config = require(mappings.config)

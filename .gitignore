@@ -1,3 +1,4 @@
+node_modules
 .vscode
 secret-config.js
 *filter.json*
