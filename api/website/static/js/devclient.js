@@ -65,13 +65,25 @@ function buildObject() {
     return obj;
 }
 
+document.waitingChange = false
+
 function causeChange() {
     console.log("change");
     if (isEquivalent(current, buildObject())) {
+        document.waitingChange = false
         document.getElementById('save').classList.remove('show')
         document.getElementById('save').classList.add('hide')
     } else {
+        document.waitingChange = true
         document.getElementById('save').classList.remove('hide')
         document.getElementById('save').classList.add('show')
+    }
+}
+
+document.onkeydown = function(e) {
+    if (e.key == 's' && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+      e.preventDefault();
+      console.log('got ctrl+s')
+      if (document.waitingChange) submit()
     }
 }

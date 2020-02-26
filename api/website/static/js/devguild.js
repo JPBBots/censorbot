@@ -81,3 +81,72 @@ function clearUncensor() {
     document.getElementById("uncensor").innerHTML = "";
     causeChange();
 }
+
+
+//backups
+
+function backupFilter() {
+    document.getElementById('filterbackup').innerHTML = "<button class='sb' onclick='exportFilter()'>Export</button><button class='sb' onclick='importFilter()'>Import</button>"
+}
+function exportFilter() {
+    const filter = buildObject().filter
+    download(document.guild.name + ".cbfilter", JSON.stringify(filter))
+
+    document.getElementById('filterbackup').innerHTML = "<button class='sb' onclick='backupFilter()'>Backup</button>"
+}
+function importFilter() {
+    document.getElementById('filterbackup').innerHTML = "<input type='file' id='filterfile'><button class='sb' onclick='uploadFilter()'>Upload</button>"
+}
+function uploadFilter() {
+    var file = document.getElementById('filterfile').files[0]
+    fileContents(file, function(content) {
+        var filter
+        try {
+            filter = JSON.parse(content)
+        } catch {
+            alert('Error Parsing File!')
+        }
+        if (!filter) return
+        clearFilter()
+        filter.forEach(function(word) {
+            document.getElementById("filterin").value = word;
+            addToFilter()
+        })
+    })    
+    document.getElementById('filterbackup').innerHTML = "<button class='sb' onclick='backupFilter()'>Backup</button>"
+}
+
+
+
+
+
+function backupUncensor() {
+    document.getElementById('uncensorbackup').innerHTML = "<button class='sb' onclick='exportUncensor()'>Export</button><button class='sb' onclick='importUncensor()'>Import</button>"
+}
+function exportUncensor() {
+    const uncensor = buildObject().uncensor
+    download(document.guild.name + ".cbuncensor", JSON.stringify(uncensor))
+
+    document.getElementById('uncensorbackup').innerHTML = "<button class='sb' onclick='backupUncensor()'>Backup</button>"
+}
+function importUncensor() {
+    document.getElementById('uncensorbackup').innerHTML = "<input type='file' id='uncensorfile'><button class='sb' onclick='uploadUncensor()'>Upload</button>"
+}
+function uploadUncensor() {
+    var file = document.getElementById('uncensorfile').files[0]
+    fileContents(file, function(content) {
+        var uncensor
+        try {
+            uncensor = JSON.parse(content)
+        } catch {
+            alert('Error Parsing File!')
+        }
+        if (!uncensor) return
+        clearUncensor()
+        uncensor.forEach(function(word) {
+            document.getElementById("uncensorin").value = word;
+            addToUncensor()
+        })
+    })    
+    document.getElementById('uncensorbackup').innerHTML = "<button class='sb' onclick='backupUncensor()'>Backup</button>"
+}
