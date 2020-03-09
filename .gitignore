@@ -2,6 +2,7 @@ node_modules
 .vscode
 secret-config.js
 *filter.json*
+/filter/filters/*
 *linkbyp.json*
 filter/filterbackup.json
 num

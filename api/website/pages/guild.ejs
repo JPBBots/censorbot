@@ -5,6 +5,11 @@
         <script>
             var isPremium = <%= premium ? "true" : "false" %>
             var current = <%- JSON.stringify(data.db) %>
+
+            document.guild = {
+                id: "<%= data.id %>",
+                name: "<%= data.name %>"
+            }
             
             function causeChange() {}
         </script>
@@ -93,6 +98,7 @@
                     </select>
                     <button class="sb" onclick="removeWord()">Remove</button>
                     <button class="sb" onclick="clearFilter()">Clear All</button>
+                    <div id="filterbackup"><button class="sb" onclick="backupFilter()">Backup</button></div>
             </div>
                 
             <div class="setting" style="grid-area: popmsg">
@@ -175,6 +181,7 @@
                 </select>
                 <button class="sb" onclick="removeUncensor()">Remove</button>
                 <button class="sb" onclick="clearUncensor()">Clear All</button>
+                <div id="uncensorbackup"><button class="sb" onclick="backupUncensor()">Backup</button></div>
             </div>
             <div class="setting premium" style="grid-area: multi">
                 <h3 class="name" title="Whether to censor multiple messages combined together to scan.">Multi-Message<img title="Premium" class="premb" src="/premium.png" width="30"></h3>
@@ -233,6 +240,7 @@
                         button.style["background-color"] = "#2eb340"
                         document.getElementById('save').classList.remove('show')
                         document.getElementById('save').classList.add('hide')
+                        document.waitingChange = false
                         button.innerText = 'Save'
                         current = obj
                     } else {

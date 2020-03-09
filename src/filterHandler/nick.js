@@ -3,6 +3,8 @@ module.exports = async(client, member) => {
 
   const data = await client.rdb.getAll(member.guild_id)
 
+  if (!data) return
+
   if (!data.censor.nick) return
   if (data.role && member.roles.includes(data.role)) return
 

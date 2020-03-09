@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 
 const Filter = require('./class.js')
-const filter = new Filter(null, './filter.json', './linkbyp.json')
+const filter = new Filter(null, './linkbyp.json')
 
 const bodyParser = require('body-parser')
 
@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({
 }))
 
 app.post('/', (req, res) => {
+  if (req.body.global === true) req.body.global = ['en', 'es', 'off']
   const response = filter.test(req.body.content, req.body.global, req.body.server, req.body.uncensor)
   res.json(response)
 })

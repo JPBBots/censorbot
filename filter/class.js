@@ -1,9 +1,8 @@
 const emojis = require('emoji-unicode-map')
+const filters = require('./filters.js')
 
 module.exports = class JPBFilter {
-  constructor (client, filterFile, linkBypFile) {
-    this.filterFile = filterFile
-    this.filter = require(filterFile)
+  constructor (client, linkBypFile) {
     this.linkBypFile = linkBypFile
     this.linkByp = require(linkBypFile).links
     this.client = client
@@ -98,8 +97,8 @@ module.exports = class JPBFilter {
         }
       }
 
-      if (GLOBAL) {
-        var baseFilter = this.testWithBypass(this.resolveContent(content), this.filter, UNCENSOR)
+      if (GLOBAL && GLOBAL.length > 1) {
+        var baseFilter = this.testWithBypass(this.resolveContent(content), filters(GLOBAL), UNCENSOR)
         if (baseFilter.stopped) {
           res.censor = true
           res.method = 'base'
@@ -214,7 +213,7 @@ module.exports = class JPBFilter {
     }
     args.forEach(arg => {
       Object.keys(obj).forEach(wrd => {
-        if (uncensor.some(u => u.match(wrd))) return
+        if (uncensor && uncensor.some(u => u.match(wrd))) return
         const word = new RegExp(wrd, 'gi')
         if (arg.match(word)) {
           const array = obj[wrd.toLowerCase()]

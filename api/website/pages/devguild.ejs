@@ -1,260 +1,311 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="<%= base %>/static/css/<%= dev ? "a" : "" %>style.css">
-        <script>
-            var isPremium = <%= premium ? "true" : "false" %>
-            var current = <%- JSON.stringify(data.db) %>
+
+<head>
+    <link rel="stylesheet" href="<%= base %>/static/css/<%= dev ? "a" : "" %>style.css">
+    <script>
+        var isPremium = <%= premium ? "true" : "false" %>
+            var current = <% - JSON.stringify(data.db) %>
 
             document.guild = {
                 id: "<%= data.id %>",
                 name: "<%= data.name %>"
             }
-            
-            function causeChange() {}
-        </script>
-        <script src="<%= base %>/static/js/extras.js"></script>
-        <script src="<%= base %>/static/js/<%= dev ? 'dev' : '' %>client.js"></script>
-        <script src="<%= base %>/static/js/<%= dev ? 'dev' : '' %>guild.js"></script>
-        <title>Dashboard - <%= data.name %></title>
-    </head>
-    <body style="background-color: #2C2F33">
-        <div class="box">
-        <h1 class="name servername" style="grid-area: servername"><%= data.name %><% if(premium) { %> <img title="Premium" class="premb" src="/premium.png" width="30"> <% } %></h1>
-            <div class="setting" style="grid-area: base-filter">
-                <h3 class="name" title="Whether to use the bot's premade filter that is managed by staff.">Base Filter</h3>
-                <label class="switch"><input type="checkbox" id="base" <%= data.db.base ? "checked" : "" %>><span class="slider round"></span></label>
+
+        function causeChange() { }
+    </script>
+    <script src="<%= base %>/static/js/extras.js"></script>
+    <script src="<%= base %>/static/js/<%= dev ? 'dev' : '' %>client.js"></script>
+    <script src="<%= base %>/static/js/<%= dev ? 'dev' : '' %>guild.js"></script>
+    <title>Dashboard - <%= data.name %></title>
+</head>
+
+<body style="background-color: #2C2F33">
+    <div class="box">
+        <h1 class="name servername" style="grid-area: servername"><%= data.name %><% if(premium) { %> <img
+                title="Premium" class="premb" src="/premium.png" width="30"> <% } %></h1>
+        <div class="setting" style="grid-area: base-filter">
+            <h3 class="name" title="Whether to use the bot's premade filter that is managed by staff.">Base Filter</h3>
+            <label class="switch"><input type="checkbox" id="base" <%= data.db.base ? "checked" : "" %>><span
+                    class="slider round"></span></label>
+        </div>
+        <div class="setting" style="grid-area: logchannel">
+            <h3 class="name" title="Channel to log infractions, as well as punishment outcomes.">Log Channel</h3>
+            <select id="log">
+                <option value="null">None</option>
+                <% data.c.forEach(channel=>{ %>
+                <option value="<%= channel.id %>">#<%=channel.name%></option>
+                <% }) %>
+            </select>
+        </div>
+        <div class="setting" style="grid-area: role">
+            <h3 class="name" title="Role to ignore completely with the filter.">Uncensor Role</h3>
+            <select id="role">
+                <option value="null">None</option>
+                <% data.r.forEach(role=>{ %>
+                <option value="<%= role.id %>">@<%=role.name%></option>
+                <% }) %>
+            </select>
+        </div>
+        <div class="setting" style="grid-area: agp">
+            <h3 class="name"
+                title="When the censor bot censors a message that pings someone, it'll say who was pinged.">
+                Anti-GhostPing</h3>
+            <label class="switch"><input type="checkbox" id="agp" <%= data.db.antighostping ? "checked" : "" %>><span
+                    class="slider round"></span></label>
+        </div>
+        <div class="setting punish" style="grid-area: punish">
+            <h3 class="name" title="Punish people who curse too many times" style="grid-area: ptitle">Punishments</h3>
+            <div class="checks" style="grid-area: ptype">
+                <h5 title="Type of punishment to perform once amount has been reached.">Type</h5><select
+                    id="punishtype">
+                    <option value="0">Off</option>
+                    <option value="1">Mute</option>
+                    <option value="2">Kick</option>
+                    <option value="3">Ban</option>
+                </select>
             </div>
-            <div class="setting" style="grid-area: logchannel">
-                <h3 class="name" title="Channel to log infractions, as well as punishment outcomes.">Log Channel</h3>
-                    <select id="log">
-                        <option value="null">None</option>
-                        <% data.c.forEach(channel=>{ %>
-                            <option value="<%= channel.id %>">#<%=channel.name%></option>
-                        <% }) %>
-                    </select>
+            <div class="checks" style="grid-area: pamount">
+                <h5 title="Amount of infractions that when met will perform the action on that user.">Amount</h5><input
+                    type="number" min="1" style="width:3em" placeholder="Never" id="punishamount"
+                    value="<%= data.db.punishment.amount || 0%>">
             </div>
-            <div class="setting" style="grid-area: role">
-                <h3 class="name" title="Role to ignore completely with the filter.">Uncensor Role</h3>
-                    <select id="role">
-                        <option value="null">None</option>
-                        <% data.r.forEach(role=>{ %>
-                            <option value="<%= role.id %>">@<%=role.name%></option>
-                        <% }) %>
-                    </select>
+            <div id="prolediv" class="checks" style="grid-area: prole">
+                <h5 title="Role to give once amount reached, (Suggested: a muted role)">Role</h5> <select
+                    id="punishrole">
+                    <option value="null">None</option>
+                    <% data.r.forEach(role=>{ %>
+                    <option value="<%= role.id %>" <%= role.dis ? 'disabled' : '' %>>@<%=role.name%></option>
+                    <% }) %>
+                </select>
             </div>
-            <div class="setting" style="grid-area: agp">
-                <h3 class="name" title="When the censor bot censors a message that pings someone, it'll say who was pinged.">Anti-GhostPing</h3>
-                <label class="switch"><input type="checkbox" id="agp" <%= data.db.antighostping ? "checked" : "" %>><span class="slider round"></span></label>
-            </div>
-            <div class="setting punish" style="grid-area: punish">
-                <h3 class="name" title="Punish people who curse too many times" style="grid-area: ptitle">Punishments</h3>
-                    <div class="checks" style="grid-area: ptype"><h5 title="Type of punishment to perform once amount has been reached.">Type</h5><select id="punishtype">
-                        <option value="0">Off</option>
-                        <option value="1">Mute</option>
-                        <option value="2">Kick</option>
-                        <option value="3">Ban</option>
-                    </select></div>
-                    <div class="checks" style="grid-area: pamount"><h5 title="Amount of infractions that when met will perform the action on that user.">Amount</h5><input type="number" min="1" style="width:3em" placeholder="Never" id="punishamount" value="<%= data.db.punishment.amount || 0%>"></div>
-                    <div id="prolediv" class="checks" style="grid-area: prole"><h5 title="Role to give once amount reached, (Suggested: a muted role)">Role</h5> <select id="punishrole">
-                        <option value="null">None</option>
-                            <% data.r.forEach(role=>{ %>
-                                <option value="<%= role.id %>" <%= role.dis ? 'disabled' : '' %>>@<%=role.name%></option>
-                            <% }) %>
-                    </select></div>
-                    
-                    <script>
-                        function onTypeChange() {
-                            var typeDiv = document.getElementById("prolediv");
-                            var type = document.getElementById("punishtype").value;
-                            if (type === "1") {
-                                typeDiv.classList.remove("hidden")
-                            } else {
-                                typeDiv.classList.add("hidden")
-                            }
-                        }
-                        document.getElementById("punishtype").addEventListener("change", onTypeChange)
-                    </script>
-            </div>
-            <div class="setting censor" style="grid-area: censor">
-                <h3 style="grid-area: checktitle" title="Methods in which to scan with and take action on by censor bot." class="name">Censor Methods</h3>
-                        <div style="grid-area: checkmsg" class="checks"><h5>Messages</h5><label class="switch"><input type="checkbox" id="censor-msg" <%= data.db.censor.msg ? "checked" : "" %>><span class="slider round"></span></label></div>
-                        <div style="grid-area: checkemsg" class="checks"><h5>Edited Messages</h5><label class="switch"><input type="checkbox" id="censor-emsg" <%= data.db.censor.emsg ? "checked" : "" %>><span class="slider round"></span></label></div>
-                        <div style="grid-area: checknick" class="checks"><h5>Nicknames</h5><label class="switch"><input type="checkbox" id="censor-nick" <%= data.db.censor.nick ? "checked" : "" %>><span class="slider round"></span></label></div>
-                        <div style="grid-area: checkreact" class="checks"><h5>Reactions</h5><label class="switch"><input type="checkbox" id="censor-react" <%= data.db.censor.react ? "checked" : "" %>><span class="slider round"></span></label></div>
-            </div>
-            <div class="setting" style="grid-area: filter">
-                <h3 class="name" title="Custom filter that are bound to this server.">Filter</h3>
-                    <input id="filterin" placeholder="Add to filter"><button class="sb" onclick="addToFilter()">Add</button><div></div>
-                    <script>
-                        document.getElementById("filterin").onkeydown = function(event) {
-                            if(event.keyCode == 13) addToFilter();
-                        }
-                    </script>
-                    <select id="filter">
-                        <% data.db.filter.forEach(x=>{ %>
-                            <option value="<%= x %>"><%= x %></option>
-                        <% }) %>
-                    </select>
-                    <button class="sb" onclick="removeWord()">Remove</button>
-                    <button class="sb" onclick="clearFilter()">Clear All</button>
-                    <div id="filterbackup"><button class="sb" onclick="backupFilter()">Backup</button></div>
-            </div>
-                
-            <div class="setting" style="grid-area: popmsg">
-                <h3 class="name" title="Settings for the message that comes up when someones message is deleted.">Pop message</h3>
-                <div class="checks"><h5>Seconds until delete</h5> <input type="number" min="0" max="<%= premium ? "600" : "120" %>" placeholder="Never" id="poptime" value="<%= data.db.pop_delete / 1000%>"></div>
-                <script>
-                    document.getElementById("poptime").onchange = function() {
-                        if(document.getElementById("poptime").value == 0) {
-                            document.getElementById("poptime").value = "";
-                        }
-                        if(!isPremium && document.getElementById("poptime").value > 120) {
-                            document.getElementById("poptime").value = 120;
-                        }
-                        if(isPremium && document.getElementById("poptime").value > 600) {
-                            document.getElementById("poptime").value = 600;
-                        }
+
+            <script>
+                function onTypeChange() {
+                    var typeDiv = document.getElementById("prolediv");
+                    var type = document.getElementById("punishtype").value;
+                    if (type === "1") {
+                        typeDiv.classList.remove("hidden")
+                    } else {
+                        typeDiv.classList.add("hidden")
                     }
-                    document.getElementById("poptime").onchange()
-                </script>
-                <div></div>
-                <div class="checks"><h5>Message</h5> 
-                    <select id="msgtype">
-                        <option value="1">Default</option>
-                        <option value="2">Disabled</option>
-                        <option value="3">Custom</option>
-                    </select>
-                    <input type="text" id="custommsg" placeholder="Message"></div>
-                    <script>
-                        document.getElementById("msgtype").value = "<%= data.db.msg === null ? "1" : data.db.msg === false ? "2" : "3" %>"
-                        <% if(data.db.msg) { %>
-                            document.getElementById("custommsg").value = "<%= data.db.msg %>"
-                        <% } %>
-                        function chngMSG() {
-                            if(document.getElementById("msgtype").value == 3) {
-                                document.getElementById("custommsg").hidden = false;
-                            } else {
-                                document.getElementById("custommsg").hidden = true;
-                            }
-                            causeChange()
-                        }
-                        document.getElementById("msgtype").onchange = chngMSG
-                        chngMSG();
-                    </script>
-                    
+                }
+                document.getElementById("punishtype").addEventListener("change", onTypeChange)
+            </script>
+        </div>
+        <div class="setting censor" style="grid-area: censor">
+            <h3 style="grid-area: checktitle" title="Methods in which to scan with and take action on by censor bot."
+                class="name">Censor Methods</h3>
+            <div style="grid-area: checkmsg" class="checks">
+                <h5>Messages</h5><label class="switch"><input type="checkbox" id="censor-msg"
+                        <%= data.db.censor.msg ? "checked" : "" %>><span class="slider round"></span></label>
             </div>
-            <!--premium-->
-            <div class="setting premium" style="grid-area: resend">
-                <h3 class="name" title="Resend someone censored message with the message censored in a spoiler."> Resend <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
-                <label class="switch reslabel"><input type="checkbox" class="prem" id="resend" <%= data.db.webhook ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
+            <div style="grid-area: checkemsg" class="checks">
+                <h5>Edited Messages</h5><label class="switch"><input type="checkbox" id="censor-emsg"
+                        <%= data.db.censor.emsg ? "checked" : "" %>><span class="slider round"></span></label>
             </div>
-            <div class="setting premium" style="grid-area: channels">
-                <h3 class="name" title="Ignore specific channels without having to make it NSFW."> Ignore Channels <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
-                <select id="channeladd">
-                    <% data.c.forEach(channel=>{ %>
-                        <option value="<%= channel.name %> <%= channel.id %>">#<%=channel.name%></option>
-                    <% }) %>
-                </select>
-                <button class="sb prem" onclick="<%= premium ? "addToChannels()" : "premError()" %>">Add</button><div></div>
-                <select id="channels">
-                    <% data.db.channels.forEach(channel => { %>
-                        <% const chan = data.c.find(x => x.id === channel) %>
-                        <option value="<%= channel %>">#<%= chan ? chan.name : "error" %></option>
-                    <% }) %>
-                </select>
-                <button class="sb prem" onclick="<%= premium ? "removeChannel()" : "premError()" %>">Remove</button>
-                <button class="sb prem" onclick="<%= premium ? "clearChannels()" : "premError()" %>">Clear</button>
+            <div style="grid-area: checknick" class="checks">
+                <h5>Nicknames</h5><label class="switch"><input type="checkbox" id="censor-nick"
+                        <%= data.db.censor.nick ? "checked" : "" %>><span class="slider round"></span></label>
             </div>
-            <div class="setting" style="grid-area: uncensor">
-                <h3 class="name" title="Words to ignore from the base filter in this server.">Uncensor words</h3>
-                <input id="uncensorin" placeholder="Add to uncensor"><button class="sb" onclick="addToUncensor()">Add</button><div></div>
-                <script>
-                    document.getElementById("uncensorin").onkeydown = function(event) {
-                        if(event.keyCode == 13) addToUncensor();
+            <div style="grid-area: checkreact" class="checks">
+                <h5>Reactions</h5><label class="switch"><input type="checkbox" id="censor-react"
+                        <%= data.db.censor.react ? "checked" : "" %>><span class="slider round"></span></label>
+            </div>
+        </div>
+        <div class="setting" style="grid-area: filter">
+            <h3 class="name" title="Custom filter that are bound to this server.">Filter</h3>
+            <input id="filterin" placeholder="Add to filter"><button class="sb" onclick="addToFilter()">Add</button>
+            <div></div>
+            <script>
+                document.getElementById("filterin").onkeydown = function (event) {
+                    if (event.keyCode == 13) addToFilter();
+                }
+            </script>
+            <select id="filter">
+                <% data.db.filter.forEach(x=>{ %>
+                <option value="<%= x %>"><%= x %></option>
+                <% }) %>
+            </select>
+            <button class="sb" onclick="removeWord()">Remove</button>
+            <button class="sb" onclick="clearFilter()">Clear All</button>
+            <div id="filterbackup"><button class="sb" onclick="backupFilter()">Backup</button></div>
+        </div>
+
+        <div class="setting" style="grid-area: popmsg">
+            <h3 class="name" title="Settings for the message that comes up when someones message is deleted.">Pop
+                message</h3>
+            <div class="checks">
+                <h5>Seconds until delete</h5> <input type="number" min="0" max="<%= premium ? "600" : "120" %>"
+                    placeholder="Never" id="poptime" value="<%= data.db.pop_delete / 1000%>">
+            </div>
+            <script>
+                document.getElementById("poptime").onchange = function () {
+                    if (document.getElementById("poptime").value == 0) {
+                        document.getElementById("poptime").value = "";
                     }
-                </script>
-                <select id="uncensor">
-                    <% data.db.uncensor.forEach(x=>{ %>
-                        <option value="<%= x %>"><%= x %></option>
-                    <% }) %>
+                    if (!isPremium && document.getElementById("poptime").value > 120) {
+                        document.getElementById("poptime").value = 120;
+                    }
+                    if (isPremium && document.getElementById("poptime").value > 600) {
+                        document.getElementById("poptime").value = 600;
+                    }
+                }
+                document.getElementById("poptime").onchange()
+            </script>
+            <div></div>
+            <div class="checks">
+                <h5>Message</h5>
+                <select id="msgtype">
+                    <option value="1">Default</option>
+                    <option value="2">Disabled</option>
+                    <option value="3">Custom</option>
                 </select>
-                <button class="sb" onclick="removeUncensor()">Remove</button>
-                <button class="sb" onclick="clearUncensor()">Clear All</button>
-                <div id="uncensorbackup"><button class="sb" onclick="backupUncensor()">Backup</button></div>
+                <input type="text" id="custommsg" placeholder="Message">
             </div>
-            <div class="setting premium" style="grid-area: multi">
-                <h3 class="name" title="Whether to censor multiple messages combined together to scan.">Multi-Message<img title="Premium" class="premb" src="/premium.png" width="30"></h3>
-                <label class="switch reslabel"><input class="prem" type="checkbox" id="multi" <%= data.db.multi ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
-            </div>
-            
-        <div id="save" class="hide"> You have unsaved changes.  <button class="save" style="background-color: #2eb340" onclick="submit()">Save</button> </div>
+            <script>
+                document.getElementById("msgtype").value = "<%= data.db.msg === null ? "1" : data.db.msg === false ? "2" : "3" %>"
+                    <% if (data.db.msg) { %>
+                        document.getElementById("custommsg").value = "<%= data.db.msg %>"
+                            <% } %>
+                                function chngMSG() {
+                                    if (document.getElementById("msgtype").value == 3) {
+                                        document.getElementById("custommsg").hidden = false;
+                                    } else {
+                                        document.getElementById("custommsg").hidden = true;
+                                    }
+                                    causeChange()
+                                }
+                document.getElementById("msgtype").onchange = chngMSG
+                chngMSG();
+            </script>
+
+        </div>
+        <!--premium-->
+        <div class="setting premium" style="grid-area: resend">
+            <h3 class="name" title="Resend someone censored message with the message censored in a spoiler."> Resend
+                <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
+            <label class="switch reslabel"><input type="checkbox" class="prem" id="resend"
+                    <%= data.db.webhook ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span
+                    class="slider round"></span></label>
+        </div>
+        <div class="setting premium" style="grid-area: channels">
+            <h3 class="name" title="Ignore specific channels without having to make it NSFW."> Ignore Channels <img
+                    title="Premium" class="premb" src="/premium.png" width="30"></h3>
+            <select id="channeladd">
+                <% data.c.forEach(channel=>{ %>
+                <option value="<%= channel.name %> <%= channel.id %>">#<%=channel.name%></option>
+                <% }) %>
+            </select>
+            <button class="sb prem" onclick="<%= premium ? "addToChannels()" : "premError()" %>">Add</button>
+            <div></div>
+            <select id="channels">
+                <% data.db.channels.forEach(channel => { %>
+                <% const chan = data.c.find(x => x.id === channel) %>
+                <option value="<%= channel %>">#<%= chan ? chan.name : "error" %></option>
+                <% }) %>
+            </select>
+            <button class="sb prem" onclick="<%= premium ? "removeChannel()" : "premError()" %>">Remove</button>
+            <button class="sb prem" onclick="<%= premium ? "clearChannels()" : "premError()" %>">Clear</button>
+        </div>
+        <div class="setting" style="grid-area: uncensor">
+            <h3 class="name" title="Words to ignore from the base filter in this server.">Uncensor words</h3>
+            <input id="uncensorin" placeholder="Add to uncensor"><button class="sb"
+                onclick="addToUncensor()">Add</button>
+            <div></div>
+            <script>
+                document.getElementById("uncensorin").onkeydown = function (event) {
+                    if (event.keyCode == 13) addToUncensor();
+                }
+            </script>
+            <select id="uncensor">
+                <% data.db.uncensor.forEach(x=>{ %>
+                <option value="<%= x %>"><%= x %></option>
+                <% }) %>
+            </select>
+            <button class="sb" onclick="removeUncensor()">Remove</button>
+            <button class="sb" onclick="clearUncensor()">Clear All</button>
+            <div id="uncensorbackup"><button class="sb" onclick="backupUncensor()">Backup</button></div>
+        </div>
+        <div class="setting premium" style="grid-area: multi">
+            <h3 class="name" title="Whether to censor multiple messages combined together to scan.">Multi-Message<img
+                    title="Premium" class="premb" src="/premium.png" width="30"></h3>
+            <label class="switch reslabel"><input class="prem" type="checkbox" id="multi"
+                    <%= data.db.multi ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span
+                    class="slider round"></span></label>
+        </div>
+
+        <div id="save" class="hide"> You have unsaved changes. <button class="save" style="background-color: #2eb340"
+                onclick="submit()">Save</button> </div>
         <!--<button id="save" class="but" style="display: none" onclick="submit()">Save</button>-->
         <button id="tl" class="but" onclick="back()" style="grid-area: back">Back</button>
         <button id="tr" class="but" onclick="logout()" style="grid-area: logout">Logout</button>
-        </div>
-        <script>
-            document.querySelectorAll(".reslabel").forEach(function(x) { x.onclick = function() {
-                if(!isPremium) premError()
-            }})
-            document.querySelectorAll(".premb").forEach(function(elm) {
-                elm.onclick = function() {
-                    window.open("/premium", "_blank")
+    </div>
+    <script>
+        document.querySelectorAll(".reslabel").forEach(function (x) {
+            x.onclick = function () {
+                if (!isPremium) premError()
+            }
+        })
+        document.querySelectorAll(".premb").forEach(function (elm) {
+            elm.onclick = function () {
+                window.open("/premium", "_blank")
+            }
+        })
+
+        function premError() {
+            alert("This is a premium only feature")
+        }
+
+        document.getElementById("log").value = "<%= data.db.log || "null"%>"
+        document.getElementById("role").value = "<%= data.db.role || "null"%>"
+        document.getElementById("punishrole").value = "<%= data.db.punishment.role || "null"%>"
+        document.getElementById("punishtype").value = "<%= data.db.punishment.type  || "0" %>"
+        if (document.getElementById('punishtype').value !== "1") onTypeChange()
+
+        function request(endpoint, method, body, cb) {
+            var xhr = new XMLHttpRequest();
+            xhr.open(method, "https://api.jt3ch.net/censorbot/v3" + endpoint);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("Authorization", "<%= token %>");
+            xhr.onload = function () {
+                cb(JSON.parse(xhr.response));
+                console.log(xhr.response);
+            }
+            xhr.send(body ? JSON.stringify(body) : null);
+        }
+
+        function submit() {
+            var button = document.querySelector('.save')
+            button.style["background-color"] = "#277a32"
+            button.innerText = 'Saving...'
+            var obj = buildObject()
+
+            if (obj.msg === "") return alert("Pop message can't be an empty string");
+
+            request("/guilds/<%= data.id %>/settings", "POST", obj, function (x) {
+                if (x.error) return alert("Error: " + x.error + x.place);
+                if (x) {
+                    if (x.refresh) window.location.reload()
+                    button.style["background-color"] = "#2eb340"
+                    document.getElementById('save').classList.remove('show')
+                    document.getElementById('save').classList.add('hide')
+                    document.waitingChange = false
+                    button.innerText = 'Save'
+                    current = obj
+                } else {
+                    alert("Error!");
                 }
-            })
-            
-            function premError() {
-                alert("This is a premium only feature")
-            }
-            
-            document.getElementById("log").value = "<%= data.db.log || "null"%>"
-            document.getElementById("role").value = "<%= data.db.role || "null"%>"
-            document.getElementById("punishrole").value = "<%= data.db.punishment.role || "null"%>"
-            document.getElementById("punishtype").value = "<%= data.db.punishment.type  || "0" %>"
-            if (document.getElementById('punishtype').value !== "1") onTypeChange()
-            
-            function request(endpoint, method, body, cb) {
-                var xhr = new XMLHttpRequest();
-                xhr.open(method, "https://api.jt3ch.net/censorbot/v3"+endpoint);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.setRequestHeader("Authorization", "<%= token %>");
-                xhr.onload = function() {
-                    cb(JSON.parse(xhr.response));
-                    console.log(xhr.response);
-                }
-                xhr.send(body ? JSON.stringify(body) : null);
-            }
-            
-            function submit() {
-                var button = document.querySelector('.save')
-                button.style["background-color"] = "#277a32"
-                button.innerText = 'Saving...'
-                var obj = buildObject()
-                
-                if(obj.msg === "") return alert("Pop message can't be an empty string");
-                
-                request("/guilds/<%= data.id %>/settings", "POST", obj, function(x) {
-                    if(x.error) return alert("Error: " + x.error + x.place);
-                    if(x) {
-                        if(x.refresh) window.location.reload()
-                        button.style["background-color"] = "#2eb340"
-                        document.getElementById('save').classList.remove('show')
-                        document.getElementById('save').classList.add('hide')
-                        document.waitingChange = false
-                        button.innerText = 'Save'
-                        current = obj
-                    } else {
-                        alert("Error!");
-                    }
-                });
-            }
-            document.querySelectorAll("input, select, button").forEach(function(x) { if(x.id !== "msgtype") x.addEventListener("change", causeChange) })
-            function back() {
-                window.location.replace("<%=base%>")
-            }
-            function logout() {
-                window.location = "<%=base%>/logout"
-            }
-        </script>
-    </body>
+            });
+        }
+        document.querySelectorAll("input, select, button").forEach(function (x) { if (x.id !== "msgtype") x.addEventListener("change", causeChange) })
+        function back() {
+            window.location.replace("<%=base%>")
+        }
+        function logout() {
+            window.location = "<%=base%>/logout"
+        }
+    </script>
+</body>
+
 </html>

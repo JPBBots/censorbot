@@ -9,7 +9,7 @@ module.exports = async(client, message) => {
   if (!data.censor.emsg) return
   if (data.role && message.member.roles.includes(data.role)) return
 
-  const response = await client.filter.test(message.content, data.base, data.filter, data.uncensor)
+  const response = await client.filter.test(message.content, data.bases || data.base, data.filter, data.uncensor)
 
   if (response.censor) {
     let error

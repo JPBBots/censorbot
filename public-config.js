@@ -31,8 +31,7 @@ const config = {
                 "antighostping": false,
                 "uncensor": [],
                 "punishment": {
-                    type: 1,
-                    on: false,
+                    type: 0,
                     amount: 3,
                     role: null
                 },

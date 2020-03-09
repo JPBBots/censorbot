@@ -32,11 +32,11 @@ module.exports = {
     }
     if (method == 'base') {
       tikme = 'Mistake? Do +ticket'
-      tikem = 'If you believe this was a mistake run +ticket'
+      tikem = 'https://patreon.com/censorbot (Mistake? +ticket)'
     }
     if (method == 'server') {
       tikme = 'Custom server filter, (Contact server owner if mistake)'
-      tikem = 'Custom Server Filter'
+      tikem = 'https://patreon.com/censorbot (Server Filter)'
     }
     var convert = ['Deleted Message', 'Deleted Edited Message', 'Changed Innapropriate Nickname', 'Innapropriate Reaction']
     var embed = client.u.embed
