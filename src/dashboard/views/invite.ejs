@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                background-color: #2C2F33;
+                text-align: center;
+                margin-top: 20%;
+            }
+            .txt {
+                font-family: 'Oswald', sans-serif;
+                font-size: 50px;
+            }
+            .txt2 {
+                font-family: 'Source Sans Pro', sans-serif;
+                font-size: 30px;
+            }
+            button {
+                color: #99AAB5;
+                cursor: pointer;
+                width: 6%;
+                background-color: transparent;
+                border: #7289DA 2px solid;
+                border-radius: 6px;
+                -webkit-transition-duration: 0.4s;
+                transition-duration: 0.4s;
+            }
+            button:hover {
+                background-color: #7289DA;
+                color: black;
+            }
+        </style>
+        <title>Error</title>
+    </head>
+    <body>
+        <h1 class="txt">The bot is not in this server!</h1>
+        <p class="txt2">Invite it and we will continue you to the dashboard!</p>
+        <button onclick="init()">Invite to this server</button>
+    </body>
+    <script>
+        function init() {
+            var win = window.open("https://censorbot.jt3ch.net/invite?id=<%= id %>", "oauth", "location=0,status=0,width=800,height=400");
+            var interval = setInterval(function() {
+                if(win.closed) window.location.reload()
+            }, 1000)
+            setTimeout(function() {
+                clearInterval(interval);
+                alert("Took too long to invite the bot. Clearing intervals");
+            }, 180000)
+        }
+    </script>
+</html>

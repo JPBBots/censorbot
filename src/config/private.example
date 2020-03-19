@@ -1,0 +1,27 @@
+module.exports = {
+  token: "",
+  dbl: "",
+  oauth: {
+    id: '',
+    secret: '',
+    mysecret: ''
+  },
+  db: {
+    username: '',
+    password: ''
+  },
+  webhooks: { 
+    log: { 
+      id: '',
+      token: '' 
+    },
+    guilds: { 
+      id: '',
+      token: '' 
+    },
+    dms: { 
+      id: '',
+      token: '' 
+    } 
+  }
+}

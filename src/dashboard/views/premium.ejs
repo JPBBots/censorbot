@@ -1,0 +1,74 @@
+<% const convert = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'] %>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Premium Servers Dashboard</title>
+        <link rel="stylesheet" href="<%= base %>/static/css/premium.css">
+    </head>
+    <body style="background-color: #2C2F33">
+        <div class="box">
+            <button id="tl" class="but" onclick="back()" style="grid-area: back">Back</button>
+            <button id="tr" class="but" onclick="logout()" style="grid-area: logout">Logout</button>
+            <h1 style="grid-area: usage">Used <i><%= premium.guilds.length %> / <%= premium.amount %></i> servers</h1>
+            <div class="adder" style="grid-area: add">
+                <select style="grid-area: do; width: auto" id="add">
+                    <% guilds.filter(x => !premium.guilds.includes(x.i)).forEach(g => { %>
+                        <option value="<%= g.i %>"><%= g.n %></option>
+                    <% }) %>
+                </select>
+                <button style="grid-area: so" class="add" onclick="add()">Add</button>
+            </div>
+            <div class="guilds" style="grid-area: current">
+                <% let i = -1 %>
+                <% premium.guilds.forEach(g => { %>
+                    <% i++ %>
+                    <div style="grid-area: <%= convert[i] %>" class="guild" id="<%= g %>">
+                        <% const guild = guilds.find(x => x.i === g) %>
+                        <% if (guild && guild.a) { %> 
+                            <img class="pic" style="grid-area: pic" src="https://cdn.discordapp.com/icons/<%= g %>/<%= guild.a %>">
+                        <% } %>
+                        <h3 style="grid-area: name"><%= guild ? guild.n : "Error" %></h3>
+                        <p style="grid-area: id"><%= g %></p>
+                        <button style="grid-area: remove" onclick="remove('<%= g %>')">Remove</button>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+        
+        <script>
+            function request(endpoint, method, body, cb) {
+                var xhr = new XMLHttpRequest();
+                xhr.open(method, "<%= api %>"+endpoint);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader("Authorization", "<%= token %>");
+                xhr.onload = function() {
+                    cb(JSON.parse(xhr.response));
+                    console.log(xhr.response);
+                }
+                xhr.send(body ? JSON.stringify(body) : null);
+            }
+            function add() {
+                var newGuild = document.getElementById("add").value;
+                request("/premium/" + newGuild, "PUT", null, function(data) {
+                    if(!data) return
+                    if(data.error) return alert(data.error)
+                    window.location.reload()
+                })
+            }
+            function remove(id) {
+                request("/premium/" + id, "DELETE", null, function(data) {
+                    if(!data) return
+                    if(data.error) return alert(data.error)
+                    window.location.reload()
+                })
+            }
+            
+            function back() {
+                window.location.replace("<%=base%>")
+            }
+            function logout() {
+                window.location = "<%=base%>/logout"
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                background-color: #2C2F33;
+                text-align: center;
+                margin-top: 20%;
+            }
+            .txt {
+                font-family: 'Oswald', sans-serif;
+                font-size: 50px;
+                margin-bottom: -30px;
+            }
+            .txt2 {
+                font-family: 'Source Sans Pro', sans-serif;
+                font-size: 30px;
+            }
+            button {
+                color: #99AAB5;
+                cursor: pointer;
+                width: 6%;
+                background-color: transparent;
+                border: #7289DA 2px solid;
+                border-radius: 6px;
+                -webkit-transition-duration: 0.4s;
+                transition-duration: 0.4s;
+            }
+            button:hover {
+                background-color: #7289DA;
+                color: black;
+            }
+        </style>
+        <title>Error</title>
+    </head>
+    <body>
+        <h1 class="txt">Failed to log you in!</h1>
+        <p class="txt2">Discord error: <%= error %></p>
+        <button onclick="window.location = 'https://api.jt3ch.net/censorbot/v3/auth<%=s%>'">Try Again!</button>
+    </body>
+</html>

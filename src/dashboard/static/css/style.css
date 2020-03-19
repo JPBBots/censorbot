@@ -1,0 +1,308 @@
+.box {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(3, 0.5fr);
+  grid-template-areas:
+    "back save . . servername servername servername servername . . . logout"
+    ". . base-filter base-filter langs langs logchannel logchannel filter filter. ."
+    ". . base-filter base-filter langs langs logchannel logchannel filter filter . ."
+    ". . punish punish censor censor popmsg popmsg role role . ."
+    ". . punish punish censor censor popmsg popmsg uncensor uncensor . ."
+    ". . . resend resend channels channels multi multi . . ."
+    ". . . . . . . . . . . .";
+  text-align: center;
+  grid-gap: 1rem;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.box > .setting {
+  padding: 1rem;
+  background-color: #40444a;
+}
+
+.setting {
+    border: 3px #454a52 solid;
+}
+
+.censor {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 0.1fr);
+    grid-template-areas:
+      "checktitle checktitle"
+      "checkmsg checkemsg"
+      "checknick checkreact";
+    grid-gap: 0.1rem;
+    text-align: center;
+}
+.censor > .checks {
+  display: grid;
+  border: 1px black solid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-areas:
+    ". title title title ."
+    ". . switch . .";
+}
+
+.censor > .checks > h5 {
+  grid-area: title;
+  margin: 1em;
+}
+.censor > .checks > label {
+  grid-area: switch;
+}
+
+.punish {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 0.1fr);
+    grid-template-areas:
+      ". ptitle ptitle ."
+      ". ptype pamount ."
+      "prole prole prole prole";
+    grid-gap: 0.5rem
+}
+.punish > div {
+  display: unset;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked+.slider {
+  background-color: #2196F3;
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+input {
+  width: 41%;
+  padding-left: 10px;
+  border-radius: 10px;
+  background-color: #23272A;
+  color: white;
+}
+
+select {
+  padding: 3px;
+  width: fit-content;
+  border-radius: 10px;
+  background-color: #23272A;
+  color: white;
+}
+
+.premb {
+  cursor: pointer;
+}
+
+.sb {
+  background-color: #23272A;
+  /* Green */
+  border: none;
+  color: white;
+  padding: 3px 5px;
+  border-radius: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.sb:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.but:not(#tr):not(#tl):not(#save) {
+  color: #99AAB5;
+  cursor: pointer;
+  width: 6%;
+  background-color: transparent;
+  border: #7289DA 2px solid;
+  border-radius: 6px;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  width: 10%;
+  height: 5%;
+}
+
+.but:hover:not(#tr):not(#tl):not(#save) {
+  background-color: #7289DA;
+  color: black;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#tl, #tr {
+  width: 100%;
+  height: 60%;
+  font-size: 2em;
+  border-radius: 0px;
+  transition-duration: 0.5s;
+  background-color: #40444a;
+  color: white;
+  border: 3px #454a52 solid;
+  cursor: pointer;
+}
+
+#tl:hover, #tr:hover {
+  opacity: 0.5;
+}
+
+#save {
+  position: fixed;
+  bottom: 1rem;
+  width: 50%;
+  left: 25%;
+  padding: 1em;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+#save.show {
+  animation: show 0.5s;
+}
+
+#save.hide {
+  animation: hide 1s linear forwards;
+}
+
+@keyframes show {
+  0% {
+    display: unset;
+    transform: translateY(200%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+@keyframes hide {
+  0% {
+    transform: translateY(1%);
+  }
+  15% {
+    transform: translateY(-20%);
+  }
+  100% {
+    transform: translateY(400%);
+    display: none;
+  }
+}
+
+.save {
+  width: 100px;
+  height: 40px;
+  border-radius: 5px;
+  border-color: #51c961;
+  margin-left: 10px;
+  cursor: pointer;
+  transition-duration: 0.5s;
+  color: black;
+  font-weight: bold;
+}
+
+.save:hover {
+  opacity: 0.5;
+}
+
+@media only screen and (max-device-width: 1160px) {
+  .box {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(11, 0.5fr);
+    grid-template-areas:
+      "back servername servername servername logout"
+      ". base-filter base-filter base-filter ."
+      ". langs langs langs ."
+      ". logchannel logchannel logchannel ."
+      ". punish punish punish ."
+      ". censor censor censor ."
+      ". popmsg popmsg popmsg ."
+      ". filter filter filter ."
+      ". role role role ."
+      ". uncensor uncensor uncensor ."
+      ". resend resend resend ."
+      ". channels channels channels . "
+      ". multi multi multi .";
+  }
+  #save {
+    height: 2%;
+    left: 12%;
+    width: 70%;
+    font-size: 20px;
+  }
+  h3 {
+    font-size: 3em;
+  }
+  select {
+    width: 40%;
+    height: 3em;
+  }
+  input {
+    height: 3em;
+  }
+  .servername {
+    margin-top: 2em;
+    font-size: 3.5em;
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "censorbot",
+  "version": "1.0.0",
+  "description": "Anti-Swear bot for discord",
+  "main": "./src/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "s": "standard --fix -v"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpbberry/censorbot.git"
+  },
+  "author": "JPBBerry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jpbberry/censorbot/issues"
+  },
+  "homepage": "https://github.com/jpbberry/censorbot#readme",
+  "devDependencies": {
+    "standard": "*"
+  },
+  "dependencies": {
+    "node-fetch": "2.6.0",
+    "express": "4.17.1",
+    "ejs": "3.0.1",
+    "ws": "7.2.3",
+    "mongodb": "3.5.5",
+    "moment": "2.24.0",
+    "moment-duration-format": "2.3.2",
+    "body-parser": "1.19.0",
+    "emoji-unicode-map": "1.1.10"
+  },
+  "standard": {
+    "ignore": [
+      "src/dashboard/views/*",
+      "src/dashboard/static/*"
+    ]
+  },
+  "eslintConfig": {
+    "rules": {
+      "func-call-spacing": "off"
+    }
+  }
+}
