@@ -22,7 +22,7 @@ class BucketManager {
     if (!this.clears.has(channel)) {
       const resp = await this.client.deleteMessage(channel, msg)
         .catch(err => err.message)
-        .then(x => x.success ? null : x)
+        .then(x => x === true ? null : x)
       this.clears.set(channel, setTimeout(() => {
         this.clears.delete(channel)
       }, 2000))
