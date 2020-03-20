@@ -57,6 +57,11 @@ exports.run = async function (message, args) {
       const DBL = require(resolve(lib, './DBL'))
       this.client.dbl = new DBL(this.client)
       break
+    case 'presence':
+      delete require.cache[require.resolve(resolve(lib, './PresenceManager'))]
+      const PresenceManager = require(resolve(lib, './PresenceManager'))
+      this.client.presence = new PresenceManager(this.client)
+      break
     default:
       this.send('Invalid Part')
       done = false
