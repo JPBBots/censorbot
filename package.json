@@ -8,7 +8,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "s": "standard --fix -v"
+    "s": "standard --fix -v",
+    "log": "pm2 logs censorbot",
+    "commit": "git add . && echo \"Commit Message:\" && read msg && git commit -m \"$msg\"",
+    "push": "git push"
   },
   "repository": {
     "type": "git",
