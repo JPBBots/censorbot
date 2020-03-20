@@ -51,6 +51,12 @@ exports.run = async function (message, args) {
       const BucketManager = require(resolve(lib, './BucketManager'))
       this.client.buckets = new BucketManager(this.client)
       break
+    case 'dbl':
+      clearInterval(this.client.dbl.interval)
+      delete require.cache[require.resolve(resolve(lib, './DBL'))]
+      const DBL = require(resolve(lib, './DBL'))
+      this.client.dbl = new DBL(this.client)
+      break
     default:
       this.send('Invalid Part')
       done = false

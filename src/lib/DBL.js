@@ -6,9 +6,7 @@ class DBL {
     this.client.log(0, 0, 'DBL')
     this.api = Request('https://top.gg/api', { Authorization: client.config.dbl })
 
-    this.timeout = null
-
-    setTimeout(() => {
+    this.interval = setInterval(() => {
       this.client.log(11, 15, `${this.client.guilds.size} servers`)
       this.post()
     }, 1800000)

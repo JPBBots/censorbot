@@ -2,7 +2,7 @@ const moment = require('moment')
 require('moment-duration-format')
 
 exports.run = async function (message, args) {
-  const m = await this.client.send(this.embed
+  const m = await this.send(this.embed
     .title('Loading please wait...')
     .color(14976715)
   )
