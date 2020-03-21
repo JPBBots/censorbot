@@ -14,7 +14,8 @@ module.exports = function (r) {
 
   r.use('/static', Express.static(resolve(__dirname, '../../static')))
 
-  r.get('/premium', this.premiumMiddle(false, (req, res, user, premium, guilds) => {
+  r.get(/\/premium(.json|)/, this.premiumMiddle(false, (req, res, user, premium, guilds) => {
+    if (req.url.endsWith('.json')) return res.json({premium, guilds})
     res.render('premium', { base: this.base, api: this.apiUrl, premium, guilds, token: user.token })
   }))
 
