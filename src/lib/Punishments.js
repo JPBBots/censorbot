@@ -4,8 +4,11 @@ class PunishmentsHandler {
   constructor (client) {
     client.log(0, 0, 'Punishments')
     this.client = client
-    this.db = client.db.collection('punishments')
     this.client.log(0, 1, 'Punishments')
+  }
+
+  get db() {
+    return this.client.db.collection('punishments')
   }
 
   async punish (guild, user, db, warning, inDB) {
