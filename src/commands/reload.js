@@ -62,6 +62,11 @@ exports.run = async function (message, args) {
       const PresenceManager = require(resolve(lib, './PresenceManager'))
       this.client.presence = new PresenceManager(this.client)
       break
+    case 'interface':
+      delete require.cache[require.resolve(resolve(__dirname, '../../lib/Interface'))]
+      const Interface = require(resolve(__dirname, '../../lib/Interface'))
+      this.client.interface = new Interface(this.client)
+      break
     default:
       this.send('Invalid Part')
       done = false
