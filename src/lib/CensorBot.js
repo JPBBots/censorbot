@@ -25,6 +25,7 @@ class CensorBot extends Client {
     this.unavailables = new Collection()
 
     this.multi = new Collection()
+    this.helpme = new Collection()
 
     this.beta = false
 
