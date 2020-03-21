@@ -18,7 +18,7 @@ module.exports = (dash) => {
   app.set('views', resolve(__dirname, './views'))
   app.set('view engine', 'ejs')
   app.use((req, res, next) => {
-    if (!req.url.includes('static')) dash.client.log(4, 14, req.url, req.method)
+    if (!req.url.match(/static|updates\/./gi)) dash.client.log(4, 14, req.url, req.method)
     next()
   })
 
