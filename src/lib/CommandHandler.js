@@ -60,7 +60,7 @@ class CommandHandler {
     const cmd = this.commands.find(x => [x.info.name, ...(x.info.aliases || [])].includes(command.toLowerCase()))
     if (!cmd) return
 
-    if (cmd.info.admin && !await this.client.isAdmin(msg.author.id)) return this.client.sendMessage(msg.channel_id, 'You do not have permission to run this command.')
+    if (cmd.info.admin && !await this.client.isAdmin(msg.author.id)) return this.client.interface.send(msg.channel_id, 'You do not have permission to run this command.')
 
     cmd.run.bind(new Command(this.client, msg))(msg, args)
   }

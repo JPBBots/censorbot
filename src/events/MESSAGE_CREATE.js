@@ -56,10 +56,6 @@ module.exports = async function (message) {
 
   this.log(6, 13, `Message; ${content}`, `${message.author.username}#${message.author.discriminator};${message.author.id};${res.method}`)
 
-  // const errMsg = await this.deleteMessage(message.channel_id, message.id)
-  //   .then(_ => false)
-  //   .catch(err => err.message)
-
   let errMsg
 
   if (multiline) {
@@ -80,7 +76,7 @@ module.exports = async function (message) {
   }
 
   if (db.log) {
-    this.sendMessage(db.log,
+    this.interface.send(db.log,
       this.embed
         .title('Deleted Message')
         .description(`From <@${message.author.id}> in <#${message.channel_id}>${errMsg ? `\n\nError: ${errMsg}` : ''}`)

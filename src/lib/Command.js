@@ -13,11 +13,11 @@ class Command {
   }
 
   send (content) {
-    return this.client.sendMessage(this.msg.channel_id, content)
+    return this.client.interface.send(this.msg.channel_id, content)
   }
 
   delete () {
-    return this.client.deleteMessage(this.msg.channel_id, this.msg.id)
+    return this.client.interface.delete(this.msg.channel_id, this.msg.id)
   }
 }
 

@@ -59,7 +59,7 @@ exports.run = async function (message, args) {
     }
   }
 
-  this.client.editMessage(message.channel_id, m.id, stats)
+  this.client.interface.edit(message.channel_id, m.id, stats)
 }
 exports.info = {
   name: 'stats',

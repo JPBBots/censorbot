@@ -33,7 +33,7 @@ module.exports = async function (reaction) {
     .catch(err => err.message)
 
   if (db.log) {
-    this.sendMessage(db.log,
+    this.interface.send(db.log,
       this.embed
         .title('Removed Reaction')
         .description(`User <@${reaction.user_id}> in <#${reaction.channel_id}> on [message](${

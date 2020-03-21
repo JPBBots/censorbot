@@ -56,7 +56,7 @@ module.exports = async function (message) {
         }
       })
   } else {
-    errMsg = await this.deleteMessage(message.channel_id, message.id)
+    errMsg = await this.interface.delete(message.channel_id, message.id)
       .then(_ => false)
       .catch(err => err.message)
   }
@@ -64,7 +64,7 @@ module.exports = async function (message) {
   this.multi.delete(message.channel_id)
 
   if (db.msg !== false) {
-    const popMsg = await this.sendMessage(message.channel_id,
+    const popMsg = await this.interface.send(message.channel_id,
       this.embed
         .color('RED')
         .description(`<@${message.author.id}> ${db.msg || this.config.defaultMsg}`)
@@ -72,7 +72,7 @@ module.exports = async function (message) {
     if (popMsg.id) {
       if (db.pop_delete) {
         setTimeout(() => {
-          this.deleteMessage(message.channel_id, popMsg.id)
+          this.interface.delete(message.channel_id, popMsg.id)
             .catch(() => {})
         }, db.pop_delete)
       }
@@ -80,7 +80,7 @@ module.exports = async function (message) {
   }
 
   if (db.log) {
-    this.sendMessage(db.log,
+    this.interface.send(db.log,
       this.embed
         .title('Deleted Edited Message')
         .description(`From <@${message.author.id}> in <#${message.channel_id}>${errMsg ? `\n\nError: ${errMsg}` : ''}`)

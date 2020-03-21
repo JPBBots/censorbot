@@ -20,7 +20,7 @@ class BucketManager {
 
   async set (channel, msg) {
     if (!this.clears.has(channel)) {
-      const resp = await this.client.deleteMessage(channel, msg)
+      const resp = await this.client.interface.delete(channel, msg)
         .catch(err => err.message)
         .then(x => x === true ? null : x)
       this.clears.set(channel, setTimeout(() => {
@@ -50,7 +50,7 @@ class BucketManager {
     this.timeouts.delete(channel)
     this.clears.delete(channel)
 
-    if (msgs.length < 2) return this.client.deleteMessage(channel, msgs[0])
+    if (msgs.length < 2) return this.client.interface.delete(channel, msgs[0])
 
     this.client.api
       .channels[channel]
@@ -84,7 +84,7 @@ class BucketManager {
     this.clears.delete(channel + user)
     this.timeouts.delete(channel + user)
 
-    const popMsg = await this.client.sendMessage(channel,
+    const popMsg = await this.client.interface.send(channel,
       this.client.embed
         .color('RED')
         .description(`<@${user}> ${db.msg || this.client.config.defaultMsg}`)
@@ -92,7 +92,7 @@ class BucketManager {
     if (popMsg.id) {
       if (db.pop_delete) {
         setTimeout(() => {
-          this.client.deleteMessage(channel, popMsg.id)
+          this.client.interface.delete(channel, popMsg.id)
             .catch(() => {})
         }, db.pop_delete)
       }

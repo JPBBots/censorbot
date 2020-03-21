@@ -67,7 +67,7 @@ class PunishmentsHandler {
 
     if (!cont) return
 
-    this.client.sendMessage(db.log, embed)
+    this.client.interface.send(db.log, embed)
   }
 
   async addOne (guild, user, db) {
