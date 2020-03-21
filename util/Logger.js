@@ -53,7 +53,7 @@ class Logger {
   }
 
   log (service, task, name = null, optional = null) {
-    console.log(`${this.separate(this.services[service], this.serviceLength)}|${this.separate(this.tasks[task], this.taskLength)}${name !== null ? `| ${`${name}`.replace(/\n/, ' ')}` : ''}${optional !== null ? ` (${optional})` : ''}`)
+    console.log(`${this.separate(this.services[service], this.serviceLength)}|${this.separate(this.tasks[task], this.taskLength)}${name !== null ? `| ${`${name}`.replace(/\n/g, ' [] ')}` : ''}${optional !== null ? ` (${optional})` : ''}`)
   }
 
   separate (str, to) {
