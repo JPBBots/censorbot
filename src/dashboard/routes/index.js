@@ -14,9 +14,9 @@ module.exports = function (r) {
   })
 
   r.get('/updates/:v', (req, res, next) => {
-    var url = 'https://censorbot.jt3ch.net/updates'
-    var z = require('/home/jpb/websites/censorbot/updates/updates.js')
-    var the = z.find((x) => x.v == req.params.v)
+    const url = 'https://censorbot.jt3ch.net/updates'
+    const z = require('/home/jpb/websites/censorbot/updates/updates.js') // eslint-disable-line import/no-absolute-path
+    const the = z.find((x) => x.v === req.params.v)
     if (!the) return next()
     res.send(`
     <!DOCTYPE html>

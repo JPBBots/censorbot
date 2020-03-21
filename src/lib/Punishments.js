@@ -7,7 +7,7 @@ class PunishmentsHandler {
     this.client.log(0, 1, 'Punishments')
   }
 
-  get db() {
+  get db () {
     return this.client.db.collection('punishments')
   }
 

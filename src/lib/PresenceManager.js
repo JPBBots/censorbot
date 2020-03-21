@@ -46,7 +46,7 @@ class PresenceManager {
     this.status('STREAMING', 'My Development', 'online', 'https://twitch.tv/jpbberry')
   }
 
-  restart() {
+  restart () {
     this.status('PLAYING', 'Restarting...', 'dnd')
   }
 

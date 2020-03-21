@@ -26,7 +26,7 @@ class Dashboard {
     this.apiUrl = 'https://censorbot.jt3ch.net/api'
   }
 
-  get db() {
+  get db () {
     return this.client.db.collection('dashboard')
   }
 
