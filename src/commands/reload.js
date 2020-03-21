@@ -67,6 +67,11 @@ exports.run = async function (message, args) {
       const Interface = require(resolve(__dirname, '../../lib/Interface'))
       this.client.interface = new Interface(this.client)
       break
+    case 'ch':
+      delete require.cache[require.resolve(resolve(lib, './bot/CommandHandler'))]
+      const CommandHandler = require(resolve(lib, './bot/CommandHandler'))
+      this.client.commands = new CommandHandler(this.client)
+      break
     default:
       this.send('Invalid Part')
       done = false

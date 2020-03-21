@@ -1,4 +1,6 @@
 module.exports = async function (message) {
+  if (this.commands) this.commands.event(message)
+
   const channel = this.channels.get(message.channel_id)
 
   if (
