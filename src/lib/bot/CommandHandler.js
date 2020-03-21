@@ -39,6 +39,8 @@ class CommandHandler {
     const prefix = this.client.config.prefix.find(x => msg.content.startsWith(x))
     if (!prefix) return
 
+    if (this.client.config.ignoreFirstPrefixServers.includes(msg.guild_id) && prefix === this.client.config.prefix[0]) return
+
     const args = msg.content.slice(prefix.length).split(/\s/)
     const command = args.shift()
 
