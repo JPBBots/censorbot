@@ -1,7 +1,7 @@
-const Webhook = require('../../lib/Webhook')
+const Webhook = require('../../../lib/Webhook')
 
-const Collection = require('../../util/Collection')
-const GetAvatar = require('../../util/GetAvatar')
+const Collection = require('../../../util/Collection')
+const GetAvatar = require('../../../util/GetAvatar')
 
 class WebhookManager {
   constructor (client) {

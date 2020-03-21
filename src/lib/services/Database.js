@@ -4,7 +4,7 @@ class Database {
   constructor (client, username, password, db, mongo) {
     this.client = client
 
-    this.defaultConfig = require('./DefaultConfig')
+    this.defaultConfig = require('../client/DefaultConfig')
 
     if (db) {
       this.db = db

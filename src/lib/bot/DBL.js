@@ -1,4 +1,4 @@
-const Request = require('../../req')
+const Request = require('../../../req')
 
 class DBL {
   constructor (client) {

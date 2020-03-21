@@ -1,12 +1,12 @@
 const Express = require('express')
-const Request = require('../../req')
+const Request = require('../../../req')
 const crypto = require('crypto')
 
 const bit = 0x0000008
 
-const Collection = require('../../util/Collection')
-const encodeJSON = require('../../util/encodeJSON')
-const validateObject = require('../../util/validateObject')
+const Collection = require('../../../util/Collection')
+const encodeJSON = require('../../../util/encodeJSON')
+const validateObject = require('../../../util/validateObject')
 
 const cacheTimeout = 300000
 
@@ -55,12 +55,12 @@ class Dashboard {
 
   load () {
     this.app.use(
-      require('../dashboard')(this)
+      require('../../dashboard')(this)
     )
   }
 
   reload () {
-    delete require.cache[require.resolve('../dashboard')]
+    delete require.cache[require.resolve('../../dashboard')]
     this.app._router = null
     this.load()
   }

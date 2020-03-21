@@ -1,6 +1,6 @@
 const emojis = require('emoji-unicode-map')
-delete require.cache[require.resolve('../filter/filters.js')]
-const filters = require('../filter/filters.js')
+delete require.cache[require.resolve('../../filter/filters.js')]
+const filters = require('../../filter/filters.js')
 
 module.exports = class JPBFilter {
   constructor (client, linkBypFile) {

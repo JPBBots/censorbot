@@ -1,6 +1,6 @@
 const { readdirSync } = require('fs')
 const dir = require('path').resolve.bind(undefined, __dirname)
-const Collection = require('../../util/Collection')
+const Collection = require('../../../util/Collection')
 
 const Command = require('./Command')
 
@@ -20,14 +20,14 @@ class CommandHandler {
   load () {
     this.client.log(2, 0, '/commands')
     this.commands.clear()
-    const commands = readdirSync(dir('../commands'))
+    const commands = readdirSync(dir('../../commands'))
     commands.forEach(cmd => {
       const [name, ext] = cmd.split('.')
       if (ext !== 'js') return
 
-      delete require.cache[require.resolve(dir('../commands', `${name}.${ext}`))]
+      delete require.cache[require.resolve(dir('../../commands', `${name}.${ext}`))]
 
-      const command = require(dir('../commands', `${name}.${ext}`))
+      const command = require(dir('../../commands', `${name}.${ext}`))
       this.commands.set(name, command)
     })
 

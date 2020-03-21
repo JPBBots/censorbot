@@ -1,3 +1,3 @@
-const CensorBot = require('./lib/CensorBot')
+const CensorBot = require('./lib/client/CensorBot')
 
 module.exports = new CensorBot()

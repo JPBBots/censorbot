@@ -17,13 +17,13 @@ exports.run = async function (message, args) {
       this.client.dash.reload()
       break
     case 'filter':
-      delete require.cache[require.resolve(resolve(lib, './Filter.js'))]
-      const Filter = require(resolve(lib, './Filter.js'))
-      this.client.filter = new Filter(this.client, '../filter/linkbyp.json')
+      delete require.cache[require.resolve(resolve(lib, './services/Filter.js'))]
+      const Filter = require(resolve(lib, './services/Filter.js'))
+      this.client.filter = new Filter(this.client, '../../filter/linkbyp.json')
       break
     case 'punish':
-      delete require.cache[require.resolve(resolve(lib, './Punishments.js'))]
-      const PunishmentHandler = require(resolve(lib, './Punishments.js'))
+      delete require.cache[require.resolve(resolve(lib, './services/Punishments.js'))]
+      const PunishmentHandler = require(resolve(lib, './services/Punishments.js'))
       this.client.punishments = new PunishmentHandler(this.client)
       break
     case 'log':
@@ -36,8 +36,8 @@ exports.run = async function (message, args) {
       this.client.config = require('../config')
       break
     case 'db':
-      delete require.cache[require.resolve(resolve(lib, './Database'))]
-      const Database = require(resolve(lib, './Database'))
+      delete require.cache[require.resolve(resolve(lib, './services/Database'))]
+      const Database = require(resolve(lib, './services/Database'))
       const mongo = new MongoClient(`mongodb://${this.client.config.db.username}:${this.client.config.db.password}@localhost:27017/`, { useNewUrlParser: true, useUnifiedTopology: true })
       await mongo.connect()
       const db = await mongo.db('censorbot')
@@ -47,19 +47,19 @@ exports.run = async function (message, args) {
       })
       break
     case 'bucket':
-      delete require.cache[require.resolve(resolve(lib, './BucketManager'))]
-      const BucketManager = require(resolve(lib, './BucketManager'))
+      delete require.cache[require.resolve(resolve(lib, './services/BucketManager'))]
+      const BucketManager = require(resolve(lib, './services/BucketManager'))
       this.client.buckets = new BucketManager(this.client)
       break
     case 'dbl':
       clearInterval(this.client.dbl.interval)
-      delete require.cache[require.resolve(resolve(lib, './DBL'))]
-      const DBL = require(resolve(lib, './DBL'))
+      delete require.cache[require.resolve(resolve(lib, './bot/DBL'))]
+      const DBL = require(resolve(lib, './bot/DBL'))
       this.client.dbl = new DBL(this.client)
       break
     case 'presence':
-      delete require.cache[require.resolve(resolve(lib, './PresenceManager'))]
-      const PresenceManager = require(resolve(lib, './PresenceManager'))
+      delete require.cache[require.resolve(resolve(lib, './bot/PresenceManager'))]
+      const PresenceManager = require(resolve(lib, './bot/PresenceManager'))
       this.client.presence = new PresenceManager(this.client)
       break
     case 'interface':

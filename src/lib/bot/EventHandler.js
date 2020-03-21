@@ -16,7 +16,7 @@ class EventHandler {
 
   load () {
     this.client.log(3, 0, '/events')
-    const events = readdirSync(dir('../events')).map(x => x.split('.')).filter(x => x[1] === 'js')
+    const events = readdirSync(dir('../../events')).map(x => x.split('.')).filter(x => x[1] === 'js')
     if (!this.eventsSet) {
       events.forEach(e => {
         this.client.on(e[0], (...d) => {
@@ -26,8 +26,8 @@ class EventHandler {
       this.eventsSet = true
     }
     events.forEach(e => {
-      delete require.cache[require.resolve(dir('../events', e[0] + '.' + e[1]))]
-      this.events[e[0]] = require(dir('../events', e[0] + '.' + e[1])).bind(this.client)
+      delete require.cache[require.resolve(dir('../../events', e[0] + '.' + e[1]))]
+      this.events[e[0]] = require(dir('../../events', e[0] + '.' + e[1])).bind(this.client)
     })
     this.client.log(3, 1, `${events.length} events`)
   }
