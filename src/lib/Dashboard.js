@@ -17,8 +17,6 @@ class Dashboard {
     this.app = null
     this.onReady = null
 
-    this.db = client.db.collection('dashboard')
-
     this.guilds = new Collection()
     this.caching = new Collection()
 
@@ -26,6 +24,10 @@ class Dashboard {
 
     this.base = 'https://censorbot.jt3ch.net/dash'
     this.apiUrl = 'https://censorbot.jt3ch.net/api'
+  }
+
+  get db() {
+    return this.client.db.collection('dashboard')
   }
 
   spawn () {
