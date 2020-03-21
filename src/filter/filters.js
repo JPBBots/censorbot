@@ -4,6 +4,7 @@ const filters = {}
 fs.readdirSync(path.resolve(__dirname, './filters')).forEach(filter => {
   const [name, ext] = filter.split('.')
   if (ext !== 'json') return
+  delete require.cache[require.resolve(`./filters/${filter}`)]
   filters[name] = require(`./filters/${filter}`)
 })
 
