@@ -22,7 +22,7 @@ module.exports = async function (member) {
 
   this.log(6, 13, `Nickname; ${content}`, `${member.user.username}#${member.user.discriminator};${member.user.id};${res.method}`)
 
-  const errMsg = await this.interface.nick(member.guild_id, member.user.id, '')
+  const errMsg = await this.interface.nickname(member.guild_id, member.user.id, '')
     .then(_ => false)
     .catch(err => err.message)
 
