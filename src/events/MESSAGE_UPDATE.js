@@ -47,14 +47,7 @@ module.exports = async function (message) {
   let errMsg
 
   if (multiline) {
-    this.api
-      .channels[message.channel_id]
-      .messages('bulk-delete')
-      .post({
-        body: {
-          messages: Object.keys(multi.msg)
-        }
-      })
+    this.interface.bulkDelete(message.channel_id, Object.keys(multi.msg))
   } else {
     errMsg = await this.interface.delete(message.channel_id, message.id)
       .then(_ => false)

@@ -52,14 +52,7 @@ class BucketManager {
 
     if (msgs.length < 2) return this.client.interface.delete(channel, msgs[0])
 
-    this.client.api
-      .channels[channel]
-      .messages('bulk-delete')
-      .post({
-        body: {
-          messages: msgs
-        }
-      })
+    this.client.interface.bulkDelete(channel, msgs)
       .catch(() => {})
   }
 
