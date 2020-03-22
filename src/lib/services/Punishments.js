@@ -30,11 +30,7 @@ class PunishmentsHandler {
 
     switch (db.punishment.type) {
       case 1:
-        if (!await this.client.api
-          .guilds[guild]
-          .members[user]
-          .roles[db.punishment.role]
-          .put()
+        if (!await this.client.interface.addRole(guild, user, db.punishment.role)
           .then(x => x.success)
         ) cont = false
         embed.description(`<@${user}> Reached the max ${db.punishment.amount} warnings.\n\nThey have received the <@&${db.punishment.role}> role as punishment!`)
