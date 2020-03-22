@@ -72,6 +72,13 @@ exports.run = async function (message, args) {
       const CommandHandler = require(resolve(lib, './bot/CommandHandler'))
       this.client.commands = new CommandHandler(this.client)
       break
+    case 'app':
+      delete require.cache[require.resolve(resolve(lib, './services/Dashboard'))]
+      const Dashboard = require(resolve(lib, './services/Dashboard'))
+      this.client.dash.close()
+      this.client.dash = new Dashboard(this.client)
+      await this.client.dash.spawn()
+      break
     default:
       this.send('Invalid Part')
       done = false
