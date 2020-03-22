@@ -42,14 +42,7 @@ class PunishmentsHandler {
         embed.description(`<@${user}> Reached the max ${db.punishment.amount} warnings.\n\nThey have been kicked from the server!`)
         break
       case 3:
-        if (!await this.client.api
-          .guilds[guild]
-          .bans[user]
-          .put({
-            query: {
-              reason: 'Reached max warnings'
-            }
-          })
+        if (!await this.client.interface.ban(guild, user, 'Reached Max Warnings')
           .then(x => x.success)
         ) cont = false
         embed.description(`<@${user}> Reached the max ${db.punishment.amount} warnings.\n\nThey have been banned from the server!`)
