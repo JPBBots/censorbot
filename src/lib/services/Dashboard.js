@@ -241,6 +241,7 @@ class Dashboard {
     }, {
       $set: {
         id: user.id,
+        tag: `${user.username}#${user.discriminator}`,
         token,
         bearer: oauthUser.access_token
       }

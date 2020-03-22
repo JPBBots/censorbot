@@ -26,6 +26,13 @@ module.exports = function (r) {
   r.use('/:serverid', this.getGuild(false))
 
   r.get('/:serverid', this.guildData(false, async (req, res, data) => {
+    delete data.db.id
     res.render(req.query.d ? 'devguild' : 'guild', { data, base: this.base, api: this.apiUrl, token: req.cookies.token, premium: await this.client.db.guildPremium(data.id), dev: req.query.d })
   }))
+
+  r.get('/:serverid/logs', async (req, res) => {
+    const logs = await this.client.db.collection('log').findOne({ id: req.partialGuild.i })
+
+    res.render('logs', { logs: logs.logs, base: this.base })
+  })
 }

@@ -1,0 +1,45 @@
+<% const convert = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'] %>
+
+<% const changes = {
+  base: 'Base Filter Toggle',
+  role: 'Uncensor Role',
+  languages: 'Language Toggles',
+  log: 'Log Channel',
+  msg: 'Pop Message',
+  pop_delete: 'Pop Message Delete Time',
+  filter: 'Server Filter List',
+  'censor.emsg': 'Edited Message Censor',
+  'censor.msg': 'Message Censor',
+  'censor.nick': 'Nickname Censor',
+  'censor.react': 'Reaction Censor',
+  'punishment.type': 'Punishment Type',
+  'punishment.amount': 'Punishment Amount',
+  'punishment.role': 'Punishment Role',
+  webhook: 'Resend',
+  multi: 'Multi-Line Censor',
+  channels: 'Ignore Channels',
+  uncensor: 'Uncensor List'
+}%>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Logs</title>
+    <link href="<%= base %>/static/css/logs.css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="logs">
+      <button id="back" onclick="back()" style="grid-area: back">Back</button>
+      <% logs.reverse().forEach((log, index) => { %>
+        <div class="log" style="grid-area: <%= convert[index] %>">
+          <h3><%= log.user %></h3>
+          <p><%= log.differences.map(x=>changes[x] || x).join(', ') %></p>
+        </div>
+      <% }) %>
+    </div>
+    <script>
+    function back() {
+      window.location = "./"  
+    }
+    </script>
+  </body>
+</html>

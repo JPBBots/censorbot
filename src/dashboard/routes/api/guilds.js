@@ -1,3 +1,5 @@
+const Difference = require('../../../../util/Difference')
+
 module.exports = function (r) {
   r.get('/', (req, res) => {
     res.json({
@@ -36,6 +38,25 @@ module.exports = function (r) {
       }
     }
 
+    delete data.db.id
+
+    const differences = Difference(data.db, req.body)
+
+    if (differences.length > 0) {
+      const logs = (await this.client.db.collection('log').findOne({ id: data.id })) || { id: data.id, logs: [] }
+      if (logs.logs.length > 9) logs.logs = logs.logs.slice(1)
+      const { tag: user } = await this.db.findOne({ token: req.headers.authorization })
+      logs.logs.push({user, differences})
+
+      this.client.db.collection('log').updateOne({
+        id: data.id
+      }, {
+        $set: logs
+      }, {
+        upsert: true
+      })
+    }
+
     if (!valid) return
     const post = await this.client.db.setConfig(data.id, req.body)
       .catch(err => { res.json({ error: 'Database Error' }); return false }) // eslint-disable-line handle-callback-err
@@ -43,4 +64,12 @@ module.exports = function (r) {
 
     res.json({ success: true, refresh })
   }))
+
+  r.get('/:serverid/logs', async (req, res) => {
+    const logs = await this.client.db.collection('log').findOne({ id: req.partialGuild.i })
+
+    if (!logs) res.send([])
+
+    res.json(logs.logs)
+  })
 }

@@ -1,0 +1,39 @@
+body {
+  background-color: #2C2F33;
+  color: white;
+  font-family: Arial, sans-serif
+}
+
+#logs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(11, 0.5fr);
+  grid-template-areas:
+    ". back ."
+    ". one ."
+    ". two ."
+    ". three ."
+    ". four ."
+    ". five ."
+    ". six ."
+    ". seven ."
+    ". eight ."
+    ". nine ."
+    ". ten ."
+}
+
+.log {
+  border: 1px black solid;
+  text-align: center;
+}
+
+#back {
+  width: 100%;
+  font-size: 2em;
+  border-radius: 0px;
+  transition-duration: 0.5s;
+  background-color: #40444a;
+  color: white;
+  border: 3px #454a52 solid;
+  cursor: pointer;
+}

@@ -195,7 +195,7 @@
         <div id="save" class="hide"> You have unsaved changes.  <button class="save" style="background-color: #2eb340" onclick="submit()">Save</button> </div>
         <!--<button id="save" class="but" style="display: none" onclick="submit()">Save</button>-->
         <button id="tl" class="but" onclick="back()" style="grid-area: back">Back</button>
-        <button id="tr" class="but" onclick="logout()" style="grid-area: logout">Logout</button>
+        <button id="tr" class="but" onclick="logs()" style="grid-area: logout">Logs</button>
         </div>
         <script>
             document.querySelectorAll(".reslabel").forEach(function(x) { x.onclick = function() {
@@ -256,8 +256,8 @@
             function back() {
                 window.location.replace("<%=base%>")
             }
-            function logout() {
-                window.location = "<%=base%>/auth/logout"
+            function logs() {
+                window.location = "./logs"
             }
         </script>
     </body>
