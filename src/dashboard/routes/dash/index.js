@@ -33,6 +33,6 @@ module.exports = function (r) {
   r.get('/:serverid/logs', async (req, res) => {
     const logs = await this.client.db.collection('log').findOne({ id: req.partialGuild.i })
 
-    res.render('logs', { logs: logs.logs, base: this.base })
+    res.render('logs', { logs: logs ? logs.logs : [], base: this.base })
   })
 }
