@@ -80,6 +80,14 @@ exports.run = async function (message, args) {
       this.client.dash = new Dashboard(this.client)
       await this.client.dash.spawn()
       break
+    case 'wh':
+      delete require.cache[require.resolve(resolve(__dirname, '../../lib/Webhook'))]
+      delete require.cache[require.resolve(resolve(lib, './services/WebhookManager'))]
+      const WebhookManager = require(resolve(lib, './services/WebhookManager'))
+      const wh = new WebhookManager(this.client)
+      await wh.load()
+      this.client.webhooks = wh
+      break
     default:
       this.send('Invalid Part')
       done = false
