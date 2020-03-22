@@ -2,6 +2,7 @@ const Webhook = require('../../../lib/Webhook')
 
 const Collection = require('../../../util/Collection')
 const GetAvatar = require('../../../util/GetAvatar')
+const ParseMessage = require('../../../util/ParseMessage')
 
 class WebhookManager {
   constructor (client) {
@@ -62,9 +63,7 @@ class WebhookManager {
         query: {
           wait: true
         },
-        body: {
-          content
-        }
+        body: ParseMessage(content, true)
       })
 
     if (bucketed) return
