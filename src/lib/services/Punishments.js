@@ -30,18 +30,13 @@ class PunishmentsHandler {
 
     switch (db.punishment.type) {
       case 1:
-        if (!await this.client.interface.addRole(guild, user, db.punishment.role)
+        if (!await this.client.interface.addRole(guild, user, db.punishment.role, 'Reached Max Warnings')
           .then(x => x.success)
         ) cont = false
         embed.description(`<@${user}> Reached the max ${db.punishment.amount} warnings.\n\nThey have received the <@&${db.punishment.role}> role as punishment!`)
         break
       case 2:
-        if (!await this.client.api
-          .guilds[guild]
-          .members[user]
-          .delete({
-            reason: 'Reaching max warnings'
-          })
+        if (!await this.client.interface.kick(guild, user, 'Reached Max Warnings')
           .then(x => x.success)
         ) cont = false
         embed.description(`<@${user}> Reached the max ${db.punishment.amount} warnings.\n\nThey have been kicked from the server!`)

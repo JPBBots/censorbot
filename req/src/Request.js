@@ -3,8 +3,10 @@ const querystring = require('querystring')
 
 function request (url, heads, opts = {}, ...req) {
   return new Promise((resolve, reject) => {
-    const [method, route, { query, body, headers, parser = JSON.stringify }, end] = req
+    const [method, route, { query, body, headers, parser = JSON.stringify, reason }, end] = req
     end()
+
+    if (reason) headers['X-Audit-Log-Reason'] = reason
 
     const go = () => {
       fetch(`${url}${route}${query || opts.query ? `?${querystring.stringify({ ...query, ...opts.query || {} })}` : ''}`, {
