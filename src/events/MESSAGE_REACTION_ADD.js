@@ -30,7 +30,7 @@ module.exports = async function (reaction) {
   this.webhooks.send('log', {
     content: '```' + content + '```',
     embeds: [this.embed
-      .description(`<@${message.author.id}>(${message.author.id}) in ${message.guild_id}`)
+      .description(`<@${reaction.member.user.id}>(${reaction.member.user.id}) in ${reaction.guild_id}`)
       .title('Reaction')
       .field('Method', res.method)
       .field('Arg', res.arg.map(x=>x.toString()).join(', '))

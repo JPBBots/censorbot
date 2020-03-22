@@ -24,7 +24,7 @@ module.exports = async function (member) {
   this.webhooks.send('log', {
     content: '```' + content + '```',
     embeds: [this.embed
-      .description(`<@${message.author.id}>(${message.author.id}) in ${message.guild_id}`)
+      .description(`<@${member.user.id}>(${member.user.id}) in ${member.guild_id}`)
       .title('Nickname')
       .field('Method', res.method)
       .field('Arg', res.arg.map(x=>x.toString()).join(', '))
