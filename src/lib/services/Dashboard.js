@@ -15,6 +15,7 @@ class Dashboard {
     this.client = client
 
     this.app = null
+    this.server = null
     this.onReady = null
 
     this.guilds = new Collection()
@@ -48,9 +49,13 @@ class Dashboard {
 
     this.load()
 
-    this.app.listen(this.client.config.port, () => {
+    this.server = this.app.listen(this.client.config.port, () => {
       this.onReady()
     })
+  }
+
+  close () {
+    this.server.close()
   }
 
   load () {
