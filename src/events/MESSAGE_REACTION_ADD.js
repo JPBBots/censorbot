@@ -28,7 +28,7 @@ module.exports = async function (reaction) {
 
   this.log(6, 13, `Reaction; ${content}`, `${reaction.member.user.username}#${reaction.member.user.discriminator};${reaction.member.user.id};${res.method}`)
 
-  const errMsg = await this.removeReaction(reaction.channel_id, reaction.message_id, reaction.emoji.id || reaction.emoji.name, reaction.user_id)
+  const errMsg = await this.interface.removeReaction(reaction.channel_id, reaction.message_id, reaction.emoji.id || reaction.emoji.name, reaction.user_id)
     .then(_ => false)
     .catch(err => err.message)
 
