@@ -50,6 +50,17 @@ class Logger {
       if (a.length < b.length) return 1
       return 0
     })[0].length + 2
+
+    const ipc = require('node-ipc')
+
+    ipc.config.id = 'censor'
+    ipc.config.logger = () => {}
+
+    ipc.serveNet(()=>{})
+
+    ipc.server.start()
+
+    this.ipc = ipc
   }
 
   log (service, task, name = null, optional = null) {

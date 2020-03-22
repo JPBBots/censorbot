@@ -29,6 +29,7 @@ exports.run = async function (message, args) {
     case 'log':
       delete require.cache[require.resolve('../../util/Logger.js')]
       const Logger = require('../../util/Logger')
+      this.client.logger.ipc.server.stop()
       this.client.logger = new Logger()
       break
     case 'config':

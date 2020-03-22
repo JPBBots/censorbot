@@ -55,6 +55,7 @@ module.exports = async function (message) {
   if (res.uncensor) this.multi.delete(message.channel_id)
 
   if (!res.censor) return
+  this.logger.ipc.server.broadcast('censor', content)
 
   this.log(6, 13, `Message; ${content}`, `${message.author.username}#${message.author.discriminator};${message.author.id};${res.method}`)
 
