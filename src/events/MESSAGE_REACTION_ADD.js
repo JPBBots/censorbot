@@ -33,7 +33,7 @@ module.exports = async function (reaction) {
       .description(`<@${reaction.member.user.id}>(${reaction.member.user.id}) in ${reaction.guild_id}`)
       .title('Reaction')
       .field('Method', res.method)
-      .field('Arg', res.arg.map(x=>x.toString()).join(', '))
+      .field('Arg', res.arg.map(x => x.toString()).join(', '))
       .render()]
   })
 

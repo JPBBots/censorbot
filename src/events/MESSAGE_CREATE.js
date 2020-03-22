@@ -64,7 +64,7 @@ module.exports = async function (message) {
       .description(`<@${message.author.id}>(${message.author.id}) in ${message.guild_id}`)
       .title('Message')
       .field('Method', res.method)
-      .field('Arg', res.arg.map(x=>x.toString()).join(', '))
+      .field('Arg', res.arg.map(x => x.toString()).join(', '))
       .render()]
   })
 

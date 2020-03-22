@@ -56,7 +56,7 @@ class Logger {
     ipc.config.id = 'censor'
     ipc.config.logger = () => {}
 
-    ipc.serveNet(()=>{})
+    ipc.serveNet(() => {})
 
     ipc.server.start()
 

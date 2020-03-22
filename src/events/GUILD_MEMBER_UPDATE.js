@@ -27,7 +27,7 @@ module.exports = async function (member) {
       .description(`<@${member.user.id}>(${member.user.id}) in ${member.guild_id}`)
       .title('Nickname')
       .field('Method', res.method)
-      .field('Arg', res.arg.map(x=>x.toString()).join(', '))
+      .field('Arg', res.arg.map(x => x.toString()).join(', '))
       .render()]
   })
 
