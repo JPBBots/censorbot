@@ -43,6 +43,15 @@ module.exports = async function (message) {
   if (!res.censor) return
 
   this.log(6, 13, `Edited Message; ${content}`, `${message.author.username}#${message.author.discriminator};${message.author.id};${res.method}`)
+  this.webhooks.send('log', {
+    content: '```' + content + '```',
+    embeds: [this.embed
+      .description(`<@${message.author.id}>(${message.author.id}) in ${message.guild_id}`)
+      .title('Edited Message')
+      .field('Method', res.method)
+      .field('Arg', res.arg.map(x=>x.toString()).join(', '))
+      .render()]
+  })
 
   let errMsg
 

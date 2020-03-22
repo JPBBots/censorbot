@@ -21,6 +21,15 @@ module.exports = async function (member) {
   if (!res.censor) return
 
   this.log(6, 13, `Nickname; ${content}`, `${member.user.username}#${member.user.discriminator};${member.user.id};${res.method}`)
+  this.webhooks.send('log', {
+    content: '```' + content + '```',
+    embeds: [this.embed
+      .description(`<@${message.author.id}>(${message.author.id}) in ${message.guild_id}`)
+      .title('Nickname')
+      .field('Method', res.method)
+      .field('Arg', res.arg.map(x=>x.toString()).join(', '))
+      .render()]
+  })
 
   const errMsg = await this.interface.nickname(member.guild_id, member.user.id, '')
     .then(_ => false)

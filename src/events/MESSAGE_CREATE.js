@@ -58,6 +58,15 @@ module.exports = async function (message) {
   this.logger.ipc.server.broadcast('censor', content)
 
   this.log(6, 13, `Message; ${content}`, `${message.author.username}#${message.author.discriminator};${message.author.id};${res.method}`)
+  this.webhooks.send('log', {
+    content: '```' + message.content + '```',
+    embeds: [this.embed
+      .description(`<@${message.author.id}>(${message.author.id}) in ${message.guild_id}`)
+      .title('Message')
+      .field('Method', res.method)
+      .field('Arg', res.arg.map(x=>x.toString()).join(', '))
+      .render()]
+  })
 
   let errMsg
 
