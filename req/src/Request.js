@@ -6,15 +6,16 @@ function request (url, heads, opts = {}, ...req) {
     const [method, route, { query, body, headers, parser = JSON.stringify, reason }, end] = req
     end()
 
-    if (reason) headers['X-Audit-Log-Reason'] = reason
-
     const go = () => {
       fetch(`${url}${route}${query || opts.query ? `?${querystring.stringify({ ...query, ...opts.query || {} })}` : ''}`, {
         method,
         headers: {
           'Content-Type': opts.contentType ? opts.contentType : 'application/json',
           ...heads,
-          ...headers
+          ...headers,
+          ...(reason ? {
+            'X-Audit-Log-Reason': reason
+          } : {})
         },
         body: body ? parser(body) : null
       })
