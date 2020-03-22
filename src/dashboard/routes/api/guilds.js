@@ -46,7 +46,7 @@ module.exports = function (r) {
       const logs = (await this.client.db.collection('log').findOne({ id: data.id })) || { id: data.id, logs: [] }
       if (logs.logs.length > 9) logs.logs = logs.logs.slice(1)
       const { tag: user } = await this.db.findOne({ token: req.headers.authorization })
-      logs.logs.push({user, differences})
+      logs.logs.push({ user, differences })
 
       this.client.db.collection('log').updateOne({
         id: data.id
