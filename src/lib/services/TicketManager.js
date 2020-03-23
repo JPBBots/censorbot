@@ -16,6 +16,7 @@ class TicketManager {
   get db () {
     return this.client.db.collection('tickets')
   }
+
   get banDB () {
     return this.client.db.collection('ticketban')
   }
