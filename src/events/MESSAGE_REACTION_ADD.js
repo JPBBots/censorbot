@@ -1,4 +1,5 @@
 module.exports = async function (reaction) {
+  this.tickets.event(reaction)
   const channel = this.channels.get(reaction.channel_id)
 
   if (

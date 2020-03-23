@@ -5,14 +5,16 @@ const Request = require('../../../req')
 
 const CommandHandler = require('../bot/CommandHandler')
 const EventHandler = require('../bot/EventHandler')
+const DBL = require('../bot/DBL')
+const PresenceManager = require('../bot/PresenceManager')
+
 const Filter = require('../services/Filter')
 const Database = require('../services/Database')
 const Dashboard = require('../services/Dashboard')
 const Punishments = require('../services/Punishments')
-const DBL = require('../bot/DBL')
-const PresenceManager = require('../bot/PresenceManager')
 const BucketManager = require('../services/BucketManager')
 const WebhookManager = require('../services/WebhookManager')
+const TicketManager = require('../services/TicketManager')
 
 const Embed = require('../../../util/Embed')
 const Collection = require('../../../util/Collection')
@@ -47,6 +49,7 @@ class CensorBot extends Client {
     this.presence = new PresenceManager(this)
     this.buckets = new BucketManager(this)
     this.webhooks = new WebhookManager(this)
+    this.tickets = new TicketManager(this)
     await this.webhooks.load()
 
     this.log(0, 3, `${new Date().getTime() - start}ms`)

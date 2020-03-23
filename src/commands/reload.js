@@ -88,6 +88,11 @@ exports.run = async function (message, args) {
       await wh.load()
       this.client.webhooks = wh
       break
+    case 'ticket':
+      delete require.cache[require.resolve(resolve(lib, './services/TicketManager'))]
+      const TicketManager = require(resolve(lib, './services/TicketManager'))
+      this.client.tickets = new TicketManager(this.client)
+      break
     default:
       this.send('Invalid Part')
       done = false
