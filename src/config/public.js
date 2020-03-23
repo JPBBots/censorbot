@@ -8,7 +8,9 @@ module.exports = {
   patreon: 'https://patreon.com/censorbot',
   website: 'https://censorbot.jt3ch.net',
   inviteSite: 'https://censorbot.jt3ch.net/invite.html',
-  serverCountChannel: '512369661849894947',
   ignoreFirstPrefixServers: ['264445053596991498'],
-  statusChannel: '450444337357258772'
+  channels: {
+    serverCount: '512369661849894947',
+    status: '450444337357258772'
+  }
 }
