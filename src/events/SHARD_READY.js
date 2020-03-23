@@ -10,4 +10,5 @@ module.exports = function (shard) {
       }
     })
   }
+  this.interface.send(this.config.statusChannel, `Startup | Shard: ${shard.id}`)
 }
