@@ -38,7 +38,8 @@
     "ignore": [
       "src/dashboard/views/*",
       "src/dashboard/static/*"
-    ]
+    ],
+    "globals": ["BigInt"]
   },
   "eslintConfig": {
     "rules": {
