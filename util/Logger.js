@@ -13,7 +13,8 @@ class Logger {
       'SHARD WS',
       'WEBHOOKS', // 10
       'DBL',
-      'PRESENCE'
+      'PRESENCE',
+      'TICKETS'
     ]
 
     this.serviceLength = [...this.services].sort((a, b) => {
@@ -42,7 +43,10 @@ class Logger {
       'POSTED',
       'SET',
       'JOINED',
-      'LEFT'
+      'LEFT',
+      'SUBMITTED', // 20
+      'APPROVED',
+      'DENIED'
     ]
 
     this.taskLength = [...this.tasks].sort((a, b) => {

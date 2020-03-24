@@ -11,6 +11,8 @@ const GenerateID = require('../../../util/GenerateID')
 class TicketManager {
   constructor (client) {
     this.client = client
+    this.client.log(0, 0, 'TicketManager')
+    this.client.log(0, 1, 'TicketManager')
   }
 
   get db () {
@@ -36,6 +38,8 @@ class TicketManager {
     const tickets = await this.db.find({}).toArray()
     const id = GenerateID(tickets.map(x => x.id))
 
+    this.client.log(13, 20, id)
+
     const msg = await this.client.interface.send(this.client.config.channels.ticket,
       this.client.embed
         .title(`Ticket (${id})`)
@@ -55,7 +59,6 @@ class TicketManager {
 
   async deny (id, admin) {
     const ticket = await this.db.findOne({ id })
-    console.log(ticket)
 
     this.client.interface.send(this.client.config.channels.ticketLog,
       this.client.embed
@@ -67,6 +70,8 @@ class TicketManager {
     this.client.interface.delete(this.client.config.channels.ticket, ticket.msg)
 
     this.db.removeOne({ id })
+
+    this.client.log(13, 22, id)
   }
 
   async approve (id, admin) {
@@ -89,6 +94,8 @@ class TicketManager {
     this.client.interface.delete(this.client.config.channels.ticket, ticket.msg)
 
     this.db.removeOne({ id })
+
+    this.client.log(13, 21, id)
   }
 
   async event (reaction) {
