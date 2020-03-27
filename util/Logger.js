@@ -46,7 +46,8 @@ class Logger {
       'LEFT',
       'SUBMITTED', // 20
       'APPROVED',
-      'DENIED'
+      'DENIED',
+      'DESTROYED'
     ]
 
     this.taskLength = [...this.tasks].sort((a, b) => {
