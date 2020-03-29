@@ -7,7 +7,7 @@ module.exports = {
   support: 'https://discord.gg/CRAbk4w',
   patreon: 'https://patreon.com/censorbot',
   website: 'https://censorbot.jt3ch.net',
-  inviteSite: 'https://censorbot.jt3ch.net/invite.html',
+  inviteSite: 'https://censorbot.jt3ch.net/invite',
   ignoreFirstPrefixServers: ['264445053596991498'],
   channels: {
     serverCount: '512369661849894947',
