@@ -4,11 +4,11 @@
   grid-template-rows: repeat(3, 0.5fr);
   grid-template-areas:
     "back save . . servername servername servername servername . . . logout"
-    ". . base-filter base-filter logchannel logchannel agp agp filter filter. ."
-    ". . base-filter base-filter logchannel logchannel agp agp filter filter . ."
+    ". . base-filter base-filter langs langs logchannel logchannel filter filter. ."
+    ". . base-filter base-filter langs langs logchannel logchannel filter filter . ."
     ". . punish punish censor censor popmsg popmsg role role . ."
     ". . punish punish censor censor popmsg popmsg uncensor uncensor . ."
-    ". . . resend resend channels channels multi multi . . ."
+    ". . resend resend channels channels multi multi resendreplace resendreplace . ."
     ". . . . . . . . . . . .";
   text-align: center;
   grid-gap: 1rem;
@@ -273,8 +273,8 @@ select {
     grid-template-areas:
       "back servername servername servername logout"
       ". base-filter base-filter base-filter ."
+      ". langs langs langs ."
       ". logchannel logchannel logchannel ."
-      ". agp agp agp ."
       ". punish punish punish ."
       ". censor censor censor ."
       ". popmsg popmsg popmsg ."
@@ -283,7 +283,8 @@ select {
       ". uncensor uncensor uncensor ."
       ". resend resend resend ."
       ". channels channels channels . "
-      ". multi multi multi .";
+      ". multi multi multi ."
+      ". resendreplace resendreplace resendreplace .";
   }
   #save {
     height: 2%;

@@ -1,7 +1,7 @@
 function buildObject () {
   var obj = {
-    antighostping: false,
     base: true,
+    languages: [],
     censor: {
       react: true,
       msg: true,
@@ -14,7 +14,6 @@ function buildObject () {
     filter: [
 
     ],
-    id: '<%= data.id %>',
     log: null,
     msg: null,
     pop_delete: 3000,
@@ -22,20 +21,24 @@ function buildObject () {
     uncensor: [
 
     ],
-    webhook: false,
     punishment: {
       amount: 3,
       role: '',
       type: 0
     },
     webhook: false,
-    channels: [
-
-    ],
+    webhook_replace: 0,
     multi: false
   }
 
   obj.base = document.getElementById('base').checked
+  var langs = document.querySelectorAll('.lang')
+  var l = []
+  for (var i = 0; i < langs.length; i++) {
+    var lang = langs.item(i)
+    if (lang.checked) l.push(lang.value)
+  }
+  obj.languages = l
   obj.censor = {
     msg: document.getElementById('censor-msg').checked || false,
     emsg: document.getElementById('censor-emsg').checked || false,
@@ -48,12 +51,12 @@ function buildObject () {
   if (obj.role == 'null') obj.role = null
   obj.filter = [...document.getElementById('filter').children].map(x => x.value)
   obj.uncensor = [...document.getElementById('uncensor').children].map(x => x.value)
-  obj.antighostping = document.getElementById('agp').checked || false
   obj.pop_delete = ['', 0, undefined].includes(document.getElementById('poptime').value) ? null : document.getElementById('poptime').value * 1000
   var msgtype = document.getElementById('msgtype').value
   obj.msg = msgtype == 1 ? null : msgtype == 2 ? false : document.getElementById('custommsg').value
 
   obj.punishment.amount = Number(document.getElementById('punishamount').value)
+  if (obj.punishment.amount < 1) obj.punishment.amount = 3
   obj.punishment.type = parseInt(document.getElementById('punishtype').value) || 0
   if (obj.punishment.type === 1) obj.punishment.role = document.getElementById('punishrole').value
   else obj.punishment.role = null
@@ -61,6 +64,7 @@ function buildObject () {
   obj.webhook = document.getElementById('resend').checked || false
   obj.channels = [...document.getElementById('channels').children].map(x => x.value)
   obj.multi = document.getElementById('multi').checked
+  obj.webhook_replace = parseInt(document.getElementById('resendreplace').value)
 
   return obj
 }

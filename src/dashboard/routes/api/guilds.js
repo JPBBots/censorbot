@@ -25,10 +25,11 @@ module.exports = function (r) {
 
     if (!premium) {
       if (req.body.filter.length > 150) return res.json({ error: 'Non-premium servers can only have maximum 150 words in their filter' })
-      if (req.body.webhook || req.body.channels.length > 0 || req.body.pop_delete > 120 * 1000 || req.body.multi) refresh = true
+      if (req.body.webhook || req.body.channels.length > 0 || req.body.pop_delete > 120 * 1000 || req.body.multi || req.body.webhook_replace !== 0) refresh = true
       req.body.webhook = false
       req.body.multi = false
       req.body.channels = []
+      req.body.wehbook_replace = 0
       if (req.body.pop_delete > 120 * 1000) req.body.pop_delete = 120 * 1000
     } else {
       if (req.body.filter.length > 500) return res.json({ error: 'Premium servers can only have maximum 500 words in their filter' })

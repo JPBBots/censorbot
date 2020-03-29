@@ -1,3 +1,12 @@
+const resends = [
+  (c) => {
+    return `||${c}||`
+  },
+  (c) => {
+    return '#'.repeat(c.length)
+  }
+]
+
 module.exports = async function (message) {
   if (this.commands) this.commands.event(message)
 
@@ -10,7 +19,7 @@ module.exports = async function (message) {
      channel.type !== 0 ||
      message.author.bot ||
      channel.nsfw
-  ) return
+  ) return this.multi.delete(message.channel_id)
 
   const db = await this.db.config(message.guild_id)
 
@@ -101,7 +110,7 @@ module.exports = async function (message) {
       send.forEach((s, i) => {
         if (finished.includes(i)) return
         if (s.match(x)) {
-          send[i] = `||${s}||`
+          send[i] = resends[db.webhook_replace || 0](s)
           finished.push(i)
         }
       })

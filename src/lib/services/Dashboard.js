@@ -337,6 +337,7 @@ class Dashboard {
     if (obj.filter.some(x => x.match(/[^\w]/gi))) return f('A filter entree contains illegal characters')
     if (obj.pop_delete !== null && typeof obj.pop_delete !== 'number') return f('Pop delete has an invalid type')
     if (![0, 1, 2, 3].includes(obj.punishment.type)) return f('Punishment type chosen does not exist')
+    if (![0, 1].includes(obj.webhook_replace)) return f('Webhook replace is not valid')
     if (typeof obj.punishment.amount !== 'number' || obj.punishment.amount < 1) return f('Punishment amount cannot be less than 1')
     if ((typeof obj.punishment.role !== 'string' && obj.punishment.role !== null) || (typeof obj.punishment.role === 'string' && !guild.r.some(x => x.id === obj.punishment.role))) return f('Punishment role does not exist on server')
     if (typeof obj.webhook !== 'boolean') return f('Resend has an invalid type')

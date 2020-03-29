@@ -19,6 +19,7 @@ module.exports = {
     role: null
   },
   webhook: false,
+  webhook_replace: 0,
   channels: [],
   multi: false
 }

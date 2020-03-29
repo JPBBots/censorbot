@@ -1,4 +1,5 @@
 const { MongoClient } = require('mongodb')
+delete require.cache[require.resolve('../client/DefaultConfig')]
 
 class Database {
   constructor (client, username, password, db, mongo) {

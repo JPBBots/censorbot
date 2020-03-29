@@ -191,6 +191,13 @@
                 <h3 class="name" title="Whether to censor multiple messages combined together to scan.">Multi-Message<img title="Premium" class="premb" src="/premium.png" width="30"></h3>
                 <label class="switch reslabel"><input class="prem" type="checkbox" id="multi" <%= data.db.multi ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
             </div>
+            <div class="setting premium" style="grid-area: resendreplace">
+                <h3 class="name" title="Choose what to replace bad words with in the resend message">Resend Replace<img title="Premium" class="premb" src="/premium.png" width="30"></h3>
+                <select id="resendreplace" onchange="<%= premium ? '' : 'this.value = \'0\'; premError()' %>">
+                    <option value="0">Spoilers</option>
+                    <option value="1">Hashtags</option>
+                </select>
+            </div>
             
         <div id="save" class="hide"> You have unsaved changes.  <button class="save" style="background-color: #2eb340" onclick="submit()">Save</button> </div>
         <!--<button id="save" class="but" style="display: none" onclick="submit()">Save</button>-->
@@ -215,6 +222,7 @@
             document.getElementById("role").value = "<%= data.db.role || "null"%>"
             document.getElementById("punishrole").value = "<%= data.db.punishment.role || "null"%>"
             document.getElementById("punishtype").value = "<%= data.db.punishment.type  || "0" %>"
+            document.getElementById('resendreplace').value = "<%= data.db.webhook_replace %>"
             if (document.getElementById('punishtype').value !== "1") onTypeChange()
             
             function request(endpoint, method, body, cb) {
