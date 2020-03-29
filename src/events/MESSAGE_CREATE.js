@@ -48,7 +48,7 @@ module.exports = async function (message) {
     }
   }
 
-  content += " " + message.content
+  content += ' ' + message.content
 
   const res = this.filter.test(content, db.base, db.languages, db.filter, db.uncensor)
 

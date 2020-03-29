@@ -1,5 +1,4 @@
 const encodeJSON = require('../../../util/encodeJSON')
-const Express = require('express')
 
 module.exports = function (r) {
   r.get('/invite', (req, res) => {

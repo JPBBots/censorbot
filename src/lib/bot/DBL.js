@@ -23,13 +23,19 @@ class DBL {
       .stats
       .post({
         body: {
-          server_count: this.client.guilds.size,
-          shard_count: this.client.shards.size
+          shards: this.formatted
         }
       })
 
     this.client.log(11, 16, `${new Date().getTime() - start}ms`)
     this.client.emit('DBL_POST')
+  }
+
+  get formatted () {
+    return this.client.guilds.reduce((a, b) => {
+      a[this.client.guildShard(b.id)]++
+      return a
+    }, this.client.shards.reduce((a) => a.concat([0]), []))
   }
 }
 
