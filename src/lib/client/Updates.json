@@ -1,5 +1,14 @@
 [
     {
+        "v": "4.1.2",
+        "desc": "Resend replace premium feature",
+        "date": "3/29/2020",
+        "points": [
+            "Implemented {t:0IsZQKg2:Resend Replace}",
+            "Can now make resend send as spoilers or hashtags"
+        ]
+    },
+    {
         "v": "4.1.1",
         "desc": "Updates Site Redone",
         "date": "3/29/2020",
