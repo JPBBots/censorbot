@@ -1,5 +1,5 @@
 exports.run = function (message, args) {
-  if (!!true) return this.send('WIP')
+  if (true) return this.send('WIP') // eslint-disable-line
   if (!args[0]) {
     return this.send(
       this.embed
