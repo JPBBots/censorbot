@@ -1,9 +1,12 @@
 exports.run = function (message, args) {
-  if (!args[0]) return this.send(
-    this.embed
-      .title('Tickets')
-      .description(`For when words shouldn't be censored by the base filter, but they are.\n\nFormat: \`${this.client.config.prefix[0]}ticket [word / phrase]\``)
-  )
+  if (!!true) return this.send('WIP')
+  if (!args[0]) {
+    return this.send(
+      this.embed
+        .title('Tickets')
+        .description(`For when words shouldn't be censored by the base filter, but they are.\n\nFormat: \`${this.client.config.prefix[0]}ticket [word / phrase]\``)
+    )
+  }
   this.client.tickets.add(args.join(' '), message.author.id)
     .then(() => {
       this.send(
