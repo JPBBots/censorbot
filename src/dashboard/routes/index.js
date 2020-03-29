@@ -13,31 +13,21 @@ module.exports = function (r) {
     )
   })
 
-  r.get('/updates/:v', (req, res, next) => {
-    const url = 'https://censorbot.jt3ch.net/updates'
-    const z = require('/home/jpb/websites/censorbot/updates/updates.js') // eslint-disable-line import/no-absolute-path
-    const the = z.find((x) => x.v === req.params.v)
-    if (!the) return next()
-    res.send(`
-    <!DOCTYPE html>
-    <html>
-      <head>
-          <meta property="og:title" content="Update v${the.v}">
-          <meta property="og:url" content="https://censorbot.jt3ch.net/updates/${req.params.v}">
-          <meta property="og:description" content="${the.desc}">
-      </head>
-      <body>
-          <h1>${req.params.v}</h1>
-      </body>
-      <script>
-          window.location.replace("${url}#${req.params.v}");
-      </script>
-    </html>`)
+  r.get('/updates.json', (req, res) => {
+    res.json(this.client.updates.list())
   })
 
   r.get('/updates', (req, res) => {
-    res.sendFile('/home/jpb/websites/censorbot/updates/index.html')
+    res.render('updates', { updates: this.client.updates.list() })
   })
 
-  r.use('/updates', Express.static('/home/jpb/websites/censorbot/updates'))
+  r.get('/updates/:v.json', (req, res) => {
+    res.json(this.client.updates.getUpdate(req.params.v))
+  })
+
+  r.get('/updates/:v', (req, res) => {
+    const update = this.client.updates.getUpdate(req.params.v, true)
+    if (!update) return res.redirect('/updates')
+    res.render('update', { update })
+  })
 }

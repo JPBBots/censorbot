@@ -1,0 +1,56 @@
+<% function formatDate(date) {
+  var monthNames = [
+    "January", "February", "March",
+    "April", "May", "June", "July",
+    "August", "September", "October",
+    "November", "December"
+  ];
+
+  var day = date.getDate();
+  var monthIndex = date.getMonth();
+  var year = date.getFullYear();
+
+  return monthNames[monthIndex] + ' ' + day + ' ' + year;
+} %>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Censor Bot Updates</title>
+
+    <style>
+      body {
+        background-color: #2C2F33;
+        color: #99AAB5;
+        font-family: Arial, sans-serif;
+      }
+      #main {
+        position: relative;
+        left: 25%;
+        width: 70%;
+      }
+      .update {
+        width: 70%;
+        display: inline-block;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border: 1px solid #171a1c;
+      }
+    </style>
+  </head>
+  <body onload="document.getElementById(window.location.hash.substr(1)).scrollIntoView()">
+    <div id="main">
+      <% updates.forEach(update => { %>
+        <div id="<%= update.v %>" class="update">
+          <h1>
+            v<%= update.v %> | <%= formatDate(update.date) %>
+            <br>
+            <button onclick="window.location.replace('https://censorbot.jt3ch.net/updates/<%= update.v %>')">Open</button>
+          </h1>
+          <p> <%= update.desc %> </p>
+        </div>
+      <% }) %>
+    </div>
+  </body>
+</html>

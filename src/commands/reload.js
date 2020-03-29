@@ -93,6 +93,11 @@ exports.run = async function (message, args) {
       const TicketManager = require(resolve(lib, './services/TicketManager'))
       this.client.tickets = new TicketManager(this.client)
       break
+    case 'updates':
+      delete require.cache[require.resolve(resolve(lib, './client/UpdatesManager'))]
+      const UpdatesManager = require(resolve(lib, './client/UpdatesManager'))
+      this.client.updates = new UpdatesManager(this.client)
+      break
     default:
       this.send('Invalid Part')
       done = false
