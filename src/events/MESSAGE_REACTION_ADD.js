@@ -27,16 +27,7 @@ module.exports = async function (reaction) {
 
   if (!res.censor) return
 
-  this.log(6, 13, `Reaction; ${content}`, `${reaction.member.user.username}#${reaction.member.user.discriminator};${reaction.member.user.id};${res.method}`)
-  this.webhooks.send('log', {
-    content: '```' + content + '```',
-    embeds: [this.embed
-      .description(`<@${reaction.member.user.id}>(${reaction.member.user.id}) in ${reaction.guild_id}`)
-      .title('Reaction')
-      .field('Method', res.method)
-      .field('Arg', res.arg.map(x => x.toString()).join(', '))
-      .render()]
-  })
+  this.internals.logCensor('react', content, reaction.member.user, reaction.guild_id, res)
 
   const errMsg = await this.interface.removeReaction(reaction.channel_id, reaction.message_id, reaction.emoji.id || reaction.emoji.name, reaction.user_id)
     .then(_ => false)
