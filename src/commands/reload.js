@@ -98,6 +98,11 @@ exports.run = async function (message, args) {
       const UpdatesManager = require(resolve(lib, './client/UpdatesManager'))
       this.client.updates = new UpdatesManager(this.client)
       break
+    case 'internals':
+      delete require.cache[require.resolve(resolve(lib, './client/Internals'))]
+      const Internals = require(resolve(lib, './client/Internals'))
+      this.client.internals = new Internals(this.client)
+      break
     default:
       this.send('Invalid Part')
       done = false

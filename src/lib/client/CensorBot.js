@@ -8,6 +8,7 @@ const EventHandler = require('../bot/EventHandler')
 const DBL = require('../bot/DBL')
 const PresenceManager = require('../bot/PresenceManager')
 
+const Internals = require('./Internals')
 const Filter = require('../services/Filter')
 const Database = require('../services/Database')
 const Dashboard = require('../services/Dashboard')
@@ -26,6 +27,8 @@ class CensorBot extends Client {
     this.config = config
 
     this.unavailables = new Collection()
+
+    this.internals = new Internals(this)
 
     this.multi = new Collection()
     this.helpme = new Collection()
