@@ -39,7 +39,7 @@ module.exports = async function (message) {
       if (multi.user !== message.author.id) {
         this.multi.delete(message.channel_id)
       } else {
-        content += Object.values(multi.msg).join(' ')
+        content += Object.values(multi.msg).join('')
 
         multi.msg[message.id] = message.content
 
@@ -57,7 +57,7 @@ module.exports = async function (message) {
     }
   }
 
-  content += ' ' + message.content
+  content += message.content
 
   const res = this.filter.test(content, db.base, db.languages, db.filter, db.uncensor)
 
