@@ -38,7 +38,7 @@ class Dashboard {
       this.onReady = () => {
         this.onReady = null
         resolve()
-        this.client.log(0, 1, 'Dashboard', `${new Date().getTime() - start}ms`, `:${this.client.config.port}`)
+        this.client.log(0, 1, 'Dashboard', `${new Date().getTime() - start}ms:${this.client.config.port}`)
       }
       this.start()
     })

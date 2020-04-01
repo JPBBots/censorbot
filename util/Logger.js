@@ -70,13 +70,13 @@ class Logger {
     this.ipc = ipc
   }
 
-  log (service, task, name = null, optional = null, type = 'log') {
+  log (service, task, name = null, optional = null, error = false) {
     const d = new Date()
     const hours = d.getHours()
     const minutes = d.getMinutes()
     const seconds = d.getSeconds()
     const ms = d.getMilliseconds()
-    console[type](`${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}.${ms < 100 ? `0${ms}` : ms} |${this.separate(this.services[service], this.serviceLength)}|${this.separate(this.tasks[task], this.taskLength)}${name !== null ? `| ${`${name}`.replace(/\n/g, ' [] ')}` : ''}${optional !== null ? ` (${optional})` : ''}`)
+    console[error ? 'error' : 'log'](`${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}.${ms < 100 ? `0${ms}` : ms} |${this.separate(this.services[service], this.serviceLength)}|${this.separate(this.tasks[task], this.taskLength)}${name !== null ? `| ${`${name}`.replace(/\n/g, ' [] ')}` : ''}${optional !== null ? ` (${optional})` : ''}`)
   }
 
   separate (str, to) {
