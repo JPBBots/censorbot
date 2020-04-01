@@ -48,7 +48,8 @@ class Logger {
       'APPROVED',
       'DENIED',
       'DESTROYED',
-      'FAILED'
+      'FAILED',
+      'ERROR'
     ]
 
     this.taskLength = [...this.tasks].sort((a, b) => {
@@ -69,13 +70,13 @@ class Logger {
     this.ipc = ipc
   }
 
-  log (service, task, name = null, optional = null) {
+  log (service, task, name = null, optional = null, type = 'log') {
     const d = new Date()
     const hours = d.getHours()
     const minutes = d.getMinutes()
     const seconds = d.getSeconds()
     const ms = d.getMilliseconds()
-    console.log(`${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}.${ms < 100 ? `0${ms}` : ms} |${this.separate(this.services[service], this.serviceLength)}|${this.separate(this.tasks[task], this.taskLength)}${name !== null ? `| ${`${name}`.replace(/\n/g, ' [] ')}` : ''}${optional !== null ? ` (${optional})` : ''}`)
+    console[type](`${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}.${ms < 100 ? `0${ms}` : ms} |${this.separate(this.services[service], this.serviceLength)}|${this.separate(this.tasks[task], this.taskLength)}${name !== null ? `| ${`${name}`.replace(/\n/g, ' [] ')}` : ''}${optional !== null ? ` (${optional})` : ''}`)
   }
 
   separate (str, to) {
