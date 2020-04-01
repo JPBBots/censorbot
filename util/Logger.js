@@ -49,7 +49,7 @@ class Logger {
       'DENIED',
       'DESTROYED',
       'FAILED',
-      'ERROR'
+      'ERROR' // 25
     ]
 
     this.taskLength = [...this.tasks].sort((a, b) => {
