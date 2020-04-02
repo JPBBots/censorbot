@@ -5,7 +5,7 @@ class PresenceManager {
 
     this.select = null
 
-    this.custom = ['PLAYING', 'custom', 'online']
+    this.customs = ['PLAYING', 'custom', 'online']
 
     this.client.log(0, 1, 'PresenceManager')
   }
@@ -26,7 +26,7 @@ class PresenceManager {
   }
 
   setCustom (type = 'PLAYING', name = 'custom', status = 'online') {
-    this.custom = [type, name, status]
+    this.customs = [type, name, status]
     this.set('custom')
   }
 
@@ -51,7 +51,7 @@ class PresenceManager {
   }
 
   custom () {
-    this.status(this.custom[0], this.custom[1], this.custom[2])
+    this.status(this.customs[0], this.customs[1], this.customs[2])
   }
 }
 

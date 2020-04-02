@@ -1,7 +1,7 @@
 exports.run = function (message, args) {
   switch (args[0]) {
     case 'set':
-      this.client.presence.setCustom(undefined, args[1], undefined)
+      this.client.presence.setCustom(undefined, args.slice(1).join(' '), undefined)
       this.send(':ok_hand:')
       break
     default:
