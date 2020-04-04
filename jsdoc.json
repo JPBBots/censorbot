@@ -1,7 +1,11 @@
 {
   "source": {
     "exclude": [
-      "/home/jpb/bots/censorbot/node_modules"
+      "./node_modules",
+      "./util/Collection"
     ]
+  },
+  "opts": {
+    "template": "./node_modules/latodoc"
   }
 }
