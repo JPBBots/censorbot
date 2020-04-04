@@ -411,6 +411,8 @@ class Dashboard {
 
       if (!admin) return api ? res.json({ error: 'Not Admin' }) : res.render('errors/notadmin', { base: this.base })
 
+      req.user = user
+
       fn ? fn(req, res) : next()
     }
   }

@@ -20,7 +20,7 @@ module.exports = function (r) {
   }))
 
   r.get('/admin', this.adminMiddle(false, (req, res) => {
-    res.render('admin', { token: req.cookies.token })
+    res.render('admin', { token: req.cookies.token, client: this.client })
   }))
 
   r.use('/:serverid', this.getGuild(false))

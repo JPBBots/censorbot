@@ -19,6 +19,23 @@
                 </ul>
             </div>
         </div>
+        <div>
+            <h3>Restart Shards</h3>
+            <% client.shards.forEach(shard => { %>
+                <button onclick="req('/shards/<%=shard.id%>', 'POST', null, console.log)"> <%= shard.id %> <%= shard.connected ? "Connected" : "Disconnected" %> </button>
+            <% }) %>
+        </div>
+        <div>
+            <h3>Guild Control</h3>
+            <input placeholder="Server ID">
+            <button onclick="req('')">Leave</button>
+            <button>Get Config</button>
+            <button>Reset Config</button>
+        </div>
+        <div>
+            <h3>Response</h3>
+            <textarea id="res" style="width:1000px;height:1000px"></textarea>
+        </div>
         <script>
             function getUserGuilds() {
                 var userID = document.getElementById("getguild").value;
@@ -40,6 +57,19 @@
                 }
                 xhr.setRequestHeader("Authorization", "<%=token%>");
                 xhr.send();
+            }
+
+            function req(url, method, body, cb) {
+                var xhr = new XMLHttpRequest();
+                xhr.open(method, "https://censorbot.jt3ch.net/api/admin" + url);
+                xhr.onload = function() {
+                    const response = JSON.parse(xhr.response)
+                    document.getElementById('res').innerText = JSON.stringify(response, null, 4)
+                    cb(response)
+                }
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader("Authorization", "<%=token%>");
+                xhr.send(body ? JSON.stringify(body) : null);
             }
         </script>
     </body>
