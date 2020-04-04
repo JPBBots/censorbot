@@ -1,5 +1,12 @@
 class Logger {
+  /**
+   * Logger
+   */
   constructor () {
+    /**
+     * Services
+     * @type {Array.<String>}
+     */
     this.services = [
       'SERVICES',
       'DISCORD',
@@ -23,6 +30,10 @@ class Logger {
       return 0
     })[0].length + 2
 
+    /**
+     * Tasks
+     * @type {Array.<String>}
+     */
     this.tasks = [
       'LOAD',
       'LOADED',
@@ -70,6 +81,14 @@ class Logger {
     this.ipc = ipc
   }
 
+  /**
+   * Log to console
+   * @param {Integer} service Service
+   * @param {Integer} task Task
+   * @param {String} name Name
+   * @param {String} optional Optional
+   * @param {Boolean} error Whether error
+   */
   log (service, task, name = null, optional = null, error = false) {
     const d = new Date()
     const hours = d.getHours()
@@ -79,6 +98,11 @@ class Logger {
     console[error ? 'error' : 'log'](`${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}.${ms < 10 ? `00${ms}` : ms < 100 ? `0${ms}` : ms} |${this.separate(this.services[service], this.serviceLength)}|${this.separate(this.tasks[task], this.taskLength)}${name !== null ? `| ${`${name}`.replace(/\n/g, ' [] ')}` : ''}${optional !== null ? ` (${optional})` : ''}`)
   }
 
+  /**
+   * Make all lines even
+   * @param {String} str String
+   * @param {Integer} to What to seperate too
+   */
   separate (str, to) {
     let res = str
     let sw = 1
