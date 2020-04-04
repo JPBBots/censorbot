@@ -1,9 +1,5 @@
 const Collection = require('../../../util/Collection')
 
-/**
- * @typedef {String} Snowflake Discord ID
- */
-
 class BucketManager {
   /**
    * Buckets
@@ -20,19 +16,19 @@ class BucketManager {
 
     /**
      * Buckets
-     * @type {Collection.<Snowflake|Snowflake+Snowflake, Array.<Snowflake>>}
+     * @type {Collection.<Snowflake, Array.<Snowflake>>}
      */
     this.buckets = new Collection()
 
     /**
      * Bucket firsts clear timeouts
-     * @type {Collection.<Snowflake|Snowflake+Snowflake, Timeout>}
+     * @type {Collection.<Snowflake, Timeout>}
      */
     this.clears = new Collection()
 
     /**
      * Timeouts
-     * @type {Collection.<Snowflake|Snowflake+Snowflake, Timeout>}
+     * @type {Collection.<Snowflake, Timeout>}
      */
     this.timeouts = new Collection()
 

@@ -25,7 +25,7 @@ class WebhookManager {
 
     /**
      * SendAS Webhook Bucket
-     * @type {Collection.<Snowflake+Snowflake, Object>}
+     * @type {Collection.<Snowflake, Object>}
      */
     this.bucket = new Collection()
 

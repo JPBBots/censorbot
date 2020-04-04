@@ -10,10 +10,6 @@ const validateObject = require('../../../util/validateObject')
 
 const cacheTimeout = 300000
 
-/**
- * @typedef {String} Snowflake Discord ID
- */
-
 class Dashboard {
   /**
    * Dashboard

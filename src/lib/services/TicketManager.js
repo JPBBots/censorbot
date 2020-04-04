@@ -1,16 +1,4 @@
-/**
- * {
- *   id: '',
- *   word: '',
- *   user: ''
- * }
- */
-
 const GenerateID = require('../../../util/GenerateID')
-
-/**
- * @typedef {String} Snowflake Discord ID
- */
 
 class TicketManager {
   /**
@@ -20,7 +8,7 @@ class TicketManager {
   constructor (client) {
     /**
      * Client
-     * @type {Client} Client
+     * @type {Client}
      */
     this.client = client
     this.client.log(0, 0, 'TicketManager')

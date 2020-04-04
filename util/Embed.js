@@ -92,7 +92,7 @@ class Embed {
 
   /**
    * Sets embed color
-   * @param {Integer or String} Color
+   * @param {Integer|String} Color
    * @returns {Embed} This embed instance
    */
   color (color) {

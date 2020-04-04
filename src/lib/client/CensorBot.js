@@ -22,10 +22,6 @@ const WebhookManager = require('../services/WebhookManager')
 const Embed = require('../../../util/Embed')
 const Collection = require('../../../util/Collection')
 
-/**
- * @typedef {String} Snowflake Discord ID
- */
-
 class CensorBot extends Client {
   /**
    * Censor Bot Client

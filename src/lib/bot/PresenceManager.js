@@ -13,7 +13,7 @@ class PresenceManager {
 
     /**
      * Presence currently selected
-     * @type {?String} Presence
+     * @type {?String}
      */
     this.select = null
 

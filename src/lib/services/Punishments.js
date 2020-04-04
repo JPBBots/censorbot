@@ -1,7 +1,3 @@
-/**
- * @typedef {String} Snowflake Discord ID
- */
-
 class Punishments {
   /**
    * Punishments Manager

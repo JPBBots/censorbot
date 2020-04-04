@@ -1,7 +1,3 @@
-/**
- * @typedef {String} Snowflake Discord ID
- */
-
 class Internals {
   /**
    * Internal Methods
