@@ -1,16 +1,38 @@
-// Punishments manager
+/**
+ * @typedef {String} Snowflake Discord ID
+ */
 
-class PunishmentsHandler {
+class Punishments {
+  /**
+   * Punishments Manager
+   * @param {Client} client Client
+   */
   constructor (client) {
     client.log(0, 0, 'Punishments')
+    /**
+     * Client
+     * @type {Client}
+     */
     this.client = client
     this.client.log(0, 1, 'Punishments')
   }
 
+  /**
+   * Database
+   * @type {MongoDB.Collection}
+   */
   get db () {
     return this.client.db.collection('punishments')
   }
 
+  /**
+   * Punishes a user
+   * @param {Snowflake} guild Guild
+   * @param {Snowflake} user User
+   * @param {Object} db Database
+   * @param {Integer} warning Warning amount
+   * @param {Boolean} inDB In Database
+   */
   async punish (guild, user, db, warning, inDB) {
     if (inDB) {
       await this.db.removeOne({
@@ -54,6 +76,12 @@ class PunishmentsHandler {
     this.client.interface.send(db.log, embed)
   }
 
+  /**
+   * Adds a user punishment
+   * @param {Snowflake} guild Guild
+   * @param {Snowflake} user User
+   * @param {Object} db Database
+   */
   async addOne (guild, user, db) {
     if (db.punishment.type === 0) return
     let inDB = true
@@ -83,7 +111,7 @@ class PunishmentsHandler {
   }
 }
 
-module.exports = PunishmentsHandler
+module.exports = Punishments
 
 /**
  * 0: none

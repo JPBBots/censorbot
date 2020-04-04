@@ -8,26 +8,56 @@
 
 const GenerateID = require('../../../util/GenerateID')
 
+/**
+ * @typedef {String} Snowflake Discord ID
+ */
+
 class TicketManager {
+  /**
+   * Ticket Manager
+   * @param {Client} client Client
+   */
   constructor (client) {
+    /**
+     * Client
+     * @type {Client} Client
+     */
     this.client = client
     this.client.log(0, 0, 'TicketManager')
     this.client.log(0, 1, 'TicketManager')
   }
 
+  /**
+   * Database
+   * @type {MongoDB.Collection}
+   */
   get db () {
     return this.client.db.collection('tickets')
   }
 
+  /**
+   * Ban database
+   * @type {MongoDB.Collection}
+   */
   get banDB () {
     return this.client.db.collection('ticketban')
   }
 
+  /**
+   * If a user is banned
+   * @param {Snowflake} id User
+   * @returns {Object} { banned{Boolean}, reason{String} }
+   */
   async isBanned (id) {
     const res = await this.banDB.findOne({ id })
     return res || { banned: false, reason: null }
   }
 
+  /**
+   * Add a ticket
+   * @param {String} word Word
+   * @param {Snowflake} user User who added
+   */
   async add (word, user) {
     const isBanned = await this.isBanned(user)
     if (isBanned.banned) throw new Error(`User is banned for \`${isBanned.reason}\``)
@@ -57,6 +87,11 @@ class TicketManager {
     })
   }
 
+  /**
+   * Deny a ticket
+   * @param {String} id Ticket ID
+   * @param {Snowflake} admin Admin who denied
+   */
   async deny (id, admin) {
     const ticket = await this.db.findOne({ id })
 
@@ -74,6 +109,11 @@ class TicketManager {
     this.client.log(13, 22, id)
   }
 
+  /**
+   * Approve a ticket
+   * @param {String} id Ticket ID
+   * @param {Snowflake} admin Admin who approved
+   */
   async approve (id, admin) {
     const ticket = await this.db.findOne({ id })
 
@@ -98,6 +138,10 @@ class TicketManager {
     this.client.log(13, 21, id)
   }
 
+  /**
+   * Event handler for reactions
+   * @param {Object} reaction Reaction
+   */
   async event (reaction) {
     if (reaction.channel_id !== this.client.config.channels.ticket || reaction.member.user.bot) return
 

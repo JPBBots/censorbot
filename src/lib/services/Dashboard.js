@@ -10,27 +10,83 @@ const validateObject = require('../../../util/validateObject')
 
 const cacheTimeout = 300000
 
+/**
+ * @typedef {String} Snowflake Discord ID
+ */
+
 class Dashboard {
+  /**
+   * Dashboard
+   * @param {Client} client Client
+   */
   constructor (client) {
+    /**
+     * Client
+     * @type {Client}
+     */
     this.client = client
 
+    /**
+     * Express app
+     * @type {?Express}
+     */
     this.app = null
+
+    /**
+     * HTTP Server
+     * @type {?Server}
+     */
     this.server = null
+
+    /**
+     * Ran on ready
+     * @type {?Function}
+     */
     this.onReady = null
 
+    /**
+     * Guild cache
+     * @type {Collection.<Snowflake, Object>}
+     */
     this.guilds = new Collection()
+
+    /**
+     * Clear cachings
+     * @type {Collection.<Snowflake, Timeout>}
+     */
     this.caching = new Collection()
 
+    /**
+     * Blank discord api
+     * @type {Request}
+     */
     this.api = Request('https://discordapp.com/api')
 
+    /**
+     * Base URL
+     * @type {String}
+     */
     this.base = 'https://censorbot.jt3ch.net/dash'
+
+    /**
+     * API URL
+     * @type {String}
+     */
     this.apiUrl = 'https://censorbot.jt3ch.net/api'
   }
 
+  /**
+   * Database
+   * @type {MongoDB.Collection}
+   */
   get db () {
     return this.client.db.collection('dashboard')
   }
 
+  /**
+   * Spawn dashboard
+   * @returns {Promise}
+   */
   spawn () {
     this.client.log(0, 0, 'Dashboard')
     return new Promise(resolve => {
@@ -44,6 +100,9 @@ class Dashboard {
     })
   }
 
+  /**
+   * Start app
+   */
   start () {
     this.app = Express()
 
@@ -54,26 +113,44 @@ class Dashboard {
     })
   }
 
+  /**
+   * Close server
+   */
   close () {
     this.server.close()
   }
 
+  /**
+   * Load routes
+   */
   load () {
     this.app.use(
       require('../../dashboard')(this)
     )
   }
 
+  /**
+   * Reload routes
+   */
   reload () {
     delete require.cache[require.resolve('../../dashboard')]
     this.app._router = null
     this.load()
   }
 
+  /**
+   * Redirect URL
+   * @type {String}
+   */
   get redirectURL () {
     return this.base + '/auth/callback'
   }
 
+  /**
+   * OAUTH Login url
+   * @param {String} state Redirect state
+   * @returns {String} URL to send to
+   */
   oauthLogin (state) {
     const oauth = this.client.config.oauth
 
@@ -89,6 +166,11 @@ class Dashboard {
 
   // caching
 
+  /**
+   * Get user in cache
+   * @param {Snowflake} user User
+   * @returns {Array.<Object>} Guilds
+   */
   getInCache (user) {
     const cache = this.guilds.get(user)
 
@@ -106,6 +188,11 @@ class Dashboard {
     return cache
   }
 
+  /**
+   * Set guilds into user cache
+   * @param {Snowflake} user User
+   * @param {Array} value Guilds
+   */
   setInCache (user, value) {
     this.guilds.set(user, value)
     this.caching.set(user, setTimeout(() => {
@@ -116,11 +203,21 @@ class Dashboard {
 
   // auth
 
+  /**
+   * Fail a request unauthorized
+   * @param {*} res Res
+   * @param {Boolean} api Whether api
+   * @param {String} state OAuth State
+   */
   fail (res, api, state) {
     if (api) res.json({ error: 'Unauthorized' })
     else res.redirect(this.oauthLogin(state))
   }
 
+  /**
+   * Get user guilds
+   * @returns {Promise.<Array.<Object>>} User Guilds
+   */
   async getGuilds (req, state, api = false) {
     const { res } = req
 
@@ -137,6 +234,14 @@ class Dashboard {
     return guilds
   }
 
+  /**
+   * Get made user guilds
+   * @param {String} token User token
+   * @param {*} res Res
+   * @param {String} state State
+   * @param {Boolean} api API
+   * @returns {Promise.<Array.<Object>>} User Guilds
+   */
   async getUserGuilds (token, res, state, api) {
     const user = await this.db.findOne({
       token: token
@@ -174,6 +279,14 @@ class Dashboard {
     return guilds
   }
 
+  /**
+   * Fetch user guilds
+   * @param {String} bearer User bearer
+   * @param {*} res Res
+   * @param {String} state State
+   * @param {Boolean} api API
+   * @returns {Promise<Array.<Object>>} Guilds
+   */
   async fetchGuilds (bearer, res, state, api) {
     const guilds = await this.api
       .users('@me')
@@ -195,6 +308,11 @@ class Dashboard {
       })
   }
 
+  /**
+   * Fetch user
+   * @param {String} bearer Discord user bearer
+   * @returns {Object} User
+   */
   async fetchUser (bearer) {
     const user = await this.api
       .users['@me']
@@ -208,12 +326,20 @@ class Dashboard {
     return user
   }
 
+  /**
+   * New token
+   * @type {String}
+   */
   get newToken () {
     return crypto.createHash('sha256').update(`${Math.random()}`).update(`${new Date().getTime()}`).update(this.client.config.oauth.mysecret).digest('hex')
   }
 
   // oauth
 
+  /**
+   * Handle callback
+   * @param {*} req Req
+   */
   async callback (req) {
     const { res } = req
 
@@ -254,6 +380,11 @@ class Dashboard {
     res.redirect(this.base)
   }
 
+  /**
+   * Fetch oauth user
+   * @param {String} code Discord code
+   * @returns {Object} OAuth user
+   */
   async fetchOAuthUser (code) {
     const oauth = this.client.config.oauth
 
@@ -280,6 +411,11 @@ class Dashboard {
 
   // settings
 
+  /**
+   * Guild middleware
+   * @param {Boolean} api Whether api or not
+   * @returns {Function} For middleware usage
+   */
   getGuild (api) {
     return async (req, res, next) => {
       const id = req.params.serverid
@@ -295,6 +431,12 @@ class Dashboard {
     }
   }
 
+  /**
+   * Get guild data middleware
+   * @param {Boolean} api Whether api or not
+   * @param {Function} fn Callback
+   * @returns {Function} For middleware usage
+   */
   guildData (api, fn) {
     return async (req, res) => {
       const { i: id, n: name } = req.partialGuild
@@ -324,6 +466,13 @@ class Dashboard {
     }
   }
 
+  /**
+   * Validate posted settings
+   * @param {Object} obj Posted object
+   * @param {Object} guild Guild data
+   * @param {Function} f Ran on failure with string
+   * @returns {?Boolean}
+   */
   validateSettings (obj, guild, f) {
     if (!validateObject(this.client.db.defaultConfig, obj)) return f('Invalid Object')
     if (typeof obj.base !== 'boolean') return f('Base has an invalid type')
@@ -353,6 +502,11 @@ class Dashboard {
 
   // premium
 
+  /**
+   * Get premium object
+   * @param {Snowflake} id User
+   * @returns {Object} Premium object
+   */
   async premium (id) {
     const premium = parseInt(await this.client
       .capi
@@ -378,6 +532,11 @@ class Dashboard {
     return user
   }
 
+  /**
+   * Premium middleware
+   * @param {Boolean} api Whether API
+   * @param {Function} fn Callback function
+   */
   premiumMiddle (api, fn) {
     return async (req, res, next) => {
       const user = await this.db.findOne({ token: api ? req.headers.authorization : req.cookies.token })
@@ -401,6 +560,11 @@ class Dashboard {
 
   // admin
 
+  /**
+   * Admin middleware
+   * @param {Boolean} api Whether API
+   * @param {Function} fn Callback
+   */
   adminMiddle (api, fn) {
     return async (req, res, next) => {
       const user = await this.db.findOne({ token: api ? req.headers.authorization : req.cookies.token })

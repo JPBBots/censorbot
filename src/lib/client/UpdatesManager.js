@@ -1,17 +1,36 @@
 class UpdatesManager {
+  /**
+   * Updates Manager
+   * @param {Client} client Client
+   */
   constructor (client) {
+    /**
+     * Client
+     * @type {Client}
+     */
     this.client = client
+
+    /**
+     * Updates
+     * @type {Array.<Object>}
+     */
     this.updates = []
 
     this.load()
   }
 
+  /**
+   * (Re)load updates
+   */
   load () {
     delete require.cache[require.resolve('./Updates.json')]
 
     this.updates = require('./Updates.json')
   }
 
+  /**
+   * List updates
+   */
   list () {
     return this.updates.map(x => {
       return {
@@ -22,6 +41,11 @@ class UpdatesManager {
     })
   }
 
+  /**
+   * Get specific update
+   * @param {String} v Version
+   * @param {Boolean} browser Whether requested from browser
+   */
   getUpdate (v, browser) {
     const update = this.updates.find(x => x.v === v)
     if (!update) return null

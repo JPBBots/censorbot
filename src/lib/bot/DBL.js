@@ -1,11 +1,28 @@
 const Request = require('../../../req')
 
 class DBL {
+  /**
+   * DBL interface
+   * @param {Client} client Client
+   */
   constructor (client) {
+    /**
+     * Client
+     * @type {Client}
+     */
     this.client = client
     this.client.log(0, 0, 'DBL')
+
+    /**
+     * DBL API
+     * @type {Request}
+     */
     this.api = Request('https://top.gg/api', { Authorization: client.config.dbl })
 
+    /**
+     * Posting interval
+     * @type {Interval}
+     */
     this.interval = setInterval(() => {
       this.client.log(11, 15, `${this.client.guilds.size} servers`)
       this.post()
@@ -14,6 +31,10 @@ class DBL {
     this.client.log(0, 1, 'DBL')
   }
 
+  /**
+   * Post stats
+   * @returns {Promise.<Object>} Response
+   */
   async post () {
     if (this.client.beta) return this.client.log(11, 16, 'Skipped beta')
     if (this.client.shards.some(x => !x.connected)) return console.log('Skipping post as there are offline shards!')
@@ -31,6 +52,10 @@ class DBL {
     this.client.emit('DBL_POST')
   }
 
+  /**
+   * Formatted guild counts
+   * @type {Array.<Integer>}
+   */
   get formatted () {
     return this.client.guilds.reduce((a, b) => {
       a[this.client.guildShard(b.id)]++

@@ -1,8 +1,28 @@
+/**
+ * @typedef {String} Snowflake Discord ID
+ */
+
 class Internals {
+  /**
+   * Internal Methods
+   * @param {Client} client Client
+   */
   constructor (client) {
+    /**
+     * Client
+     * @type {Client}
+     */
     this.client = client
   }
 
+  /**
+   * Log a censor
+   * @param {String} type Type
+   * @param {String} content Content
+   * @param {Object} user User
+   * @param {Snowflake} guild Guild
+   * @param {Object} res Filter response
+   */
   logCensor (type, content, user, guild, res) {
     this.client.log(6, 13, `${type}; ${content}`, `${user.username}#${user.discriminator};${user.id};${res.method}`)
     this.client.webhooks.send('log', {

@@ -2,11 +2,28 @@ const { readdirSync } = require('fs')
 const dir = require('path').resolve.bind(undefined, __dirname)
 
 class EventHandler {
+  /**
+   * Event Handler
+   * @param {Client} client Client
+   */
   constructor (client) {
     client.log(0, 0, 'EventHandler')
+    /**
+     * Client
+     * @type {Client}
+     */
     this.client = client
 
+    /**
+     * Events
+     * @type {Object.<String, Function>}
+     */
     this.events = {}
+
+    /**
+     * Whether or not the events are attached to the event handler
+     * @type {Boolean}
+     */
     this.eventsSet = false
 
     this.client.log(0, 1, 'EventHandler')
@@ -14,6 +31,9 @@ class EventHandler {
     this.load()
   }
 
+  /**
+   * (Re)loads events
+   */
   load () {
     this.client.log(3, 0, '/events')
     const events = readdirSync(dir('../../events')).map(x => x.split('.')).filter(x => x[1] === 'js')
@@ -32,6 +52,11 @@ class EventHandler {
     this.client.log(3, 1, `${events.length} events`)
   }
 
+  /**
+   * Dispatches an event
+   * @param {String} event Event name
+   * @param  {...any} d Event packet
+   */
   dispatch (event, ...d) {
     if (!this.events[event]) return
     this.events[event](...d)

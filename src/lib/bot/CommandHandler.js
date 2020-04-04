@@ -5,9 +5,22 @@ const Collection = require('../../../util/Collection')
 const Command = require('./Command')
 
 class CommandHandler {
+  /**
+   * Command Handler
+   * @param {Client} client Client
+   */
   constructor (client) {
+    /**
+     * Client
+     * @type {Client}
+     */
     this.client = client
     this.client.log(0, 0, 'CommandHandler')
+
+    /**
+     * Commands
+     * @type {Collection}
+     */
     this.commands = new Collection()
 
     this.client.log(0, 1, 'CommandHandler')
@@ -15,6 +28,9 @@ class CommandHandler {
     this.load()
   }
 
+  /**
+   * (Re)Loads commands
+   */
   load () {
     this.client.log(2, 0, '/commands')
     this.commands.clear()
@@ -32,6 +48,10 @@ class CommandHandler {
     this.client.log(2, 1, `${commands.length} commands`)
   }
 
+  /**
+   * Handles message event
+   * @param {Object} msg Message
+   */
   event (msg) {
     const channel = this.client.channels.get(msg.channel_id)
     if (!channel || msg.type !== 0 || channel.type !== 0 || msg.author.bot) return
@@ -49,6 +69,13 @@ class CommandHandler {
     this.run(command, msg, args, prefix)
   }
 
+  /**
+   * Run command
+   * @param {String} command Command name
+   * @param {Object} msg Message
+   * @param {Array.<String>} args Command arguments
+   * @param {String} prefix Prefix used to run
+   */
   async run (command, msg, args, prefix) {
     const cmd = this.commands.find(x => [x.info.name, ...(x.info.aliases || [])].includes(command.toLowerCase()))
     if (!cmd) return
@@ -58,6 +85,10 @@ class CommandHandler {
     cmd.run.bind(new Command(this.client, msg))(msg, args, prefix)
   }
 
+  /**
+   * List commands
+   * @returns {Array.<Object>} Command info's
+   */
   list () {
     const cmds = this.commands
       .filter(x => !x.info.admin)

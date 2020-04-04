@@ -2,9 +2,25 @@ const { MongoClient } = require('mongodb')
 delete require.cache[require.resolve('../client/DefaultConfig')]
 
 class Database {
+  /**
+   * Database
+   * @param {Client} client Client
+   * @param {String} username Username
+   * @param {String} password Password
+   * @param {?MongoDatabase} db Database if reloading
+   * @param {?MongoClient} mongo Mongo if reloading
+   */
   constructor (client, username, password, db, mongo) {
+    /**
+     * Client
+     * @type {Client}
+     */
     this.client = client
 
+    /**
+     * Default guild config
+     * @type {Object}
+     */
     this.defaultConfig = require('../client/DefaultConfig')
 
     if (db) {
@@ -18,13 +34,29 @@ class Database {
     this.client.log(0, 0, 'Database')
     const start = new Date().getTime()
     await this.mongo.connect()
+
+    /**
+     * Database
+     * @type {MongoDatabase}
+     */
     this.db = await this.mongo.db('censorbot')
 
     this.client.log(0, 1, 'Database', `${new Date().getTime() - start}ms`)
   }
 
+  /**
+   * Cursors to collection
+   * @param {String} collection Collection to cursor to
+   * @return {MongoCollection}
+   */
   collection (..._) { return this.db.collection(..._) }
 
+  /**
+   * Gets guild config
+   * @param {Snowflake} id Guild
+   * @param {Boolean} allowRewrite Allows for config to rewrite if not exist
+   * @returns {Promise.<Object>} Config
+   */
   async config (id, allowRewrite = true) {
     let config = await this.collection('guild_data')
       .findOne({
@@ -45,6 +77,12 @@ class Database {
     return config
   }
 
+  /**
+   * Sets guild config
+   * @param {Snowflake} id Guild
+   * @param {Object} obj Object to set
+   * @returns {Promise.<Object>} Mongo response
+   */
   async setConfig (id, obj) {
     const res = await this.collection('guild_data').updateOne({ id }, {
       $set: {
@@ -57,6 +95,11 @@ class Database {
     return true
   }
 
+  /**
+   * If guild is premium
+   * @param {Snowflake} id Guild
+   * @returns {Boolean}
+   */
   async guildPremium (id) {
     const response = await this.collection('premium_users').find({
       guilds: {

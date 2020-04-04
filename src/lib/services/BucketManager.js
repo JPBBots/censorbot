@@ -1,23 +1,59 @@
 const Collection = require('../../../util/Collection')
 
+/**
+ * @typedef {String} Snowflake Discord ID
+ */
+
 class BucketManager {
+  /**
+   * Buckets
+   * @param {Client} client Client
+   */
   constructor (client) {
+    /**
+     * Client
+     * @type {Client}
+     */
     this.client = client
 
     this.client.log(0, 0, 'BucketManager')
 
+    /**
+     * Buckets
+     * @type {Collection.<Snowflake|Snowflake+Snowflake, Array.<Snowflake>>}
+     */
     this.buckets = new Collection()
+
+    /**
+     * Bucket firsts clear timeouts
+     * @type {Collection.<Snowflake|Snowflake+Snowflake, Timeout>}
+     */
     this.clears = new Collection()
+
+    /**
+     * Timeouts
+     * @type {Collection.<Snowflake|Snowflake+Snowflake, Timeout>}
+     */
     this.timeouts = new Collection()
 
     this.client.log(0, 1, 'BucketManager')
   }
 
+  /**
+   * Get bucket
+   * @param {Snowflake} channel Channel
+   * @returns {Array} Editable array
+   */
   bucket (channel) {
     if (!this.buckets.has(channel)) this.buckets.set(channel, [])
     return this.buckets.get(channel)
   }
 
+  /**
+   * Add message to bucket
+   * @param {Snowflake} channel Channel
+   * @param {Snowflake} msg Message
+   */
   async set (channel, msg) {
     if (!this.clears.has(channel)) {
       const resp = await this.client.interface.delete(channel, msg)
@@ -41,6 +77,10 @@ class BucketManager {
     return null
   }
 
+  /**
+   * Execute channels bucket
+   * @param {Snowflake} channel Channel
+   */
   delete (channel) {
     const msgs = this.buckets.get(channel)
 
@@ -56,6 +96,12 @@ class BucketManager {
       .catch(() => {})
   }
 
+  /**
+   * Add pop message bucket
+   * @param {Snowflake} channel Channel
+   * @param {Snowflake} user User
+   * @param {Object} db Guild database
+   */
   pop (channel, user, db) {
     if (!this.clears.has(channel + user)) {
       this.popMsg(channel, user, db)
@@ -73,6 +119,12 @@ class BucketManager {
     }, 2000))
   }
 
+  /**
+   * Execute pop message bucket
+   * @param {Snowflake} channel Channel
+   * @param {Snowflake} user User
+   * @param {Object} db Guild Database
+   */
   async popMsg (channel, user, db) {
     this.clears.delete(channel + user)
     this.timeouts.delete(channel + user)
