@@ -1,6 +1,9 @@
-exports.run = function (message, args) {
+exports.run = async function (message, args) {
   this.delete()
-  if (!args[0]) return process.exit()
+  if (!args[0]) {
+    await this.send('Restarting')
+    return process.exit()
+  }
 
   if (message.content.includes('-d')) {
     return this.client.killShard(args[1])
