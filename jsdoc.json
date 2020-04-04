@@ -1,0 +1,7 @@
+{
+  "source": {
+    "exclude": [
+      "/home/jpb/bots/censorbot/node_modules"
+    ]
+  }
+}
