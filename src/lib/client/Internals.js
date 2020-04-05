@@ -1,3 +1,6 @@
+/**
+ * Used for methods that should be accessible from everywhere throughout censor bot
+ */
 class Internals {
   /**
    * Internal Methods

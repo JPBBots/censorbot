@@ -10,6 +10,9 @@ const validateObject = require('../../../util/validateObject')
 
 const cacheTimeout = 300000
 
+/**
+ * Used for methods used throughout the api and dashboard
+ */
 class Dashboard {
   /**
    * Dashboard

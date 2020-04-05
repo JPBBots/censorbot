@@ -1,6 +1,9 @@
 const { MongoClient } = require('mongodb')
 delete require.cache[require.resolve('../client/DefaultConfig')]
 
+/**
+ * Used for connecting to mongo database and built methods
+ */
 class Database {
   /**
    * Database

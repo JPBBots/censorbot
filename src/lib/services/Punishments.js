@@ -1,3 +1,6 @@
+/**
+ * Used for managing warnings and distributing punishments
+ */
 class Punishments {
   /**
    * Punishments Manager

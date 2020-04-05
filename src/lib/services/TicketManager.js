@@ -1,5 +1,8 @@
 const GenerateID = require('../../../util/GenerateID')
 
+/**
+ * Used for managing and adding censor bot tickets
+ */
 class TicketManager {
   /**
    * Ticket Manager

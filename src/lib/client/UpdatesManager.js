@@ -1,3 +1,6 @@
+/**
+ * Used for listing and pushing censor bot updates
+ */
 class UpdatesManager {
   /**
    * Updates Manager

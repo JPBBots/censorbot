@@ -4,6 +4,9 @@ const Collection = require('../../../util/Collection')
 const GetAvatar = require('../../../util/GetAvatar')
 const ParseMessage = require('../../../util/ParseMessage')
 
+/**
+ * Used for managing preset webhooks and websocket middle methods
+ */
 class WebhookManager {
   /**
    * Webhook Manager

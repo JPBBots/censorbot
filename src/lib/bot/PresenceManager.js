@@ -1,3 +1,6 @@
+/**
+ * Used for setting and updating bot presences
+ */
 class PresenceManager {
   /**
    * Presence manager

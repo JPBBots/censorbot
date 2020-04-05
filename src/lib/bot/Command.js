@@ -1,3 +1,6 @@
+/**
+ * Used for each instance of ran commands for easier interaction and customizable actions
+ */
 class Command {
   /**
    * For handling messages to a command site

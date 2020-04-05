@@ -1,6 +1,9 @@
 const { readdirSync } = require('fs')
 const dir = require('path').resolve.bind(undefined, __dirname)
 
+/**
+ * Used for handling preset events from the Discord websocket
+ */
 class EventHandler {
   /**
    * Event Handler

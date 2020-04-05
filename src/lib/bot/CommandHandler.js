@@ -4,6 +4,9 @@ const Collection = require('../../../util/Collection')
 
 const Command = require('./Command')
 
+/**
+ * Used for taking in message events and running commands
+ */
 class CommandHandler {
   /**
    * Command Handler

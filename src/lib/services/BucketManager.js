@@ -1,5 +1,8 @@
 const Collection = require('../../../util/Collection')
 
+/**
+ * Used for managing buckets for message deleting and pop messages
+ */
 class BucketManager {
   /**
    * Buckets

@@ -1,5 +1,8 @@
 const Request = require('../../../req')
 
+/**
+ * Used for interacting with the DBL (top.gg) api
+ */
 class DBL {
   /**
    * DBL interface

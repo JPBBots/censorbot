@@ -22,6 +22,11 @@ const WebhookManager = require('../services/WebhookManager')
 const Embed = require('../../../util/Embed')
 const Collection = require('../../../util/Collection')
 
+
+/**
+ * Base censor bot client. Used as a hub for all other library structures
+ * @extends Client
+ */
 class CensorBot extends Client {
   /**
    * Censor Bot Client
