@@ -9,6 +9,8 @@ module.exports = function (shard) {
         name: 'Starting up... | Please wait!'
       }
     })
+  } else {
+    this.presence.go()
   }
   this.interface.send(this.config.channels.status, `Startup | Shard: ${shard.id}`)
 }
