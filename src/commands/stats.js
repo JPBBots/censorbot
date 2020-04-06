@@ -1,5 +1,6 @@
 const moment = require('moment')
 require('moment-duration-format')
+const { cpuUsage } = require('os-utils')
 
 exports.run = async function (message, args) {
   const m = await this.send(this.embed
@@ -23,6 +24,11 @@ exports.run = async function (message, args) {
         {
           name: ':chart_with_downwards_trend: Memory Usage',
           value: ((process.memoryUsage().heapUsed) / 1024 / 1024).toFixed(0) + ' MB',
+          inline: true
+        },
+        {
+          name: ':desktop: CPU Usage',
+          value: ((await (new Promise(res => cpuUsage(res))))*100).toFixed(1) + '%',
           inline: true
         },
         {
