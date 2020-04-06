@@ -28,7 +28,7 @@ exports.run = async function (message, args) {
         },
         {
           name: ':desktop: CPU Usage',
-          value: ((await (new Promise(res => cpuUsage(res))))*100).toFixed(1) + '%',
+          value: ((await (new Promise(resolve => cpuUsage(resolve)))) * 100).toFixed(1) + '%',
           inline: true
         },
         {

@@ -1,3 +1,8 @@
+/**
+ * Small 3 letter unique ID
+ * @typedef {String} SmallID
+ */
+
 module.exports = (notallow = []) => {
   var text = ''
   var possible = 'abcdefghijklmnopqrstuvwxyz0123456789'

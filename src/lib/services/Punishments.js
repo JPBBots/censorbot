@@ -1,4 +1,13 @@
 /**
+ * Used to decide which kind of punishment to execute in a given server
+ * @typedef {Integer} PunishmentType
+ * @example
+ * 0: Mute
+ * 1: Kick
+ * 2: Ban
+ */
+
+/**
  * Used for managing warnings and distributing punishments
  */
 class Punishments {

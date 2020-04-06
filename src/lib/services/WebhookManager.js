@@ -10,7 +10,7 @@ const ParseMessage = require('../../../util/ParseMessage')
 class WebhookManager {
   /**
    * Webhook Manager
-   * @param {Client} client Client 
+   * @param {Client} client Client
    */
   constructor (client) {
     /**

@@ -11,6 +11,23 @@ const validateObject = require('../../../util/validateObject')
 const cacheTimeout = 300000
 
 /**
+ * Guilds cached for oauth/dashboard use
+ * @typedef {Object} CachedGuild
+ * @property {Snowflake} i ID of guild
+ * @property {String} n Name of guild
+ * @property {String} a Icon hash of guild
+ */
+
+/**
+  * Used for retrieving OAuth bearer of a Discord user
+  * @typedef {String} OAuthCode
+  */
+/**
+  * Used for requesting as a user, such as user info and guilds
+  * @typedef {String} OAuthBearer
+  */
+
+/**
  * Used for methods used throughout the api and dashboard
  */
 class Dashboard {
@@ -45,7 +62,7 @@ class Dashboard {
 
     /**
      * Guild cache
-     * @type {Collection.<Snowflake, Object>}
+     * @type {Collection.<Snowflake, Array.<CachedGuild>>}
      */
     this.guilds = new Collection()
 
@@ -168,7 +185,7 @@ class Dashboard {
   /**
    * Get user in cache
    * @param {Snowflake} user User
-   * @returns {Array.<Object>} Guilds
+   * @returns {Array.<CachedGuild>} Guilds
    */
   getInCache (user) {
     const cache = this.guilds.get(user)
@@ -190,7 +207,7 @@ class Dashboard {
   /**
    * Set guilds into user cache
    * @param {Snowflake} user User
-   * @param {Array} value Guilds
+   * @param {Array.<CachedGuild>} value Guilds
    */
   setInCache (user, value) {
     this.guilds.set(user, value)
@@ -215,7 +232,7 @@ class Dashboard {
 
   /**
    * Get user guilds
-   * @returns {Promise.<Array.<Object>>} User Guilds
+   * @returns {Promise.<Array.<CachedGuild>>} User Guilds
    */
   async getGuilds (req, state, api = false) {
     const { res } = req
@@ -239,7 +256,7 @@ class Dashboard {
    * @param {*} res Res
    * @param {String} state State
    * @param {Boolean} api API
-   * @returns {Promise.<Array.<Object>>} User Guilds
+   * @returns {Promise.<Array.<CachedGuild>>} User Guilds
    */
   async getUserGuilds (token, res, state, api) {
     const user = await this.db.findOne({
@@ -284,7 +301,7 @@ class Dashboard {
    * @param {*} res Res
    * @param {String} state State
    * @param {Boolean} api API
-   * @returns {Promise<Array.<Object>>} Guilds
+   * @returns {Promise<Array.<CachedGuild>>} Guilds
    */
   async fetchGuilds (bearer, res, state, api) {
     const guilds = await this.api
@@ -309,7 +326,7 @@ class Dashboard {
 
   /**
    * Fetch user
-   * @param {String} bearer Discord user bearer
+   * @param {OAuthBearer} bearer User bearer
    * @returns {Object} User
    */
   async fetchUser (bearer) {
@@ -381,7 +398,7 @@ class Dashboard {
 
   /**
    * Fetch oauth user
-   * @param {String} code Discord code
+   * @param {OAuthCode} code Discord code
    * @returns {Object} OAuth user
    */
   async fetchOAuthUser (code) {

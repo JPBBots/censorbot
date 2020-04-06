@@ -82,7 +82,7 @@ class PresenceManager {
   err () {
     this.status('PLAYING', 'Some errors are happening', 'dnd')
   }
-  
+
   /**
    * Services are slow
    */

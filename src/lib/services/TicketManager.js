@@ -1,6 +1,22 @@
 const GenerateID = require('../../../util/GenerateID')
 
 /**
+ * Representing tickets sent in by users
+ * @typedef {Object} Ticket
+ * @property {SmallID} id ID of ticket
+ * @property {Snowflake} user User who sent ticket
+ * @property {String} word Content of ticket
+ */
+/**
+ * Representing ticket ban objects
+ * @typedef {Object} TicketBan
+ * @property {Snowflake} id ID of user
+ * @property {?String} reason Reason why user was banned
+ * @property {Snowflake} admin Admin who banned them
+ * @property {Date} when When user was banned
+ */
+
+/**
  * Used for managing and adding censor bot tickets
  */
 class TicketManager {
@@ -41,7 +57,7 @@ class TicketManager {
    */
   async isBanned (id) {
     const res = await this.banDB.findOne({ id })
-    return res || { banned: false, reason: null }
+    return res || { banned: false, reason: null, when: null, admin: null }
   }
 
   /**
@@ -80,7 +96,7 @@ class TicketManager {
 
   /**
    * Deny a ticket
-   * @param {String} id Ticket ID
+   * @param {SmallID} id Ticket ID
    * @param {Snowflake} admin Admin who denied
    */
   async deny (id, admin) {
@@ -102,7 +118,7 @@ class TicketManager {
 
   /**
    * Approve a ticket
-   * @param {String} id Ticket ID
+   * @param {SmallID} id Ticket ID
    * @param {Snowflake} admin Admin who approved
    */
   async approve (id, admin) {
