@@ -92,7 +92,7 @@ class Embed {
 
   /**
    * Sets embed color
-   * @param {Integer|String} Color
+   * @param {Number|String} Color
    * @returns {Embed} This embed instance
    */
   color (color) {
@@ -121,8 +121,8 @@ class Embed {
   /**
    * Sets thumbnail
    * @param {String} url URL of thumbnail
-   * @param {Integer} width Width
-   * @param {Integer} height Height
+   * @param {Number} width Width
+   * @param {Number} height Height
    * @returns {Embed} This embed instance
    */
   thumbnail (url, width, height) {
@@ -151,8 +151,8 @@ class Embed {
   /**
    * Sets image
    * @param {String} url URL of image
-   * @param {Integer} width Width
-   * @param {Integer} height Height
+   * @param {Number} width Width
+   * @param {Number} height Height
    * @returns {Embed} This embed instance
    */
   image (url, width, height) {

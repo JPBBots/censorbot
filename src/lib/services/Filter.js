@@ -72,7 +72,7 @@ module.exports = class JPBFilter {
      * @param {Boolean} GLOBAL - If global filter
      * @param {Array} SERVER - Server filter array
      * @param {Array} UNCENSOR - Uncensor array
-     * @returns {Object<censor<Boolean>, method<String>, word<RegExp>, arg<String>>} - Response
+     * @returns {Object<censor<boolean>, method<String>, word<RegExp>, arg<String>>} - Response
      */
   test (content, GLOBAL = true, LANGS = [], SERVER = false, UNCENSOR = false) {
     var res = {

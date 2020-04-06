@@ -26,7 +26,7 @@ module.exports = {
 
 /**
  * Webhook replace
- * @typedef {Integer} WebhookReplace
+ * @typedef {Number} WebhookReplace
  * @example
  * 0: ||Spoilers||
  * 1: h#shtags
@@ -46,11 +46,11 @@ module.exports = {
  * @property {?Snowflake} role=null ID of uncensor role
  * @property {Array} filter=[] Array of words to censor in this server
  * @property {Array} uncensor=[] Array of words to not censor in this server
- * @property {?Integer|Boolean} pop_delete=3000 Amount of time in ms to wait before deleting pop message
+ * @property {?Number|Boolean} pop_delete=3000 Amount of time in ms to wait before deleting pop message
  * @property {?String|Boolean} msg=null Message contained in pop message
  * @property {Object} punishment Punishment settings
  * @property {PunishmentType} punishment.type=0 Type of punishment
- * @property {Integer} punishment.amount=3 Amount of warnings til punish
+ * @property {Number} punishment.amount=3 Amount of warnings til punish
  * @property {?Snowflake} punishment.role=null Role to give for muting
  * @property {Boolean} webhook=false Whether to resend as webhook
  * @property {WebhookReplace} webhook_replace=0 How to replace curses in webhooks

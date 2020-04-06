@@ -1,6 +1,6 @@
 /**
  * Used to decide which kind of punishment to execute in a given server
- * @typedef {Integer} PunishmentType
+ * @typedef {Number} PunishmentType
  * @example
  * 0: Mute
  * 1: Kick
@@ -38,7 +38,7 @@ class Punishments {
    * @param {Snowflake} guild Guild
    * @param {Snowflake} user User
    * @param {Object} db Database
-   * @param {Integer} warning Warning amount
+   * @param {Number} warning Warning amount
    * @param {Boolean} inDB In Database
    */
   async punish (guild, user, db, warning, inDB) {

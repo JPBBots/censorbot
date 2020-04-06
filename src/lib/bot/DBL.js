@@ -57,7 +57,7 @@ class DBL {
 
   /**
    * Formatted guild counts
-   * @type {Array.<Integer>}
+   * @type {Array.<Number>}
    */
   get formatted () {
     return this.client.guilds.reduce((a, b) => {

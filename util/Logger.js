@@ -83,8 +83,8 @@ class Logger {
 
   /**
    * Log to console
-   * @param {Integer} service Service
-   * @param {Integer} task Task
+   * @param {Number} service Service
+   * @param {Number} task Task
    * @param {String} name Name
    * @param {String} optional Optional
    * @param {Boolean} error Whether error
@@ -101,7 +101,7 @@ class Logger {
   /**
    * Make all lines even
    * @param {String} str String
-   * @param {Integer} to What to seperate too
+   * @param {Number} to What to seperate too
    */
   separate (str, to) {
     let res = str

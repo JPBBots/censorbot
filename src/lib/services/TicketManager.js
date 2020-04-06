@@ -53,7 +53,7 @@ class TicketManager {
   /**
    * If a user is banned
    * @param {Snowflake} id User
-   * @returns {Object} { banned{Boolean}, reason{String} }
+   * @returns {TicketBan} Ban object
    */
   async isBanned (id) {
     const res = await this.banDB.findOne({ id })
