@@ -69,7 +69,11 @@ class CommandHandler {
 
     this.client.log(2, 4, `${command}`, `${msg.author.username}#${msg.author.discriminator}; ${msg.author.id}`)
 
-    this.run(command, msg, args, prefix)
+    try {
+      this.run(command, msg, args, prefix)
+    } catch(err) {
+      console.error(err)
+    }
   }
 
   /**
