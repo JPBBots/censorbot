@@ -6,6 +6,6 @@
     ]
   },
   "opts": {
-    "template": "./node_modules/latodoc"
+    "template": "./node_modules/jsdoc-baseline"
   }
 }

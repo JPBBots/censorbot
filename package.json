@@ -23,15 +23,13 @@
   "homepage": "https://github.com/jpbberry/censorbot#readme",
   "devDependencies": {
     "standard": "*",
-    "smeijer/latodoc": "*"
+    "jsdoc-baseline": "*"
   },
   "dependencies": {
     "body-parser": "1.19.0",
     "ejs": "3.0.1",
     "emoji-unicode-map": "1.1.10",
     "express": "4.17.1",
-    "latodoc": "github:smeijer/latodoc",
-    "minami": "^1.2.3",
     "moment": "2.24.0",
     "moment-duration-format": "2.3.2",
     "mongodb": "3.5.5",
