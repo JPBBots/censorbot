@@ -47,8 +47,8 @@ exports.run = async function (message, args) {
           inline: true
         },
         {
-          name: ':control_knobs: Node Version',
-          value: process.version,
+          name: ':control_knobs: Current Version',
+          value: 'v' + this.client.updates.list()[0].v,
           inline: true
         },
         {
