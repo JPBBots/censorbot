@@ -60,6 +60,11 @@ exports.run = async function (message, args) {
           name: ':wastebasket: Things Censored',
           value: (await this.client.db.collection('stats').findOne({ id: 'deleted' }).then(x => x.amount)).toLocaleString(),
           inline: true
+        },
+        {
+          name: ':clock: Time Existed',
+          value: moment.duration(new Date().getTime() - 1514012068071).format('Y [yrs] D [days]'),
+          inline: true
         }
       ]
     }
