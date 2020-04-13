@@ -9,7 +9,7 @@ module.exports = class JPBFilter {
     this.linkByp = require(linkBypFile).links
     this.client = client
     this.replaceSpots = {
-      spaces: /(_|\/|\\|\.|\n|&|-|\+|=|:|~|,)/gi,
+      spaces: /(_|\/|\\|\.|\n|&|-|\+|=|:|~|,|\s+)/gi,
       nothing: /("|\*|'|\||`|<|>|#|!|\(|\)|\[|\]|\{|\}|;|%)/gi
     }
     this.emoji_lookup = {
