@@ -113,7 +113,7 @@ class TicketManager {
       this.client.embed
         .title(`Ticket was denied (${ticket.id})`)
         .description(ticket.word)
-        .field('Admin', `<@${admin}>`)
+        .field('Admin', `<@${admin.id}> (${admin.username}#${admin.discriminator})`)
         .timestamp()
     )
 
@@ -161,15 +161,31 @@ class TicketManager {
       id: ticket.id
     }, {
       $set: {
-        accepted: true
+        accepted: true,
+        msg: msg.id
       }
     })
 
     this.client.log(13, 21, id)
   }
 
-  async added (id) {
+  /**
+   * Finish a ticket
+   * @param {SmallID} id Ticket ID
+   * @param {Snowflake} msg Message ID
+   */
+  async added (id, msg) {
+    const ticket = await this.db.findOne({ id })
 
+    this.client.interface.dm(ticket.user,
+      this.client.embed
+        .title('Ticket finished')
+        .description(ticket.id)  
+    )
+
+    this.db.removeOne({ id })
+
+    this.client.interface.delete(this.client.config.channels.approved, msg)
   }
 
   /**
@@ -178,23 +194,21 @@ class TicketManager {
    */
   async event (reaction) {
     if (reaction.member.user.bot) return
+    if (reaction.channel_id === this.client.config.channels.ticket) {
+      const { id } = await this.db.findOne({ msg: reaction.message_id })
 
-    switch (reaction.channel_id) {
-      case this.client.config.ticket:
+      switch (reaction.emoji.id) {
+        case this.client.config.emojis.yes:
+          this.approve(id, reaction.member.user)
+          break
+        case this.client.config.emojis.no:
+          this.deny(id, reaction.member.user)
+          break
+      }
+    } else if (reaction.channel_id === this.client.config.channels.approved) {
         const { id } = await this.db.findOne({ msg: reaction.message_id })
 
-        switch (reaction.emoji.id) {
-          case this.client.config.emojis.yes:
-            this.approve(id, reaction.member.user)
-            break
-          case this.client.config.emojis.no:
-            this.deny(id, reaction.member.user)
-            break
-        }
-        break
-      case this.client.config.channels.approved:
-        const { id } = await this.db.findOne({ msg: reaction.message_id })
-        break
+        if (reaction.emoji.id === this.client.config.emojis.yes) this.added(id, reaction.message_id)
     }
   }
 }
