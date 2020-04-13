@@ -109,6 +109,14 @@ class TicketManager {
         .timestamp()
     )
 
+    this.client.interface.dm(ticket.user, 
+      this.client.embed
+        .title(`Ticket was denied (${ticket.id})`)
+        .description(ticket.word)
+        .field('Admin', `<@${admin}>`)
+        .timestamp()
+    )
+
     this.client.interface.delete(this.client.config.channels.ticket, ticket.msg)
 
     this.db.removeOne({ id })
@@ -131,18 +139,37 @@ class TicketManager {
         .timestamp()
     )
 
-    this.client.interface.send(this.client.config.channels.approved,
+    const msg = await this.client.interface.send(this.client.config.channels.approved,
       this.client.embed
         .title(`Ticket (${id})`)
         .description(`<@${ticket.user}> accepted by <@${admin.id}> \`\`\`${ticket.word}\`\`\``)
         .timestamp()
     )
+    this.client.interface.addReaction(this.client.config.channels.approved, msg.id, this.client.config.emojis.yes)
+
+    this.client.interface.dm(ticket.user,
+      this.client.embed
+        .title(`Ticket was accepted (${ticket.id})`)
+        .description(ticket.word)
+        .footer('Please wait as we need to add the bypass, you will receive a DM once the word has been added.')
+        .timestamp()
+    )
 
     this.client.interface.delete(this.client.config.channels.ticket, ticket.msg)
 
-    this.db.removeOne({ id })
+    this.db.updateOne({
+      id: ticket.id
+    }, {
+      $set: {
+        accepted: true
+      }
+    })
 
     this.client.log(13, 21, id)
+  }
+
+  async added (id) {
+
   }
 
   /**
@@ -150,16 +177,23 @@ class TicketManager {
    * @param {Object} reaction Reaction
    */
   async event (reaction) {
-    if (reaction.channel_id !== this.client.config.channels.ticket || reaction.member.user.bot) return
+    if (reaction.member.user.bot) return
 
-    const { id } = await this.db.findOne({ msg: reaction.message_id })
+    switch (reaction.channel_id) {
+      case this.client.config.ticket:
+        const { id } = await this.db.findOne({ msg: reaction.message_id })
 
-    switch (reaction.emoji.id) {
-      case this.client.config.emojis.yes:
-        this.approve(id, reaction.member.user)
+        switch (reaction.emoji.id) {
+          case this.client.config.emojis.yes:
+            this.approve(id, reaction.member.user)
+            break
+          case this.client.config.emojis.no:
+            this.deny(id, reaction.member.user)
+            break
+        }
         break
-      case this.client.config.emojis.no:
-        this.deny(id, reaction.member.user)
+      case this.client.config.channels.approved:
+        const { id } = await this.db.findOne({ msg: reaction.message_id })
         break
     }
   }
