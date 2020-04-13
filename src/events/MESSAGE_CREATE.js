@@ -8,7 +8,11 @@ const resends = [
 ]
 
 module.exports = async function (message) {
-  if (this.commands) this.commands.event(message)
+  if (this.commands) {
+    const cmd = this.commands.event(message)
+    
+    if (this.config.deleteCommands.includes(cmd)) return this.interface.delete(message.channel_id, message.id)
+  }
 
   const channel = this.channels.get(message.channel_id)
 

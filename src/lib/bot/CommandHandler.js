@@ -74,6 +74,8 @@ class CommandHandler {
     } catch(err) {
       console.error(err)
     }
+
+    return command
   }
 
   /**

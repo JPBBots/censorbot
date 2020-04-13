@@ -9,6 +9,7 @@ module.exports = {
   website: 'https://censorbot.jt3ch.net',
   inviteSite: 'https://censorbot.jt3ch.net/invite',
   ignoreFirstPrefixServers: ['264445053596991498'],
+  deleteCommands: ['ticket'],
   channels: {
     serverCount: '512369661849894947',
     status: '450444337357258772',
