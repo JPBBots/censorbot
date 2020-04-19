@@ -57,6 +57,7 @@ class TicketManager {
    */
   async isBanned (id) {
     const res = await this.banDB.findOne({ id })
+    if (res) res.banned = true
     return res || { banned: false, reason: null, when: null, admin: null }
   }
 
