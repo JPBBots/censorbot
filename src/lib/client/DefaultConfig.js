@@ -20,6 +20,7 @@ module.exports = {
   },
   webhook: false,
   webhook_replace: 0,
+  webhook_separate: false,
   channels: [],
   multi: false
 }
@@ -54,6 +55,7 @@ module.exports = {
  * @property {?Snowflake} punishment.role=null Role to give for muting
  * @property {Boolean} webhook=false Whether to resend as webhook
  * @property {WebhookReplace} webhook_replace=0 How to replace curses in webhooks
+ * @property {Boolean} webhook_separate Whether to separate words
  * @property {Array.<Snowflake>} channels=[] Array of channels to not censor in
  * @property {Boolean} multi=false Whether to use multi-line
  */

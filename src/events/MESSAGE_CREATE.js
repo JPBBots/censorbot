@@ -99,17 +99,21 @@ module.exports = async function (message) {
   this.punishments.addOne(message.guild_id, message.author.id, db)
 
   if (db.webhook) {
-    const send = res.resolved.split(' ')
-    const finished = []
-    res.arg.forEach(x => {
-      send.forEach((s, i) => {
-        if (finished.includes(i)) return
-        if (s.match(x)) {
-          send[i] = resends[db.webhook_replace || 0](s)
-          finished.push(i)
-        }
+    if (db.webhook_separate) {
+      const send = res.resolved.split(' ')
+      const finished = []
+      res.arg.forEach(x => {
+        send.forEach((s, i) => {
+          if (finished.includes(i)) return
+          if (s.match(x)) {
+            send[i] = resends[db.webhook_replace || 0](s)
+            finished.push(i)
+          }
+        })
       })
-    })
-    this.webhooks.sendAs(message.channel_id, message.author, message.member.nick || message.author.username, send.join(' '))
+      this.webhooks.sendAs(message.channel_id, message.author, message.member.nick || message.author.username, send.join(' '))
+    } else {
+      this.webhooks.sendAs(message.channel_id, message.author, message.member.nick || message.author.username, `Contains Curse:\n||${content.replace(/\|/g, '')}||`)
+    }
   }
 }
