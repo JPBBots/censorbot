@@ -149,9 +149,23 @@
                     
             </div>
             <!--premium-->
-            <div class="setting premium" style="grid-area: resend">
-                <h3 class="name" title="Resend someone censored message with the message censored in a spoiler."> Resend <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
-                <label class="switch reslabel"><input type="checkbox" class="prem" id="resend" <%= data.db.webhook ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
+            <div class="setting premium resend">
+                <div style="grid-area: resendtitle"><h3 class="name" title="Resend someone censored message with the message censored in a spoiler."> Resend <img title="Premium" class="premb" src="/premium.png" width="30"></h3></div>
+                <div style="grid-area: resendtoggle">
+                    <h3>Toggle</h3>
+                    <label class="switch reslabel"><input type="checkbox" class="prem" id="resend" <%= data.db.webhook ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
+                </div>
+                <div style="grid-area: resendseparate">
+                    <h3>Separate</h3>
+                    <label class="switch reslabel"><input type="checkbox" class="prem" id="separateresend" <%= data.db.webhook_separate ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
+                </div>
+                <div style="grid-area: resendreplace">
+                    <h3>Replace</h3>
+                    <select id="resendreplace" onchange="<%= premium ? '' : 'this.value = \'0\'; premError()' %>">
+                        <option value="0">Spoilers</option>
+                        <option value="1">Hashtags</option>
+                    </select>
+                </div>
             </div>
             <div class="setting premium" style="grid-area: channels">
                 <h3 class="name" title="Ignore specific channels without having to make it NSFW."> Ignore Channels <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
@@ -190,13 +204,6 @@
             <div class="setting premium" style="grid-area: multi">
                 <h3 class="name" title="Whether to censor multiple messages combined together to scan.">Multi-Message<img title="Premium" class="premb" src="/premium.png" width="30"></h3>
                 <label class="switch reslabel"><input class="prem" type="checkbox" id="multi" <%= data.db.multi ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
-            </div>
-            <div class="setting premium" style="grid-area: resendreplace">
-                <h3 class="name" title="Choose what to replace bad words with in the resend message">Resend Replace<img title="Premium" class="premb" src="/premium.png" width="30"></h3>
-                <select id="resendreplace" onchange="<%= premium ? '' : 'this.value = \'0\'; premError()' %>">
-                    <option value="0">Spoilers</option>
-                    <option value="1">Hashtags</option>
-                </select>
             </div>
             
         <div id="save" class="hide"> You have unsaved changes.  <button class="save" style="background-color: #2eb340" onclick="submit()">Save</button> </div>

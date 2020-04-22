@@ -28,6 +28,7 @@ function buildObject () {
     },
     webhook: false,
     webhook_replace: 0,
+    webhook_separate: false,
     multi: false
   }
 
@@ -65,6 +66,7 @@ function buildObject () {
   obj.channels = [...document.getElementById('channels').children].map(x => x.value)
   obj.multi = document.getElementById('multi').checked
   obj.webhook_replace = parseInt(document.getElementById('resendreplace').value)
+  obj.webhook_separate = document.getElementById('separateresend').checked
 
   return obj
 }

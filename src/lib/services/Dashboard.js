@@ -513,6 +513,7 @@ class Dashboard {
     if (typeof obj.multi !== 'boolean') return f('Multi-Line is an invalid type')
     if (!(obj.languages instanceof Array)) return f('Languages is an invalid type')
     if (obj.languages.some(x => !this.client.db.defaultConfig.languages.includes(x))) return f('Languages contains an invalid language')
+    if (typeof obj.webhook_separate !== 'boolean') return f('Webhook Separate is not a boolean')
     return true
   }
 

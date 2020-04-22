@@ -19,17 +19,20 @@ module.exports = function (r) {
       return false
     })
 
+    if (!valid) return
+
     let refresh = false
 
     const premium = await this.client.db.guildPremium(data.id)
 
     if (!premium) {
       if (req.body.filter.length > 150) return res.json({ error: 'Non-premium servers can only have maximum 150 words in their filter' })
-      if (req.body.webhook || req.body.channels.length > 0 || req.body.pop_delete > 120 * 1000 || req.body.multi || req.body.webhook_replace !== 0) refresh = true
+      if (req.body.webhook || req.body.channels.length > 0 || req.body.pop_delete > 120 * 1000 || req.body.multi || req.body.webhook_replace !== 0 || req.body.webhook_separate !== false) refresh = true
       req.body.webhook = false
       req.body.multi = false
       req.body.channels = []
       req.body.wehbook_replace = 0
+      req.body.webhook_separate = false
       if (req.body.pop_delete > 120 * 1000) req.body.pop_delete = 120 * 1000
     } else {
       if (req.body.filter.length > 500) return res.json({ error: 'Premium servers can only have maximum 500 words in their filter' })
@@ -57,8 +60,6 @@ module.exports = function (r) {
         upsert: true
       })
     }
-
-    if (!valid) return
     const post = await this.client.db.setConfig(data.id, req.body)
       .catch(err => { res.json({ error: 'Database Error' }); return false }) // eslint-disable-line handle-callback-err
     if (!post) return

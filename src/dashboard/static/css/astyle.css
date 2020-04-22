@@ -8,7 +8,7 @@
     ". . base-filter base-filter langs langs logchannel logchannel filter filter . ."
     ". . punish punish censor censor popmsg popmsg role role . ."
     ". . punish punish censor censor popmsg popmsg uncensor uncensor . ."
-    ". . resend resend channels channels multi multi resendreplace resendreplace . ."
+    ". . . resend resend channels channels multi multi . . ."
     ". . . . . . . . . . . .";
   text-align: center;
   grid-gap: 1rem;
@@ -66,6 +66,17 @@
 }
 .punish > div {
   display: unset;
+}
+
+.resend {
+  grid-area: resend;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 0.5fr);
+  grid-template-areas:
+    "resendtitle resendtitle resendtitle resendtitle"
+    "resendtoggle resendtoggle resendseparate resendseparate"
+    ". resendreplace resendreplace ."
 }
 
 .switch {
@@ -284,7 +295,6 @@ select {
       ". resend resend resend ."
       ". channels channels channels . "
       ". multi multi multi ."
-      ". resendreplace resendreplace resendreplace .";
   }
   #save {
     height: 2%;
