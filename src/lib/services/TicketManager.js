@@ -110,7 +110,7 @@ class TicketManager {
         .timestamp()
     )
 
-    this.client.interface.dm(ticket.user, 
+    this.client.interface.dm(ticket.user,
       this.client.embed
         .title(`Ticket was denied (${ticket.id})`)
         .description(ticket.word)
@@ -146,7 +146,7 @@ class TicketManager {
       this.client.embed
         .title(`Ticket (${id})`)
         .description(`<@${ticket.user}> accepted by <@${admin.id}> \`\`\`${ticket.word}\`\`\``)
-        .field('Methods', res.arg.map(x=>x.toString()).join(', '))
+        .field('Methods', res.arg.map(x => x.toString()).join(', '))
         .timestamp()
     )
     this.client.interface.addReaction(this.client.config.channels.approved, msg.id, this.client.config.emojis.yes)
@@ -184,7 +184,7 @@ class TicketManager {
     this.client.interface.dm(ticket.user,
       this.client.embed
         .title('Ticket finished')
-        .description(ticket.id)  
+        .description(ticket.id)
     )
 
     this.db.removeOne({ id })
@@ -210,9 +210,9 @@ class TicketManager {
           break
       }
     } else if (reaction.channel_id === this.client.config.channels.approved) {
-        const { id } = await this.db.findOne({ msg: reaction.message_id })
+      const { id } = await this.db.findOne({ msg: reaction.message_id })
 
-        if (reaction.emoji.id === this.client.config.emojis.yes) this.added(id, reaction.message_id)
+      if (reaction.emoji.id === this.client.config.emojis.yes) this.added(id, reaction.message_id)
     }
   }
 }

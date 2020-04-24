@@ -71,7 +71,7 @@ class CommandHandler {
 
     try {
       this.run(command, msg, args, prefix)
-    } catch(err) {
+    } catch (err) {
       console.error(err)
     }
 
