@@ -1,5 +1,15 @@
 [
     {
+        "v": "4.2.0",
+        "desc": "New Domain",
+        "date": "4/30/2020",
+        "points": [
+            "Moved base site to censor.bot",
+            "Moved dashboard to dash.censor.bot",
+            "Moved api to api.censor.bot"
+        ]
+    },
+    {
         "v": "4.1.3",
         "desc": "Resend Separate",
         "date": "4/22/2020",
