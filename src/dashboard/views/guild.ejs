@@ -20,7 +20,7 @@
     </head>
     <body style="background-color: #2C2F33">
         <div class="box">
-        <h1 class="name servername" style="grid-area: servername"><%= data.name %><% if(premium) { %> <img title="Premium" class="premb" src="/premium.png" width="30"> <% } %></h1>
+        <h1 class="name servername" style="grid-area: servername"><%= data.name %><% if(premium) { %> <img title="Premium" class="premb" src="/p.png" width="30"> <% } %></h1>
             <div class="setting" style="grid-area: base-filter">
                 <h3 class="name" title="Whether to use the bot's premade filter that is managed by staff.">Base Filter</h3>
                 <label class="switch"><input type="checkbox" id="base" <%= data.db.base ? "checked" : "" %>><span class="slider round"></span></label>
@@ -150,7 +150,7 @@
             </div>
             <!--premium-->
             <div class="setting premium resend">
-                <div style="grid-area: resendtitle"><h3 class="name" title="Resend someone censored message with the message censored in a spoiler."> Resend <img title="Premium" class="premb" src="/premium.png" width="30"></h3></div>
+                <div style="grid-area: resendtitle"><h3 class="name" title="Resend someone censored message with the message censored in a spoiler."> Resend <img title="Premium" class="premb" src="/p.png" width="30"></h3></div>
                 <div style="grid-area: resendtoggle">
                     <h3>Toggle</h3>
                     <label class="switch reslabel"><input type="checkbox" class="prem" id="resend" <%= data.db.webhook ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
@@ -168,7 +168,7 @@
                 </div>
             </div>
             <div class="setting premium" style="grid-area: channels">
-                <h3 class="name" title="Ignore specific channels without having to make it NSFW."> Ignore Channels <img title="Premium" class="premb" src="/premium.png" width="30"></h3>
+                <h3 class="name" title="Ignore specific channels without having to make it NSFW."> Ignore Channels <img title="Premium" class="premb" src="/p.png" width="30"></h3>
                 <select id="channeladd">
                     <% data.c.forEach(channel=>{ %>
                         <option value="<%= channel.name %> <%= channel.id %>">#<%=channel.name%></option>
@@ -202,7 +202,7 @@
                 <div id="uncensorbackup"><button class="sb" onclick="backupUncensor()">Backup</button></div>
             </div>
             <div class="setting premium" style="grid-area: multi">
-                <h3 class="name" title="Whether to censor multiple messages combined together to scan.">Multi-Message<img title="Premium" class="premb" src="/premium.png" width="30"></h3>
+                <h3 class="name" title="Whether to censor multiple messages combined together to scan.">Multi-Message<img title="Premium" class="premb" src="/p.png" width="30"></h3>
                 <label class="switch reslabel"><input class="prem" type="checkbox" id="multi" <%= data.db.multi ? "checked" : "" %> <%= premium ? "" : "disabled"%>><span class="slider round"></span></label>
             </div>
             
