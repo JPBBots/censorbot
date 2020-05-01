@@ -3,6 +3,7 @@ const app = Express()
 
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const cors = require('cors')
 
 const fs = require('fs')
 const { resolve } = require('path')
@@ -14,6 +15,7 @@ module.exports = (dash) => {
     extended: true
   }))
   app.use(cookieParser())
+  app.use(cors())
 
   app.set('views', resolve(__dirname, './views'))
   app.set('view engine', 'ejs')
