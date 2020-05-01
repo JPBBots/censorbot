@@ -21,7 +21,7 @@ module.exports = function (guild) {
   this.interface.dm(guild.owner_id,
     this.embed
       .title(`Thanks for inviting me to your server! (${guild.name})`)
-      .description(`We hope you enjoy your time, and hope we can make your server a cleaner place!\n\nHere are some useful resources:\nDashboard: https://censorbot.jt3ch.net/dash\n[Support Server](${this.config.support})\n[Premium](https://censorbot.jt3ch.net/premium)\n\nThanks again!`)
+      .description(`We hope you enjoy your time, and hope we can make your server a cleaner place!\n\nHere are some useful resources:\nDashboard: ${this.config.dashboard}\n[Support Server](${this.config.support})\n[Premium](https://censor.bot/premium)\n\nThanks again!`)
       .footer(guild.id)
   )
 }

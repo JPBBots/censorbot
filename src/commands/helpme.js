@@ -12,7 +12,7 @@ exports.run = async function (message, args) {
     return this.client.interface.dm(message.author.id,
       this.embed
         .title(`${guild.id} (${guild.name};${this.client.guildShard(guild.id)})`)
-        .description(`[Dashboard](https://censorbot.jt3ch.net/dash/${guild.id})`)
+        .description(`[Dashboard](${this.config.dashboard}/${guild.id})`)
         .field('Owner', guild.owner_id)
     )
   }

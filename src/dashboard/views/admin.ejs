@@ -40,14 +40,14 @@
             function getUserGuilds() {
                 var userID = document.getElementById("getguild").value;
                 var xhr = new XMLHttpRequest();
-                xhr.open("GET", "https://censorbot.jt3ch.net/api/users/"+userID+"/guilds");
+                xhr.open("GET", "https://api.censor.bot/users/"+userID+"/guilds");
                 xhr.onload = function() {
                     var guilds = JSON.parse(xhr.response);
                     document.getElementById("response").innerHTML = "";
                     guilds.forEach(function(guild) {
                         var li = document.createElement("li");
                         var a = document.createElement("a");
-                        a.href = "https://censorbot.jt3ch.net/dash/"+guild.id;
+                        a.href = "https://dash.censor.bot/"+guild.id;
                         a.innerText = guild.name;
                         
                         li.appendChild(a);
@@ -61,7 +61,7 @@
 
             function req(url, method, body, cb) {
                 var xhr = new XMLHttpRequest();
-                xhr.open(method, "https://censorbot.jt3ch.net/api/admin" + url);
+                xhr.open(method, "https://api.censor.bot/admin" + url);
                 xhr.onload = function() {
                     const response = JSON.parse(xhr.response)
                     document.getElementById('res').innerText = JSON.stringify(response, null, 4)

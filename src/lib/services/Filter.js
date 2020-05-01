@@ -121,8 +121,8 @@ module.exports = class JPBFilter {
   }
 
   removeAccents (str) {
-    var accents = '$ÀÁÂÃÄÅĄĀāàáâãäåąßβÒÓÔÕÕÖØŐòóôőõöøĎďDŽdžÈÉÊËĘèéêëęðÇçČčĆćÐÌÍÎÏĪìíîïīÙÚÛÜŰùűúûüĽĹŁľĺłÑŇŃňñńŔŕŠŚŞšśşŤťŸÝÿýŽŻŹžżźđĢĞģğµ§ṈṉΑΒΝΗΕΙΤƎ△ıскР¡0İĩį@кё'
-    var accentsOut = 'sAAAAAAAAaaaaaaaabbOOOOOOOOoooooooDdDZdzEEEEEeeeeeeCcCcCcDIIIIIiiiiiUUUUUuuuuuLLLlllNNNnnnRrSSSsssTtYYyyZZZzzzdGGggusNnABNHEITeaickpioiiiake'
+    var accents = '$ÀÁÂÃÄÅĄĀāàáâãäåąßβÒÓÔÕÕÖØŐòóôőõöøĎďDŽdžÈÉÊËĘèéêëęðÇçČčĆćÐÌÍÎÏĪìíîïīÙÚÛÜŰùűúûüĽĹŁľĺłÑŇŃňñńŔŕŠŚŞšśşŤťŸÝÿýŽŻŹžżźđĢĞģğµ§ṈṉΑΒΝΗΕΙΤƎ△ıскР¡0İĩį@кёаі'
+    var accentsOut = 'sAAAAAAAAaaaaaaaabbOOOOOOOOoooooooDdDZdzEEEEEeeeeeeCcCcCcDIIIIIiiiiiUUUUUuuuuuLLLlllNNNnnnRrSSSsssTtYYyyZZZzzzdGGggusNnABNHEITeaickpioiiiakeai'
     str = str.split('')
     var strLen = str.length
     var i, x

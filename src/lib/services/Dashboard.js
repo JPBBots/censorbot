@@ -82,13 +82,13 @@ class Dashboard {
      * Base URL
      * @type {String}
      */
-    this.base = 'https://censorbot.jt3ch.net/dash'
+    this.base = 'https://dash.censor.bot'
 
     /**
      * API URL
      * @type {String}
      */
-    this.apiUrl = 'https://censorbot.jt3ch.net/api'
+    this.apiUrl = 'https://api.censor.bot'
   }
 
   /**

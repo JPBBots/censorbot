@@ -7,8 +7,9 @@ module.exports = {
   defaultMsg: 'You\'re not allowed to say that...',
   support: 'https://discord.gg/CRAbk4w',
   patreon: 'https://patreon.com/censorbot',
-  website: 'https://censorbot.jt3ch.net',
-  inviteSite: 'https://censorbot.jt3ch.net/invite',
+  website: 'https://censor.bot',
+  dashboard: 'https://dash.censor.bot',
+  inviteSite: 'https://censor.bot/invite',
   ignoreFirstPrefixServers: ['264445053596991498'],
   deleteCommands: ['ticket'],
   channels: {

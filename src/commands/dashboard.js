@@ -1,5 +1,5 @@
 exports.run = function (message, args) {
-  this.send('Check out the online settings dashboard here: https://censorbot.jt3ch.net/dash')
+  this.send(`Check out the online settings dashboard here: ${this.config.dashboard}`)
 }
 exports.info = {
   name: 'dashboard',
