@@ -8,7 +8,6 @@ const resends = [
 ]
 
 module.exports = async function (message) {
-  if (message.author.id !== '142408079177285632') return
   if (this.commands) {
     const cmd = this.commands.event(message)
 
