@@ -55,7 +55,7 @@ class PresenceManager {
    * @param  {...any} opt Presence object
    */
   status (...opt) {
-    this.client.setStatus(...opt)
+    this.client.cluster.send('PRESENCE', opt)
   }
 
   /**
@@ -72,8 +72,8 @@ class PresenceManager {
   /**
    * Default
    */
-  d () {
-    this.status('WATCHING', `For Bad Words | ${this.client.guilds.size.toLocaleString()} Servers`)
+  async d () {
+    this.status('WATCHING', `For Bad Words | ${(await this.client.cluster.internal.guildCount(true)).toLocaleString()} Servers`)
   }
 
   /**

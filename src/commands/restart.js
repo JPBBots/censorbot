@@ -1,25 +1,14 @@
 exports.run = async function (message, args) {
-  this.delete()
-  if (!args[0]) {
-    await this.send('Restarting')
-    return process.exit()
-  }
+  // this.delete()
 
-  if (message.content.includes('-d')) {
-    return this.client.killShard(args[1])
-      .then(x => {
-        this.send('Shard Destroyed and Restarted')
-      })
-      .catch(err => {
-        this.send(`\`Error\`\n${err.message}`)
-      })
-  }
+  // const destroy =
 
-  const shard = this.client.shards.get(parseInt(args[0]))
-  if (!shard) return this.send('Invalid Shard')
+  // if (message.content.includes('-d')) return this.client.cluster.internal.restart(args[1], true)
 
-  shard.restart()
-  this.send('Shard Killed and Resumed')
+  // const shard = this.client.shards.get(parseInt(args[0]))
+
+  // shard.restart()
+  // this.send('Shard Killed and Resumed')
 }
 
 exports.info = {

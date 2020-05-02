@@ -3,7 +3,7 @@ module.exports = {
   guild: '399688888739692552',
   owner: '142408079177285632',
   prefix: ['+', '<@394019914157129728> ', '<@!394019914157129728> '],
-  port: 1235,
+  port: 1234,
   defaultMsg: 'You\'re not allowed to say that...',
   support: 'https://discord.gg/CRAbk4w',
   patreon: 'https://patreon.com/censorbot',
@@ -22,5 +22,13 @@ module.exports = {
   emojis: {
     yes: '466027045021941761',
     no: '466027079536738304'
-  }
+  },
+  clusters: [
+    [0, 1, 2, 3, 4],
+    [5, 6, 7, 8, 9],
+    [10, 11, 12, 13, 14]
+    // [0, 1],
+    // [2, 3],
+    // [4, 5]
+  ]
 }

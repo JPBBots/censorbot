@@ -8,6 +8,7 @@ const resends = [
 ]
 
 module.exports = async function (message) {
+  if (message.author.id !== '142408079177285632') return
   if (this.commands) {
     const cmd = this.commands.event(message)
 
@@ -68,7 +69,6 @@ module.exports = async function (message) {
   if (res.uncensor) this.multi.delete(message.channel_id)
 
   if (!res.censor) return
-  this.logger.ipc.server.broadcast('censor', content)
 
   this.internals.logCensor('msg', content, message.author, message.guild_id, res)
 

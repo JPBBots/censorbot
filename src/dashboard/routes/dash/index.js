@@ -19,8 +19,8 @@ module.exports = function (r) {
     res.render('premium', { base: this.base, api: this.apiUrl, premium, guilds, token: user.token })
   }))
 
-  r.get('/admin', this.adminMiddle(false, (req, res) => {
-    res.render('admin', { token: req.cookies.token, client: this.client })
+  r.get('/admin', this.adminMiddle(false, async (req, res) => {
+    res.render('admin', { token: req.cookies.token, shards: await this.client.cluster.internal.shardStats() })
   }))
 
   r.use('/:serverid', this.getGuild(false))

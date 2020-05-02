@@ -2,10 +2,14 @@
  * global BigInt
  */
 module.exports = (guild, amount) => {
-  const guildID = String(guild)
   let shard
-  for (let i = 0; i < amount; i++) {
-    if ((BigInt(guildID) >> BigInt(22)) % BigInt(amount) == i) { shard = i; break } // eslint-disable-line eqeqeq
+  try {
+    const guildID = String(guild)
+    for (let i = 0; i < amount; i++) {
+      if ((BigInt(guildID) >> BigInt(22)) % BigInt(amount) == i) { shard = i; break } // eslint-disable-line eqeqeq
+    }
+  } catch (err) {
+    return 0
   }
   return shard
 }

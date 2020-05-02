@@ -9,7 +9,7 @@ exports.run = function (message, args) {
     .description(helpstring)
     .color('BLURPLE')
     .field('Links', `[Support Server](${this.config.support}) | [Patreon](${this.config.patreon}) | [Website](${this.config.website})
-        [Invite](${this.config.inviteSite}) | [Dashboard](${this.client.dash.base}) | [Discord Bot List](https://top.gg/bot/${this.client.user.id})`)
+        [Invite](${this.config.inviteSite}) | [Dashboard](${this.client.config.dash}) | [Discord Bot List](https://top.gg/bot/${this.client.user.id})`)
     .title('Hello and Thank You For Using ' + this.client.user.username + '!')
   )
 }

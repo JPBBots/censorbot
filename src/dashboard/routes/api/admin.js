@@ -15,11 +15,12 @@ module.exports = function (r) {
   })
 
   r.post('/shards/:shardid', (req, res) => {
-    const shard = this.client.shards.get(parseInt(req.params.shardid))
-    if (!shard) return res.json({ error: 'Invalid Shard' })
-
-    shard.restart()
+    this.client.cluster.internal.restart(parseInt(req.params.shardid), req.body.destroy)
     res.json({ success: true })
+  })
+
+  r.post('/clusters/:clusterid', (req, res) => {
+    this.client.cluster.internal.killCluster(parseInt(req.params.clusterid))
   })
 
   r.get('/guilds/:guildid', async (req, res) => {

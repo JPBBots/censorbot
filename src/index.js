@@ -1,3 +1,3 @@
-const CensorBot = require('./lib/client/CensorBot')
+const Master = require('../clustering/Master')
 
-module.exports = new CensorBot()
+module.exports = new Master()

@@ -36,6 +36,17 @@ class Internals {
       ]
     })
   }
+
+  /**
+   * Formatted guild counts
+   * @type {Array.<Number>}
+   */
+  get formatted () {
+    return this.client.guilds.reduce((a, b) => {
+      a[this.client.options.shards.indexOf(this.client.guildShard(b.id))]++
+      return a
+    }, this.client.shards.reduce((a) => a.concat([0]), []))
+  }
 }
 
 module.exports = Internals

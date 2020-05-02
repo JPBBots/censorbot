@@ -13,7 +13,7 @@ exports.run = async function (message, args) {
   const stats = {
     embed: {
       title: this.client.user.username + ' Stats',
-      description: this.client.user.username + ' Is In ' + this.client.guilds.size.toLocaleString() + ' servers',
+      description: this.client.user.username + ' Is In ' + (await this.client.cluster.internal.guildCount(true)).toLocaleString() + ' servers',
       url: this.client.config.inviteSite + '',
       color: 14976715,
       author: {
@@ -53,7 +53,7 @@ exports.run = async function (message, args) {
         },
         {
           name: ':large_blue_diamond: Shard Count',
-          value: this.client.shards.size + ' shards',
+          value: this.client.options.shardCount + ' shards',
           inline: true
         },
         {

@@ -6,23 +6,40 @@
                 background-color: #2C2F33;
                 text-align: center;
             }
+            .cluster {
+                width: 100%;
+                border: 5px black solid;
+                float: left;
+                margin: 3px;
+            }
+            .shard {
+                width: 18%;
+                height: 50%;
+                border: 5px black solid;
+                float: left;
+                margin: 3px;
+            }
         </style>
         <title>Admin page</title>
     </head>
     <body>
         <h1>Admin</h1>
         <div>
-            <h3>Get user guilds</h3>
-            <input id="getguild" placeholder="User ID"><button onclick="getUserGuilds()">Get</button>
-            <div>
-                <ul id="response">
-                </ul>
-            </div>
-        </div>
-        <div>
-            <h3>Restart Shards</h3>
-            <% client.shards.forEach(shard => { %>
-                <button onclick="req('/shards/<%=shard.id%>', 'POST', null, console.log)"> <%= shard.id %> <%= shard.connected ? "Connected" : "Disconnected" %> </button>
+            <h3>Shards</h3>
+            <% let id = 0 %>
+            <% shards.forEach(cluster => { %>
+                <div class="cluster">
+                    <h3>Cluster <%= id %><button onclick="req('/clusters/<%= id %>', 'POST', {}, () => {})">Kill</button></h3>
+                    <% id++ %>
+                    <% cluster.forEach(shard => { %>
+                        <div class="shard">
+                            <h3>Shard <%= shard.id %></h3>
+                            <i><%= shard.connected ? 'Connected' : 'Disconnected' %></i> <br />
+                            <button onclick="req('/shards/<%= shard.id %>', 'POST', {}, () => {})">Restart</button>
+                            <button onclick="req('/shards/<%= shard.id %>', 'POST', { destroy: true }, () => {})">Destroy</button>
+                        </div>
+                    <% }) %>
+                </div>
             <% }) %>
         </div>
         <div>
@@ -37,28 +54,6 @@
             <textarea id="res" style="width:1000px;height:1000px"></textarea>
         </div>
         <script>
-            function getUserGuilds() {
-                var userID = document.getElementById("getguild").value;
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", "https://api.censor.bot/users/"+userID+"/guilds");
-                xhr.onload = function() {
-                    var guilds = JSON.parse(xhr.response);
-                    document.getElementById("response").innerHTML = "";
-                    guilds.forEach(function(guild) {
-                        var li = document.createElement("li");
-                        var a = document.createElement("a");
-                        a.href = "https://dash.censor.bot/"+guild.id;
-                        a.innerText = guild.name;
-                        
-                        li.appendChild(a);
-                        
-                        document.getElementById("response").appendChild(li);
-                    })
-                }
-                xhr.setRequestHeader("Authorization", "<%=token%>");
-                xhr.send();
-            }
-
             function req(url, method, body, cb) {
                 var xhr = new XMLHttpRequest();
                 xhr.open(method, "https://api.censor.bot/admin" + url);

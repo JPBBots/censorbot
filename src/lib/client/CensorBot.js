@@ -8,6 +8,7 @@ const EventHandler = require('../bot/EventHandler')
 const DBL = require('../bot/DBL')
 const PresenceManager = require('../bot/PresenceManager')
 
+const Reloader = require('./Reloader')
 const Internals = require('./Internals')
 const UpdatesManager = require('./UpdatesManager')
 
@@ -29,9 +30,13 @@ const Collection = require('../../../util/Collection')
 class CensorBot extends Client {
   /**
    * Censor Bot Client
+   * @param {Worker} cluster Cluster Worker
+   * @param {Array.<Number>} shards Array of shard IDs to spawn
+   * @param {Number} shardCount Shard Count
    */
-  constructor () {
-    super(config.token)
+  constructor (cluster, shards, shardCount) {
+    super(config.token, cluster, { shards, shardCount })
+
     /**
      * Config
      * @type {Object}
@@ -66,7 +71,7 @@ class CensorBot extends Client {
      * Whether in beta or not
      * @type {Boolean}
      */
-    this.beta = false
+    this.beta = true
 
     /**
      * Censor Bot API
@@ -95,7 +100,7 @@ class CensorBot extends Client {
      * Dashboard
      * @type {Dashboard}
      */
-    this.dash = new Dashboard(this)
+    if (this.options.shards.includes(0)) this.dash = new Dashboard(this)
     /**
      * Command handler
      * @type {CommandHandler}
@@ -137,6 +142,11 @@ class CensorBot extends Client {
      */
     this.updates = new UpdatesManager(this)
     /**
+     * Reloader
+     * @type {Reloader}
+     */
+    this.reloader = new Reloader(this)
+    /**
      * Webhook Manager
      * @type {WebhookManager}
      */
@@ -150,13 +160,13 @@ class CensorBot extends Client {
     await this.setup()
 
     this.log(1, 1, `${((new Date().getTime() - botStart) / 1000).toFixed(0)}s`)
-    await this.dash.spawn()
-    this.presence.set('d')
+    if (this.options.shards.includes(0)) await this.dash.spawn()
+    if (this.cluster.id === this.config.clusters.length - 1) this.presence.set('d')
     /**
      * DBL Interface
      * @type {DBL}
      */
-    this.dbl = new DBL(this)
+    if (this.cluster.id === this.config.clusters.length - 1) this.dbl = new DBL(this)
 
     this.log(7, 3, `${((new Date().getTime() - start) / 1000).toFixed(0)}s`)
   }

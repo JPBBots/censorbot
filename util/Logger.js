@@ -2,7 +2,13 @@ class Logger {
   /**
    * Logger
    */
-  constructor () {
+  constructor (cluster) {
+    /**
+     * Cluster ID
+     * @type {Number}
+     */
+    this.cluster = cluster
+
     /**
      * Services
      * @type {Array.<String>}
@@ -21,7 +27,8 @@ class Logger {
       'WEBHOOKS', // 10
       'DBL',
       'PRESENCE',
-      'TICKETS'
+      'TICKETS',
+      'MASTER'
     ]
 
     this.serviceLength = [...this.services].sort((a, b) => {
@@ -60,7 +67,8 @@ class Logger {
       'DENIED',
       'DESTROYED',
       'FAILED',
-      'ERROR' // 25
+      'ERROR', // 25
+      'CREATED'
     ]
 
     this.taskLength = [...this.tasks].sort((a, b) => {
@@ -68,17 +76,6 @@ class Logger {
       if (a.length < b.length) return 1
       return 0
     })[0].length + 2
-
-    const ipc = require('node-ipc')
-
-    ipc.config.id = 'censor'
-    ipc.config.logger = () => {}
-
-    ipc.serveNet(() => {})
-
-    ipc.server.start()
-
-    this.ipc = ipc
   }
 
   /**
@@ -95,7 +92,7 @@ class Logger {
     const minutes = d.getMinutes()
     const seconds = d.getSeconds()
     const ms = d.getMilliseconds()
-    console[error ? 'error' : 'log'](`${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}.${ms < 10 ? `00${ms}` : ms < 100 ? `0${ms}` : ms} |${this.separate(this.services[service], this.serviceLength)}|${this.separate(this.tasks[task], this.taskLength)}${name !== null ? `| ${`${name}`.replace(/\n/g, ' [] ')}` : ''}${optional !== null ? ` (${optional})` : ''}`)
+    console[error ? 'error' : 'log'](`${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}.${ms < 10 ? `00${ms}` : ms < 100 ? `0${ms}` : ms} | ${this.separate(`Cluster ${this.cluster}`, 15)} |${this.separate(this.services[service], this.serviceLength)}|${this.separate(this.tasks[task], this.taskLength)}${name !== null ? `| ${`${name}`.replace(/\n/g, ' [] ')}` : ''}${optional !== null ? ` (${optional})` : ''}`)
   }
 
   /**

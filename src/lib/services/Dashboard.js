@@ -456,25 +456,13 @@ class Dashboard {
   guildData (api, fn) {
     return async (req, res) => {
       const { i: id, n: name } = req.partialGuild
-      const guild = this.client.guilds.get(id)
+      const guild = await this.client.cluster.internal.fetchGuild(id)
       if (!guild) return api ? res.json({ error: 'Not In Guild' }) : res.render('invite', { id })
 
       const obj = { id, name }
 
-      obj.c = this.client.channels.filter(x => x.guild_id === id)
-        .map(x => {
-          return {
-            id: x.id,
-            name: x.name
-          }
-        })
-      obj.r = guild.roles
-        .map(x => {
-          return {
-            id: x.id,
-            name: x.name
-          }
-        })
+      obj.c = guild.c
+      obj.r = guild.r
 
       obj.db = await this.client.db.config(id)
 
