@@ -54,6 +54,10 @@ class WorkerInternals {
       case 'GUILD_COUNT':
         this.worker.send('GUILD_COUNTED', { id: data.id, data: this.worker.client.internals.formatted })
         break
+      case 'EVAL':
+        const client = this.worker.client // eslint-disable-line
+        this.worker.send('EVALED', { id: data.id, results: eval(data.ev) }) // eslint-disable-line no-eval
+        break
       case 'SHARD_STAT':
         this.worker.send('SHARD_STATED', {
           id: data.id,
@@ -128,6 +132,23 @@ class WorkerInternals {
       this.worker.on('SHARD_STATED', getFunction)
 
       this.worker.send('SHARD_STAT', { id })
+    })
+  }
+
+  eval (ev) {
+    return new Promise((resolve) => {
+      const id = Number(new Date().getTime() + `${Math.random() * 10000}`).toFixed(0)
+      const getFunction = (d) => {
+        if (d.id !== id) return
+
+        this.worker.off('EVALED', getFunction)
+
+        resolve(d.data)
+      }
+
+      this.worker.on('EVALED', getFunction)
+
+      this.worker.send('EVAL', { id, ev })
     })
   }
 

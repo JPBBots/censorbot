@@ -48,6 +48,9 @@ class MasterInternals {
       case 'KILL':
         this._kill(data.id)
         break
+      case 'EVAL':
+        this._eval(data.id, data.ev, cluster)
+        break
       default:
         break
     }
@@ -161,6 +164,29 @@ class MasterInternals {
     if (!cluster) return
 
     cluster.send('KILL')
+  }
+
+  async _eval (id, ev, cluster) {
+    const promises = []
+    this.master.clusters.forEach(cluster => {
+      promises.push(new Promise(resolve => {
+        const getFunction = (d) => {
+          if (d.id !== id) return
+
+          cluster.off('EVALED', getFunction)
+
+          resolve(d.results)
+        }
+
+        cluster.on('EVALED', getFunction)
+
+        cluster.send('EVAL', { id, ev })
+      }))
+    })
+
+    const data = await Promise.all(promises)
+
+    cluster.send('EVALED', { id, data })
   }
 }
 

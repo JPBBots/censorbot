@@ -71,7 +71,7 @@ class CensorBot extends Client {
      * Whether in beta or not
      * @type {Boolean}
      */
-    this.beta = true
+    this.beta = false
 
     /**
      * Censor Bot API

@@ -12,5 +12,5 @@ module.exports = function (shard) {
   } else {
     this.presence.go()
   }
-  this.interface.send(this.config.channels.status, `Startup | Shard: ${shard.id}`)
+  this.interface.send(this.config.channels.status, `Startup | Cluster: ${this.cluster.id} | Shard: ${shard.id}`)
 }

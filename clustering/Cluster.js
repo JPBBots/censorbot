@@ -47,7 +47,7 @@ class Cluster extends EventEmitter {
    * Setup worker thread
    */
   setup () {
-    this.thread = new Worker('./clustering/service.js', { workerData: { id: this.id } })
+    this.thread = new Worker('../clustering/service.js', { workerData: { id: this.id } })
 
     this.thread.on('message', (msg) => {
       this.emit(msg.e, msg.d)
