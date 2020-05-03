@@ -1,6 +1,3 @@
-const moment = require('moment')
-require('moment-duration-format')
-
 const { table } = require('table')
 
 exports.run = async function (message, args) {

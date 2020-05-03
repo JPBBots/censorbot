@@ -52,7 +52,7 @@ class Worker extends EventEmitter {
 
       this.internal.event(msg.e, msg.d, msg.i ? (data) => {
         this.send(msg.e, data, msg.i)
-      }: null)
+      } : null)
     })
 
     this.on('SPAWN', ({ shards, shardCount, spawned }) => this.spawn(shards, shardCount, spawned))
