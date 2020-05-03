@@ -6,16 +6,40 @@ const guildShard = require('../util/GuildShard')
 const fs = require('fs')
 const { resolve } = require('path')
 
+/**
+ * API management and utility methods
+ */
 class MasterAPI {
+  /**
+   * Master API
+   * @param {Master} master Master
+   * @param {Number} port Port
+   */
   constructor (master, port) {
+    /**
+     * Master
+     * @type {Master}
+     */
     this.master = master
+
+    /**
+     * API Port
+     * @type {Number}
+     */
     this.port = port
 
+    /**
+     * Express App
+     * @type {?ExpressApp}
+     */
     this.app = null
 
     this.setup()
   }
 
+  /**
+   * Setup http server
+   */
   setup () {
     this.app = Express()
 
@@ -24,6 +48,9 @@ class MasterAPI {
     this.app.listen(this.port)
   }
 
+  /**
+   * (Re)load routes and middleware
+   */
   loadRoutes () {
     this.app._router = null
 
@@ -50,10 +77,20 @@ class MasterAPI {
     loadFolder('./routes', '')
   }
 
+  /**
+   * Finds cluster that a guild belongs to
+   * @param {Snowflake} id Guild ID
+   * @returns {Cluster}
+   */
   guildCluster (id) {
     return this.shardCluster(guildShard(id, this.master.shardCount))
   }
 
+  /**
+   * Finds a cluster that a shard belongs to
+   * @param {Number} id Shard ID
+   * @returns {Cluster}
+   */
   shardCluster (id) {
     let guildCluster
 
@@ -66,6 +103,14 @@ class MasterAPI {
     return guildCluster
   }
 
+  /**
+   * Sends data to a cluster
+   * @param {Number} cluster Cluster ID
+   * @param {String} event Event Name
+   * @param {?Object} data Data object
+   * @param {Boolean} respond Whether to get the response of it
+   * @returns {void|Promise.<Object>} Response data
+   */
   sendTo (cluster, event, data, respond = false) {
     cluster = parseInt(cluster)
     cluster = this.master.clusters.get(cluster)
@@ -91,7 +136,14 @@ class MasterAPI {
     }
   }
 
-  async sendToAll (event, data, respond = false) {
+  /**
+   * Send data to all clusters
+   * @param {String} event Event name
+   * @param {?Object} data Data object
+   * @param {Boolean} respond Whether to get the response of it
+   * @returns {void|Promise.<Array.<Object>>} Array of response data
+   */
+  sendToAll (event, data, respond = false) {
     if (!respond) {
       this.master.clusters.forEach(cluster => {
         cluster.send(event, data)

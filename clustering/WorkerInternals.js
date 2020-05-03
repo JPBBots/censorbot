@@ -100,6 +100,11 @@ class WorkerInternals {
     }
   }
 
+  /**
+   * Fetch a guild
+   * @param {Snowflake} id Guild ID
+   * @return {CachedGuild} Guild
+   */
   async fetchGuild (id) {
     const guild = await this.api
       .guilds[id]
@@ -110,6 +115,11 @@ class WorkerInternals {
     return guild
   }
 
+  /**
+   * Gets guild count
+   * @param {Boolean} counted Whether to be a total of numbers
+   * @returns {Array.<Array.<Number>>|Number}
+   */
   async guildCount (counted) {
     const guilds = await this.api
       .guilds
@@ -118,12 +128,39 @@ class WorkerInternals {
     return counted ? guilds.reduce((a, b) => a + b.reduce((c, d) => c + d, 0), 0) : guilds
   }
 
+  /**
+   * Cluster stats object
+   * @typedef {Object} ClusterStats
+   * @property {Object} cluster Cluster info
+   * @property {Number} cluster.uptime Cluster uptime
+   * @property {Number} cluster.memory Cluster memory usage
+   * @property {Array.<ShardStats>} shards Array of shard info
+   */
+
+  /**
+   * Shard stats object
+   * @typedef {Object} ShardStats
+   * @property {Number} id Shard ID
+   * @property {Boolean} connected Whether the shard is connected
+   * @property {Number} ping Shard WS ping
+   * @property {Number} guilds Guilds on shard
+   */
+
+  /**
+   * Shard stats
+   * @returns {Array.<ClusterStats>}
+   */
   shardStats () {
     return this.api
       .shards
       .get()
   }
 
+  /**
+   * Evaluated code on all shards
+   * @param {String} ev String to evaluate
+   * @returns {Array.<String>} Array of responses in order of cluster
+   */
   eval (ev) {
     return this.api
       .clusters
@@ -132,12 +169,21 @@ class WorkerInternals {
       })
   }
 
+  /**
+   * Reloads a part on all clusters
+   * @param {String} part Reloadable part
+   */
   reload (part) {
     this.api
       .reload[part]
       .post()
   }
 
+  /**
+   * Restart a shard
+   * @param {Number} id Shard ID
+   * @param {Boolean} destroy Whether to kill
+   */
   restart (id, destroy) {
     this.api
       .shards[id]
@@ -148,24 +194,42 @@ class WorkerInternals {
       })
   }
 
+  /**
+   * Kill and restart an entire cluster
+   * @param {Number} id Cluster ID
+   */
   killCluster (id) {
     this.api
       .clusters[id]
       .delete()
   }
 
+  /**
+   * Reload cluster internal components
+   */
   reloadInternals () {
     this.api
       .reload
       .post()
   }
 
+  /**
+   * Sets a presence on all shards
+   * @param {String} presence Presence name
+   */
   setPresence (presence) {
     this.api
       .presence[presence]
       .put()
   }
 
+  /**
+   * Creates a HelpME package
+   * @param {Snowflake} id Guild ID
+   * @param {String} name Guild Name
+   * @param {Snowflake} owner Owner ID
+   * @returns {SmallID}
+   */
   async createHelpMe (id, name, owner) {
     const res = await this.api
       .helpme
@@ -178,6 +242,10 @@ class WorkerInternals {
     return res.hm
   }
 
+  /**
+   * Retrieves a packaged HelpME package
+   * @param {SmallID} hm HelpME code
+   */
   getHelpMe (hm) {
     return this.api
       .helpme[hm]
