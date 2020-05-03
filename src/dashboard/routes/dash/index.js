@@ -20,7 +20,7 @@ module.exports = function (r) {
   }))
 
   r.get('/admin', this.adminMiddle(false, async (req, res) => {
-    res.render('admin', { token: req.cookies.token, shards: await this.client.cluster.internal.shardStats() })
+    res.render('admin', { token: req.cookies.token, shards: await this.client.cluster.internal.shardStats().then(a=>a.map(b=>b.shards)) })
   }))
 
   r.use('/:serverid', this.getGuild(false))

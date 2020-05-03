@@ -50,7 +50,11 @@ class Command {
    * Deletes instantiating message
    */
   delete () {
-    return this.client.interface.delete(this.msg.channel_id, this.msg.id)
+    try {
+      return this.client.interface.delete(this.msg.channel_id, this.msg.id)
+    } catch (err) {
+      this.client.log(2, 25, err.message, null, true)
+    }
   }
 }
 

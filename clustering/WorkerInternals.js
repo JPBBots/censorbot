@@ -1,3 +1,7 @@
+const Request = require('../req')
+
+const { internalPort } = require('../src/config')
+
 /**
  * Worker internal methods for brokering master internals
  */
@@ -12,36 +16,39 @@ class WorkerInternals {
      * @type {Worker}
      */
     this.worker = worker
+
+    /**
+     * Internal API
+     * @type {Request}
+     */
+    this.api = Request(`http://localhost:${internalPort}`)
   }
 
-  event (event, data) {
+  event (event, data, resolve) {
     let guild
     let shard
     switch (event) {
       case 'GUILD_FETCH':
         guild = this.worker.client.guilds.get(data.id)
-        this.worker.send('GUILD_FETCHED', {
-          id: data.id,
-          guild: guild ? {
-            i: guild.id,
-            n: guild.name,
-            a: guild.icon,
-            c: this.worker.client.channels.filter(x => x.guild_id === data.id)
-              .map(x => {
-                return {
-                  id: x.id,
-                  name: x.name
-                }
-              }),
-            r: guild.roles
-              .map(x => {
-                return {
-                  id: x.id,
-                  name: x.name
-                }
-              })
-          } : null
-        })
+        resolve(guild ? {
+          i: guild.id,
+          n: guild.name,
+          a: guild.icon,
+          c: this.worker.client.channels.filter(x => x.guild_id === data.id)
+            .map(x => {
+              return {
+                id: x.id,
+                name: x.name
+              }
+            }),
+          r: guild.roles
+            .map(x => {
+              return {
+                id: x.id,
+                name: x.name
+              }
+            })
+        } : {})
         break
       case 'RELOAD_INTERNALS':
         delete require.cache[require.resolve('./WorkerInternals')]
@@ -49,19 +56,27 @@ class WorkerInternals {
         this.worker.internal = new WorkerInternals(this.worker)
         break
       case 'RELOAD':
-        this.worker.client.reloader.reload(data.name)
+        this.worker.client.reloader.reload(data.part)
         break
       case 'GUILD_COUNT':
-        this.worker.send('GUILD_COUNTED', { id: data.id, data: this.worker.client.internals.formatted })
+        resolve(this.worker.client.internals.formatted)
         break
       case 'EVAL':
-        const client = this.worker.client // eslint-disable-line
-        this.worker.send('EVALED', { id: data.id, results: eval(data.ev) }) // eslint-disable-line no-eval
+        try {
+          const client = this.worker.client // eslint-disable-line
+          const results = eval(data.ev) // eslint-disable-line
+          resolve({ results })
+        } catch (err) {
+          resolve({ results: 'Error: ' + err.message })
+        }
         break
-      case 'SHARD_STAT':
-        this.worker.send('SHARD_STATED', {
-          id: data.id,
-          data: this.worker.client.shards.map(shard => {
+      case 'CLUSTER_STATS':
+        resolve({
+          cluster: {
+            memory: process.memoryUsage().heapUsed,
+            uptime: process.uptime()
+          },
+          shards: this.worker.client.shards.map(shard => {
             return {
               id: shard.id,
               ping: shard.ping,
@@ -78,94 +93,95 @@ class WorkerInternals {
         shard.restart()
         break
       case 'PRESENCE':
-        this.worker.client.setStatus(...data)
+        this.worker.client.presence[data]()
         break
       default:
         break
     }
   }
 
-  fetchGuild (id) {
-    return new Promise((resolve) => {
-      const getFunction = (d) => {
-        if (d.id !== id) return
+  async fetchGuild (id) {
+    const guild = await this.api
+      .guilds[id]
+      .get()
 
-        this.worker.off('GUILD_FETCHED', getFunction)
+    if (!guild.i) return null
 
-        resolve(d.guild)
-      }
-
-      this.worker.on('GUILD_FETCHED', getFunction)
-
-      this.worker.send('GUILD_FETCH', { id })
-    })
+    return guild
   }
 
-  guildCount (counted) {
-    return new Promise((resolve) => {
-      const id = Number(new Date().getTime() + `${Math.random() * 10000}`).toFixed(0)
-      const getFunction = (d) => {
-        if (d.id !== id) return
+  async guildCount (counted) {
+    const guilds = await this.api
+      .guilds
+      .get()
 
-        this.worker.off('GUILD_COUNTED', getFunction)
-
-        resolve(counted ? d.guilds.reduce((a, b) => a + b.reduce((c, d) => c + d, 0), 0) : d.guilds)
-      }
-
-      this.worker.on('GUILD_COUNTED', getFunction)
-
-      this.worker.send('GUILD_COUNT', { id })
-    })
+    return counted ? guilds.reduce((a, b) => a + b.reduce((c, d) => c + d, 0), 0) : guilds
   }
 
   shardStats () {
-    return new Promise((resolve) => {
-      const id = Number(new Date().getTime() + `${Math.random() * 10000}`).toFixed(0)
-      const getFunction = (d) => {
-        if (d.id !== id) return
-
-        this.worker.off('SHARD_STATED', getFunction)
-
-        resolve(d.shards)
-      }
-
-      this.worker.on('SHARD_STATED', getFunction)
-
-      this.worker.send('SHARD_STAT', { id })
-    })
+    return this.api
+      .shards
+      .get()
   }
 
   eval (ev) {
-    return new Promise((resolve) => {
-      const id = Number(new Date().getTime() + `${Math.random() * 10000}`).toFixed(0)
-      const getFunction = (d) => {
-        if (d.id !== id) return
-
-        this.worker.off('EVALED', getFunction)
-
-        resolve(d.data)
-      }
-
-      this.worker.on('EVALED', getFunction)
-
-      this.worker.send('EVAL', { id, ev })
-    })
+    return this.api
+      .clusters
+      .post({
+        body: { ev }
+      })
   }
 
-  reload (name) {
-    this.worker.send('RELOAD', { name })
+  reload (part) {
+    this.api
+      .reload[part]
+      .post()
   }
 
   restart (id, destroy) {
-    this.worker.send('RESTART', { id, destroy })
+    this.api
+      .shards[id]
+      .delete({
+        query: destroy ? {
+          d: true
+        } : {}
+      })
   }
 
   killCluster (id) {
-    this.worker.send('KILL', { id })
+    this.api
+      .clusters[id]
+      .delete()
   }
 
   reloadInternals () {
-    this.worker.send('RELOAD_INTERNALS')
+    this.api
+      .reload
+      .post()
+  }
+
+  setPresence (presence) {
+    this.api
+      .presence[presence]
+      .put()
+  }
+
+  async createHelpMe (id, name, owner) {
+    const res = await this.api
+      .helpme
+      .post({
+        body: { id, name, owner }
+      })
+
+    if (res.error) return null
+
+    return res.hm
+  }
+
+  getHelpMe (hm) {
+    return this.api
+      .helpme[hm]
+      .get()
   }
 }
 

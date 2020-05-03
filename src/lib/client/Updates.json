@@ -1,5 +1,13 @@
 [
     {
+        "v": "5.0.0",
+        "desc": "Cluster Rewrite",
+        "date": "5/2/2020",
+        "points": [
+             "Bot is now cluster sharded"
+         ]
+    },
+    {
         "v": "4.2.0",
         "desc": "New Domain",
         "date": "4/30/2020",

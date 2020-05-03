@@ -3,7 +3,7 @@ const querystring = require('querystring')
 
 function request (url, heads, opts = {}, ...req) {
   return new Promise((resolve, reject) => {
-    const [method, route, { query, body, headers, parser = JSON.stringify, reason }, end] = req
+    const [method, route, { query, body, headers, parser = JSON.stringify, reason, format }, end] = req
     end()
 
     const go = () => {
@@ -22,7 +22,7 @@ function request (url, heads, opts = {}, ...req) {
         .then(res => {
           if (res.status === 204) return { success: true }
 
-          return res[opts.format || 'json']()
+          return res[(format || opts.format) || 'json']()
         })
         .then(parsed => {
           if (parsed && parsed.retry_after) {

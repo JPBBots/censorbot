@@ -50,7 +50,9 @@ class Worker extends EventEmitter {
     this.parent.on('message', (msg) => {
       this.emit(msg.e, msg.d)
 
-      this.internal.event(msg.e, msg.d)
+      this.internal.event(msg.e, msg.d, msg.i ? (data) => {
+        this.send(msg.e, data, msg.i)
+      }: null)
     })
 
     this.on('SPAWN', ({ shards, shardCount, spawned }) => this.spawn(shards, shardCount, spawned))
@@ -79,9 +81,10 @@ class Worker extends EventEmitter {
    * Sends a message to the parent
    * @param {String} e Event
    * @param {Object} d Data
+   * @param {?Number} i Response ID
    */
-  send (e, d) {
-    this.parent.postMessage({ e, d })
+  send (e, d, i) {
+    this.parent.postMessage({ e, d, i })
   }
 }
 

@@ -4,6 +4,7 @@ module.exports = {
   owner: '142408079177285632',
   prefix: ['+', '<@394019914157129728> ', '<@!394019914157129728> '],
   port: 1234,
+  internalPort: 8338,
   defaultMsg: 'You\'re not allowed to say that...',
   support: 'https://discord.gg/CRAbk4w',
   patreon: 'https://patreon.com/censorbot',

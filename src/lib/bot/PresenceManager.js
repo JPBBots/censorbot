@@ -39,6 +39,7 @@ class PresenceManager {
   set (set) {
     this.client.log(12, 17, set)
     this.select = set
+
     this.go()
   }
 
@@ -47,7 +48,8 @@ class PresenceManager {
    */
   go () {
     if (!this.select) return
-    this[this.select]()
+
+    this.client.cluster.internal.setPresence(this.select)
   }
 
   /**
@@ -55,7 +57,7 @@ class PresenceManager {
    * @param  {...any} opt Presence object
    */
   status (...opt) {
-    this.client.cluster.send('PRESENCE', opt)
+    this.client.setStatus(...opt)
   }
 
   /**

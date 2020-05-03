@@ -50,9 +50,7 @@ class Cluster extends EventEmitter {
     this.thread = new Worker('../clustering/service.js', { workerData: { id: this.id } })
 
     this.thread.on('message', (msg) => {
-      this.emit(msg.e, msg.d)
-
-      this.master.internal.event(msg.e, msg.d, this)
+      this.emit(msg.e, msg.d, msg.i)
     })
 
     this.thread.on('exit', (code) => {
@@ -68,9 +66,10 @@ class Cluster extends EventEmitter {
    * Send a message to thread
    * @param {String} e Event
    * @param {Object} d Data
+   * @param {?Number} i Expected response ID
    */
-  send (e, d) {
-    this.thread.postMessage({ e, d })
+  send (e, d, i) {
+    this.thread.postMessage({ e, d, i })
   }
 
   /**

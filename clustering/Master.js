@@ -1,11 +1,11 @@
 const Collection = require('../util/Collection')
-
 const Wait = require('../util/Wait')
-
 const Logger = require('../util/Logger')
 
 const Cluster = require('./Cluster')
-const MasterInternals = require('./MasterInternals')
+const MasterAPI = require('./MasterAPI')
+
+const { internalPort } = require('../src/config')
 
 /**
  * For controlling and starting clusters
@@ -29,9 +29,9 @@ class Master {
 
     /**
      * Internal Methods
-     * @type {MasterInternals}
+     * @type {MasterAPI}
      */
-    this.internal = new MasterInternals(this)
+    this.api = new MasterAPI(this, internalPort)
 
     /**
      * Whether all clusters have been spawned

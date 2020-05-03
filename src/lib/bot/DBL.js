@@ -27,9 +27,7 @@ class DBL {
      * @type {Interval}
      */
     this.interval = setInterval(async () => {
-      const guilds = await this.client.cluster.internal.guildCount()
-      this.client.log(11, 15, `${guilds.reduce((a, b) => a + b.reduce((c, d) => c + d, 0), 0)} servers`)
-      this.post(guilds)
+      this.post()
     }, 1800000)
 
     this.client.log(0, 1, 'DBL')
@@ -39,9 +37,12 @@ class DBL {
    * Post stats
    * @returns {Promise.<Object>} Response
    */
-  async post (guilds) {
+  async post () {
+    const guilds = await this.client.cluster.internal.guildCount()
+    this.client.log(11, 15, `${guilds.reduce((a, b) => a + b.reduce((c, d) => c + d, 0), 0)} servers`)
     if (this.client.beta) return this.client.log(11, 16, 'Skipped beta')
-    if (this.client.shards.some(x => !x.connected)) return console.log('Skipping post as there are offline shards!')
+    const healthCheck = await this.client.cluster.internal.shardStats()
+    if (healthCheck.some(a => a.shards.some(b => !b.connected))) return console.log('Skipping post as there are offline shards!')
     const start = new Date().getTime()
     await this.api
       .bots[this.client.user.id]

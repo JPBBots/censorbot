@@ -1,36 +1,19 @@
-const GenerateID = require('../../util/GenerateID')
-
 exports.run = async function (message, args) {
   if (args[0] && await this.client.isAdmin(message.author.id)) {
     this.delete()
-    const helpme = this.client.helpme.get(args[0])
+    const helpme = await this.client.cluster.internal.getHelpMe(args[0])
     if (!helpme) return this.send('Invalid HelpME...')
-
-    const guild = this.client.guilds.get(helpme.id)
-    if (!guild) return this.send('Bot no longer in that server...')
 
     return this.client.interface.dm(message.author.id,
       this.embed
-        .title(`${guild.id} (${guild.name};${this.client.guildShard(guild.id)})`)
-        .description(`[Dashboard](${this.config.dashboard}/${guild.id})`)
-        .field('Owner', guild.owner_id)
+        .title(`${helpme.id} (${helpme.name};${this.client.guildShard(helpme.id)})`)
+        .description(`[Dashboard](${this.config.dashboard}/${helpme.id})`)
+        .field('Owner', helpme.owner)
     )
   }
 
-  const current = this.client.helpme.find(x => x.id === message.guild_id)
-  let id
-  if (current) {
-    id = current.hm
-  } else {
-    id = GenerateID(this.client.helpme.keyArray())
-    this.client.helpme.set(id, {
-      hm: id,
-      id: message.guild_id
-    })
-    setTimeout(() => {
-      this.client.helpme.delete(id)
-    }, 300000)
-  }
+  const guild = this.client.guilds.get(message.guild_id)
+  const id = await this.client.cluster.internal.createHelpMe(guild.id, guild.name, guild.owner_id)
 
   this.send(
     this.embed

@@ -2,6 +2,7 @@ const { readdirSync } = require('fs')
 const dir = require('path').resolve.bind(undefined, __dirname)
 const Collection = require('../../../util/Collection')
 
+delete require.cache[require.resolve('./Command')]
 const Command = require('./Command')
 
 /**

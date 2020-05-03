@@ -69,6 +69,7 @@ class Reloader {
         this.client.buckets = new BucketManager(this.client)
         break
       case 'dbl':
+        if (this.client.cluster.id !== this.client.config.clusters.length - 1) return
         clearInterval(this.client.dbl.interval)
         delete require.cache[require.resolve(resolve(lib, './bot/DBL'))]
         const DBL = require(resolve(lib, './bot/DBL'))
@@ -119,8 +120,10 @@ class Reloader {
         const Internals = require(resolve(lib, './client/Internals'))
         this.client.internals = new Internals(this.client)
         break
-      case 'cluster':
-        this.client.cluster.internal.reloadInternals()
+      case 'reloader':
+        delete require.cache[require.resolve(resolve(lib, './client/Reloader'))]
+        const Reloader = require(resolve(lib, './client/Reloader'))
+        this.client.reloader = new Reloader(this.client)
         break
       default:
         done = false
