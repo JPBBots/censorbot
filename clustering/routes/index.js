@@ -34,8 +34,10 @@ module.exports = function (r) {
   })
 
   r.get('/guilds/:guildid', async (req, res) => {
+    const cluster = this.guildCluster(req.params.guildid)
+    if (!cluster) return res.json({})
     res.json(await this.sendTo(
-      this.guildCluster(req.params.guildid).id,
+      cluster.id,
       'GUILD_FETCH',
       { id: req.params.guildid },
       true
@@ -92,7 +94,7 @@ module.exports = function (r) {
       hm = GenerateID(HelpMes.keyArray())
       HelpMes.set(hm, { hm, id, name, owner })
       setTimeout(() => {
-        this.client.helpme.delete(id)
+        HelpMes.delete(id)
       }, 300000)
     }
 
