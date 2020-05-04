@@ -29,9 +29,6 @@ class Reloader {
       case 'events':
         this.client.events.load()
         break
-      case 'dash':
-        if (this.client.shards.has(0)) this.client.dash.reload()
-        break
       case 'filter':
         delete require.cache[require.resolve(resolve(lib, './services/Filter.js'))]
         const Filter = require(resolve(lib, './services/Filter.js'))
@@ -81,8 +78,8 @@ class Reloader {
         this.client.presence = new PresenceManager(this.client)
         break
       case 'interface':
-        delete require.cache[require.resolve(resolve(__dirname, '../../lib/Interface'))]
-        const Interface = require(resolve(__dirname, '../../lib/Interface'))
+        delete require.cache[require.resolve(resolve(__dirname, '../../../lib/Interface'))]
+        const Interface = require(resolve(__dirname, '../../../lib/Interface'))
         this.client.interface = new Interface(this.client)
         break
       case 'ch':
@@ -90,15 +87,8 @@ class Reloader {
         const CommandHandler = require(resolve(lib, './bot/CommandHandler'))
         this.client.commands = new CommandHandler(this.client)
         break
-      case 'app':
-        delete require.cache[require.resolve(resolve(lib, './services/Dashboard'))]
-        const Dashboard = require(resolve(lib, './services/Dashboard'))
-        this.client.dash.close()
-        this.client.dash = new Dashboard(this.client)
-        await this.client.dash.spawn()
-        break
       case 'wh':
-        delete require.cache[require.resolve(resolve(__dirname, '../../lib/Webhook'))]
+        delete require.cache[require.resolve(resolve(__dirname, '../../../lib/Webhook'))]
         delete require.cache[require.resolve(resolve(lib, './services/WebhookManager'))]
         const WebhookManager = require(resolve(lib, './services/WebhookManager'))
         const wh = new WebhookManager(this.client)
