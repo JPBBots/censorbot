@@ -14,7 +14,6 @@ const UpdatesManager = require('./UpdatesManager')
 
 const Filter = require('../services/Filter')
 const Database = require('../services/Database')
-const Dashboard = require('../services/Dashboard')
 const Punishments = require('../services/Punishments')
 const TicketManager = require('../services/TicketManager')
 const BucketManager = require('../services/BucketManager')
@@ -97,11 +96,6 @@ class CensorBot extends Client {
     await this.db.connect()
 
     /**
-     * Dashboard
-     * @type {Dashboard}
-     */
-    if (this.options.shards.includes(0)) this.dash = new Dashboard(this)
-    /**
      * Command handler
      * @type {CommandHandler}
      */
@@ -160,7 +154,6 @@ class CensorBot extends Client {
     await this.setup()
 
     this.log(1, 1, `${((new Date().getTime() - botStart) / 1000).toFixed(0)}s`)
-    if (this.options.shards.includes(0)) await this.dash.spawn()
     if (this.cluster.id === this.config.clusters.length - 1) this.presence.set('d')
     /**
      * DBL Interface

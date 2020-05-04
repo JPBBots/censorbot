@@ -216,6 +216,12 @@ class WorkerInternals {
       .post()
   }
 
+  restartDashboard () {
+    this.api
+      .dash
+      .delete()
+  }
+
   /**
    * Sets a presence on all shards
    * @param {String} presence Presence name

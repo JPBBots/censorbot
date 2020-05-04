@@ -4,6 +4,8 @@ const Timeout = new Wait(5000)
 const Logger = require('../util/Logger')
 
 const Cluster = require('./Cluster')
+const DashboardCluster = require('./DashboardCluster')
+
 const MasterAPI = require('./MasterAPI')
 
 const { internalPort } = require('../src/config')
@@ -80,6 +82,10 @@ class Master {
    */
   async spawnWorkers () {
     const start = new Date().getTime()
+
+    this.dash = new DashboardCluster(this)
+    this.dash.spawn()
+
     for (let i = 0; i < this.internalClusters.length; i++) {
       this.log(14, 26, `Cluster ${i}`)
       await this._createWorker(i, this.internalClusters[i]).spawn()

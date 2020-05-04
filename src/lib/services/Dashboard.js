@@ -10,6 +10,13 @@ const validateObject = require('../../../util/validateObject')
 
 const cacheTimeout = 300000
 
+const Database = require('./Database')
+const Logger = require('../../../util/Logger')
+
+const UpdatesManager = require('../client/UpdatesManager')
+
+const config = require('../../config')
+
 /**
  * Guilds cached for oauth/dashboard use
  * @typedef {Object} CachedGuild
@@ -33,14 +40,18 @@ const cacheTimeout = 300000
 class Dashboard {
   /**
    * Dashboard
-   * @param {Client} client Client
+   * @param {DashboardWorker} worker Dashboard Worker
    */
-  constructor (client) {
+  constructor (worker) {
     /**
-     * Client
-     * @type {Client}
+     * Internal Methods
+     * @type {WorkerInternals}
      */
-    this.client = client
+    this.cluster = worker.internals
+
+    this.config = config
+
+    this.updates = new UpdatesManager(this)
 
     /**
      * Express app
@@ -89,6 +100,42 @@ class Dashboard {
      * @type {String}
      */
     this.apiUrl = 'https://api.censor.bot'
+
+    /**
+     * Database
+     * @type {Database}
+     */
+    this.database = null
+
+    /**
+     * Logger
+     * @type {Logger}
+     */
+    this.logger = new Logger('Dash')
+
+    /**
+     * Censor Bot API
+     * @type {Request}
+     */
+    this.capi = Request('https://censor.bot', {}, { format: 'text' })
+
+    this.connectDatabase()
+  }
+
+  /**
+   * log
+   * @param  {...any} _ log
+   */
+  log (..._) {
+    this.logger.log(..._)
+  }
+
+  /**
+   * Connects database
+   */
+  connectDatabase () {
+    this.database = new Database(this, config.db.username, config.db.password)
+    this.database.connect()
   }
 
   /**
@@ -96,7 +143,7 @@ class Dashboard {
    * @type {MongoDB.Collection}
    */
   get db () {
-    return this.client.db.collection('dashboard')
+    return this.database.collection('dashboard')
   }
 
   /**
@@ -104,13 +151,13 @@ class Dashboard {
    * @returns {Promise}
    */
   spawn () {
-    this.client.log(0, 0, 'Dashboard')
+    this.log(0, 0, 'Dashboard')
     return new Promise(resolve => {
       const start = new Date().getTime()
       this.onReady = () => {
         this.onReady = null
         resolve()
-        this.client.log(0, 1, 'Dashboard', `${new Date().getTime() - start}ms:${this.client.config.port}`)
+        this.log(0, 1, 'Dashboard', `${new Date().getTime() - start}ms:${config.port}`)
       }
       this.start()
     })
@@ -124,7 +171,7 @@ class Dashboard {
 
     this.load()
 
-    this.server = this.app.listen(this.client.config.port, () => {
+    this.server = this.app.listen(config.port, () => {
       this.onReady()
     })
   }
@@ -168,7 +215,7 @@ class Dashboard {
    * @returns {String} URL to send to
    */
   oauthLogin (state) {
-    const oauth = this.client.config.oauth
+    const oauth = config.oauth
 
     return 'https://discordapp.com/api/oauth2/authorize?' +
       encodeJSON({
@@ -250,6 +297,14 @@ class Dashboard {
     return guilds
   }
 
+  async isAdmin (id) {
+    const response = await this.capi
+      .admin[id]
+      .get()
+
+    return !!parseInt(response)
+  }
+
   /**
    * Get made user guilds
    * @param {String} token User token
@@ -268,14 +323,14 @@ class Dashboard {
       return false
     }
 
-    const isAdmin = await this.client.isAdmin(user.id)
+    const isAdmin = await this.isAdmin(user.id)
 
     const cache = this.getInCache(user.id)
     if (cache && isAdmin && state && !cache.some(x => x.i === state)) {
       cache.push({
         i: state,
-        n: this.client.guilds.has(state) ? this.client.guilds.get(state).name : '(ADMIN)',
-        a: this.client.guilds.has(state) ? this.client.guilds.get(state).icon : null
+        n: '(ADMIN)',
+        a: null
       })
     }
     if (cache) return cache
@@ -288,8 +343,8 @@ class Dashboard {
     if (state && !guilds.some(x => x.i === state)) {
       guilds.push({
         i: state,
-        n: this.client.guilds.has(state) ? this.client.guilds.get(state).name : '(ADMIN)',
-        a: this.client.guilds.has(state) ? this.client.guilds.get(state).icon : null
+        n: '(ADMIN)',
+        a: null
       })
     }
     return guilds
@@ -347,7 +402,7 @@ class Dashboard {
    * @type {String}
    */
   get newToken () {
-    return crypto.createHash('sha256').update(`${Math.random()}`).update(`${new Date().getTime()}`).update(this.client.config.oauth.mysecret).digest('hex')
+    return crypto.createHash('sha256').update(`${Math.random()}`).update(`${new Date().getTime()}`).update(config.oauth.mysecret).digest('hex')
   }
 
   // oauth
@@ -402,7 +457,7 @@ class Dashboard {
    * @returns {Object} OAuth user
    */
   async fetchOAuthUser (code) {
-    const oauth = this.client.config.oauth
+    const oauth = config.oauth
 
     const user = await this.api
       .oauth2
@@ -456,7 +511,7 @@ class Dashboard {
   guildData (api, fn) {
     return async (req, res) => {
       const { i: id, n: name } = req.partialGuild
-      const guild = await this.client.cluster.internal.fetchGuild(id)
+      const guild = await this.cluster.fetchGuild(id)
       if (!guild) return api ? res.json({ error: 'Not In Guild' }) : res.render('invite', { id })
 
       const obj = { id, name }
@@ -464,7 +519,7 @@ class Dashboard {
       obj.c = guild.c
       obj.r = guild.r
 
-      obj.db = await this.client.db.config(id)
+      obj.db = await this.database.config(id)
 
       fn(req, res, obj)
     }
@@ -478,7 +533,7 @@ class Dashboard {
    * @returns {?Boolean}
    */
   validateSettings (obj, guild, f) {
-    if (!validateObject(this.client.db.defaultConfig, obj)) return f('Invalid Object')
+    if (!validateObject(this.database.defaultConfig, obj)) return f('Invalid Object')
     if (typeof obj.base !== 'boolean') return f('Base has an invalid type')
     if (typeof obj.censor.msg !== 'boolean') return f('Censor (msg) has an invalid type')
     if (typeof obj.censor.emsg !== 'boolean') return f('Censor (emsg) has an invalid type')
@@ -500,7 +555,7 @@ class Dashboard {
     if (obj.uncensor.some(x => x.match(/[^\w]/gi))) return f('One of the uncensor words contains illegal characters')
     if (typeof obj.multi !== 'boolean') return f('Multi-Line is an invalid type')
     if (!(obj.languages instanceof Array)) return f('Languages is an invalid type')
-    if (obj.languages.some(x => !this.client.db.defaultConfig.languages.includes(x))) return f('Languages contains an invalid language')
+    if (obj.languages.some(x => !this.database.defaultConfig.languages.includes(x))) return f('Languages contains an invalid language')
     if (typeof obj.webhook_separate !== 'boolean') return f('Webhook Separate is not a boolean')
     return true
   }
@@ -513,7 +568,7 @@ class Dashboard {
    * @returns {Object} Premium object
    */
   async premium (id) {
-    const premium = parseInt(await this.client
+    const premium = parseInt(await this
       .capi
       .premium[id]
       .get()
@@ -522,10 +577,10 @@ class Dashboard {
 
     const user = { premium: true, amount: premium }
 
-    const dbUser = await this.client.db.collection('premium_users').findOne({ id })
+    const dbUser = await this.database.collection('premium_users').findOne({ id })
 
     if (!dbUser) {
-      await this.client.db.collection('premium_users').updateOne({ id }, {
+      await this.database.collection('premium_users').updateOne({ id }, {
         $set: {
           id,
           guilds: []
@@ -576,7 +631,7 @@ class Dashboard {
 
       if (!user) return api ? res.json({ error: 'Unauthorized' }) : res.redirect(this.oauthLogin('admin'))
 
-      const admin = await this.client.isAdmin(user.id)
+      const admin = await this.isAdmin(user.id)
 
       if (!admin) return api ? res.json({ error: 'Not Admin' }) : res.render('errors/notadmin', { base: this.base })
 

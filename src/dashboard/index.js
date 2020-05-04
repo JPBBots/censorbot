@@ -9,7 +9,7 @@ const fs = require('fs')
 const { resolve } = require('path')
 
 module.exports = (dash) => {
-  dash.client.log(4, 0, 'MiddleWare')
+  dash.log(4, 0, 'MiddleWare')
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({
     extended: true
@@ -20,13 +20,13 @@ module.exports = (dash) => {
   app.set('views', resolve(__dirname, './views'))
   app.set('view engine', 'ejs')
   app.use((req, res, next) => {
-    if (!req.url.match(/static|updates\/./gi)) dash.client.log(4, 14, req.url, req.method)
+    if (!req.url.match(/static|updates\/./gi)) dash.log(4, 14, req.url, req.method)
     next()
   })
 
-  dash.client.log(4, 1, 'MiddleWare')
+  dash.log(4, 1, 'MiddleWare')
 
-  dash.client.log(4, 2, 'Routers')
+  dash.log(4, 2, 'Routers')
 
   const loadFolder = (path, current) => {
     const routes = fs.readdirSync(resolve(__dirname, path))
@@ -41,12 +41,12 @@ module.exports = (dash) => {
       const router = Express.Router()
       routeFile.bind(dash)(router)
       app.use(`/${current}${routeName}`, router)
-      dash.client.log(4, 5, `/${current}${routeName}`)
+      dash.log(4, 5, `/${current}${routeName}`)
     })
   }
   loadFolder('./routes', '')
 
-  dash.client.log(4, 3, 'Routers')
+  dash.log(4, 3, 'Routers')
 
   return app
 }

@@ -23,7 +23,7 @@ module.exports = function (r) {
 
     let refresh = false
 
-    const premium = await this.client.db.guildPremium(data.id)
+    const premium = await this.database.guildPremium(data.id)
 
     if (!premium) {
       if (req.body.filter.length > 150) return res.json({ error: 'Non-premium servers can only have maximum 150 words in their filter' })
@@ -47,12 +47,12 @@ module.exports = function (r) {
     const differences = Difference(data.db, req.body)
 
     if (differences.length > 0) {
-      const logs = (await this.client.db.collection('log').findOne({ id: data.id })) || { id: data.id, logs: [] }
+      const logs = (await this.database.collection('log').findOne({ id: data.id })) || { id: data.id, logs: [] }
       if (logs.logs.length > 9) logs.logs = logs.logs.slice(1)
       const { tag: user } = await this.db.findOne({ token: req.headers.authorization })
       logs.logs.push({ user, differences })
 
-      this.client.db.collection('log').updateOne({
+      this.database.collection('log').updateOne({
         id: data.id
       }, {
         $set: logs
@@ -60,7 +60,7 @@ module.exports = function (r) {
         upsert: true
       })
     }
-    const post = await this.client.db.setConfig(data.id, req.body)
+    const post = await this.database.setConfig(data.id, req.body)
       .catch(err => { res.json({ error: 'Database Error' }); return false }) // eslint-disable-line handle-callback-err
     if (!post) return
 
@@ -68,7 +68,7 @@ module.exports = function (r) {
   }))
 
   r.get('/:serverid/logs', async (req, res) => {
-    const logs = await this.client.db.collection('log').findOne({ id: req.partialGuild.i })
+    const logs = await this.database.collection('log').findOne({ id: req.partialGuild.i })
 
     if (!logs) res.send([])
 

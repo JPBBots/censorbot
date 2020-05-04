@@ -12,7 +12,7 @@ module.exports = function (r) {
 
     req.premium.guilds.push(req.params.serverid)
 
-    await this.client.db.collection('premium_users').updateOne({ id: req.user.id }, {
+    await this.database.collection('premium_users').updateOne({ id: req.user.id }, {
       $set: {
         id: req.user.id,
         guilds: req.premium.guilds
@@ -29,7 +29,7 @@ module.exports = function (r) {
 
     req.premium.guilds = req.premium.guilds.filter(x => x !== req.params.serverid)
 
-    await this.client.db.collection('premium_users').updateOne({ id: req.user.id }, {
+    await this.database.collection('premium_users').updateOne({ id: req.user.id }, {
       $set: {
         id: req.user.id,
         guilds: req.premium.guilds

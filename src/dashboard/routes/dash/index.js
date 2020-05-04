@@ -20,18 +20,18 @@ module.exports = function (r) {
   }))
 
   r.get('/admin', this.adminMiddle(false, async (req, res) => {
-    res.render('admin', { token: req.cookies.token, shards: await this.client.cluster.internal.shardStats().then(a => a.map(b => b.shards)) })
+    res.render('admin', { token: req.cookies.token, shards: await this.cluster.shardStats().then(a => a.map(b => b.shards)) })
   }))
 
   r.use('/:serverid', this.getGuild(false))
 
   r.get('/:serverid', this.guildData(false, async (req, res, data) => {
     delete data.db.id
-    res.render(req.query.d ? 'devguild' : 'guild', { data, base: this.base, api: this.apiUrl, token: req.cookies.token, premium: await this.client.db.guildPremium(data.id), dev: req.query.d })
+    res.render(req.query.d ? 'devguild' : 'guild', { data, base: this.base, api: this.apiUrl, token: req.cookies.token, premium: await this.database.guildPremium(data.id), dev: req.query.d })
   }))
 
   r.get('/:serverid/logs', async (req, res) => {
-    const logs = await this.client.db.collection('log').findOne({ id: req.partialGuild.i })
+    const logs = await this.database.collection('log').findOne({ id: req.partialGuild.i })
 
     res.render('logs', { logs: logs ? logs.logs : [], base: this.base })
   })

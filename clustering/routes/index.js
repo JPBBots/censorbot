@@ -11,6 +11,12 @@ module.exports = function (r) {
     })
   })
 
+  r.delete('/dash', (req, res) => {
+    this.master.dash.send('KILL')
+
+    res.json(suc)
+  })
+
   r.post('/reload', (req, res) => {
     this.loadRoutes()
 

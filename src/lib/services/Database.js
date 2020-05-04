@@ -7,7 +7,7 @@ delete require.cache[require.resolve('../client/DefaultConfig')]
 class Database {
   /**
    * Database
-   * @param {Client} client Client
+   * @param {Dashboard} client Client
    * @param {String} username Username
    * @param {String} password Password
    * @param {?MongoDatabase} db Database if reloading
