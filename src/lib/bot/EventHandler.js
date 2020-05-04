@@ -61,7 +61,7 @@ class EventHandler {
    * @param  {...any} d Event packet
    */
   dispatch (event, ...d) {
-    if (!this.events[event]) return
+    if (!this.events[event] || (!['SHARD_READY', 'RESUME'].includes(event) && this.client.cluster.inactive)) return
     this.events[event](...d)
   }
 }

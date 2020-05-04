@@ -95,6 +95,9 @@ class WorkerInternals {
       case 'PRESENCE':
         this.worker.client.presence[data]()
         break
+      case 'ACTIVATE':
+        this.worker.inactive = false
+        break
       default:
         break
     }

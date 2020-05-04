@@ -69,8 +69,16 @@ module.exports = function (r) {
     res.json(await this.sendToAll('EVAL', { ev: req.body.ev }, true))
   })
 
+  r.delete('/clusters', async (req, res) => {
+    res.json(suc)
+
+    for (let i = 0; i < this.master.internalClusters.length; i++) {
+      await this.master.restartCluster(i)
+    }
+  })
+
   r.delete('/clusters/:clusterid', (req, res) => {
-    this.sendTo(req.params.clusterid, 'KILL')
+    this.master.restartCluster(req.params.clusterid)
 
     res.json(suc)
   })

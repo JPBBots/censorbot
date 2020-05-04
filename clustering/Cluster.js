@@ -12,8 +12,9 @@ class Cluster extends EventEmitter {
    * @param {Number} id Cluster ID
    * @param {Array.<Number>} shards Array of shard IDs
    * @param {Master} master Master
+   * @param {Boolean} inactive Whether to spawn inactive
    */
-  constructor (id, shards, master) {
+  constructor (id, shards, master, inactive = false) {
     super()
 
     /**
@@ -33,6 +34,18 @@ class Cluster extends EventEmitter {
      * @type {Master}
      */
     this.master = master
+
+    /**
+     * Whether to spawn inactive
+     * @type {Boolean}
+     */
+    this.inactive = inactive
+
+    /**
+     * Whether to be supposed to die
+     * @type {Boolean}
+     */
+    this.dying = false
 
     /**
      * Worker Thread
@@ -56,7 +69,7 @@ class Cluster extends EventEmitter {
     this.thread.on('exit', (code) => {
       this.master.log(14, 10, `Cluster ${this.id}`, code)
 
-      this.setup()
+      if (!this.dying) this.setup()
     })
 
     if (this.master.spawned) this.spawn()
@@ -79,7 +92,7 @@ class Cluster extends EventEmitter {
     this.master.log(14, 12, `Cluster ${this.id}`)
 
     return new Promise((resolve) => {
-      this.send('SPAWN', { shards: this.shards, shardCount: this.master.shardCount, spawned: this.master.spawned })
+      this.send('SPAWN', { shards: this.shards, shardCount: this.master.shardCount, spawned: this.master.spawned, inactive: this.inactive })
 
       this.once('READY', () => resolve())
     })

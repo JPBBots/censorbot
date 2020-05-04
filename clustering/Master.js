@@ -1,5 +1,6 @@
 const Collection = require('../util/Collection')
 const Wait = require('../util/Wait')
+const Timeout = new Wait(5000)
 const Logger = require('../util/Logger')
 
 const Cluster = require('./Cluster')
@@ -66,10 +67,10 @@ class Master {
     this.logger.log(..._)
   }
 
-  _createWorker (id, shards) {
-    const cluster = new Cluster(id, shards, this)
+  _createWorker (id, shards, inactive) {
+    const cluster = new Cluster(id, shards, this, inactive)
 
-    this.clusters.set(id, cluster)
+    if (!inactive) this.clusters.set(id, cluster)
 
     return cluster
   }
@@ -78,7 +79,6 @@ class Master {
    * Spawn workers
    */
   async spawnWorkers () {
-    const Timeout = new Wait(5000)
     const start = new Date().getTime()
     for (let i = 0; i < this.internalClusters.length; i++) {
       this.log(14, 26, `Cluster ${i}`)
@@ -90,6 +90,25 @@ class Master {
     this.spawned = true
 
     this.log(14, 3, 'All Clusters', `${((new Date().getTime() - start) / 1000).toFixed(0)}s`)
+  }
+
+  async restartCluster (id) {
+    id = parseInt(id)
+    if (!id) return
+
+    const cluster = this._createWorker(id, this.internalClusters[id], true)
+    const currentCluster = this.clusters.get(id)
+
+    await cluster.spawn()
+
+    currentCluster.dying = true
+    currentCluster.send('KILL')
+
+    cluster.send('ACTIVATE')
+    this.clusters.set(id, cluster)
+
+    await Timeout.wait()
+    return true
   }
 }
 

@@ -55,7 +55,7 @@ class Worker extends EventEmitter {
       } : null)
     })
 
-    this.on('SPAWN', ({ shards, shardCount, spawned }) => this.spawn(shards, shardCount, spawned))
+    this.on('SPAWN', ({ shards, shardCount, spawned, inactive }) => this.spawn(shards, shardCount, spawned, inactive))
     this.on('KILL', () => process.exit(1))
   }
 
@@ -64,8 +64,11 @@ class Worker extends EventEmitter {
    * @param {Array.<Number>} shards Array of shard IDs
    * @param {Number} shardCount Shard Count
    * @param {Boolean} spawned Whether already spawned
+   * @param {Boolean} inactive Whether to spawn inactive
    */
-  spawn (shards, shardCount, spawned) {
+  spawn (shards, shardCount, spawned, inactive) {
+    this.inactive = inactive
+
     this.client = new CensorBot(this, shards, shardCount)
 
     this.client.once('READY', () => {
