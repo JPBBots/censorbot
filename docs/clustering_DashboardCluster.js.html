@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Source: util/GenerateID.js</title>
+  <title>Source: clustering/DashboardCluster.js</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -26,24 +26,79 @@
         </div>
         <div id="jsdoc-main" role="main">
           <header class="page-header">
-            <h1>Source: util/GenerateID.js</h1>
+            <h1>Source: clustering/DashboardCluster.js</h1>
           </header>
           <article>
-            <pre class="prettyprint linenums"><code>/**
- * Small 3 letter unique ID
- * @typedef {String} SmallID
+            <pre class="prettyprint linenums"><code>const { Worker } &#x3D; require(&#x27;worker_threads&#x27;)
+
+/**
+ * Cluster manager for dashboard
  */
+class DashboardCluster {
+  /**
+   * Dashboard Cluster
+   * @param {Master} master Master
+   */
+  constructor (master) {
+    /**
+     * Master
+     * @type {Master}
+     */
+    this.master &#x3D; master
 
-module.exports &#x3D; (notallow &#x3D; []) &#x3D;&gt; {
-  var text &#x3D; &#x27;&#x27;
-  var possible &#x3D; &#x27;abcdefghijklmnopqrstuvwxyz0123456789&#x27;
+    /**
+     * Cluster ID
+     * @type {String} dash
+     */
+    this.id &#x3D; &#x27;dash&#x27;
 
-  for (var i &#x3D; 0; i &amp;lt; 3; i++) { text +&#x3D; possible.charAt(Math.floor(Math.random() * possible.length)) }
+    /**
+     * Thread
+     * @type {?Worker}
+     */
+    this.thread &#x3D; null
 
-  if (notallow.includes(text)) return module.exports(notallow)
+    this.setup()
+  }
 
-  return text
+  /**
+   * Sets up worker thread
+   */
+  setup () {
+    this.thread &#x3D; new Worker(&#x27;../clustering/dashboardService.js&#x27;, { workerData: { id: this.id } })
+
+    this.thread.on(&#x27;message&#x27;, (msg) &#x3D;&gt; {
+      this.emit(msg.e, msg.d, msg.i)
+    })
+
+    this.thread.on(&#x27;exit&#x27;, (code) &#x3D;&gt; {
+      this.master.log(14, 10, &#x60;Cluster ${this.id}&#x60;, code)
+
+      if (!this.dying) this.setup()
+    })
+
+    if (this.master.spawned) this.spawn()
+  }
+
+  /**
+   * Spawns dash
+   */
+  spawn () {
+    this.send(&#x27;SPAWN&#x27;)
+  }
+
+  /**
+   * Send a message to thread
+   * @param {String} e Event
+   * @param {Object} d Data
+   * @param {?Number} i Expected response ID
+   */
+  send (e, d, i) {
+    this.thread.postMessage({ e, d, i })
+  }
 }
+
+module.exports &#x3D; DashboardCluster
 </code></pre>
           </article>
         </div>

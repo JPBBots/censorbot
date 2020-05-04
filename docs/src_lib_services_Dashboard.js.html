@@ -35,11 +35,18 @@ const crypto &#x3D; require(&#x27;crypto&#x27;)
 
 const bit &#x3D; 0x0000008
 
+const Logger &#x3D; require(&#x27;../../../util/Logger&#x27;)
 const Collection &#x3D; require(&#x27;../../../util/Collection&#x27;)
 const encodeJSON &#x3D; require(&#x27;../../../util/encodeJSON&#x27;)
 const validateObject &#x3D; require(&#x27;../../../util/validateObject&#x27;)
 
 const cacheTimeout &#x3D; 300000
+
+const Database &#x3D; require(&#x27;./Database&#x27;)
+
+const UpdatesManager &#x3D; require(&#x27;../client/UpdatesManager&#x27;)
+
+const config &#x3D; require(&#x27;../../config&#x27;)
 
 /**
  * Guilds cached for oauth/dashboard use
@@ -64,14 +71,26 @@ const cacheTimeout &#x3D; 300000
 class Dashboard {
   /**
    * Dashboard
-   * @param {Client} client Client
+   * @param {DashboardWorker} worker Dashboard Worker
    */
-  constructor (client) {
+  constructor (worker) {
     /**
-     * Client
-     * @type {Client}
+     * Internal Methods
+     * @type {WorkerInternals}
      */
-    this.client &#x3D; client
+    this.cluster &#x3D; worker.internals
+
+    /**
+     * Config
+     * @type {Object}
+     */
+    this.config &#x3D; config
+
+    /**
+     * Updates
+     * @type {UpdateManager}
+     */
+    this.updates &#x3D; new UpdatesManager(this)
 
     /**
      * Express app
@@ -120,6 +139,42 @@ class Dashboard {
      * @type {String}
      */
     this.apiUrl &#x3D; &#x27;https://api.censor.bot&#x27;
+
+    /**
+     * Database
+     * @type {Database}
+     */
+    this.database &#x3D; null
+
+    /**
+     * Logger
+     * @type {Logger}
+     */
+    this.logger &#x3D; new Logger(&#x27;Dash&#x27;)
+
+    /**
+     * Censor Bot API
+     * @type {Request}
+     */
+    this.capi &#x3D; Request(&#x27;https://censor.bot&#x27;, {}, { format: &#x27;text&#x27; })
+
+    this.connectDatabase()
+  }
+
+  /**
+   * log
+   * @param  {...any} _ log
+   */
+  log (..._) {
+    this.logger.log(..._)
+  }
+
+  /**
+   * Connects database
+   */
+  connectDatabase () {
+    this.database &#x3D; new Database(this, config.db.username, config.db.password)
+    this.database.connect()
   }
 
   /**
@@ -127,7 +182,7 @@ class Dashboard {
    * @type {MongoDB.Collection}
    */
   get db () {
-    return this.client.db.collection(&#x27;dashboard&#x27;)
+    return this.database.collection(&#x27;dashboard&#x27;)
   }
 
   /**
@@ -135,13 +190,13 @@ class Dashboard {
    * @returns {Promise}
    */
   spawn () {
-    this.client.log(0, 0, &#x27;Dashboard&#x27;)
+    this.log(0, 0, &#x27;Dashboard&#x27;)
     return new Promise(resolve &#x3D;&gt; {
       const start &#x3D; new Date().getTime()
       this.onReady &#x3D; () &#x3D;&gt; {
         this.onReady &#x3D; null
         resolve()
-        this.client.log(0, 1, &#x27;Dashboard&#x27;, &#x60;${new Date().getTime() - start}ms:${this.client.config.port}&#x60;)
+        this.log(0, 1, &#x27;Dashboard&#x27;, &#x60;${new Date().getTime() - start}ms:${config.port}&#x60;)
       }
       this.start()
     })
@@ -155,7 +210,7 @@ class Dashboard {
 
     this.load()
 
-    this.server &#x3D; this.app.listen(this.client.config.port, () &#x3D;&gt; {
+    this.server &#x3D; this.app.listen(config.port, () &#x3D;&gt; {
       this.onReady()
     })
   }
@@ -199,7 +254,7 @@ class Dashboard {
    * @returns {String} URL to send to
    */
   oauthLogin (state) {
-    const oauth &#x3D; this.client.config.oauth
+    const oauth &#x3D; config.oauth
 
     return &#x27;https://discordapp.com/api/oauth2/authorize?&#x27; +
       encodeJSON({
@@ -281,6 +336,14 @@ class Dashboard {
     return guilds
   }
 
+  async isAdmin (id) {
+    const response &#x3D; await this.capi
+      .admin[id]
+      .get()
+
+    return !!parseInt(response)
+  }
+
   /**
    * Get made user guilds
    * @param {String} token User token
@@ -299,14 +362,14 @@ class Dashboard {
       return false
     }
 
-    const isAdmin &#x3D; await this.client.isAdmin(user.id)
+    const isAdmin &#x3D; await this.isAdmin(user.id)
 
     const cache &#x3D; this.getInCache(user.id)
     if (cache &amp;amp;&amp;amp; isAdmin &amp;amp;&amp;amp; state &amp;amp;&amp;amp; !cache.some(x &#x3D;&gt; x.i &#x3D;&#x3D;&#x3D; state)) {
       cache.push({
         i: state,
-        n: this.client.guilds.has(state) ? this.client.guilds.get(state).name : &#x27;(ADMIN)&#x27;,
-        a: this.client.guilds.has(state) ? this.client.guilds.get(state).icon : null
+        n: &#x27;(ADMIN)&#x27;,
+        a: null
       })
     }
     if (cache) return cache
@@ -319,8 +382,8 @@ class Dashboard {
     if (state &amp;amp;&amp;amp; !guilds.some(x &#x3D;&gt; x.i &#x3D;&#x3D;&#x3D; state)) {
       guilds.push({
         i: state,
-        n: this.client.guilds.has(state) ? this.client.guilds.get(state).name : &#x27;(ADMIN)&#x27;,
-        a: this.client.guilds.has(state) ? this.client.guilds.get(state).icon : null
+        n: &#x27;(ADMIN)&#x27;,
+        a: null
       })
     }
     return guilds
@@ -378,7 +441,7 @@ class Dashboard {
    * @type {String}
    */
   get newToken () {
-    return crypto.createHash(&#x27;sha256&#x27;).update(&#x60;${Math.random()}&#x60;).update(&#x60;${new Date().getTime()}&#x60;).update(this.client.config.oauth.mysecret).digest(&#x27;hex&#x27;)
+    return crypto.createHash(&#x27;sha256&#x27;).update(&#x60;${Math.random()}&#x60;).update(&#x60;${new Date().getTime()}&#x60;).update(config.oauth.mysecret).digest(&#x27;hex&#x27;)
   }
 
   // oauth
@@ -433,7 +496,7 @@ class Dashboard {
    * @returns {Object} OAuth user
    */
   async fetchOAuthUser (code) {
-    const oauth &#x3D; this.client.config.oauth
+    const oauth &#x3D; config.oauth
 
     const user &#x3D; await this.api
       .oauth2
@@ -487,7 +550,7 @@ class Dashboard {
   guildData (api, fn) {
     return async (req, res) &#x3D;&gt; {
       const { i: id, n: name } &#x3D; req.partialGuild
-      const guild &#x3D; await this.client.cluster.internal.fetchGuild(id)
+      const guild &#x3D; await this.cluster.fetchGuild(id)
       if (!guild) return api ? res.json({ error: &#x27;Not In Guild&#x27; }) : res.render(&#x27;invite&#x27;, { id })
 
       const obj &#x3D; { id, name }
@@ -495,7 +558,7 @@ class Dashboard {
       obj.c &#x3D; guild.c
       obj.r &#x3D; guild.r
 
-      obj.db &#x3D; await this.client.db.config(id)
+      obj.db &#x3D; await this.database.config(id)
 
       fn(req, res, obj)
     }
@@ -509,7 +572,7 @@ class Dashboard {
    * @returns {?Boolean}
    */
   validateSettings (obj, guild, f) {
-    if (!validateObject(this.client.db.defaultConfig, obj)) return f(&#x27;Invalid Object&#x27;)
+    if (!validateObject(this.database.defaultConfig, obj)) return f(&#x27;Invalid Object&#x27;)
     if (typeof obj.base !&#x3D;&#x3D; &#x27;boolean&#x27;) return f(&#x27;Base has an invalid type&#x27;)
     if (typeof obj.censor.msg !&#x3D;&#x3D; &#x27;boolean&#x27;) return f(&#x27;Censor (msg) has an invalid type&#x27;)
     if (typeof obj.censor.emsg !&#x3D;&#x3D; &#x27;boolean&#x27;) return f(&#x27;Censor (emsg) has an invalid type&#x27;)
@@ -531,7 +594,7 @@ class Dashboard {
     if (obj.uncensor.some(x &#x3D;&gt; x.match(/[^\w]/gi))) return f(&#x27;One of the uncensor words contains illegal characters&#x27;)
     if (typeof obj.multi !&#x3D;&#x3D; &#x27;boolean&#x27;) return f(&#x27;Multi-Line is an invalid type&#x27;)
     if (!(obj.languages instanceof Array)) return f(&#x27;Languages is an invalid type&#x27;)
-    if (obj.languages.some(x &#x3D;&gt; !this.client.db.defaultConfig.languages.includes(x))) return f(&#x27;Languages contains an invalid language&#x27;)
+    if (obj.languages.some(x &#x3D;&gt; !this.database.defaultConfig.languages.includes(x))) return f(&#x27;Languages contains an invalid language&#x27;)
     if (typeof obj.webhook_separate !&#x3D;&#x3D; &#x27;boolean&#x27;) return f(&#x27;Webhook Separate is not a boolean&#x27;)
     return true
   }
@@ -544,7 +607,7 @@ class Dashboard {
    * @returns {Object} Premium object
    */
   async premium (id) {
-    const premium &#x3D; parseInt(await this.client
+    const premium &#x3D; parseInt(await this
       .capi
       .premium[id]
       .get()
@@ -553,10 +616,10 @@ class Dashboard {
 
     const user &#x3D; { premium: true, amount: premium }
 
-    const dbUser &#x3D; await this.client.db.collection(&#x27;premium_users&#x27;).findOne({ id })
+    const dbUser &#x3D; await this.database.collection(&#x27;premium_users&#x27;).findOne({ id })
 
     if (!dbUser) {
-      await this.client.db.collection(&#x27;premium_users&#x27;).updateOne({ id }, {
+      await this.database.collection(&#x27;premium_users&#x27;).updateOne({ id }, {
         $set: {
           id,
           guilds: []
@@ -607,7 +670,7 @@ class Dashboard {
 
       if (!user) return api ? res.json({ error: &#x27;Unauthorized&#x27; }) : res.redirect(this.oauthLogin(&#x27;admin&#x27;))
 
-      const admin &#x3D; await this.client.isAdmin(user.id)
+      const admin &#x3D; await this.isAdmin(user.id)
 
       if (!admin) return api ? res.json({ error: &#x27;Not Admin&#x27; }) : res.render(&#x27;errors/notadmin&#x27;, { base: this.base })
 
@@ -629,7 +692,7 @@ module.exports &#x3D; Dashboard
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 3, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 4, 2020.
       </p>
     </div>
   </footer>

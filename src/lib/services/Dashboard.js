@@ -4,6 +4,7 @@ const crypto = require('crypto')
 
 const bit = 0x0000008
 
+const Logger = require('../../../util/Logger')
 const Collection = require('../../../util/Collection')
 const encodeJSON = require('../../../util/encodeJSON')
 const validateObject = require('../../../util/validateObject')
@@ -11,7 +12,6 @@ const validateObject = require('../../../util/validateObject')
 const cacheTimeout = 300000
 
 const Database = require('./Database')
-const Logger = require('../../../util/Logger')
 
 const UpdatesManager = require('../client/UpdatesManager')
 
@@ -49,8 +49,16 @@ class Dashboard {
      */
     this.cluster = worker.internals
 
+    /**
+     * Config
+     * @type {Object}
+     */
     this.config = config
 
+    /**
+     * Updates
+     * @type {UpdateManager}
+     */
     this.updates = new UpdatesManager(this)
 
     /**

@@ -1,16 +1,38 @@
 const { Worker } = require('worker_threads')
 
+/**
+ * Cluster manager for dashboard
+ */
 class DashboardCluster {
+  /**
+   * Dashboard Cluster
+   * @param {Master} master Master
+   */
   constructor (master) {
+    /**
+     * Master
+     * @type {Master}
+     */
     this.master = master
 
+    /**
+     * Cluster ID
+     * @type {String} dash
+     */
     this.id = 'dash'
 
+    /**
+     * Thread
+     * @type {?Worker}
+     */
     this.thread = null
 
     this.setup()
   }
 
+  /**
+   * Sets up worker thread
+   */
   setup () {
     this.thread = new Worker('../clustering/dashboardService.js', { workerData: { id: this.id } })
 
@@ -27,6 +49,9 @@ class DashboardCluster {
     if (this.master.spawned) this.spawn()
   }
 
+  /**
+   * Spawns dash
+   */
   spawn () {
     this.send('SPAWN')
   }

@@ -40,7 +40,8 @@
   "standard": {
     "ignore": [
       "src/dashboard/views/*",
-      "src/dashboard/static/*"
+      "src/dashboard/static/*",
+      "docs/*"
     ],
     "globals": [
       "BigInt"

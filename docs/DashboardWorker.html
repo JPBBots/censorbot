@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Class: DBL</title>
+  <title>Class: DashboardWorker</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -25,52 +25,31 @@
         <div id="jsdoc-main" role="main">
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
-            <h1><small></small><span class="symbol-name">DBL</span></h1>
-            <p class="source-link">Source: <a href="src_lib_bot_DBL.js.html#source-line-11">src/<wbr>lib/<wbr>bot/<wbr>DBL.<wbr>js:11</a></p>
+            <h1><small></small><span class="symbol-name">DashboardWorker</span></h1>
+            <p class="source-link">Source: <a href="clustering_DashboardWorker.js.html#source-line-13">clustering/<wbr>DashboardWorker.<wbr>js:13</a></p>
             <div class="symbol-classdesc">
-              <p>Used for interacting with the DBL (top.gg) api</p>
+              <p>Worker for managing database</p>
             </div>
             <dl class="dl-compact">
             </dl>
           </header>
           <section id="summary">
             <div class="summary-callout">
-              <h2 class="summary-callout-heading">Properties</h2>
+              <h2 class="summary-callout-heading">Methods</h2>
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="DBL.html#api">api</a></dt>
+                    <dt><a href="DashboardWorker.html#setup">setup()</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="DBL.html#client">client</a></dt>
+                    <dt><a href="DashboardWorker.html#spawn">spawn()</a></dt>
                     <dd>
                     </dd>
                   </dl>
-                </div>
-                <div class="summary-column">
-                  <dl class="dl-summary-callout">
-                    <dt><a href="DBL.html#interval">interval</a></dt>
-                    <dd>
-                    </dd>
-                  </dl>
-                </div>
-              </div>
-            </div>
-            <div class="summary-callout">
-              <h2 class="summary-callout-heading">Method</h2>
-              <div class="summary-content">
-                <div class="summary-column">
-                  <dl class="dl-summary-callout">
-                    <dt><a href="DBL.html#post">post()</a></dt>
-                    <dd>
-                    </dd>
-                  </dl>
-                </div>
-                <div class="summary-column">
                 </div>
                 <div class="summary-column">
                 </div>
@@ -78,10 +57,10 @@
             </div>
           </section>
           <section>
-            <h2 id="DBL">new&nbsp;<span class="symbol-name">DBL</span><span class="signature"><span class="signature-params">(client)</span></span></h2>
-            <p>DBL interface</p>
+            <h2 id="DashboardWorker">new&nbsp;<span class="symbol-name">DashboardWorker</span><span class="signature"><span class="signature-params">(data, parent)</span></span></h2>
+            <p>Dashboard Worker</p>
             <section>
-              <h3>Parameter</h3>
+              <h3>Parameters</h3>
               <table class="jsdoc-details-table">
                 <thead>
                   <tr>
@@ -94,7 +73,7 @@
                 <tbody>
                   <tr>
                     <td>
-                      <p>client</p>
+                      <p>data</p>
                     </td>
                     <td>
                       <p>&nbsp;</p>
@@ -103,7 +82,21 @@
                       <p>&nbsp;</p>
                     </td>
                     <td>
-                      <p>Client</p>
+                      <p>Worker Data</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p>parent</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Parent Port</p>
                     </td>
                   </tr>
                 </tbody>
@@ -113,34 +106,15 @@
             </dl>
           </section>
           <section>
-            <h2>Properties</h2>
+            <h2>Methods</h2>
             <section>
-              <h3 id="api"><span class="symbol-name">api</span><small class="property-type">
-                  &nbsp;<a href="global.html#Request">Request</a></small></h3>
-              <p>DBL API</p>
+              <h3 id="setup"><span class="symbol-name">setup</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Sets parent interaction</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="client"><span class="symbol-name">client</span><small class="property-type">
-                  &nbsp;<a href="Client.html">Client</a></small></h3>
-              <p>Client</p>
+              <h3 id="spawn"><span class="symbol-name">spawn</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Spawn dashboard</p>
               <dl class="dl-compact">
-              </dl>
-              <h3 id="interval"><span class="symbol-name">interval</span><small class="property-type">
-                  &nbsp;Interval</small></h3>
-              <p>Posting interval</p>
-              <dl class="dl-compact">
-              </dl>
-            </section>
-            <h2>Method</h2>
-            <section>
-              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
-              <h3 id="post"><span class="symbol-name">post</span><span class="signature"><span class="signature-params">()</span>&nbsp;&rarr; <span class="signature-returns"> Promise containing Object</span></span></h3>
-              <p>Post stats</p>
-              <dl class="dl-compact">
-                <dt>Returns</dt>
-                <dd>
-                  <p><code>Promise containing Object</code> Response</p>
-                </dd>
               </dl>
             </section>
           </section>

@@ -26,7 +26,7 @@
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
             <h1><small></small><span class="symbol-name">Dashboard</span></h1>
-            <p class="source-link">Source: <a href="src_lib_services_Dashboard.js.html#source-line-38">src/<wbr>lib/<wbr>services/<wbr>Dashboard.<wbr>js:38</a></p>
+            <p class="source-link">Source: <a href="src_lib_services_Dashboard.js.html#source-line-45">src/<wbr>lib/<wbr>services/<wbr>Dashboard.<wbr>js:45</a></p>
             <div class="symbol-classdesc">
               <p>Used for methods used throughout the api and dashboard</p>
             </div>
@@ -51,20 +51,32 @@
                     <dt><a href="Dashboard.html#base">base</a></dt>
                     <dd>
                     </dd>
+                    <dt><a href="Dashboard.html#caching">caching</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#capi">capi</a></dt>
+                    <dd>
+                    </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Dashboard.html#caching">caching</a></dt>
+                    <dt><a href="Dashboard.html#cluster">cluster</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="Dashboard.html#client">client</a></dt>
+                    <dt><a href="Dashboard.html#config">config</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#database">database</a></dt>
                     <dd>
                     </dd>
                     <dt><a href="Dashboard.html#db">db</a></dt>
                     <dd>
                     </dd>
                     <dt><a href="Dashboard.html#guilds">guilds</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#logger">logger</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -83,6 +95,9 @@
                     <dt><a href="Dashboard.html#server">server</a></dt>
                     <dd>
                     </dd>
+                    <dt><a href="Dashboard.html#updates">updates</a></dt>
+                    <dd>
+                    </dd>
                   </dl>
                 </div>
               </div>
@@ -99,6 +114,9 @@
                     <dd>
                     </dd>
                     <dt><a href="Dashboard.html#close">close()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#connectDatabase">connectDatabase()</a></dt>
                     <dd>
                     </dd>
                     <dt><a href="Dashboard.html#fail">fail(res, api, state)</a></dt>
@@ -135,6 +153,9 @@
                     <dt><a href="Dashboard.html#load">load()</a></dt>
                     <dd>
                     </dd>
+                    <dt><a href="Dashboard.html#log">log(.<wbr>.<wbr>.<wbr>_)</a></dt>
+                    <dd>
+                    </dd>
                     <dt><a href="Dashboard.html#oauthLogin">oauthLogin(state)</a></dt>
                     <dd>
                     </dd>
@@ -169,7 +190,7 @@
             </div>
           </section>
           <section>
-            <h2 id="Dashboard">new&nbsp;<span class="symbol-name">Dashboard</span><span class="signature"><span class="signature-params">(client)</span></span></h2>
+            <h2 id="Dashboard">new&nbsp;<span class="symbol-name">Dashboard</span><span class="signature"><span class="signature-params">(worker)</span></span></h2>
             <p>Dashboard</p>
             <section>
               <h3>Parameter</h3>
@@ -185,7 +206,7 @@
                 <tbody>
                   <tr>
                     <td>
-                      <p>client</p>
+                      <p>worker</p>
                     </td>
                     <td>
                       <p>&nbsp;</p>
@@ -194,7 +215,7 @@
                       <p>&nbsp;</p>
                     </td>
                     <td>
-                      <p>Client</p>
+                      <p>Dashboard Worker</p>
                     </td>
                   </tr>
                 </tbody>
@@ -231,9 +252,24 @@
               <p>Clear cachings</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="client"><span class="symbol-name">client</span><small class="property-type">
-                  &nbsp;<a href="Client.html">Client</a></small></h3>
-              <p>Client</p>
+              <h3 id="capi"><span class="symbol-name">capi</span><small class="property-type">
+                  &nbsp;<a href="global.html#Request">Request</a></small></h3>
+              <p>Censor Bot API</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="cluster"><span class="symbol-name">cluster</span><small class="property-type">
+                  &nbsp;<a href="WorkerInternals.html">WorkerInternals</a></small></h3>
+              <p>Internal Methods</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="config"><span class="symbol-name">config</span><small class="property-type">
+                  &nbsp;Object</small></h3>
+              <p>Config</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="database"><span class="symbol-name">database</span><small class="property-type">
+                  &nbsp;<a href="Database.html">Database</a></small></h3>
+              <p>Database</p>
               <dl class="dl-compact">
               </dl>
               <h3 id="db"><span class="symbol-name">db</span><small class="property-type">
@@ -244,6 +280,11 @@
               <h3 id="guilds"><span class="symbol-name">guilds</span><small class="property-type">
                   &nbsp;Object with <a href="global.html#Snowflake">Snowflake</a> keys and Array of <a href="global.html#CachedGuild">CachedGuild</a> properties</small></h3>
               <p>Guild cache</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="logger"><span class="symbol-name">logger</span><small class="property-type">
+                  &nbsp;<a href="Logger.html">Logger</a></small></h3>
+              <p>Logger</p>
               <dl class="dl-compact">
               </dl>
               <h3 id="newToken"><span class="symbol-name">newToken</span><small class="property-type">
@@ -264,6 +305,11 @@
               <h3 id="server"><span class="symbol-name">server</span><small class="property-type">
                   &nbsp;nullable Server</small></h3>
               <p>HTTP Server</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="updates"><span class="symbol-name">updates</span><small class="property-type">
+                  &nbsp;UpdateManager</small></h3>
+              <p>Updates</p>
               <dl class="dl-compact">
               </dl>
             </section>
@@ -352,6 +398,10 @@
               </dl>
               <h3 id="close"><span class="symbol-name">close</span><span class="signature"><span class="signature-params">()</span></span></h3>
               <p>Close server</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="connectDatabase"><span class="symbol-name">connectDatabase</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Connects database</p>
               <dl class="dl-compact">
               </dl>
               <h3 id="fail"><span class="symbol-name">fail</span><span class="signature"><span class="signature-params">(res, api, state)</span></span></h3>
@@ -789,6 +839,40 @@
               <p>Load routes</p>
               <dl class="dl-compact">
               </dl>
+              <h3 id="log"><span class="symbol-name">log</span><span class="signature"><span class="signature-params">(..._)</span></span></h3>
+              <p>log</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>_</p>
+                      </td>
+                      <td>
+                        <p>any</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>log</p>
+                        <p>Value can be repeated.</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
               <h3 id="oauthLogin"><span class="symbol-name">oauthLogin</span><span class="signature"><span class="signature-params">(state)</span>&nbsp;&rarr; <span class="signature-returns"> String</span></span></h3>
               <p>OAUTH Login url</p>
               <section>
@@ -1049,7 +1133,7 @@
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 3, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 4, 2020.
       </p>
     </div>
   </footer>
