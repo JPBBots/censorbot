@@ -13,6 +13,8 @@ exports.run = async function (message, args) {
       arr.push([shard.id, shard.connected ? 'Connected' : 'Disconnected', shard.ping + 'ms', shard.guilds])
     })
 
+    arr.push(['Total', '', (clusters[i].shards.map(x => x.ping).reduce((a, b) => a + b, 0) / clusters[i].shards.length).toFixed(0) + 'ms', clusters[i].shards.map(x => x.guilds).reduce((a, b) => a + b, 0)])
+
     msg += table(arr)
   }
 
