@@ -1,19 +1,6 @@
 module.exports = function (r) {
   r.use(this.adminMiddle(true))
 
-  r.get('/users/:userid', (req, res) => {
-    const guilds = this.client.userGuilds.get(req.params.userid) || []
-
-    res.json(
-      this.client.guilds.filter(x => guilds.includes(x.id)).map(x => {
-        return {
-          id: x.id,
-          name: x.name
-        }
-      })
-    )
-  })
-
   r.post('/shards/:shardid', (req, res) => {
     this.client.cluster.internal.restart(parseInt(req.params.shardid), req.body.destroy)
     res.json({ success: true })
