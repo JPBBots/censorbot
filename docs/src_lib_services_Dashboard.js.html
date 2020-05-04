@@ -126,7 +126,7 @@ class Dashboard {
      * Blank discord api
      * @type {Request}
      */
-    this.api &#x3D; Request(&#x27;https://discordapp.com/api&#x27;)
+    this.api &#x3D; Request(&#x27;https://discord.com/api&#x27;)
 
     /**
      * Base URL
@@ -256,7 +256,7 @@ class Dashboard {
   oauthLogin (state) {
     const oauth &#x3D; config.oauth
 
-    return &#x27;https://discordapp.com/api/oauth2/authorize?&#x27; +
+    return &#x27;https://discord.com/api/oauth2/authorize?&#x27; +
       encodeJSON({
         client_id: oauth.id,
         redirect_uri: this.redirectURL,

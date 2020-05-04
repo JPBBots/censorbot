@@ -38,7 +38,7 @@ module.exports = async function (reaction) {
       this.embed
         .title('Removed Reaction')
         .description(`User <@${reaction.user_id}> in <#${reaction.channel_id}> on [message](${
-          `https://discordapp.com/channels/${reaction.guild_id}/${reaction.channel_id}/${reaction.message_id}`
+          `https://discord.com/channels/${reaction.guild_id}/${reaction.channel_id}/${reaction.message_id}`
         }) ${errMsg ? `\n\nError: ${errMsg}` : ''}`)
         .field('Reaction', content, true)
         .field('Method', res.method, true)

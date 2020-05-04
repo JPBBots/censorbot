@@ -52,7 +52,7 @@ const GuildShard &#x3D; require(&#x27;../util/GuildShard&#x27;)
  * @typedef {Object} ClientOptions
  * @property {Array.&amp;lt;Number&gt;} shards&#x3D;[0] Shards to spawn
  * @property {Number} shardCount&#x3D;0 Shard Amount
- * @property {String} api&#x3D;&#x27;https://discordapp.com/api/v7&#x27; URL of Discord API
+ * @property {String} api&#x3D;&#x27;https://discord.com/api/v7&#x27; URL of Discord API
  * @property {Number} spawnTimeout&#x3D;6000 Time between shard spawns
  * @property {Object} ws Websocket options
  * @property {String} ws.url&#x3D;&#x27;&#x27; URL of Discord Websocket
@@ -154,7 +154,7 @@ class Client extends EventEmitter {
     this.options &#x3D; {
       shards: opts.shards || [0],
       shardCount: opts.shardCount || 1,
-      api: &#x27;https://discordapp.com/api/v7&#x27;,
+      api: &#x27;https://discord.com/api/v7&#x27;,
       spawnTimeout: 6000,
       ws: {
         url: &#x27;&#x27;,

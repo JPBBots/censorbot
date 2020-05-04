@@ -116,7 +116,7 @@
                     <div class="guild" value="<%=x.i%>">
                         <div class="tooltip circleDiv" href="<%= base %>/<%=x.i%>">
                             <% if(x.a) { %>
-                                <img class="guildPicture" src="https://cdn.discordapp.com/icons/<%= x.i%>/<%= x.a %>" alt="<%=x.n%>">
+                                <img class="guildPicture" src="https://cdn.discord.com/icons/<%= x.i%>/<%= x.a %>" alt="<%=x.n%>">
                             <% } else { %>
                                 <p class="guildText"><%= (x.n.match(/\b(\w)/g) || []).join("").toUpperCase() %></p>
                             <% } %>

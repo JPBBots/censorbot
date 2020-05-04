@@ -2,7 +2,7 @@ const encodeJSON = require('../../../util/encodeJSON')
 
 module.exports = function (r) {
   r.get('/invite', (req, res) => {
-    res.redirect('https://discordapp.com/oauth2/authorize?' +
+    res.redirect('https://discord.com/oauth2/authorize?' +
       encodeJSON({
         client_id: this.config.id,
         permissions: '8',
