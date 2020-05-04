@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Source: src/lib/bot/CommandHandler.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: src/lib/bot/CommandHandler.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>const { readdirSync } &#x3D; require(&#x27;fs&#x27;)
+const dir &#x3D; require(&#x27;path&#x27;).resolve.bind(undefined, __dirname)
+const Collection &#x3D; require(&#x27;../../../util/Collection&#x27;)
+
+delete require.cache[require.resolve(&#x27;./Command&#x27;)]
+const Command &#x3D; require(&#x27;./Command&#x27;)
+
+/**
+ * Used for taking in message events and running commands
+ */
+class CommandHandler {
+  /**
+   * Command Handler
+   * @param {Client} client Client
+   */
+  constructor (client) {
+    /**
+     * Client
+     * @type {Client}
+     */
+    this.client &#x3D; client
+    this.client.log(0, 0, &#x27;CommandHandler&#x27;)
+
+    /**
+     * Commands
+     * @type {Collection}
+     */
+    this.commands &#x3D; new Collection()
+
+    this.client.log(0, 1, &#x27;CommandHandler&#x27;)
+
+    this.load()
+  }
+
+  /**
+   * (Re)Loads commands
+   */
+  load () {
+    this.client.log(2, 0, &#x27;/commands&#x27;)
+    this.commands.clear()
+    const commands &#x3D; readdirSync(dir(&#x27;../../commands&#x27;))
+    commands.forEach(cmd &#x3D;&gt; {
+      const [name, ext] &#x3D; cmd.split(&#x27;.&#x27;)
+      if (ext !&#x3D;&#x3D; &#x27;js&#x27;) return
+
+      delete require.cache[require.resolve(dir(&#x27;../../commands&#x27;, &#x60;${name}.${ext}&#x60;))]
+
+      const command &#x3D; require(dir(&#x27;../../commands&#x27;, &#x60;${name}.${ext}&#x60;))
+      this.commands.set(name, command)
+    })
+
+    this.client.log(2, 1, &#x60;${commands.length} commands&#x60;)
+  }
+
+  /**
+   * Handles message event
+   * @param {Object} msg Message
+   */
+  event (msg) {
+    const channel &#x3D; this.client.channels.get(msg.channel_id)
+    if (!channel || msg.type !&#x3D;&#x3D; 0 || channel.type !&#x3D;&#x3D; 0 || msg.author.bot) return
+
+    const prefix &#x3D; this.client.config.prefix.find(x &#x3D;&gt; msg.content.startsWith(x))
+    if (!prefix) return
+
+    if (this.client.config.ignoreFirstPrefixServers.includes(msg.guild_id) &amp;amp;&amp;amp; prefix &#x3D;&#x3D;&#x3D; this.client.config.prefix[0]) return
+
+    const args &#x3D; msg.content.slice(prefix.length).split(/\s/)
+    const command &#x3D; args.shift()
+
+    this.client.log(2, 4, &#x60;${command}&#x60;, &#x60;${msg.author.username}#${msg.author.discriminator}; ${msg.author.id}&#x60;)
+
+    try {
+      this.run(command, msg, args, prefix)
+    } catch (err) {
+      console.error(err)
+    }
+
+    return command
+  }
+
+  /**
+   * Run command
+   * @param {String} command Command name
+   * @param {Object} msg Message
+   * @param {Array.&amp;lt;String&gt;} args Command arguments
+   * @param {String} prefix Prefix used to run
+   */
+  async run (command, msg, args, prefix) {
+    const cmd &#x3D; this.commands.find(x &#x3D;&gt; [x.info.name, ...(x.info.aliases || [])].includes(command.toLowerCase()))
+    if (!cmd) return
+
+    if (cmd.info.admin &amp;amp;&amp;amp; !await this.client.isAdmin(msg.author.id)) return this.client.interface.send(msg.channel_id, &#x27;You do not have permission to run this command.&#x27;)
+
+    cmd.run.bind(new Command(this.client, msg))(msg, args, prefix)
+  }
+
+  /**
+   * List commands
+   * @returns {Array.&amp;lt;Object&gt;} Command info&#x27;s
+   */
+  list () {
+    const cmds &#x3D; this.commands
+      .filter(x &#x3D;&gt; !x.info.admin)
+      .map(x &#x3D;&gt; x.info.name)
+      .sort()
+      .map(x &#x3D;&gt; this.commands.get(x).info)
+
+    return cmds
+  }
+}
+
+module.exports &#x3D; CommandHandler
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 3, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

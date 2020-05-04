@@ -9,7 +9,7 @@
     "log": "pm2 logs censorbot",
     "commit": "git add . && echo \"Commit Message:\" && read msg && git commit -m \"$msg\"",
     "push": "git push",
-    "jsdoc": "jsdoc ./ -r -c ./jsdoc.json --verbose -d /home/jpb/websites/censorbot/doc"
+    "jsdoc": "jsdoc ./ -r -c ./jsdoc.json --verbose -d ./docs"
   },
   "repository": {
     "type": "git",

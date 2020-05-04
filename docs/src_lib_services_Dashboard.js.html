@@ -1,0 +1,644 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Source: src/lib/services/Dashboard.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: src/lib/services/Dashboard.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>const Express &#x3D; require(&#x27;express&#x27;)
+const Request &#x3D; require(&#x27;../../../req&#x27;)
+const crypto &#x3D; require(&#x27;crypto&#x27;)
+
+const bit &#x3D; 0x0000008
+
+const Collection &#x3D; require(&#x27;../../../util/Collection&#x27;)
+const encodeJSON &#x3D; require(&#x27;../../../util/encodeJSON&#x27;)
+const validateObject &#x3D; require(&#x27;../../../util/validateObject&#x27;)
+
+const cacheTimeout &#x3D; 300000
+
+/**
+ * Guilds cached for oauth/dashboard use
+ * @typedef {Object} CachedGuild
+ * @property {Snowflake} i ID of guild
+ * @property {String} n Name of guild
+ * @property {String} a Icon hash of guild
+ */
+
+/**
+  * Used for retrieving OAuth bearer of a Discord user
+  * @typedef {String} OAuthCode
+  */
+/**
+  * Used for requesting as a user, such as user info and guilds
+  * @typedef {String} OAuthBearer
+  */
+
+/**
+ * Used for methods used throughout the api and dashboard
+ */
+class Dashboard {
+  /**
+   * Dashboard
+   * @param {Client} client Client
+   */
+  constructor (client) {
+    /**
+     * Client
+     * @type {Client}
+     */
+    this.client &#x3D; client
+
+    /**
+     * Express app
+     * @type {?Express}
+     */
+    this.app &#x3D; null
+
+    /**
+     * HTTP Server
+     * @type {?Server}
+     */
+    this.server &#x3D; null
+
+    /**
+     * Ran on ready
+     * @type {?Function}
+     */
+    this.onReady &#x3D; null
+
+    /**
+     * Guild cache
+     * @type {Collection.&amp;lt;Snowflake, Array.&amp;lt;CachedGuild&gt;&gt;}
+     */
+    this.guilds &#x3D; new Collection()
+
+    /**
+     * Clear cachings
+     * @type {Collection.&amp;lt;Snowflake, Timeout&gt;}
+     */
+    this.caching &#x3D; new Collection()
+
+    /**
+     * Blank discord api
+     * @type {Request}
+     */
+    this.api &#x3D; Request(&#x27;https://discordapp.com/api&#x27;)
+
+    /**
+     * Base URL
+     * @type {String}
+     */
+    this.base &#x3D; &#x27;https://dash.censor.bot&#x27;
+
+    /**
+     * API URL
+     * @type {String}
+     */
+    this.apiUrl &#x3D; &#x27;https://api.censor.bot&#x27;
+  }
+
+  /**
+   * Database
+   * @type {MongoDB.Collection}
+   */
+  get db () {
+    return this.client.db.collection(&#x27;dashboard&#x27;)
+  }
+
+  /**
+   * Spawn dashboard
+   * @returns {Promise}
+   */
+  spawn () {
+    this.client.log(0, 0, &#x27;Dashboard&#x27;)
+    return new Promise(resolve &#x3D;&gt; {
+      const start &#x3D; new Date().getTime()
+      this.onReady &#x3D; () &#x3D;&gt; {
+        this.onReady &#x3D; null
+        resolve()
+        this.client.log(0, 1, &#x27;Dashboard&#x27;, &#x60;${new Date().getTime() - start}ms:${this.client.config.port}&#x60;)
+      }
+      this.start()
+    })
+  }
+
+  /**
+   * Start app
+   */
+  start () {
+    this.app &#x3D; Express()
+
+    this.load()
+
+    this.server &#x3D; this.app.listen(this.client.config.port, () &#x3D;&gt; {
+      this.onReady()
+    })
+  }
+
+  /**
+   * Close server
+   */
+  close () {
+    this.server.close()
+  }
+
+  /**
+   * Load routes
+   */
+  load () {
+    this.app.use(
+      require(&#x27;../../dashboard&#x27;)(this)
+    )
+  }
+
+  /**
+   * Reload routes
+   */
+  reload () {
+    delete require.cache[require.resolve(&#x27;../../dashboard&#x27;)]
+    this.app._router &#x3D; null
+    this.load()
+  }
+
+  /**
+   * Redirect URL
+   * @type {String}
+   */
+  get redirectURL () {
+    return this.base + &#x27;/auth/callback&#x27;
+  }
+
+  /**
+   * OAUTH Login url
+   * @param {String} state Redirect state
+   * @returns {String} URL to send to
+   */
+  oauthLogin (state) {
+    const oauth &#x3D; this.client.config.oauth
+
+    return &#x27;https://discordapp.com/api/oauth2/authorize?&#x27; +
+      encodeJSON({
+        client_id: oauth.id,
+        redirect_uri: this.redirectURL,
+        response_type: &#x27;code&#x27;,
+        scope: &#x27;identify guilds&#x27;,
+        ...(state ? { state: state } : {})
+      })
+  }
+
+  // caching
+
+  /**
+   * Get user in cache
+   * @param {Snowflake} user User
+   * @returns {Array.&amp;lt;CachedGuild&gt;} Guilds
+   */
+  getInCache (user) {
+    const cache &#x3D; this.guilds.get(user)
+
+    if (!cache) return false
+
+    const timeout &#x3D; this.caching.get(user)
+
+    clearTimeout(timeout)
+
+    this.caching.set(user, setTimeout(() &#x3D;&gt; {
+      this.guilds.delete(user)
+      this.caching.delete(user)
+    }, cacheTimeout))
+
+    return cache
+  }
+
+  /**
+   * Set guilds into user cache
+   * @param {Snowflake} user User
+   * @param {Array.&amp;lt;CachedGuild&gt;} value Guilds
+   */
+  setInCache (user, value) {
+    this.guilds.set(user, value)
+    this.caching.set(user, setTimeout(() &#x3D;&gt; {
+      this.guilds.delete(user)
+      this.caching.delete(user)
+    }, cacheTimeout))
+  }
+
+  // auth
+
+  /**
+   * Fail a request unauthorized
+   * @param {*} res Res
+   * @param {Boolean} api Whether api
+   * @param {String} state OAuth State
+   */
+  fail (res, api, state) {
+    if (api) res.json({ error: &#x27;Unauthorized&#x27; })
+    else res.redirect(this.oauthLogin(state))
+  }
+
+  /**
+   * Get user guilds
+   * @returns {Promise.&amp;lt;Array.&amp;lt;CachedGuild&gt;&gt;} User Guilds
+   */
+  async getGuilds (req, state, api &#x3D; false) {
+    const { res } &#x3D; req
+
+    const token &#x3D; api ? req.headers.authorization : req.cookies.token
+
+    if (!token) {
+      this.fail(res, api, state)
+      return false
+    }
+
+    const guilds &#x3D; await this.getUserGuilds(token, res, state, api)
+    if (!guilds) return false
+
+    return guilds
+  }
+
+  /**
+   * Get made user guilds
+   * @param {String} token User token
+   * @param {*} res Res
+   * @param {String} state State
+   * @param {Boolean} api API
+   * @returns {Promise.&amp;lt;Array.&amp;lt;CachedGuild&gt;&gt;} User Guilds
+   */
+  async getUserGuilds (token, res, state, api) {
+    const user &#x3D; await this.db.findOne({
+      token: token
+    })
+
+    if (!user) {
+      this.fail(res, api, state)
+      return false
+    }
+
+    const isAdmin &#x3D; await this.client.isAdmin(user.id)
+
+    const cache &#x3D; this.getInCache(user.id)
+    if (cache &amp;amp;&amp;amp; isAdmin &amp;amp;&amp;amp; state &amp;amp;&amp;amp; !cache.some(x &#x3D;&gt; x.i &#x3D;&#x3D;&#x3D; state)) {
+      cache.push({
+        i: state,
+        n: this.client.guilds.has(state) ? this.client.guilds.get(state).name : &#x27;(ADMIN)&#x27;,
+        a: this.client.guilds.has(state) ? this.client.guilds.get(state).icon : null
+      })
+    }
+    if (cache) return cache
+
+    const guilds &#x3D; await this.fetchGuilds(user.bearer, res, state, api)
+    if (!guilds) return false
+
+    this.setInCache(user.id, guilds)
+
+    if (state &amp;amp;&amp;amp; !guilds.some(x &#x3D;&gt; x.i &#x3D;&#x3D;&#x3D; state)) {
+      guilds.push({
+        i: state,
+        n: this.client.guilds.has(state) ? this.client.guilds.get(state).name : &#x27;(ADMIN)&#x27;,
+        a: this.client.guilds.has(state) ? this.client.guilds.get(state).icon : null
+      })
+    }
+    return guilds
+  }
+
+  /**
+   * Fetch user guilds
+   * @param {String} bearer User bearer
+   * @param {*} res Res
+   * @param {String} state State
+   * @param {Boolean} api API
+   * @returns {Promise&amp;lt;Array.&amp;lt;CachedGuild&gt;&gt;} Guilds
+   */
+  async fetchGuilds (bearer, res, state, api) {
+    const guilds &#x3D; await this.api
+      .users(&#x27;@me&#x27;)
+      .guilds
+      .get({
+        headers: {
+          Authorization: &#x60;Bearer ${bearer}&#x60;
+        }
+      })
+    if (!guilds || !guilds[0]) {
+      this.fail(res, api, state)
+      return false
+    }
+
+    return guilds
+      .filter(x &#x3D;&gt; ((x.permissions &amp;amp; bit) !&#x3D;&#x3D; 0 || x.owner))
+      .map(x &#x3D;&gt; {
+        return { n: x.name, i: x.id, a: x.icon }
+      })
+  }
+
+  /**
+   * Fetch user
+   * @param {OAuthBearer} bearer User bearer
+   * @returns {Object} User
+   */
+  async fetchUser (bearer) {
+    const user &#x3D; await this.api
+      .users[&#x27;@me&#x27;]
+      .get({
+        headers: {
+          Authorization: &#x60;Bearer ${bearer}&#x60;
+        }
+      })
+
+    if (!user || !user.id) return false
+    return user
+  }
+
+  /**
+   * New token
+   * @type {String}
+   */
+  get newToken () {
+    return crypto.createHash(&#x27;sha256&#x27;).update(&#x60;${Math.random()}&#x60;).update(&#x60;${new Date().getTime()}&#x60;).update(this.client.config.oauth.mysecret).digest(&#x27;hex&#x27;)
+  }
+
+  // oauth
+
+  /**
+   * Handle callback
+   * @param {*} req Req
+   */
+  async callback (req) {
+    const { res } &#x3D; req
+
+    if (!req.query.code) return res.json({ error: &#x27;No code&#x27; })
+
+    const oauthUser &#x3D; await this.fetchOAuthUser(req.query.code)
+    if (!oauthUser) return res.redirect(this.oauthLogin(req.query.state))
+
+    const user &#x3D; await this.fetchUser(oauthUser.access_token)
+    if (!user) return res.redirect(this.oauthLogin(req.query.state))
+
+    let token
+
+    const dbUser &#x3D; await this.db.findOne({
+      id: user.id
+    })
+    if (dbUser) {
+      token &#x3D; dbUser.token
+    } else {
+      token &#x3D; this.newToken
+    }
+
+    await this.db.updateOne({
+      id: user.id
+    }, {
+      $set: {
+        id: user.id,
+        tag: &#x60;${user.username}#${user.discriminator}&#x60;,
+        token,
+        bearer: oauthUser.access_token
+      }
+    }, {
+      upsert: true
+    })
+
+    res.cookie(&#x27;token&#x27;, token)
+
+    res.redirect(this.base)
+  }
+
+  /**
+   * Fetch oauth user
+   * @param {OAuthCode} code Discord code
+   * @returns {Object} OAuth user
+   */
+  async fetchOAuthUser (code) {
+    const oauth &#x3D; this.client.config.oauth
+
+    const user &#x3D; await this.api
+      .oauth2
+      .token
+      .post({
+        headers: {
+          &#x27;Content-Type&#x27;: &#x27;application/x-www-form-urlencoded&#x27;
+        },
+        body: {
+          client_id: oauth.id,
+          client_secret: oauth.secret,
+          code: code,
+          grant_type: &#x27;authorization_code&#x27;,
+          redirect_uri: this.redirectURL,
+          scope: &#x27;identify guilds&#x27;
+        },
+        parser: encodeJSON
+      })
+    if (!user || !user.access_token) return false
+    return user
+  }
+
+  // settings
+
+  /**
+   * Guild middleware
+   * @param {Boolean} api Whether api or not
+   * @returns {Function} For middleware usage
+   */
+  getGuild (api) {
+    return async (req, res, next) &#x3D;&gt; {
+      const id &#x3D; req.params.serverid
+
+      const guilds &#x3D; await this.getGuilds(req, id, api)
+      if (!guilds) return
+
+      const g &#x3D; guilds.find(x &#x3D;&gt; x.i &#x3D;&#x3D;&#x3D; id)
+      if (!g) return api ? res.json({ error: &#x27;Invalid Guild&#x27; }) : res.render(&#x27;errors/server&#x27;, { base: this.base })
+
+      req.partialGuild &#x3D; g
+      next()
+    }
+  }
+
+  /**
+   * Get guild data middleware
+   * @param {Boolean} api Whether api or not
+   * @param {Function} fn Callback
+   * @returns {Function} For middleware usage
+   */
+  guildData (api, fn) {
+    return async (req, res) &#x3D;&gt; {
+      const { i: id, n: name } &#x3D; req.partialGuild
+      const guild &#x3D; await this.client.cluster.internal.fetchGuild(id)
+      if (!guild) return api ? res.json({ error: &#x27;Not In Guild&#x27; }) : res.render(&#x27;invite&#x27;, { id })
+
+      const obj &#x3D; { id, name }
+
+      obj.c &#x3D; guild.c
+      obj.r &#x3D; guild.r
+
+      obj.db &#x3D; await this.client.db.config(id)
+
+      fn(req, res, obj)
+    }
+  }
+
+  /**
+   * Validate posted settings
+   * @param {Object} obj Posted object
+   * @param {Object} guild Guild data
+   * @param {Function} f Ran on failure with string
+   * @returns {?Boolean}
+   */
+  validateSettings (obj, guild, f) {
+    if (!validateObject(this.client.db.defaultConfig, obj)) return f(&#x27;Invalid Object&#x27;)
+    if (typeof obj.base !&#x3D;&#x3D; &#x27;boolean&#x27;) return f(&#x27;Base has an invalid type&#x27;)
+    if (typeof obj.censor.msg !&#x3D;&#x3D; &#x27;boolean&#x27;) return f(&#x27;Censor (msg) has an invalid type&#x27;)
+    if (typeof obj.censor.emsg !&#x3D;&#x3D; &#x27;boolean&#x27;) return f(&#x27;Censor (emsg) has an invalid type&#x27;)
+    if (typeof obj.censor.nick !&#x3D;&#x3D; &#x27;boolean&#x27;) return f(&#x27;Censor (nick) has an invalid type&#x27;)
+    if (typeof obj.censor.react !&#x3D;&#x3D; &#x27;boolean&#x27;) return f(&#x27;Censor (react) has an invalid type&#x27;)
+    if (obj.log !&#x3D;&#x3D; null &amp;amp;&amp;amp; ((typeof obj.log !&#x3D;&#x3D; &#x27;string&#x27;) || !guild.c.some(x &#x3D;&gt; x.id &#x3D;&#x3D;&#x3D; obj.log))) return f(&#x27;Log does not exist on server&#x27;)
+    if ((typeof obj.role !&#x3D;&#x3D; &#x27;string&#x27; &amp;amp;&amp;amp; obj.role !&#x3D;&#x3D; null) || (typeof obj.role &#x3D;&#x3D;&#x3D; &#x27;string&#x27; &amp;amp;&amp;amp; !guild.r.some(x &#x3D;&gt; x.id &#x3D;&#x3D;&#x3D; obj.role))) return f(&#x27;Role does not exist on server&#x27;)
+    if (!(obj.filter instanceof Array)) return f(&#x27;Filter has an invalid type&#x27;)
+    if (obj.filter.some(x &#x3D;&gt; x.match(/[^\w]/gi))) return f(&#x27;A filter entree contains illegal characters&#x27;)
+    if (obj.pop_delete !&#x3D;&#x3D; null &amp;amp;&amp;amp; typeof obj.pop_delete !&#x3D;&#x3D; &#x27;number&#x27;) return f(&#x27;Pop delete has an invalid type&#x27;)
+    if (![0, 1, 2, 3].includes(obj.punishment.type)) return f(&#x27;Punishment type chosen does not exist&#x27;)
+    if (![0, 1].includes(obj.webhook_replace)) return f(&#x27;Webhook replace is not valid&#x27;)
+    if (typeof obj.punishment.amount !&#x3D;&#x3D; &#x27;number&#x27; || obj.punishment.amount &amp;lt; 1) return f(&#x27;Punishment amount cannot be less than 1&#x27;)
+    if ((typeof obj.punishment.role !&#x3D;&#x3D; &#x27;string&#x27; &amp;amp;&amp;amp; obj.punishment.role !&#x3D;&#x3D; null) || (typeof obj.punishment.role &#x3D;&#x3D;&#x3D; &#x27;string&#x27; &amp;amp;&amp;amp; !guild.r.some(x &#x3D;&gt; x.id &#x3D;&#x3D;&#x3D; obj.punishment.role))) return f(&#x27;Punishment role does not exist on server&#x27;)
+    if (typeof obj.webhook !&#x3D;&#x3D; &#x27;boolean&#x27;) return f(&#x27;Resend has an invalid type&#x27;)
+    if (!(obj.channels instanceof Array)) return f(&#x27;Ignore channels is an invalid type&#x27;)
+    if (obj.channels.some(x &#x3D;&gt; !guild.c.some(c &#x3D;&gt; c.id &#x3D;&#x3D;&#x3D; x))) return f(&#x27;One of the uncensor channels does not exist on server&#x27;)
+    if (!(obj.uncensor instanceof Array)) return f(&#x27;Uncensor is an invalid type&#x27;)
+    if (obj.uncensor.some(x &#x3D;&gt; x.match(/[^\w]/gi))) return f(&#x27;One of the uncensor words contains illegal characters&#x27;)
+    if (typeof obj.multi !&#x3D;&#x3D; &#x27;boolean&#x27;) return f(&#x27;Multi-Line is an invalid type&#x27;)
+    if (!(obj.languages instanceof Array)) return f(&#x27;Languages is an invalid type&#x27;)
+    if (obj.languages.some(x &#x3D;&gt; !this.client.db.defaultConfig.languages.includes(x))) return f(&#x27;Languages contains an invalid language&#x27;)
+    if (typeof obj.webhook_separate !&#x3D;&#x3D; &#x27;boolean&#x27;) return f(&#x27;Webhook Separate is not a boolean&#x27;)
+    return true
+  }
+
+  // premium
+
+  /**
+   * Get premium object
+   * @param {Snowflake} id User
+   * @returns {Object} Premium object
+   */
+  async premium (id) {
+    const premium &#x3D; parseInt(await this.client
+      .capi
+      .premium[id]
+      .get()
+    )
+    if (premium &amp;lt; 1) return { premium: false }
+
+    const user &#x3D; { premium: true, amount: premium }
+
+    const dbUser &#x3D; await this.client.db.collection(&#x27;premium_users&#x27;).findOne({ id })
+
+    if (!dbUser) {
+      await this.client.db.collection(&#x27;premium_users&#x27;).updateOne({ id }, {
+        $set: {
+          id,
+          guilds: []
+        }
+      })
+      user.guilds &#x3D; []
+    } else user.guilds &#x3D; dbUser.guilds
+
+    return user
+  }
+
+  /**
+   * Premium middleware
+   * @param {Boolean} api Whether API
+   * @param {Function} fn Callback function
+   */
+  premiumMiddle (api, fn) {
+    return async (req, res, next) &#x3D;&gt; {
+      const user &#x3D; await this.db.findOne({ token: api ? req.headers.authorization : req.cookies.token })
+
+      if (!user) return api ? res.json({ error: &#x27;Unauthorized&#x27; }) : res.redirect(this.oauthLogin(&#x27;premium&#x27;))
+
+      const prem &#x3D; await this.premium(user.id)
+      if (!prem.premium) return api ? res.json({ error: &#x27;Not premium&#x27; }) : res.render(&#x27;errors/notpremium&#x27;)
+
+      req.user &#x3D; user
+      req.premium &#x3D; prem
+
+      if (!fn) return next()
+
+      const guilds &#x3D; await this.getGuilds(req, &#x27;premium&#x27;)
+      if (!guilds) return
+
+      fn(req, res, user, prem, guilds)
+    }
+  }
+
+  // admin
+
+  /**
+   * Admin middleware
+   * @param {Boolean} api Whether API
+   * @param {Function} fn Callback
+   */
+  adminMiddle (api, fn) {
+    return async (req, res, next) &#x3D;&gt; {
+      const user &#x3D; await this.db.findOne({ token: api ? req.headers.authorization : req.cookies.token })
+
+      if (!user) return api ? res.json({ error: &#x27;Unauthorized&#x27; }) : res.redirect(this.oauthLogin(&#x27;admin&#x27;))
+
+      const admin &#x3D; await this.client.isAdmin(user.id)
+
+      if (!admin) return api ? res.json({ error: &#x27;Not Admin&#x27; }) : res.render(&#x27;errors/notadmin&#x27;, { base: this.base })
+
+      req.user &#x3D; user
+
+      fn ? fn(req, res) : next()
+    }
+  }
+}
+
+module.exports &#x3D; Dashboard
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 3, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

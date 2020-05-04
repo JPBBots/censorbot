@@ -1,0 +1,830 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Class: CensorBot</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
+            <h1><small></small><span class="symbol-name">CensorBot</span></h1>
+            <p class="source-link">Source: <a href="src_lib_client_CensorBot.js.html#source-line-37">src/<wbr>lib/<wbr>client/<wbr>CensorBot.<wbr>js:37</a></p>
+            <div class="symbol-classdesc">
+              <p>Base censor bot client. Used as a hub for all other library structures</p>
+            </div>
+            <dl class="dl-compact">
+            </dl>
+          </header>
+          <section id="summary">
+            <div class="summary-callout">
+              <h2 class="summary-callout-heading">Properties</h2>
+              <div class="summary-content">
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="CensorBot.html#beta">beta</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#buckets">buckets</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#capi">capi</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#channels">channels</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#cluster">cluster</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#commands">commands</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#config">config</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#db">db</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#embed">embed</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#events">events</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#filter">filter</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="CensorBot.html#guilds">guilds</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#helpme">helpme</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#interface">interface</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#internalEvents">internalEvents</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#internals">internals</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#logger">logger</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#multi">multi</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#options">options</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#ping">ping</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#presence">presence</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#punishments">punishments</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="CensorBot.html#ready">ready</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#reloader">reloader</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#shards">shards</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#tickets">tickets</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#token">token</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#unavailables">unavailables</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#updates">updates</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#user">user</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#userChannels">userChannels</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#utils">utils</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#webhooks">webhooks</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+            <div class="summary-callout">
+              <h2 class="summary-callout-heading">Methods</h2>
+              <div class="summary-content">
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="CensorBot.html#guildShard">guildShard(id)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#isAdmin">isAdmin(id)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#killShard">killShard(id)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#log">log(service, task, name, optional, error)</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="CensorBot.html#restartShard">restartShard(id)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#setStatus">setStatus(type, name, status, stream)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#setup">setup()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#setupEvents">setupEvents()</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="CensorBot.html#spawnShards">spawnShards()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="CensorBot.html#start">start()</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section>
+            <h2 id="CensorBot">new&nbsp;<span class="symbol-name">CensorBot</span><span class="signature"><span class="signature-params">(cluster, shards, shardCount)</span></span></h2>
+            <p>Censor Bot Client</p>
+            <section>
+              <h3>Parameters</h3>
+              <table class="jsdoc-details-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Optional</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <p>cluster</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Cluster Worker</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p>shards</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Array of shard IDs to spawn</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p>shardCount</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Shard Count</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+            <dl class="dl-compact">
+              <dt>Extends</dt>
+              <dd><a href="Client.html">Client</a></dd>
+            </dl>
+          </section>
+          <section>
+            <h2>Properties</h2>
+            <section>
+              <h3 id="beta"><span class="symbol-name">beta</span><small class="property-type">
+                  &nbsp;Boolean</small></h3>
+              <p>Whether in beta or not</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="buckets"><span class="symbol-name">buckets</span><small class="property-type">
+                  &nbsp;<a href="BucketManager.html">BucketManager</a></small></h3>
+              <p>Buckets</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="capi"><span class="symbol-name">capi</span><small class="property-type">
+                  &nbsp;<a href="global.html#Request">Request</a></small></h3>
+              <p>Censor Bot API</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="channels"><span class="symbol-name">channels</span><small class="property-type">
+                  &nbsp;unknown</small></h3>
+              <p>Channels</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#channels">Client#channels</a></dd>
+              </dl>
+              <h3 id="cluster"><span class="symbol-name">cluster</span><small class="property-type">
+                  &nbsp;unknown</small></h3>
+              <p>Cluster Worker</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#cluster">Client#cluster</a></dd>
+              </dl>
+              <h3 id="commands"><span class="symbol-name">commands</span><small class="property-type">
+                  &nbsp;<a href="CommandHandler.html">CommandHandler</a></small></h3>
+              <p>Command handler</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="config"><span class="symbol-name">config</span><small class="property-type">
+                  &nbsp;Object</small></h3>
+              <p>Config</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="db"><span class="symbol-name">db</span><small class="property-type">
+                  &nbsp;<a href="Database.html">Database</a></small></h3>
+              <p>Database</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="embed"><span class="symbol-name">embed</span><small class="property-type">
+                  &nbsp;<a href="Embed.html">Embed</a></small></h3>
+              <p>Embed</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="events"><span class="symbol-name">events</span><small class="property-type">
+                  &nbsp;<a href="EventHandler.html">EventHandler</a></small></h3>
+              <p>Event handler</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="filter"><span class="symbol-name">filter</span><small class="property-type">
+                  &nbsp;Filter</small></h3>
+              <p>Filter</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="guilds"><span class="symbol-name">guilds</span><small class="property-type">
+                  &nbsp;unknown</small></h3>
+              <p>Guilds</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#guilds">Client#guilds</a></dd>
+              </dl>
+              <h3 id="helpme"><span class="symbol-name">helpme</span><small class="property-type">
+                  &nbsp;Object with <a href="global.html#SmallID">SmallID</a> keys and <a href="global.html#Snowflake">Snowflake</a> properties</small></h3>
+              <p>Help-ME ID's</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="interface"><span class="symbol-name">interface</span><small class="property-type">
+                  &nbsp;unknown</small></h3>
+              <p>Discord API interface</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#interface">Client#interface</a></dd>
+              </dl>
+              <h3 id="internalEvents"><span class="symbol-name">internalEvents</span><small class="property-type">
+                  &nbsp;unknown</small></h3>
+              <p>Internal event handling</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#internalEvents">Client#internalEvents</a></dd>
+              </dl>
+              <h3 id="internals"><span class="symbol-name">internals</span><small class="property-type">
+                  &nbsp;<a href="Internals.html">Internals</a></small></h3>
+              <p>Internal methods</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="logger"><span class="symbol-name">logger</span><small class="property-type">
+                  &nbsp;unknown</small></h3>
+              <p>Logger</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#logger">Client#logger</a></dd>
+              </dl>
+              <h3 id="multi"><span class="symbol-name">multi</span><small class="property-type">
+                  &nbsp;Object with Object with <a href="global.html#Snowflake">Snowflake</a> keys and String properties properties</small></h3>
+              <p>Multi-Lines</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="options"><span class="symbol-name">options</span><small class="property-type">
+                  &nbsp;unknown</small></h3>
+              <p>Options</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#options">Client#options</a></dd>
+              </dl>
+              <h3 id="ping"><span class="symbol-name">ping</span></h3>
+              <p>Bot overall ping across all shards</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#ping">Client#ping</a></dd>
+              </dl>
+              <h3 id="presence"><span class="symbol-name">presence</span><small class="property-type">
+                  &nbsp;<a href="PresenceManager.html">PresenceManager</a></small></h3>
+              <p>Presence manager</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="punishments"><span class="symbol-name">punishments</span><small class="property-type">
+                  &nbsp;<a href="Punishments.html">Punishments</a></small></h3>
+              <p>Punishment manager</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="ready"><span class="symbol-name">ready</span><small class="property-type">
+                  &nbsp;unknown</small></h3>
+              <p>Whether bot is ready</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#ready">Client#ready</a></dd>
+              </dl>
+              <h3 id="reloader"><span class="symbol-name">reloader</span><small class="property-type">
+                  &nbsp;<a href="Reloader.html">Reloader</a></small></h3>
+              <p>Reloader</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="shards"><span class="symbol-name">shards</span><small class="property-type">
+                  &nbsp;unknown</small></h3>
+              <p>Shards</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#shards">Client#shards</a></dd>
+              </dl>
+              <h3 id="tickets"><span class="symbol-name">tickets</span><small class="property-type">
+                  &nbsp;<a href="TicketManager.html">TicketManager</a></small></h3>
+              <p>Ticket Manager</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="token"><span class="symbol-name">token</span><small class="property-type">
+                  &nbsp;unknown</small></h3>
+              <p>Discord Bot Token</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#token">Client#token</a></dd>
+              </dl>
+              <h3 id="unavailables"><span class="symbol-name">unavailables</span><small class="property-type">
+                  &nbsp;Collection</small></h3>
+              <p>Unavailable guilds</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="updates"><span class="symbol-name">updates</span><small class="property-type">
+                  &nbsp;<a href="UpdatesManager.html">UpdatesManager</a></small></h3>
+              <p>Updates Manager</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="user"><span class="symbol-name">user</span><small class="property-type">
+                  &nbsp;unknown</small></h3>
+              <p>Client User</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#user">Client#user</a></dd>
+              </dl>
+              <h3 id="userChannels"><span class="symbol-name">userChannels</span><small class="property-type">
+                  &nbsp;unknown</small></h3>
+              <p>User dm channels</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#userChannels">Client#userChannels</a></dd>
+              </dl>
+              <h3 id="utils"><span class="symbol-name">utils</span><small class="property-type">
+                  &nbsp;unknown</small></h3>
+              <p>Utilities</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#utils">Client#utils</a></dd>
+              </dl>
+              <h3 id="webhooks"><span class="symbol-name">webhooks</span><small class="property-type">
+                  &nbsp;<a href="WebhookManager.html">WebhookManager</a></small></h3>
+              <p>Webhook Manager</p>
+              <dl class="dl-compact">
+              </dl>
+            </section>
+            <h2>Methods</h2>
+            <section>
+              <h3 id="guildShard"><span class="symbol-name">guildShard</span><span class="signature"><span class="signature-params">(id)</span>&nbsp;&rarr; <span class="signature-returns"> Number</span></span></h3>
+              <p>Gets shard ID of guild</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#guildShard">Client#guildShard</a></dd>
+                <dt>Returns</dt>
+                <dd>
+                  <p>Shard ID</p>
+                </dd>
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="isAdmin"><span class="symbol-name">isAdmin</span><span class="signature"><span class="signature-params">(id)</span></span></h3>
+              <p>Check if user is admin</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="killShard"><span class="symbol-name">killShard</span><span class="signature"><span class="signature-params">(id)</span>&nbsp;&rarr; <span class="signature-returns"> Promise</span></span></h3>
+              <p>Kills and starts up shard</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Shard</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#killShard">Client#killShard</a></dd>
+                <dt>Returns</dt>
+                <dd>
+                  <p>Promise</p>
+                </dd>
+              </dl>
+              <h3 id="log"><span class="symbol-name">log</span><span class="signature"><span class="signature-params">(service, task, name, optional, error)</span></span></h3>
+              <p>Log to console</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>service</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Service</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>task</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Task</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>name</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Name of log</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>optional</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Extra log</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>error</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Whether it's an error or not</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#log">Client#log</a></dd>
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="restartShard"><span class="symbol-name">restartShard</span><span class="signature"><span class="signature-params">(id)</span></span></h3>
+              <p>Kill and resume a shard</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Shard</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#restartShard">Client#restartShard</a></dd>
+              </dl>
+              <h3 id="setStatus"><span class="symbol-name">setStatus</span><span class="signature"><span class="signature-params">(type, name, status, stream)</span></span></h3>
+              <p>Sets bot status</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>type</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Presence Type</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>name</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Game name</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>status</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Status</p>
+                        <p>Defaults to <code>online</code>.</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>stream</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Stream URL</p>
+                        <p>Value can be null.</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#setStatus">Client#setStatus</a></dd>
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="setup"><span class="symbol-name">setup</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Sets up bot</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#setup">Client#setup</a></dd>
+              </dl>
+              <h3 id="setupEvents"><span class="symbol-name">setupEvents</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Setup bot events</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#setupEvents">Client#setupEvents</a></dd>
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="spawnShards"><span class="symbol-name">spawnShards</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Spawns bot shards</p>
+              <dl class="dl-compact">
+                <dt>Inherited from</dt>
+                <dd><a href="Client.html#spawnShards">Client#spawnShards</a></dd>
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="start"><span class="symbol-name">start</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Start bot</p>
+              <dl class="dl-compact">
+              </dl>
+            </section>
+          </section>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 3, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>
