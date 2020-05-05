@@ -70,7 +70,7 @@ class CensorBot extends Client {
      * Whether in beta or not
      * @type {Boolean}
      */
-    this.beta = false
+    this.beta = process.argv.includes('-b')
 
     /**
      * Censor Bot API

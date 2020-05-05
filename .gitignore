@@ -3,5 +3,5 @@ package-lock.json
 
 TODO.txt
 
-src/config/private.js
+src/config/*/private.js
 src/filter/filters/*

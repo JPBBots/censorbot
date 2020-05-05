@@ -1,3 +1,5 @@
+const resolve = require('path').resolve.bind(undefined, __dirname)
+
 const { Worker } = require('worker_threads')
 
 const EventEmitter = require('events')
@@ -60,7 +62,7 @@ class Cluster extends EventEmitter {
    * Setup worker thread
    */
   setup () {
-    this.thread = new Worker('../clustering/service.js', { workerData: { id: this.id } })
+    this.thread = new Worker(resolve('./service.js'), { workerData: { beta: process.argv.includes('-b'), id: this.id } })
 
     this.thread.on('message', (msg) => {
       this.emit(msg.e, msg.d, msg.i)

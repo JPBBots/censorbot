@@ -4,7 +4,7 @@
   "description": "Anti-Swear bot for discord",
   "main": "./src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node ../censorbot -b",
     "s": "standard --fix -v",
     "log": "pm2 logs censorbot",
     "commit": "git add . && echo \"Commit Message:\" && read msg && git commit -m \"$msg\"",

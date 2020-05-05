@@ -1,3 +1,5 @@
+const resolve = require('path').resolve.bind(undefined, __dirname)
+
 const { Worker } = require('worker_threads')
 
 /**
@@ -34,7 +36,7 @@ class DashboardCluster {
    * Sets up worker thread
    */
   setup () {
-    this.thread = new Worker('../clustering/dashboardService.js', { workerData: { id: this.id } })
+    this.thread = new Worker(resolve('./dashboardService.js'), { workerData: { beta: process.argv.includes('-b'), id: this.id } })
 
     this.thread.on('message', (msg) => {
       this.emit(msg.e, msg.d, msg.i)
