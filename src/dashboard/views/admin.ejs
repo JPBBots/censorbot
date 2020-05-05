@@ -34,7 +34,7 @@
                     <% cluster.forEach(shard => { %>
                         <div class="shard">
                             <h3>Shard <%= shard.id %></h3>
-                            <i><%= shard.connected ? 'Connected' : 'Disconnected' %></i> <br />
+                            <b><%= shard.connected ? 'Connected' : 'Disconnected' %></b> <br />
                             <button onclick="req('/shards/<%= shard.id %>', 'POST', {}, () => {})">Restart</button>
                             <button onclick="req('/shards/<%= shard.id %>', 'POST', { destroy: true }, () => {})">Destroy</button>
                         </div>
