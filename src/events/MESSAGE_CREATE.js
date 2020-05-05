@@ -8,8 +8,12 @@ const resends = [
 ]
 
 module.exports = async function (message) {
+  const db = await this.db.config(message.guild_id)
+
+  if (this.config.prefix.some(x => x === message.content + ' ')) return this.interface.send(message.channel_id, `Current prefix is: \`${db.prefix || 'none'}\``)
+
   if (this.commands) {
-    const cmd = this.commands.event(message)
+    const cmd = this.commands.event(message, db.prefix)
 
     if (this.config.deleteCommands.includes(cmd)) return this.interface.delete(message.channel_id, message.id)
   }
@@ -24,8 +28,6 @@ module.exports = async function (message) {
      message.author.bot ||
      channel.nsfw
   ) return this.multi.delete(message.channel_id)
-
-  const db = await this.db.config(message.guild_id)
 
   if (
     !db.censor.msg ||

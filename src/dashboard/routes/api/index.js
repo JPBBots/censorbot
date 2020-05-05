@@ -27,7 +27,7 @@ module.exports = function (r) {
       admin: req.url.includes('?a'),
       dbl,
       name: 'Censor Bot',
-      prefix: this.config.prefix[0]
+      prefix: this.database.defaultConfig.prefix
     })
   })
 }

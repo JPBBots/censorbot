@@ -565,6 +565,7 @@ class Dashboard {
     if (!(obj.languages instanceof Array)) return f('Languages is an invalid type')
     if (obj.languages.some(x => !this.database.defaultConfig.languages.includes(x))) return f('Languages contains an invalid language')
     if (typeof obj.webhook_separate !== 'boolean') return f('Webhook Separate is not a boolean')
+    if (obj.prefix.length > 15) return f('Prefix is too long')
     return true
   }
 

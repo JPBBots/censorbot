@@ -8,6 +8,7 @@
     ". . base-filter base-filter langs langs logchannel logchannel filter filter . ."
     ". . punish punish censor censor popmsg popmsg role role . ."
     ". . punish punish censor censor popmsg popmsg uncensor uncensor . ."
+    ". . . resend resend channels channels prefix prefix . . ."
     ". . . resend resend channels channels multi multi . . ."
     ". . . . . . . . . . . .";
   text-align: center;
@@ -285,6 +286,7 @@ select {
       "back servername servername servername logout"
       ". base-filter base-filter base-filter ."
       ". langs langs langs ."
+      ". prefix prefix prefix ."
       ". logchannel logchannel logchannel ."
       ". punish punish punish ."
       ". censor censor censor ."

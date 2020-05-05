@@ -22,7 +22,8 @@ module.exports = {
   webhook_replace: 0,
   webhook_separate: false,
   channels: [],
-  multi: false
+  multi: false,
+  prefix: '+'
 }
 
 /**

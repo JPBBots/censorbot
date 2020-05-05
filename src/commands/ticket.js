@@ -3,7 +3,7 @@ exports.run = function (message, args) {
     return this.send(
       this.embed
         .title('Tickets')
-        .description(`For when words shouldn't be censored by the base filter, but they are.\n\nFormat: \`${this.client.config.prefix[0]}ticket [word / phrase]\``)
+        .description(`For when words shouldn't be censored by the base filter, but they are.\n\nFormat: \`${this.client.db.defaultConfig.prefix}ticket [word / phrase]\``)
     )
   }
   this.client.tickets.add(args.join(' '), message.author.id)

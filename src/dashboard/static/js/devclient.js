@@ -29,7 +29,8 @@ function buildObject () {
     webhook: false,
     webhook_replace: 0,
     webhook_separate: false,
-    multi: false
+    multi: false,
+    prefix: '+'
   }
 
   obj.base = document.getElementById('base').checked
@@ -67,6 +68,7 @@ function buildObject () {
   obj.multi = document.getElementById('multi').checked
   obj.webhook_replace = parseInt(document.getElementById('resendreplace').value)
   obj.webhook_separate = document.getElementById('separateresend').checked
+  obj.prefix = document.getElementById('prefix').value
 
   return obj
 }

@@ -56,14 +56,12 @@ class CommandHandler {
    * Handles message event
    * @param {Object} msg Message
    */
-  event (msg) {
+  event (msg, pre) {
     const channel = this.client.channels.get(msg.channel_id)
     if (!channel || msg.type !== 0 || channel.type !== 0 || msg.author.bot) return
 
-    const prefix = this.client.config.prefix.find(x => msg.content.startsWith(x))
+    const prefix = [...this.client.config.prefix, ...(pre ? [pre] : [])].find(x => msg.content.startsWith(x))
     if (!prefix) return
-
-    if (this.client.config.ignoreFirstPrefixServers.includes(msg.guild_id) && prefix === this.client.config.prefix[0]) return
 
     const args = msg.content.slice(prefix.length).split(/\s/)
     const command = args.shift()
