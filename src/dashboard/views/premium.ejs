@@ -25,7 +25,7 @@
                     <div style="grid-area: <%= convert[i] %>" class="guild" id="<%= g %>">
                         <% const guild = guilds.find(x => x.i === g) %>
                         <% if (guild && guild.a) { %> 
-                            <img class="pic" style="grid-area: pic" src="https://cdn.discord.com/icons/<%= g %>/<%= guild.a %>">
+                            <img class="pic" style="grid-area: pic" src="https://cdn.discordapp.com/icons/<%= g %>/<%= guild.a %>">
                         <% } %>
                         <h3 style="grid-area: name"><%= guild ? guild.n : "Error" %></h3>
                         <p style="grid-area: id"><%= g %></p>
