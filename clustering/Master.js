@@ -100,7 +100,7 @@ class Master {
 
   async restartCluster (id) {
     id = parseInt(id)
-    if (!id) return
+    if (isNaN(id)) return
 
     const cluster = this._createWorker(id, this.internalClusters[id], true)
     const currentCluster = this.clusters.get(id)
