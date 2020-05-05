@@ -87,8 +87,12 @@ class Master {
     this.dash.spawn()
 
     for (let i = 0; i < this.internalClusters.length; i++) {
+      this._createWorker(i, this.internalClusters[i])
+    }
+
+    for (let i = 0; i < this.internalClusters.length; i++) {
       this.log(14, 26, `Cluster ${i}`)
-      await this._createWorker(i, this.internalClusters[i]).spawn()
+      await this.clusters.get(i).spawn()
     }
 
     await Timeout.wait()

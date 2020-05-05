@@ -31,9 +31,9 @@ class Worker extends EventEmitter {
 
     /**
      * Client
-     * @type {?CensorBot}
+     * @type {CensorBot}
      */
-    this.client = null
+    this.client = new CensorBot(this, data.shards, data.shardCount)
 
     /**
      * Internal Methods
@@ -55,29 +55,23 @@ class Worker extends EventEmitter {
       } : null)
     })
 
-    this.on('SPAWN', ({ shards, shardCount, spawned, inactive }) => this.spawn(shards, shardCount, spawned, inactive))
+    this.on('SPAWN', ({ spawned, inactive }) => this.spawn(spawned, inactive))
     this.on('KILL', () => process.exit(1))
   }
 
   /**
    * Spawn bot
-   * @param {Array.<Number>} shards Array of shard IDs
-   * @param {Number} shardCount Shard Count
    * @param {Boolean} spawned Whether already spawned
    * @param {Boolean} inactive Whether to spawn inactive
    */
-  spawn (shards, shardCount, spawned, inactive) {
+  async spawn (spawned, inactive) {
     this.inactive = inactive
 
-    this.client = new CensorBot(this, shards, shardCount)
+    await this.client.start()
 
-    this.client.once('READY', () => {
-      this.send('READY')
+    if (spawned) this.client.presence.d()
 
-      if (spawned) {
-        this.client.presence.d()
-      }
-    })
+    this.send('READY')
   }
 
   /**
