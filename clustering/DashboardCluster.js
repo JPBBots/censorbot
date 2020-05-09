@@ -29,6 +29,12 @@ class DashboardCluster {
      */
     this.thread = null
 
+    /**
+     * Whether to be supposed to die
+     * @type {Boolean}
+     */
+    this.dying = false
+
     this.setup()
   }
 
@@ -46,6 +52,10 @@ class DashboardCluster {
       this.master.log(14, 10, `Cluster ${this.id}`, code)
 
       if (!this.dying) this.setup()
+    })
+
+    this.thread.on('error', (err) => {
+      console.error(err)
     })
 
     if (this.master.spawned) this.spawn()

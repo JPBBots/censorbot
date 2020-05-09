@@ -74,6 +74,10 @@ class Cluster extends EventEmitter {
       if (!this.dying) this.setup()
     })
 
+    this.thread.on('error', (err) => {
+      console.error(err)
+    })
+
     if (this.master.spawned) this.spawn()
   }
 
