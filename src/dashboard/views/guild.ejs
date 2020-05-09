@@ -17,6 +17,7 @@
         <script src="<%= base %>/static/js/<%= dev ? 'dev' : '' %>client.js"></script>
         <script src="<%= base %>/static/js/<%= dev ? 'dev' : '' %>guild.js"></script>
         <title>Dashboard - <%= data.name %></title>
+        <%- include('partials/googleanalytics') %>
     </head>
     <body style="background-color: #2C2F33">
         <div class="box">
