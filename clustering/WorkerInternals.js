@@ -2,6 +2,8 @@ const Request = require('../req')
 
 const { internalPort } = require('../src/config')
 
+const Collection = require('../util/Collection')
+
 /**
  * Worker internal methods for brokering master internals
  */
@@ -16,6 +18,12 @@ class WorkerInternals {
      * @type {Worker}
      */
     this.worker = worker
+
+    /**
+     * Guild fetch cache
+     * @type {Collection.<Snowflake, CachedGuild}
+     */
+    this.guildCache = new Collection()
 
     /**
      * Internal API
@@ -109,11 +117,20 @@ class WorkerInternals {
    * @return {CachedGuild} Guild
    */
   async fetchGuild (id) {
+    const current = this.guildCache.get(id)
+    if (current) return current
+
     const guild = await this.api
       .guilds[id]
       .get()
 
     if (!guild.i) return null
+
+    this.guildCache.set(id, guild)
+
+    setTimeout(() => {
+      this.guildCache.delete(id)
+    }, 120000)
 
     return guild
   }
