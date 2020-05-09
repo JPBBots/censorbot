@@ -24,6 +24,8 @@ const config = require('../../config')
  * @property {Snowflake} i ID of guild
  * @property {String} n Name of guild
  * @property {String} a Icon hash of guild
+ * @property {Array.<Channel>} c Channels
+ * @property {Array.<Role>} r Roles
  */
 
 /**
