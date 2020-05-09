@@ -19,7 +19,7 @@ class DashboardCluster {
 
     /**
      * Cluster ID
-     * @type {String} dash
+     * @type {String}
      */
     this.id = 'dash'
 

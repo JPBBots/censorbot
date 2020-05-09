@@ -71,21 +71,27 @@
                     <dt><a href="TicketManager.html#added">added(id, msg)</a></dt>
                     <dd>
                     </dd>
-                  </dl>
-                </div>
-                <div class="summary-column">
-                  <dl class="dl-summary-callout">
                     <dt><a href="TicketManager.html#approve">approve(id, admin)</a></dt>
                     <dd>
                     </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
                     <dt><a href="TicketManager.html#deny">deny(id, admin)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="TicketManager.html#dupe">dupe(id, admin)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="TicketManager.html#event">event(reaction)</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="TicketManager.html#event">event(reaction)</a></dt>
+                    <dt><a href="TicketManager.html#furtherDeny">furtherDeny(id, msg)</a></dt>
                     <dd>
                     </dd>
                     <dt><a href="TicketManager.html#isBanned">isBanned(id)</a></dt>
@@ -345,6 +351,54 @@
               <dl class="dl-compact">
               </dl>
               <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="dupe"><span class="symbol-name">dupe</span><span class="signature"><span class="signature-params">(id, admin)</span></span></h3>
+              <p>Dupe a ticket</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#SmallID">SmallID</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Ticket ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>admin</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Admin ID</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
               <h3 id="event"><span class="symbol-name">event</span><span class="signature"><span class="signature-params">(reaction)</span></span></h3>
               <p>Event handler for reactions</p>
               <section>
@@ -371,6 +425,54 @@
                       </td>
                       <td>
                         <p>Reaction</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="furtherDeny"><span class="symbol-name">furtherDeny</span><span class="signature"><span class="signature-params">(id, msg)</span></span></h3>
+              <p>Finish a ticket</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#SmallID">SmallID</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Ticket ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>msg</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Message ID</p>
                       </td>
                     </tr>
                   </tbody>
@@ -426,7 +528,7 @@
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 4, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 9, 2020.
       </p>
     </div>
   </footer>

@@ -21,7 +21,7 @@ class WorkerInternals {
 
     /**
      * Guild fetch cache
-     * @type {Collection.<Snowflake, CachedGuild}
+     * @type {Collection.<Snowflake, CachedGuild>}
      */
     this.guildCache = new Collection()
 
