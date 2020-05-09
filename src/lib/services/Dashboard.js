@@ -14,6 +14,7 @@ const cacheTimeout = 300000
 const Database = require('./Database')
 
 const UpdatesManager = require('../client/UpdatesManager')
+const CommandHandler = require('../bot/CommandHandler')
 
 const config = require('../../config')
 
@@ -120,6 +121,8 @@ class Dashboard {
      * @type {Logger}
      */
     this.logger = new Logger('Dash')
+
+    this.commands = new CommandHandler(this)
 
     /**
      * Censor Bot API
