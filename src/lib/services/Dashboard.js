@@ -461,7 +461,7 @@ class Dashboard {
 
     res.cookie('token', token)
 
-    res.redirect(this.base)
+    res.redirect(this.base + (req.query.state ? `/${req.query.state}` : ''))
   }
 
   /**
