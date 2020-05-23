@@ -32,7 +32,7 @@ class WorkerInternals {
     this.api = Request(`http://localhost:${internalPort}`)
   }
 
-  event (event, data, resolve) {
+  async event (event, data, resolve) {
     let guild
     let shard
     switch (event) {
@@ -72,10 +72,11 @@ class WorkerInternals {
       case 'EVAL':
         try {
           const client = this.worker.client // eslint-disable-line
-          const results = eval(data.ev) // eslint-disable-line
-          resolve({ results })
+          let results = eval(data.ev) // eslint-disable-line
+          if (results && results.then) results = await results
+          resolve(results)
         } catch (err) {
-          resolve({ results: 'Error: ' + err.message })
+          resolve('Error: ' + err.message)
         }
         break
       case 'CLUSTER_STATS':
