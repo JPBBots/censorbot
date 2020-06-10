@@ -5,7 +5,7 @@ module.exports = function (r) {
     let results
     if (req.cookies.token) results = await this.oauth2.getGuilds(req.cookies.token)
 
-    if (!results) return req.api ? res.status(401).json({ error: 'Unauthorized' }) : res.render('login', { login: this.oauthLogin(req.params.guildid) })
+    if (!results) return req.api ? res.status(401).json({ error: 'Unauthorized' }) : res.render('login', { login: this.login(req.params.guildid) })
 
     req.user = results.user
     req.guilds = results.guilds
@@ -39,10 +39,10 @@ module.exports = function (r) {
     if (!req.params.guildid.match(/[0-9]{15,17}/)) return next()
 
     const guild = req.guilds.find(x => x.i === req.params.guildid)
-    if (!guild && !req.user.admin) return req.api ? res.status(403).json({ error: 'Not allowed to edit guild' }) : res.render('error', { happening: 'accessing server', isAdmin: false, tryAgain: this.oauthLogin(req.params.guildid), error: 'You don\'t have permission to edit this server' })
+    if (!guild && !req.user.admin) return req.api ? res.status(403).json({ error: 'Not allowed to edit guild' }) : res.render('error', { happening: 'accessing server', isAdmin: false, tryAgain: this.login(req.params.guildid), error: 'You don\'t have permission to edit this server' })
 
-    req.guild = await this.cluster.internal.fetchGuild(guild.i)
-    if (!req.guild) return req.api ? res.status(404).json({ error: 'Not In Guild' }) : res.render('invite', { invite: this.invite(guild.i), isAdmin: req.user.admin })
+    req.guild = await this.cluster.internal.fetchGuild(req.params.guildid)
+    if (!req.guild) return req.api ? res.status(404).json({ error: 'Not In Guild' }) : res.render('invite', { invite: this.invite(req.params.guildid), isAdmin: req.user.admin })
 
     next()
   })

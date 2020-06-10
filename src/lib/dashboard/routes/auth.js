@@ -1,6 +1,8 @@
+const { address } = require('ip')
+
 module.exports = function (r) {
   r.get('/', (req, res) => {
-    res.redirect(this.oauthLogin())
+    res.redirect(this.oauthLogin(req.query.state))
   })
 
   r.get('/logout', async (req, res) => {
@@ -17,19 +19,21 @@ module.exports = function (r) {
   })
 
   r.get('/callback', (req, res) => {
+    if (req.query.state === 'direct') return res.redirect(`http://${address()}:${this.config.port}/auth/callback?code=${req.query.code}`)
+    if (req.query.state === 'stop') return res.send('.')
     this.oauth2.callback(req.query.code)
       .then(token => {
         res.cookie('token', token, {
           expires: new Date(Date.now() + (10 * 365 * 24 * 60 * 60)) // 10 years lmao
         })
 
-        res.redirect(`${this.dash}/${req.query.state || ''}`)
+        res.redirect(`/${req.query.state || ''}`)
       })
       .catch(err => {
         res.render('error', {
           happening: 'logging you in',
           error: err.message,
-          tryAgain: this.oauthLogin(req.query.state),
+          tryAgain: this.login(req.query.state),
           isAdmin: false
         })
       })

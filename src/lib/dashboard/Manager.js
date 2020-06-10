@@ -118,8 +118,8 @@ class Manager {
     return `https://${this.config.dashPrefix}.${this.base}`
   }
 
-  get login () {
-    return `${this.dash}/auth`
+  login (state) {
+    return `/auth${state ? `?state=${state}` : ''}`
   }
 
   get redirect () {

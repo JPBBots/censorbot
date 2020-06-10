@@ -1,6 +1,6 @@
 module.exports = function (r) {
   r.use(async (req, res, next) => {
-    if (!req.cookies.token) return res.redirect(this.oauthLogin('admin'))
+    if (!req.cookies.token) return res.redirect(this.login('admin'))
     const user = await this.db.collection('users').findOne({ token: req.cookies.token })
 
     if (!user) return res.status(401).json({ error: 'No access' })

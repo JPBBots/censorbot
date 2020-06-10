@@ -155,7 +155,7 @@ class OAuth2 {
         }
       })
 
-    if (!guilds) return false
+    if (!guilds || guilds.constructor !== Array) return false
 
     return guilds
       .filter(x => (x.permissions & this.config.dashOptions.requiredPermissionBit) !== 0 || x.owner)
