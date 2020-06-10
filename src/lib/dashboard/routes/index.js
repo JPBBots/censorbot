@@ -1,7 +1,5 @@
 module.exports = function (r) {
-  r.use('/(:guildid)?', async (req, res, next) => {
-    req.api = req.url.endsWith('.json') || req.method !== 'GET'
-
+  r.use('/(:guildid)?(.json)?', async (req, res, next) => {
     let results
     if (req.cookies.token) results = await this.oauth2.getGuilds(req.cookies.token)
 

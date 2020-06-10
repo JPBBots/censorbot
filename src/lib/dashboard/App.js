@@ -62,6 +62,9 @@ class App {
 
     this.app.use((req, res, next) => {
       if (!req.url.match(/static|updates\/./gi)) this.manager.log(`${req.method} ${req.url}`)
+
+      req.api = req.originalUrl.split('?')[0].endsWith('.json') || req.method !== 'GET'
+
       next()
     })
 

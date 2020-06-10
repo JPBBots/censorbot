@@ -1,7 +1,5 @@
 module.exports = function (r) {
-  r.use('/', async (req, res, next) => {
-    req.api = req.url.endsWith('.json') || req.method !== 'GET'
-
+  r.use('/(.json)?', async (req, res, next) => {
     const result = await this.oauth2.getGuilds(req.cookies.token)
     if (!result) return req.api ? res.status(401).json({ error: 'Unauthorized' }) : res.redirect(this.login('premium'))
 
