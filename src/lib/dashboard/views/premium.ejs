@@ -71,11 +71,13 @@ function hideChangeBar () {
     }
       document.getElementById("count").innerText = currentCount
     }
+  console.log(<%- JSON.stringify(guilds.map(g => ({ value: g.n, id: g.i }))) %>)
     window.lib.addTag('guilds', {
       whitelist: <%- JSON.stringify(guilds.map(g => ({ value: g.n, id: g.i }))) %>,
       maxTags: <%= premium.count %>,
       dropdown: {
-        enabled: 0
+        enabled: 0,
+        maxItems: <%= guilds.length %>
       },
       callbacks: {
         add: changeCount,
