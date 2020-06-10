@@ -129,12 +129,10 @@ class Database {
    * @returns {Promise.<Object>} Mongo response
    */
   async setConfig (id, obj) {
-    const res = await this.collection('guild_data').updateOne({ id }, {
-      $set: {
-        id,
-        ...obj,
-        v: this.constants.currentVersion
-      }
+    const res = await this.collection('guild_data').replaceOne({ id }, {
+      id,
+      ...obj,
+      v: this.constants.currentVersion
     }, { upsert: true })
 
     if (!res || res.n < 1) throw new Error('DB Error')
