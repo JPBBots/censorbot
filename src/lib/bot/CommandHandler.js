@@ -89,11 +89,12 @@ class CommandHandler {
 
   /**
    * List commands
+   * @param {Boolean} admin Whether to show admin commands
    * @returns {Array.<Object>} Command info's
    */
-  list () {
+  list (admin) {
     const cmds = this.commands
-      .filter(x => !x.info.admin)
+      .filter(x => admin ? true : !x.info.admin)
       .map(x => x.info.name)
       .sort()
       .map(x => this.commands.get(x).info)
