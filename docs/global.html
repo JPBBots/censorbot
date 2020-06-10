@@ -39,9 +39,6 @@
                     <dt><a href="global.html#ClusterStats">ClusterStats</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="global.html#GuildDB">GuildDB</a></dt>
-                    <dd>
-                    </dd>
                     <dt><a href="global.html#Languages">Languages</a></dt>
                     <dd>
                     </dd>
@@ -49,12 +46,6 @@
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="global.html#OAuthBearer">OAuthBearer</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="global.html#OAuthCode">OAuthCode</a></dt>
-                    <dd>
-                    </dd>
                     <dt><a href="global.html#PunishmentType">PunishmentType</a></dt>
                     <dd>
                     </dd>
@@ -64,13 +55,13 @@
                     <dt><a href="global.html#ShardStats">ShardStats</a></dt>
                     <dd>
                     </dd>
+                    <dt><a href="global.html#SmallID">SmallID</a></dt>
+                    <dd>
+                    </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="global.html#SmallID">SmallID</a></dt>
-                    <dd>
-                    </dd>
                     <dt><a href="global.html#Snowflake">Snowflake</a></dt>
                     <dd>
                     </dd>
@@ -422,378 +413,6 @@
               </section>
               <dl class="dl-compact">
               </dl>
-              <h3 id="GuildDB"><span class="symbol-name">GuildDB</span><small class="property-type">
-                  &nbsp;Object</small></h3>
-              <p>Guild Settings database</p>
-              <section>
-                <h4>Properties</h4>
-                <table class="jsdoc-details-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Optional</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <p>base</p>
-                      </td>
-                      <td>
-                        <p>Boolean</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Whether base filter is on or not</p>
-                        <p>Defaults to <code>true</code>.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>languages</p>
-                      </td>
-                      <td>
-                        <p><a href="global.html#Languages">Languages</a></p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Array of languages for base filter to use</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>censor</p>
-                      </td>
-                      <td>
-                        <p>Object</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Censor methods</p>
-                        <p>Values in <code>censor</code> have the following properties:</p>
-                        <table class="jsdoc-details-table">
-                          <thead>
-                            <tr>
-                              <th>Name</th>
-                              <th>Type</th>
-                              <th>Optional</th>
-                              <th>Description</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>
-                                <p>msg</p>
-                              </td>
-                              <td>
-                                <p>Boolean</p>
-                              </td>
-                              <td>
-                                <p>&nbsp;</p>
-                              </td>
-                              <td>
-                                <p>Whether to censor messages</p>
-                                <p>Defaults to <code>true</code>.</p>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <p>emsg</p>
-                              </td>
-                              <td>
-                                <p>Boolean</p>
-                              </td>
-                              <td>
-                                <p>&nbsp;</p>
-                              </td>
-                              <td>
-                                <p>Whether to censor edited messages</p>
-                                <p>Defaults to <code>true</code>.</p>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <p>nick</p>
-                              </td>
-                              <td>
-                                <p>Boolean</p>
-                              </td>
-                              <td>
-                                <p>&nbsp;</p>
-                              </td>
-                              <td>
-                                <p>Whether to censor nicknames</p>
-                                <p>Defaults to <code>true</code>.</p>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <p>react</p>
-                              </td>
-                              <td>
-                                <p>Boolean</p>
-                              </td>
-                              <td>
-                                <p>&nbsp;</p>
-                              </td>
-                              <td>
-                                <p>Whether to censor reactions</p>
-                                <p>Defaults to <code>true</code>.</p>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>log</p>
-                      </td>
-                      <td>
-                        <p><a href="global.html#Snowflake">Snowflake</a></p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>ID of log channel</p>
-                        <p>Value can be null. Defaults to <code>null</code>.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>role</p>
-                      </td>
-                      <td>
-                        <p><a href="global.html#Snowflake">Snowflake</a></p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>ID of uncensor role</p>
-                        <p>Value can be null. Defaults to <code>null</code>.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>filter</p>
-                      </td>
-                      <td>
-                        <p>Array</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Array of words to censor in this server</p>
-                        <p>Defaults to <code>[</code>.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>uncensor</p>
-                      </td>
-                      <td>
-                        <p>Array</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Array of words to not censor in this server</p>
-                        <p>Defaults to <code>[</code>.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>pop_delete</p>
-                      </td>
-                      <td>
-                        <p>(nullable Number or Boolean)</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Amount of time in ms to wait before deleting pop message</p>
-                        <p>Defaults to <code>3000</code>.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>msg</p>
-                      </td>
-                      <td>
-                        <p>(nullable String or Boolean)</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Message contained in pop message</p>
-                        <p>Defaults to <code>null</code>.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>punishment</p>
-                      </td>
-                      <td>
-                        <p>Object</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Punishment settings</p>
-                        <p>Values in <code>punishment</code> have the following properties:</p>
-                        <table class="jsdoc-details-table">
-                          <thead>
-                            <tr>
-                              <th>Name</th>
-                              <th>Type</th>
-                              <th>Optional</th>
-                              <th>Description</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>
-                                <p>type</p>
-                              </td>
-                              <td>
-                                <p><a href="global.html#PunishmentType">PunishmentType</a></p>
-                              </td>
-                              <td>
-                                <p>&nbsp;</p>
-                              </td>
-                              <td>
-                                <p>Type of punishment</p>
-                                <p>Defaults to <code>0</code>.</p>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <p>amount</p>
-                              </td>
-                              <td>
-                                <p>Number</p>
-                              </td>
-                              <td>
-                                <p>&nbsp;</p>
-                              </td>
-                              <td>
-                                <p>Amount of warnings til punish</p>
-                                <p>Defaults to <code>3</code>.</p>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <p>role</p>
-                              </td>
-                              <td>
-                                <p><a href="global.html#Snowflake">Snowflake</a></p>
-                              </td>
-                              <td>
-                                <p>&nbsp;</p>
-                              </td>
-                              <td>
-                                <p>Role to give for muting</p>
-                                <p>Value can be null. Defaults to <code>null</code>.</p>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>webhook</p>
-                      </td>
-                      <td>
-                        <p>Boolean</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Whether to resend as webhook</p>
-                        <p>Defaults to <code>false</code>.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>webhook_replace</p>
-                      </td>
-                      <td>
-                        <p><a href="global.html#WebhookReplace">WebhookReplace</a></p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>How to replace curses in webhooks</p>
-                        <p>Defaults to <code>0</code>.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>webhook_separate</p>
-                      </td>
-                      <td>
-                        <p>Boolean</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Whether to separate words</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>channels</p>
-                      </td>
-                      <td>
-                        <p>Array of <a href="global.html#Snowflake">Snowflake</a></p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Array of channels to not censor in</p>
-                        <p>Defaults to <code>[</code>.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>multi</p>
-                      </td>
-                      <td>
-                        <p>Boolean</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Whether to use multi-line</p>
-                        <p>Defaults to <code>false</code>.</p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </section>
-              <dl class="dl-compact">
-              </dl>
               <h3 id="Languages"><span class="symbol-name">Languages</span><small class="property-type">
                   &nbsp;Array</small></h3>
               <p>Languages used by the base filter</p>
@@ -810,16 +429,6 @@ off: Offensive</code></pre>
               <dl class="dl-compact">
                 <dt>Default value</dt>
                 <dd>[&#x27;en&#x27;, &#x27;es&#x27;, &#x27;off&#x27;]</dd>
-              </dl>
-              <h3 id="OAuthBearer"><span class="symbol-name">OAuthBearer</span><small class="property-type">
-                  &nbsp;String</small></h3>
-              <p>Used for requesting as a user, such as user info and guilds</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="OAuthCode"><span class="symbol-name">OAuthCode</span><small class="property-type">
-                  &nbsp;String</small></h3>
-              <p>Used for retrieving OAuth bearer of a Discord user</p>
-              <dl class="dl-compact">
               </dl>
               <h3 id="PunishmentType"><span class="symbol-name">PunishmentType</span><small class="property-type">
                   &nbsp;Number</small></h3>
@@ -1109,7 +718,7 @@ api
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 20, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on June 9, 2020.
       </p>
     </div>
   </footer>

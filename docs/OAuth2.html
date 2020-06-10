@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Class: PresenceManager</title>
+  <title>Class: OAuth2</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -25,10 +25,10 @@
         <div id="jsdoc-main" role="main">
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
-            <h1><small></small><span class="symbol-name">PresenceManager</span></h1>
-            <p class="source-link">Source: <a href="src_lib_bot_PresenceManager.js.html#source-line-9">src/<wbr>lib/<wbr>bot/<wbr>PresenceManager.<wbr>js:9</a></p>
+            <h1><small></small><span class="symbol-name">OAuth2</span></h1>
+            <p class="source-link">Source: <a href="src_lib_dashboard_OAuth2.js.html#source-line-26">src/<wbr>lib/<wbr>dashboard/<wbr>OAuth2.<wbr>js:26</a></p>
             <div class="symbol-classdesc">
-              <p>Used for setting and updating bot presences</p>
+              <p>OAuth2 Methods</p>
             </div>
             <dl class="dl-compact">
             </dl>
@@ -39,24 +39,25 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="PresenceManager.html#client">client</a></dt>
+                    <dt><a href="OAuth2.html#api">api</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="OAuth2.html#guildCache">guildCache</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="PresenceManager.html#customs">customs</a></dt>
+                    <dt><a href="OAuth2.html#manager">manager</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="OAuth2.html#timeouts">timeouts</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
-                  <dl class="dl-summary-callout">
-                    <dt><a href="PresenceManager.html#select">select</a></dt>
-                    <dd>
-                    </dd>
-                  </dl>
                 </div>
               </div>
             </div>
@@ -65,42 +66,30 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="PresenceManager.html#custom">custom()</a></dt>
+                    <dt><a href="OAuth2.html#_bearer">_bearer(code)</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="PresenceManager.html#d">d()</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="PresenceManager.html#err">err()</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="PresenceManager.html#go">go()</a></dt>
+                    <dt><a href="OAuth2.html#_get">_get(token)</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="PresenceManager.html#restart">restart()</a></dt>
+                    <dt><a href="OAuth2.html#_guilds">_guilds(bearer)</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="PresenceManager.html#set">set(set)</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="PresenceManager.html#setCustom">setCustom(type, name, status)</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="PresenceManager.html#slow">slow()</a></dt>
+                    <dt><a href="OAuth2.html#_set">_set(token, guilds)</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="PresenceManager.html#status">status(.<wbr>.<wbr>.<wbr>opt)</a></dt>
+                    <dt><a href="OAuth2.html#_user">_user(bearer)</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="PresenceManager.html#streaming">streaming()</a></dt>
+                    <dt><a href="OAuth2.html#createToken">createToken()</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -109,8 +98,8 @@
             </div>
           </section>
           <section>
-            <h2 id="PresenceManager">new&nbsp;<span class="symbol-name">PresenceManager</span><span class="signature"><span class="signature-params">(client)</span></span></h2>
-            <p>Presence manager</p>
+            <h2 id="OAuth2">new&nbsp;<span class="symbol-name">OAuth2</span><span class="signature"><span class="signature-params">(manager)</span></span></h2>
+            <p>OAuth2</p>
             <section>
               <h3>Parameter</h3>
               <table class="jsdoc-details-table">
@@ -125,7 +114,7 @@
                 <tbody>
                   <tr>
                     <td>
-                      <p>client</p>
+                      <p>manager</p>
                     </td>
                     <td>
                       <p>&nbsp;</p>
@@ -134,7 +123,7 @@
                       <p>&nbsp;</p>
                     </td>
                     <td>
-                      <p>Client</p>
+                      <p>Manager</p>
                     </td>
                   </tr>
                 </tbody>
@@ -146,104 +135,32 @@
           <section>
             <h2>Properties</h2>
             <section>
-              <h3 id="client"><span class="symbol-name">client</span><small class="property-type">
-                  &nbsp;<a href="Client.html">Client</a></small></h3>
-              <p>Client</p>
+              <h3 id="api"><span class="symbol-name">api</span><small class="property-type">
+                  &nbsp;<a href="global.html#Request">Request</a></small></h3>
+              <p>Discord API</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="customs"><span class="symbol-name">customs</span><small class="property-type">
-                  &nbsp;Array of String</small></h3>
-              <p>Custom status content</p>
-              <section>
-                <h4>Properties</h4>
-                <table class="jsdoc-details-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Optional</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <p>0</p>
-                      </td>
-                      <td>
-                        <p>String</p>
-                      </td>
-                      <td>
-                        <p>Yes</p>
-                      </td>
-                      <td>
-                        <p>Type</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>1</p>
-                      </td>
-                      <td>
-                        <p>String</p>
-                      </td>
-                      <td>
-                        <p>Yes</p>
-                      </td>
-                      <td>
-                        <p>Name</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>2</p>
-                      </td>
-                      <td>
-                        <p>String</p>
-                      </td>
-                      <td>
-                        <p>Yes</p>
-                      </td>
-                      <td>
-                        <p>Status</p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </section>
+              <h3 id="guildCache"><span class="symbol-name">guildCache</span><small class="property-type">
+                  &nbsp;Object with Token keys and Array of <a href="global.html#CachedGuild">CachedGuild</a> properties</small></h3>
+              <p>Guild cache</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="select"><span class="symbol-name">select</span><small class="property-type">
-                  &nbsp;nullable String</small></h3>
-              <p>Presence currently selected</p>
+              <h3 id="manager"><span class="symbol-name">manager</span><small class="property-type">
+                  &nbsp;<a href="Manager.html">Manager</a></small></h3>
+              <p>Manager</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="timeouts"><span class="symbol-name">timeouts</span><small class="property-type">
+                  &nbsp;Object with Token keys and Timeout properties</small></h3>
+              <p>Timeouts of cache dumping</p>
               <dl class="dl-compact">
               </dl>
             </section>
             <h2>Methods</h2>
             <section>
-              <h3 id="custom"><span class="symbol-name">custom</span><span class="signature"><span class="signature-params">()</span></span></h3>
-              <p>Custom</p>
-              <dl class="dl-compact">
-              </dl>
               <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
-              <h3 id="d"><span class="symbol-name">d</span><span class="signature"><span class="signature-params">()</span></span></h3>
-              <p>Default</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="err"><span class="symbol-name">err</span><span class="signature"><span class="signature-params">()</span></span></h3>
-              <p>For errors</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="go"><span class="symbol-name">go</span><span class="signature"><span class="signature-params">()</span></span></h3>
-              <p>Updates current presence</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="restart"><span class="symbol-name">restart</span><span class="signature"><span class="signature-params">()</span></span></h3>
-              <p>Restarting</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="set"><span class="symbol-name">set</span><span class="signature"><span class="signature-params">(set)</span></span></h3>
-              <p>Sets a new presence</p>
+              <h3 id="_bearer"><span class="symbol-name">_bearer</span><span class="signature"><span class="signature-params">(code)</span>&nbsp;&rarr; <span class="signature-returns"> Object</span></span></h3>
+              <p>Fetch bearer from oauth code</p>
               <section>
                 <h4>Parameter</h4>
                 <table class="jsdoc-details-table">
@@ -258,7 +175,7 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>set</p>
+                        <p>code</p>
                       </td>
                       <td>
                         <p>String</p>
@@ -267,7 +184,44 @@
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>Presence</p>
+                        <p>Code received from oauth transaction</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Object</code> OAuth User</p>
+                </dd>
+              </dl>
+              <h3 id="_get"><span class="symbol-name">_get</span><span class="signature"><span class="signature-params">(token)</span></span></h3>
+              <p>Get in cache</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>token</p>
+                      </td>
+                      <td>
+                        <p>Token</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Token</p>
                       </td>
                     </tr>
                   </tbody>
@@ -275,8 +229,46 @@
               </section>
               <dl class="dl-compact">
               </dl>
-              <h3 id="setCustom"><span class="symbol-name">setCustom</span><span class="signature"><span class="signature-params">(type, name, status)</span></span></h3>
-              <p>Sets custom status</p>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="_guilds"><span class="symbol-name">_guilds</span><span class="signature"><span class="signature-params">(bearer)</span>&nbsp;&rarr; <span class="signature-returns"> Array of <a href="global.html#CachedGuild">CachedGuild</a></span></span></h3>
+              <p>Fetches guilds of whom bearer belongs to</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>bearer</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User bearer</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Array of <a href="global.html#CachedGuild">CachedGuild</a></code> Array of fetched guilds</p>
+                </dd>
+              </dl>
+              <h3 id="_set"><span class="symbol-name">_set</span><span class="signature"><span class="signature-params">(token, guilds)</span></span></h3>
+              <p>Set guilds into cache</p>
               <section>
                 <h4>Parameters</h4>
                 <table class="jsdoc-details-table">
@@ -291,47 +283,30 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>type</p>
+                        <p>token</p>
                       </td>
                       <td>
-                        <p>String</p>
+                        <p>Token</p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>Type</p>
-                        <p>Defaults to <code>PLAYING</code>.</p>
+                        <p>Token of user to cache</p>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <p>name</p>
+                        <p>guilds</p>
                       </td>
                       <td>
-                        <p>String</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Name</p>
-                        <p>Defaults to <code>custom</code>.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>status</p>
-                      </td>
-                      <td>
-                        <p>String</p>
+                        <p>Array of <a href="global.html#CachedGuild">CachedGuild</a></p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>Status</p>
-                        <p>Defaults to <code>online</code>.</p>
+                        <p>Array of cached guilds</p>
                       </td>
                     </tr>
                   </tbody>
@@ -339,12 +314,9 @@
               </section>
               <dl class="dl-compact">
               </dl>
-              <h3 id="slow"><span class="symbol-name">slow</span><span class="signature"><span class="signature-params">()</span></span></h3>
-              <p>Services are slow</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="status"><span class="symbol-name">status</span><span class="signature"><span class="signature-params">(...opt)</span></span></h3>
-              <p>Sets presence</p>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="_user"><span class="symbol-name">_user</span><span class="signature"><span class="signature-params">(bearer)</span>&nbsp;&rarr; <span class="signature-returns"> Object</span></span></h3>
+              <p>Fetches user of whom bearer belongs to</p>
               <section>
                 <h4>Parameter</h4>
                 <table class="jsdoc-details-table">
@@ -359,27 +331,34 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>opt</p>
+                        <p>bearer</p>
                       </td>
                       <td>
-                        <p>any</p>
+                        <p>String</p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>Presence object</p>
-                        <p>Value can be repeated.</p>
+                        <p>User Bearer</p>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </section>
               <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Object</code> User Object</p>
+                </dd>
               </dl>
-              <h3 id="streaming"><span class="symbol-name">streaming</span><span class="signature"><span class="signature-params">()</span></span></h3>
-              <p>Development streaming</p>
+              <h3 id="createToken"><span class="symbol-name">createToken</span><span class="signature"><span class="signature-params">()</span>&nbsp;&rarr; <span class="signature-returns"> String</span></span></h3>
+              <p>Creates a token</p>
               <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>String</code> New Token</p>
+                </dd>
               </dl>
             </section>
           </section>

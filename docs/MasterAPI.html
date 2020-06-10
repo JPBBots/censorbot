@@ -75,19 +75,16 @@
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="MasterAPI.html#sendTo">sendTo(cluster, event, data, respond)</a></dt>
+                    <dt><a href="MasterAPI.html#sendToAll">sendToAll(event, data, respond, onlyClusters)</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="MasterAPI.html#sendToAll">sendToAll(event, data, respond)</a></dt>
+                    <dt><a href="MasterAPI.html#setup">setup()</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="MasterAPI.html#setup">setup()</a></dt>
-                    <dd>
-                    </dd>
                     <dt><a href="MasterAPI.html#shardCluster">shardCluster(id)</a></dt>
                     <dd>
                     </dd>
@@ -207,88 +204,7 @@
               <p>(Re)load routes and middleware</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="sendTo"><span class="symbol-name">sendTo</span><span class="signature"><span class="signature-params">(cluster, event, data, respond)</span>&nbsp;&rarr; <span class="signature-returns"> (void or Promise containing Object)</span></span></h3>
-              <p>Sends data to a cluster</p>
-              <section>
-                <h4>Parameters</h4>
-                <table class="jsdoc-details-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Optional</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <p>cluster</p>
-                      </td>
-                      <td>
-                        <p>Number</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Cluster ID</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>event</p>
-                      </td>
-                      <td>
-                        <p>String</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Event Name</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>data</p>
-                      </td>
-                      <td>
-                        <p>Object</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Data object</p>
-                        <p>Value can be null.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>respond</p>
-                      </td>
-                      <td>
-                        <p>Boolean</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Whether to get the response of it</p>
-                        <p>Defaults to <code>false</code>.</p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </section>
-              <dl class="dl-compact">
-                <dt>Returns</dt>
-                <dd>
-                  <p><code>(void or Promise containing Object)</code> Response data</p>
-                </dd>
-              </dl>
-              <h3 id="sendToAll"><span class="symbol-name">sendToAll</span><span class="signature"><span class="signature-params">(event, data, respond)</span>&nbsp;&rarr; <span class="signature-returns"> (void or Promise containing Array of Object)</span></span></h3>
+              <h3 id="sendToAll"><span class="symbol-name">sendToAll</span><span class="signature"><span class="signature-params">(event, data, respond, onlyClusters)</span>&nbsp;&rarr; <span class="signature-returns"> (void or Promise containing Array of Object)</span></span></h3>
               <p>Send data to all clusters</p>
               <section>
                 <h4>Parameters</h4>
@@ -344,6 +260,21 @@
                       <td>
                         <p>Whether to get the response of it</p>
                         <p>Defaults to <code>false</code>.</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>onlyClusters</p>
+                      </td>
+                      <td>
+                        <p>Boolean</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Whether to only send to bot clusters</p>
+                        <p>Defaults to <code>true</code>.</p>
                       </td>
                     </tr>
                   </tbody>
@@ -406,7 +337,7 @@
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 20, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on June 9, 2020.
       </p>
     </div>
   </footer>

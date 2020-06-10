@@ -26,7 +26,7 @@
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
             <h1><small></small><span class="symbol-name">Cluster</span></h1>
-            <p class="source-link">Source: <a href="clustering_Cluster.js.html#source-line-19">clustering/<wbr>Cluster.<wbr>js:19</a></p>
+            <p class="source-link">Source: <a href="clustering_Cluster.js.html#source-line-20">clustering/<wbr>Cluster.<wbr>js:20</a></p>
             <div class="symbol-classdesc">
               <p>Cluster broker between Worker and Master</p>
             </div>
@@ -45,23 +45,26 @@
                     <dt><a href="Cluster.html#id">id</a></dt>
                     <dd>
                     </dd>
+                    <dt><a href="Cluster.html#inactive">inactive</a></dt>
+                    <dd>
+                    </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Cluster.html#inactive">inactive</a></dt>
+                    <dt><a href="Cluster.html#job">job</a></dt>
                     <dd>
                     </dd>
                     <dt><a href="Cluster.html#master">master</a></dt>
                     <dd>
                     </dd>
+                    <dt><a href="Cluster.html#shards">shards</a></dt>
+                    <dd>
+                    </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Cluster.html#shards">shards</a></dt>
-                    <dd>
-                    </dd>
                     <dt><a href="Cluster.html#thread">thread</a></dt>
                     <dd>
                     </dd>
@@ -74,7 +77,10 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Cluster.html#send">send(e, d, i)</a></dt>
+                    <dt><a href="Cluster.html#_send">_send(e, d, i)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Cluster.html#send">send(event, data, respond)</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -84,20 +90,18 @@
                     <dt><a href="Cluster.html#setup">setup()</a></dt>
                     <dd>
                     </dd>
-                  </dl>
-                </div>
-                <div class="summary-column">
-                  <dl class="dl-summary-callout">
                     <dt><a href="Cluster.html#spawn">spawn()</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
+                <div class="summary-column">
+                </div>
               </div>
             </div>
           </section>
           <section>
-            <h2 id="Cluster">new&nbsp;<span class="symbol-name">Cluster</span><span class="signature"><span class="signature-params">(id, shards, master, inactive)</span></span></h2>
+            <h2 id="Cluster">new&nbsp;<span class="symbol-name">Cluster</span><span class="signature"><span class="signature-params">(id, job, shards, master, inactive)</span></span></h2>
             <p>Cluster Worker</p>
             <section>
               <h3>Parameters</h3>
@@ -123,6 +127,20 @@
                     </td>
                     <td>
                       <p>Cluster ID</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p>job</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Job of cluster</p>
                     </td>
                   </tr>
                   <tr>
@@ -194,6 +212,11 @@
               <p>Whether to spawn inactive</p>
               <dl class="dl-compact">
               </dl>
+              <h3 id="job"><span class="symbol-name">job</span><small class="property-type">
+                  &nbsp;Number</small></h3>
+              <p>Job of cluster</p>
+              <dl class="dl-compact">
+              </dl>
               <h3 id="master"><span class="symbol-name">master</span><small class="property-type">
                   &nbsp;<a href="Master.html">Master</a></small></h3>
               <p>Master</p>
@@ -212,7 +235,7 @@
             </section>
             <h2>Methods</h2>
             <section>
-              <h3 id="send"><span class="symbol-name">send</span><span class="signature"><span class="signature-params">(e, d, i)</span></span></h3>
+              <h3 id="_send"><span class="symbol-name">_send</span><span class="signature"><span class="signature-params">(e, d, i)</span></span></h3>
               <p>Send a message to thread</p>
               <section>
                 <h4>Parameters</h4>
@@ -274,6 +297,73 @@
               </section>
               <dl class="dl-compact">
               </dl>
+              <h3 id="send"><span class="symbol-name">send</span><span class="signature"><span class="signature-params">(event, data, respond)</span>&nbsp;&rarr; <span class="signature-returns"> (void or Promise containing Object)</span></span></h3>
+              <p>Sends data to a cluster</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>event</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Event Name</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>data</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Data object</p>
+                        <p>Value can be null.</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>respond</p>
+                      </td>
+                      <td>
+                        <p>Boolean</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Whether to get the response of it</p>
+                        <p>Defaults to <code>false</code>.</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>(void or Promise containing Object)</code> Response data</p>
+                </dd>
+              </dl>
               <h3 id="setup"><span class="symbol-name">setup</span><span class="signature"><span class="signature-params">()</span></span></h3>
               <p>Setup worker thread</p>
               <dl class="dl-compact">
@@ -292,7 +382,7 @@
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 20, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on June 9, 2020.
       </p>
     </div>
   </footer>

@@ -32,28 +32,18 @@
           </header>
           <section id="summary">
             <div class="summary-callout">
-              <h2 class="summary-callout-heading">Properties</h2>
+              <h2 class="summary-callout-heading">Property</h2>
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Logger.html#cluster">cluster</a></dt>
+                    <dt><a href="Logger.html#process">process</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
-                  <dl class="dl-summary-callout">
-                    <dt><a href="Logger.html#services">services</a></dt>
-                    <dd>
-                    </dd>
-                  </dl>
                 </div>
                 <div class="summary-column">
-                  <dl class="dl-summary-callout">
-                    <dt><a href="Logger.html#tasks">tasks</a></dt>
-                    <dd>
-                    </dd>
-                  </dl>
                 </div>
               </div>
             </div>
@@ -62,7 +52,7 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Logger.html#log">log(service, task, name, optional, error)</a></dt>
+                    <dt><a href="Logger.html#log">log(message, error)</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -86,27 +76,17 @@
             </dl>
           </section>
           <section>
-            <h2>Properties</h2>
+            <h2>Property</h2>
             <section>
-              <h3 id="cluster"><span class="symbol-name">cluster</span><small class="property-type">
+              <h3 id="process"><span class="symbol-name">process</span><small class="property-type">
                   &nbsp;Number</small></h3>
-              <p>Cluster ID</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="services"><span class="symbol-name">services</span><small class="property-type">
-                  &nbsp;Array of String</small></h3>
-              <p>Services</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="tasks"><span class="symbol-name">tasks</span><small class="property-type">
-                  &nbsp;Array of String</small></h3>
-              <p>Tasks</p>
+              <p>process name</p>
               <dl class="dl-compact">
               </dl>
             </section>
             <h2>Methods</h2>
             <section>
-              <h3 id="log"><span class="symbol-name">log</span><span class="signature"><span class="signature-params">(service, task, name, optional, error)</span></span></h3>
+              <h3 id="log"><span class="symbol-name">log</span><span class="signature"><span class="signature-params">(message, error)</span></span></h3>
               <p>Log to console</p>
               <section>
                 <h4>Parameters</h4>
@@ -122,35 +102,7 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>service</p>
-                      </td>
-                      <td>
-                        <p>Number</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Service</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>task</p>
-                      </td>
-                      <td>
-                        <p>Number</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Task</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>name</p>
+                        <p>message</p>
                       </td>
                       <td>
                         <p>String</p>
@@ -159,23 +111,7 @@
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>Name</p>
-                        <p>Defaults to <code>null</code>.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>optional</p>
-                      </td>
-                      <td>
-                        <p>String</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Optional</p>
-                        <p>Defaults to <code>null</code>.</p>
+                        <p>Log</p>
                       </td>
                     </tr>
                     <tr>
@@ -255,7 +191,7 @@
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 20, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on June 9, 2020.
       </p>
     </div>
   </footer>

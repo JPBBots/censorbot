@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Class: DBL</title>
+  <title>Class: Manager</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -25,10 +25,10 @@
         <div id="jsdoc-main" role="main">
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
-            <h1><small></small><span class="symbol-name">DBL</span></h1>
-            <p class="source-link">Source: <a href="src_lib_bot_DBL.js.html#source-line-11">src/<wbr>lib/<wbr>bot/<wbr>DBL.<wbr>js:11</a></p>
+            <h1><small></small><span class="symbol-name">Manager</span></h1>
+            <p class="source-link">Source: <a href="src_lib_dashboard_Manager.js.html#source-line-21">src/<wbr>lib/<wbr>dashboard/<wbr>Manager.<wbr>js:21</a></p>
             <div class="symbol-classdesc">
-              <p>Used for interacting with the DBL (top.gg) api</p>
+              <p>Base dashboard class</p>
             </div>
             <dl class="dl-compact">
             </dl>
@@ -39,47 +39,46 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="DBL.html#api">api</a></dt>
+                    <dt><a href="Manager.html#adminCache">adminCache</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Manager.html#app">app</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Manager.html#capi">capi</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="DBL.html#client">client</a></dt>
+                    <dt><a href="Manager.html#cluster">cluster</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Manager.html#config">config</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Manager.html#db">db</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="DBL.html#interval">interval</a></dt>
+                    <dt><a href="Manager.html#logger">logger</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Manager.html#oauth2">oauth2</a></dt>
                     <dd>
                     </dd>
                   </dl>
-                </div>
-              </div>
-            </div>
-            <div class="summary-callout">
-              <h2 class="summary-callout-heading">Method</h2>
-              <div class="summary-content">
-                <div class="summary-column">
-                  <dl class="dl-summary-callout">
-                    <dt><a href="DBL.html#post">post()</a></dt>
-                    <dd>
-                    </dd>
-                  </dl>
-                </div>
-                <div class="summary-column">
-                </div>
-                <div class="summary-column">
                 </div>
               </div>
             </div>
           </section>
           <section>
-            <h2 id="DBL">new&nbsp;<span class="symbol-name">DBL</span><span class="signature"><span class="signature-params">(client)</span></span></h2>
-            <p>DBL interface</p>
+            <h2 id="Manager">new&nbsp;<span class="symbol-name">Manager</span><span class="signature"><span class="signature-params">(cluster)</span></span></h2>
+            <p>Dashboard Manager</p>
             <section>
               <h3>Parameter</h3>
               <table class="jsdoc-details-table">
@@ -94,7 +93,7 @@
                 <tbody>
                   <tr>
                     <td>
-                      <p>client</p>
+                      <p>cluster</p>
                     </td>
                     <td>
                       <p>&nbsp;</p>
@@ -103,7 +102,7 @@
                       <p>&nbsp;</p>
                     </td>
                     <td>
-                      <p>Client</p>
+                      <p>Cluster</p>
                     </td>
                   </tr>
                 </tbody>
@@ -115,32 +114,45 @@
           <section>
             <h2>Properties</h2>
             <section>
-              <h3 id="api"><span class="symbol-name">api</span><small class="property-type">
+              <h3 id="adminCache"><span class="symbol-name">adminCache</span><small class="property-type">
+                  &nbsp;Set containing <a href="global.html#Snowflake">Snowflake</a></small></h3>
+              <p>Admin cache of false admins</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="app"><span class="symbol-name">app</span><small class="property-type">
+                  &nbsp;nullable <a href="App.html">App</a></small></h3>
+              <p>Routes app</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="capi"><span class="symbol-name">capi</span><small class="property-type">
                   &nbsp;<a href="global.html#Request">Request</a></small></h3>
-              <p>DBL API</p>
+              <p>Censor Bot API</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="client"><span class="symbol-name">client</span><small class="property-type">
-                  &nbsp;<a href="Client.html">Client</a></small></h3>
-              <p>Client</p>
+              <h3 id="cluster"><span class="symbol-name">cluster</span><small class="property-type">
+                  &nbsp;<a href="Worker.html">Worker</a></small></h3>
+              <p>Cluster</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="interval"><span class="symbol-name">interval</span><small class="property-type">
-                  &nbsp;Interval</small></h3>
-              <p>Posting interval</p>
+              <h3 id="config"><span class="symbol-name">config</span><small class="property-type">
+                  &nbsp;Object</small></h3>
+              <p>Config</p>
               <dl class="dl-compact">
               </dl>
-            </section>
-            <h2>Method</h2>
-            <section>
-              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
-              <h3 id="post"><span class="symbol-name">post</span><span class="signature"><span class="signature-params">()</span>&nbsp;&rarr; <span class="signature-returns"> Promise containing Object</span></span></h3>
-              <p>Post stats</p>
+              <h3 id="db"><span class="symbol-name">db</span><small class="property-type">
+                  &nbsp;nullable <a href="Database.html">Database</a></small></h3>
+              <p>Database</p>
               <dl class="dl-compact">
-                <dt>Returns</dt>
-                <dd>
-                  <p><code>Promise containing Object</code> Response</p>
-                </dd>
+              </dl>
+              <h3 id="logger"><span class="symbol-name">logger</span><small class="property-type">
+                  &nbsp;<a href="Logger.html">Logger</a></small></h3>
+              <p>Logger</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="oauth2"><span class="symbol-name">oauth2</span><small class="property-type">
+                  &nbsp;nullable <a href="OAuth2.html">OAuth2</a></small></h3>
+              <p>OAuth2 Methods</p>
+              <dl class="dl-compact">
               </dl>
             </section>
           </section>

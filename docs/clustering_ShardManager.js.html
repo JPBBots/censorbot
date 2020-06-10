@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Source: src/lib/bot/EventHandler.js</title>
+  <title>Source: clustering/ShardManager.js</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -26,73 +26,75 @@
         </div>
         <div id="jsdoc-main" role="main">
           <header class="page-header">
-            <h1>Source: src/lib/bot/EventHandler.js</h1>
+            <h1>Source: clustering/ShardManager.js</h1>
           </header>
           <article>
-            <pre class="prettyprint linenums"><code>const { readdirSync } &#x3D; require(&#x27;fs&#x27;)
-const dir &#x3D; require(&#x27;path&#x27;).resolve.bind(undefined, __dirname)
+            <pre class="prettyprint linenums"><code>const Collection &#x3D; require(&#x27;../util/Collection&#x27;)
+const Wait &#x3D; require(&#x27;../util/Wait&#x27;)
+
+const Timeout &#x3D; new Wait(6000)
 
 /**
- * Used for handling preset events from the Discord websocket
+ * Shard manager for taking spawning requests and starting them
  */
-class EventHandler {
+class ShardManager {
   /**
-   * Event Handler
-   * @param {Client} client Client
+   * Shard Master
+   * @param {Master} master Master
    */
-  constructor (client) {
+  constructor (master) {
     /**
-     * Client
-     * @type {Client}
+     * Master
+     * @type {Master}
      */
-    this.client &#x3D; client
+    this.master &#x3D; master
 
     /**
-     * Events
-     * @type {Object.&amp;lt;String, Function&gt;}
+     * Shard queue
+     * @type {Collection.&amp;lt;Number, Number&gt;}
      */
-    this.events &#x3D; {}
+    this.queue &#x3D; new Collection()
 
     /**
-     * Whether or not the events are attached to the event handler
+     * Whether or not sharder is in the process of looping
      * @type {Boolean}
      */
-    this.eventsSet &#x3D; false
-
-    this.load()
+    this.looping &#x3D; false
   }
 
   /**
-   * (Re)loads events
+   * Add shard spawn to queue
+   * @param {Number} shard Shard to spawn
    */
-  load () {
-    const events &#x3D; readdirSync(dir(&#x27;../../events&#x27;)).map(x &#x3D;&gt; x.split(&#x27;.&#x27;)).filter(x &#x3D;&gt; x[1] &#x3D;&#x3D;&#x3D; &#x27;js&#x27;)
-    if (!this.eventsSet) {
-      events.forEach(e &#x3D;&gt; {
-        this.client.on(e[0], (...d) &#x3D;&gt; {
-          this.dispatch(e[0], ...d)
-        })
-      })
-      this.eventsSet &#x3D; true
+  addShard (shard) {
+    this.queue.set(shard, shard)
+
+    if (!this.looping &amp;amp;&amp;amp; this.master.spawned) this.spawn()
+  }
+
+  async spawn () {
+    const nextShard &#x3D; this.queue.first()
+    if (nextShard &#x3D;&#x3D;&#x3D; undefined) {
+      this.looping &#x3D; false
+      return
     }
-    events.forEach(e &#x3D;&gt; {
-      delete require.cache[require.resolve(dir(&#x27;../../events&#x27;, e[0] + &#x27;.&#x27; + e[1]))]
-      this.events[e[0]] &#x3D; require(dir(&#x27;../../events&#x27;, e[0] + &#x27;.&#x27; + e[1])).bind(this.client)
-    })
-  }
 
-  /**
-   * Dispatches an event
-   * @param {String} event Event name
-   * @param  {...any} d Event packet
-   */
-  dispatch (event, ...d) {
-    if (!this.events[event] || (![&#x27;SHARD_READY&#x27;, &#x27;RESUME&#x27;].includes(event) &amp;amp;&amp;amp; this.client.cluster.inactive)) return
-    this.events[event](...d)
+    this.looping &#x3D; true
+
+    const cluster &#x3D; this.master.api.shardCluster(nextShard)
+
+    if (!cluster) return
+    await cluster.send(&#x27;SPAWN_SHARD&#x27;, { id: nextShard }, true)
+
+    this.queue.delete(nextShard)
+
+    await Timeout.wait()
+
+    this.spawn()
   }
 }
 
-module.exports &#x3D; EventHandler
+module.exports &#x3D; ShardManager
 </code></pre>
           </article>
         </div>
