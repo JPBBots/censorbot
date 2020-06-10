@@ -8,4 +8,8 @@ module.exports = function (guild) {
       .description(`${guild.id}`)
       .timestamp()
   )
+
+  if (guild.unavailable) return
+
+  this.db.collection('punishments').removeMany({ g: guild.id })
 }
