@@ -19,7 +19,7 @@ module.exports = [
  */
 
 /**
- * @typedef {jobInt} Job Job
- * @property {Number} i Job number
+ * @typedef {Objectt} Job Job
+ * @property {jobInt} i Job number
  * @property {String} client Path to client file
  */
