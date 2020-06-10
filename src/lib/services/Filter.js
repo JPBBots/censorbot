@@ -8,8 +8,8 @@ module.exports = class JPBFilter {
     this.linkByp = require(linkBypFile).links
     this.client = client
     this.replaceSpots = {
-      spaces: /(_|\/|\\|\.|\n|&|-|\+|=|:|~|,|\?|​|‍|\s+)/gi, // eslint-disable-line no-irregular-whitespace
-      nothing: /("|\*|'|\||`|<|>|#|!|\(|\)|\[|\]|\{|\}|;|%)/gi
+      spaces: /(_|\/|\\|\.|\n|&|-|\+|=|:|~|,|\?|\s+)/gi,
+      nothing: /("|\*|'|\||`|<|>|#|!|\(|\)|\[|\]|\{|\}|;|%|​|‍)/gi // eslint-disable-line no-irregular-whitespace
     }
     this.emoji_lookup = {
       '🇦': 'a',
