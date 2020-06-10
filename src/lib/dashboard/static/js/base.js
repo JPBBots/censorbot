@@ -190,6 +190,7 @@ class Base { // eslint-disable-line no-unused-vars
   }
 
   post () {
+    if (!this.changed) return this.tell('No changes detected. Not saving.')
     if (this.useBar) document.querySelector('.saveButton').innerText = 'Saving...'
     var xhr = new XMLHttpRequest()
     xhr.open('POST', window.location.href)
