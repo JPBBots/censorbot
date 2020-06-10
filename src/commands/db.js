@@ -36,6 +36,7 @@ exports.run = async function (message, args) {
 
 exports.info = {
   name: 'db',
+  description: 'Database control',
   aliases: [],
   admin: true
 }

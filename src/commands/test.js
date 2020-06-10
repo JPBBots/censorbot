@@ -13,6 +13,7 @@ exports.run = async function (message, args) {
 
 exports.info = {
   admin: true,
+  description: 'Test filter',
   name: 'test',
   aliases: []
 }

@@ -13,6 +13,7 @@ exports.run = function (message, args) {
 
 exports.info = {
   name: 'presence',
+  description: 'Controls presence',
   aliases: [],
   admin: true
 }
