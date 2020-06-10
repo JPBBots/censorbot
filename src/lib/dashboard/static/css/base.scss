@@ -1,0 +1,888 @@
+/* Variables Styles */
+@import 'var';
+
+/* All Page Styles */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=tap');
+
+:root {
+    --blurple: #7289DA;
+    --white: #ffffff;
+    --greyple: #99aab5;
+    --dGreyple: #81898f;
+    --disabledWhite: #dbd7d7;
+    --dark: #2c2f33;
+    --darkest: #23272a;
+    --background-light: #35393F;
+    --background-dark: #2E3136;
+    --background-darkest: #202225;
+    --corner: 2rem;
+    --inputLight: #3F444B;
+    --switch-width: 60px;
+    --green: #00B484;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    &:not(input, select) {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+}
+
+body {
+    background-color: map-get($map: $background, $key: "light");
+    color: map-get($map: $colors, $key: "white");
+    font-family: 'Noto Sans', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    display: grid;
+    grid-template-areas: "header header"
+        "sidebar main";
+    grid-template-rows: 12.5vh auto;
+    grid-template-columns: 15vw auto;
+}
+
+button { background-color: map-get($map: $colors, $key: "greyple"); }
+
+#header {
+    grid-area: header;
+    background-color: map-get($map: $colors, $key: "blurple");
+    @include flex();
+
+    .showSidebar {
+        display: none;
+    }
+
+    p {
+        text-align: center;
+        font-weight: 600;
+        font-size: 4rem;
+    }
+}
+
+#sidebar {
+    grid-area: sidebar;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr;
+
+    p {
+        text-align: center;
+        padding-top: 2rem;
+
+    }
+
+    .close {
+        display: none;
+    }
+
+    div#top {
+        padding: 2rem 0;
+        grid-row: 1;
+        @include flex($justify: flex-start);
+
+    }
+
+    div#bottom {
+        padding: 1rem 0;
+        grid-row: 2;
+        @include flex($justify: flex-end);
+
+        a {
+            color: map-get($map: $colors, $key: "white");
+            transition: 0.3s;
+
+            &:focus, &:hover { color: map-get($map: $colors, $key: "greyple") !important; }
+
+            &:visited { color: map-get($map: $colors, $key: "blurple"); }
+        }
+    }
+
+    background-color: map-get($map: $background, $key: "dark");
+    color: map-get($map: $colors, $key: "white");
+
+    div>button {
+        background-color: darken(#99aab5, 10%);
+        color: map-get($map: $colors, $key: "white");
+        width: 80%;
+        height: 20%;
+        font-size: 2rem;
+        border-radius: 8px;
+        border: none;
+        outline: none;
+        margin: 1rem 0;
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            transition: background-color 0.15s ease-in-out;
+            background-color: map-get($map: $colors, $key: "blurple");
+        }
+
+    }
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+    /* for vertical scrollbars */
+    height: 12px;
+    /* for horizontal scrollbars */
+    border-radius: 3rem;
+}
+
+::-webkit-scrollbar-track { background: map-get($map: $background, $key: "mid"); }
+
+::-webkit-scrollbar-thumb { background: map-get($map: $background, $key: "dark"); }
+
+/* Home Page Styles */
+#mainGuildsPage {
+    grid-area: main;
+    padding: 2rem 1rem 1rem 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    grid-template-rows: repeat(3, 1fr);
+    grid-gap: 3%;
+    overflow-y: auto;
+
+    div#guildCard {
+        background-color: map-get($map: $background, $key: "dark");
+        @include flex();
+        border-radius: var(--corner);
+        cursor: pointer;
+        transition: all 0.12s;
+
+        &:hover, &:focus { box-shadow: 0px 0px 20px 15px map-get($map: $colors, $key: "blurple"); }
+
+        p#guildName {
+            padding: 2.75rem 0.25rem 0.5rem 0.25rem;
+            font-weight: 400;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            word-wrap: break-word;
+            -webkit-line-clamp: 2;
+            /* number of lines to show */
+            -webkit-box-orient: vertical;
+            max-width: 100%;
+            justify-self: flex-end;
+        }
+
+        img#guildIcon {
+            max-width: 80%;
+            min-width: 70%;
+            padding-top: 1rem;
+            border-radius: 35%;
+        }
+    }
+}
+
+/* Guild Settings Page Styles */
+#mainGuildPage {
+    grid-area: main;
+    padding: 2rem 1rem 1rem 1rem;
+    overflow-y: auto;
+
+
+    *[title] {
+        position: relative;
+    }
+    *[title]:hover:before {
+     content: attr(title);
+     position: absolute;
+    top: -2rem;
+    background-color: map-get($map: $background, $key: 'dark');
+    padding: 3px;
+    border-radius: 8px;
+    font-size: medium;
+    width: max-content;
+    }
+
+    .switch[title]:hover:before {
+        left: 4rem;
+    }
+
+
+    .hrGrey {
+        border-color: map-get($map: $colors, $key: "greyple");
+    }
+    div {
+        &:nth-of-type(1)>h1 {
+            border-top-left-radius: var(--corner);
+            border-top-right-radius: var(--corner);
+            border: none;
+        }
+
+        &:last-of-type {
+            section {
+                border-bottom-left-radius: var(--corner);
+                border-bottom-right-radius: var(--corner);
+                border-bottom: 3px solid map-get($map: $colors, $key: "greyple");
+                margin-bottom: 1rem;
+            }
+
+            &[data-open="false"]>h1 {
+                transition: ease-in-out 0.3s;
+                transition-delay: 0.4s;
+                border-bottom-left-radius: var(--corner);
+                border-bottom-right-radius: var(--corner);
+                margin-bottom: 1rem;
+            }
+        }
+
+        h1 {
+            position: relative;
+            transition: background-color 0.18s;
+            width: 100%;
+            padding: 1rem 2rem 0.5rem 2rem;
+            background-color: map-get($map: $colors, $key: "blurple");
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            border-top: 1px map-get($map: $colors, $key: 'grey') solid;
+        }
+
+        section {
+            display: inline-block;
+            width: 100%;
+            padding: 0.75rem;
+            border-left: 3px solid map-get($map: $colors, $key: "greyple");
+            border-right: 3px solid map-get($map: $colors, $key: "greyple");
+            @include flex();
+
+            h3 {
+                align-self: flex-start;
+                width: -webkit-fit-content;
+                width: -moz-fit-content;
+                width: fit-content;
+                padding: 0.5rem 0;
+            }
+
+            .switch { align-self: flex-end; }
+
+            &.general,
+            &.punishments {
+                div.sectionParent {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    column-gap: 0.5rem;
+                    .left { grid-column: 1; }
+                    .right { grid-column: 2; }
+                }
+            }
+
+            &.punishments>div.sectionParent>div.left {
+                text-align: right;
+                small { color: map-get($map: $colors, $key: 'greyple'); }
+            }
+
+            &.filter,
+            &.other {
+                div.sectionParent {
+                    display: grid;
+                    grid-template-columns: 3fr 1fr;
+                    column-gap: 0.5rem;
+
+                    .left {
+                        grid-column: 1;
+                        display: grid;
+                        grid-template-columns: 3fr 1fr;
+                        grid-template-rows: min-content;
+
+                        h3 { grid-column: 1; }
+
+                        label {
+                            grid-column: 2;
+                            align-self: flex-start;
+                            position: relative;
+                            right: var(--switch-width);
+                        }
+
+                        div { grid-column: 1 / span 1; }
+                    }
+
+                    .right {
+                        grid-column: 2;
+                        border: solid map-get($map: $colors, $key: 'greyple') 3px;
+                        border-radius: 8px;
+                        padding: 1rem;
+
+                        height: fit-content;
+
+                        p.rightTitle {
+                            text-align: center;
+                            font-weight: 600;
+                            text-decoration: underline;
+                            font-size: 150%;
+                        }
+                        h3 { display: inline-block; }
+                        label { float: right; }
+                    }
+                }
+            }
+        }
+
+        &[data-open="true"]>h1:after {
+            content: '∨';
+            transition: all 0.3s;
+            position: absolute;
+            right: 1.5rem;
+            color: map-get($map: $colors, $key: "white");
+        }
+
+        &[data-open="false"] {
+            h1 {
+                background-color: map-get($map: $colors, $key: "greyple");
+
+                &:after {
+                    content: '∨';
+                    transition: all 0.3s;
+                    transform: rotate(-90deg);
+                    position: absolute;
+                    right: 1.5rem;
+                    color: map-get($map: $colors, $key: "white");
+                }
+            }
+            section { display: none; }
+        }
+    }
+}
+
+#mainInvitePage {
+    grid-area: main;
+
+    @include flex();
+
+    button {
+        background-color: darken(#99aab5, 10%);
+        color: map-get($map: $colors, $key: "white");
+        width: 30%;
+        height: 10%;
+        font-size: 2rem;
+        border-radius: 8px;
+        border: none;
+        outline: none;
+        margin: 1rem 0;
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            transition: background-color 0.15s ease-in-out;
+            background-color: map-get($map: $colors, $key: "blurple");
+        }
+
+    }
+}
+
+#mainPremPage {
+    grid-area: main;
+
+    #title {
+        text-align: center;
+
+        a {
+            color: map-get($map: $colors, $key: "blurple") !important;
+
+            &:focus, &:hover { color: map-get($map: $colors, $key: "blurple") !important; }
+        }
+        
+    }
+
+    .center {
+        padding-top: 2rem;
+        @include flex();
+    }
+
+    .inputBox {
+        width: 50%;
+    }
+}
+
+#mainAdminPage {
+    grid-area: main;
+
+    padding: 1rem;
+
+    #apply {
+        position: absolute;
+        right: 2rem;
+        bottom: 1.5rem;
+    }
+
+    button {
+        background-color: darken(#99aab5, 10%);
+        color: map-get($map: $colors, $key: "white");
+        width: 10%;
+        height: 5%;
+        font-size: 1rem;
+        border-radius: 8px;
+        border: none;
+        outline: none;
+        margin: 1rem 0;
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            transition: background-color 0.15s ease-in-out;
+            background-color: map-get($map: $colors, $key: "blurple");
+        }
+}
+
+.cluster {
+    @include flex();
+    display: -webkit-box !important;
+    border-radius: var(--corner);
+    border: 2px solid map-get($map: $colors, $key: "greyple");
+    padding: 10px;
+    h1 {
+        text-align: center;
+        border-bottom: 1px solid map-get($map: $colors, $key: "greyple");
+        margin-bottom: 1rem;
+    }
+}
+.shard {
+    @include flex();
+    margin: 1rem;
+    min-width: 50px;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: var(--corner);
+    padding: 10px;
+    width: fit-content;
+    display: inline-block;
+
+    .selectBox {
+        min-height: 3rem;
+    }
+}
+}
+
+#mainErrorPage, #mainLoginPage {
+    grid-area: main;
+
+    text-align: center;
+
+    padding-top: 1rem;
+
+    button {
+        background-color: darken(#99aab5, 10%);
+        color: map-get($map: $colors, $key: "white");
+        width: 10%;
+        height: 5%;
+        font-size: 1rem;
+        border-radius: 8px;
+        border: none;
+        outline: none;
+        margin: 1rem 0;
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            transition: background-color 0.15s ease-in-out;
+            background-color: map-get($map: $colors, $key: "blurple");
+        }
+}
+}
+
+#saveButton {
+    position: fixed;
+    width: var(--switch-width);
+    height: var(--switch-width);
+    bottom: 40px;
+    right: 40px;
+    background-color: map-get($map: $colors, $key: "blurple");
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    box-shadow: 2px 2px 3px map-get($map: $colors, $key: "greyple");
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: var(--switch-width);
+    height: 34px;
+
+    input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+
+        }
+        
+    
+}
+
+.slider {
+
+    &[disabled] {
+        background-color: map-get($map: $colors, $key: 'disabledGreyple');
+
+        &:before {
+            background-color: map-get($map: $colors, $key: 'diabledWhite');
+        }
+    }
+    
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: map-get($map: $colors, $key: 'greyple');
+    transition: .4s;
+
+    &:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: map-get($map: $colors, $key: 'white');
+        transition: .4s;
+    }
+
+    &.round {
+        border-radius: 34px;
+
+        &:before { border-radius: 50%; }
+    }
+}
+
+input {
+    &:checked+.slider { background-color: map-get($map: $colors, $key: 'blurple'); }
+
+    *:focus+.slider { box-shadow: 0 0 1px map-get($map: $colors, $key: 'blurple'); }
+
+    &:checked+.slider:before { transform: translateX(26px); }
+}
+
+.inputBox {
+    background: map-get($map: $colors, $key: 'inputLight');
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: 2fr 4fr;
+    margin: 0.25rem 0;
+
+    height: fit-content;
+
+    p {
+        background: map-get($map: $colors, $key: 'grey');
+        // margin-right: 1%;
+        padding: 5% 1%;
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+        grid-column: 1;
+        @include flex();
+    }
+
+    input {
+        background: none;
+        outline: none !important;
+        border: none !important;
+        color: white;
+        font-size: larger;
+        grid-column: 2/span 5;
+        margin-left: 1rem;
+    }
+
+    input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    &.hasButton, &.has2Buttons {
+        grid-template-columns: 3fr 4fr 1fr;
+        input { grid-column: 2/3; }
+        button {
+            color: map-get($map: $colors, $key: 'white');
+            border-top-right-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+            grid-column: 3/4;
+            font-size: 130%;
+            border: none;
+            outline: none;
+        }
+    }
+
+    &.has2Buttons {
+        grid-template-columns: 2fr 3fr 1fr 1fr;
+        button:nth-of-type(1) { border-radius: 0; border-right: 1px map-get($map: $colors, $key: 'grey') solid; }
+        button:nth-of-type(2) { grid-column: 4/5; }
+    }
+}
+
+.selectBox {
+    background: map-get($map: $colors, $key: 'inputLight');
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: 2fr 4fr;
+    margin: 0.25rem 0;
+
+    p, select { display: inline-block; }
+
+    p, i {
+        background: map-get($map: $colors, $key: 'grey');
+        margin-right: 1%;
+        padding: 5% 1%;
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+        grid-column: 1;
+        text-align: center;
+        @include flex();
+    }
+
+    select {
+        background: none;
+        outline: none;
+        width: max-content;
+        border: none;
+        color: white;
+        font-size: larger;
+        grid-column: 2/5;
+        min-width: 100%;
+        margin-right: 1rem;
+
+        option {
+            background: map-get($map: $background, $key: 'light');
+            border: none;
+        }
+    }
+}
+
+changes {
+    position: absolute;
+    bottom: 2%;
+    width: 85vw;
+    @include flex();
+    pointer-events: none;
+
+    transition: bottom 0.5s ease-in-out;
+
+    &.hidden {
+        bottom: -10%;
+    }
+
+    .changes {
+
+        transition: none;
+        pointer-events: all;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+
+        background-color: map-get($map: $background, $key: 'dark');
+        border-radius: 0.5rem;
+
+        padding: 0.5rem 1rem;
+        width: 50%;
+
+        p {
+            @include flex($align: flex-start);
+            grid-column: 1/span 4;
+            font-size: 110%;
+        }
+
+        button {
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            color: map-get($map: $colors, $key: 'white');
+            font-weight: 500;
+            font-size: 110%;
+            cursor: pointer;
+
+            &.reset {
+                grid-column: 5/span 1;
+                background-color: map-get($map: $background, $key: 'dark');
+                margin-right: 0.25rem;
+                text-decoration: underline;
+            }
+
+            &.save {
+                grid-column: 6/span 1;
+                background-color: map-get($map: $colors, $key: 'green');
+            }
+        }
+    }
+}
+
+.tagify__dropdown__wrapper { background-color: map-get($map: $background, $key: 'light'); }
+
+.tagifyInput, .tagify, .tagify--focus {
+    border: none;
+    outline:  none;
+}
+
+.tagify__input:before { color: map-get($map: $colors, $key: 'white'); }
+
+
+@media (max-width: 1111px) {
+    main {
+        grid-area: main;
+        overflow-x: scroll;
+    }
+    #header {
+
+        p {
+            font-size: 2rem;
+        }
+        .showSidebar {
+            display: block;
+            position: absolute;
+            left: 1rem;
+
+            
+
+            &:before {
+                content: '≡';
+                font-size: 2rem;
+                transition: font-size 1s ease-in-out;
+            }
+        &.hide {
+           &:before {
+               font-size: 0;
+           }
+        }
+    }
+
+    }
+    #sidebar {
+        z-index: 1000;
+        display: grid;
+        position: absolute;
+        top: 5.5vh;
+        left: -50%;
+        height: calc(100% - 5.5vh);
+        width: 50%;
+        padding-top: 3rem;
+
+        transition: left 1s ease-in-out;
+
+        div > button {
+            font-size: 2rem;
+        }
+        &.show {
+            left: 0;
+        }
+
+        .close {
+            display: block;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+
+            &:before {
+                content: 'X';
+                font-size: 2rem;
+            }
+        }
+    } 
+ 
+    body {
+        ;
+     grid-template-areas: "header header"
+     "main main";
+     grid-template-rows: 5.5vh auto;
+    }
+
+    #mainGuildsPage {
+        grid-template-columns: 1fr 1fr;;
+    }
+    #mainPremPage {
+
+        .inputBox {
+            width: 90% !important;
+        }
+    }
+
+    #mainErrorPage, #mainLoginPage, #mainAdminPage {
+        button {
+            width: 30%;
+        }
+    }
+    
+    #mainGuildPage {
+        height: 100%;
+        overflow-x: scroll;
+        .selectBox > select{
+            width: 100% !important;
+        }
+
+        .inputBox {
+            width: 100%;
+            input {
+                width: inherit;
+            }
+        }
+        .sectionParent {
+            grid-template-columns: 1fr !important;
+
+            .right {
+                grid-column: 1 !important;
+            }
+        }
+        .filter, .other {
+            .sectionParent {
+                .left {
+                    grid-template-columns: 1fr !important;
+                }
+            }
+        }
+    }
+
+    changes {
+        width: 100%;
+
+        .changes {
+            width: 100%;
+            padding: 2%;
+        }
+    }
+ }
+
+#snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: map-get($map: $background, $key: 'dark');;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 50px;
+  }
+  
+  #snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+  
+  @-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 50px; opacity: 1;}
+  }
+  
+  @keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 50px; opacity: 1;}
+  }
+  
+  @-webkit-keyframes fadeout {
+    from {bottom: 50px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
+  
+  @keyframes fadeout {
+    from {bottom: 50px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }

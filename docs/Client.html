@@ -1,0 +1,589 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Class: Client</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
+            <h1><small></small><span class="symbol-name">Client</span></h1>
+            <p class="source-link">Source: <a href="lib_Client.js.html#source-line-43">lib/<wbr>Client.<wbr>js:43</a></p>
+            <div class="symbol-classdesc">
+              <p>Used for general interaction between backend and Discord</p>
+            </div>
+            <dl class="dl-compact">
+            </dl>
+          </header>
+          <section id="summary">
+            <div class="summary-callout">
+              <h2 class="summary-callout-heading">Properties</h2>
+              <div class="summary-content">
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Client.html#channels">channels</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#cluster">cluster</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#guilds">guilds</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#interface">interface</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#internalEvents">internalEvents</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Client.html#logger">logger</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#options">options</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#ping">ping</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#ready">ready</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#shards">shards</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Client.html#token">token</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#user">user</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#userChannels">userChannels</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#utils">utils</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+            <div class="summary-callout">
+              <h2 class="summary-callout-heading">Methods</h2>
+              <div class="summary-content">
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Client.html#guildShard">guildShard(id)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#killShard">killShard(id)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#log">log(service, task, name, optional, error)</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Client.html#restartShard">restartShard(id)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#setStatus">setStatus(type, name, status, stream)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#setup">setup()</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Client.html#setupEvents">setupEvents()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Client.html#spawnShards">spawnShards()</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section>
+            <h2 id="Client">new&nbsp;<span class="symbol-name">Client</span><span class="signature"><span class="signature-params">(token, cluster, opts)</span></span></h2>
+            <p>Discord Client</p>
+            <section>
+              <h3>Parameters</h3>
+              <table class="jsdoc-details-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Optional</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <p>token</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Discord Bot Token</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p>cluster</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Cluster Worker</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p>opts</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Options</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+            <dl class="dl-compact">
+              <dt>Extends</dt>
+              <dd>EventEmitter</dd>
+            </dl>
+          </section>
+          <section>
+            <h2>Properties</h2>
+            <section>
+              <h3 id="channels"><span class="symbol-name">channels</span><small class="property-type">
+                  &nbsp;Object with <a href="global.html#Snowflake">Snowflake</a> keys and object properties</small></h3>
+              <p>Channels</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="cluster"><span class="symbol-name">cluster</span><small class="property-type">
+                  &nbsp;<a href="Cluster.html">Cluster</a></small></h3>
+              <p>Cluster Worker</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="guilds"><span class="symbol-name">guilds</span><small class="property-type">
+                  &nbsp;Object with <a href="global.html#Snowflake">Snowflake</a> keys and object properties</small></h3>
+              <p>Guilds</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="interface"><span class="symbol-name">interface</span><small class="property-type">
+                  &nbsp;<a href="Interface.html">Interface</a></small></h3>
+              <p>Discord API interface</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="internalEvents"><span class="symbol-name">internalEvents</span><small class="property-type">
+                  &nbsp;Object with function() properties</small></h3>
+              <p>Internal event handling</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="logger"><span class="symbol-name">logger</span><small class="property-type">
+                  &nbsp;<a href="Logger.html">Logger</a></small></h3>
+              <p>Logger</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="options"><span class="symbol-name">options</span><small class="property-type">
+                  &nbsp;<a href="global.html#ClientOptions">ClientOptions</a></small></h3>
+              <p>Options</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="ping"><span class="symbol-name">ping</span></h3>
+              <p>Bot overall ping across all shards</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="ready"><span class="symbol-name">ready</span><small class="property-type">
+                  &nbsp;Boolean</small></h3>
+              <p>Whether bot is ready</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="shards"><span class="symbol-name">shards</span><small class="property-type">
+                  &nbsp;Object with Number keys and <a href="Shard.html">Shard</a> properties</small></h3>
+              <p>Shards</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="token"><span class="symbol-name">token</span><small class="property-type">
+                  &nbsp;String</small></h3>
+              <p>Discord Bot Token</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="user"><span class="symbol-name">user</span><small class="property-type">
+                  &nbsp;nullable Object</small></h3>
+              <p>Client User</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="userChannels"><span class="symbol-name">userChannels</span><small class="property-type">
+                  &nbsp;Object with <a href="global.html#Snowflake">Snowflake</a> keys and <a href="global.html#Snowflake">Snowflake</a> properties</small></h3>
+              <p>User dm channels</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="utils"><span class="symbol-name">utils</span><small class="property-type">
+                  &nbsp;Object</small></h3>
+              <p>Utilities</p>
+              <dl class="dl-compact">
+              </dl>
+            </section>
+            <h2>Methods</h2>
+            <section>
+              <h3 id="guildShard"><span class="symbol-name">guildShard</span><span class="signature"><span class="signature-params">(id)</span>&nbsp;&rarr; <span class="signature-returns"> Number</span></span></h3>
+              <p>Gets shard ID of guild</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Number</code> Shard ID</p>
+                </dd>
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="killShard"><span class="symbol-name">killShard</span><span class="signature"><span class="signature-params">(id)</span>&nbsp;&rarr; <span class="signature-returns"> Promise</span></span></h3>
+              <p>Kills and starts up shard</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p>Number</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Shard</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Promise</code> Promise</p>
+                </dd>
+              </dl>
+              <h3 id="log"><span class="symbol-name">log</span><span class="signature"><span class="signature-params">(service, task, name, optional, error)</span></span></h3>
+              <p>Log to console</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>service</p>
+                      </td>
+                      <td>
+                        <p>Number</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Service</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>task</p>
+                      </td>
+                      <td>
+                        <p>Number</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Task</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>name</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Name of log</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>optional</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Extra log</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>error</p>
+                      </td>
+                      <td>
+                        <p>Boolean</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Whether it's an error or not</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="restartShard"><span class="symbol-name">restartShard</span><span class="signature"><span class="signature-params">(id)</span></span></h3>
+              <p>Kill and resume a shard</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p>Number</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Shard</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="setStatus"><span class="symbol-name">setStatus</span><span class="signature"><span class="signature-params">(type, name, status, stream)</span></span></h3>
+              <p>Sets bot status</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>type</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Presence Type</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>name</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Game name</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>status</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Status</p>
+                        <p>Defaults to <code>online</code>.</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>stream</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Stream URL</p>
+                        <p>Value can be null.</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="setup"><span class="symbol-name">setup</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Sets up bot</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="setupEvents"><span class="symbol-name">setupEvents</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Setup bot events</p>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="spawnShards"><span class="symbol-name">spawnShards</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Spawns bot shards</p>
+              <dl class="dl-compact">
+              </dl>
+            </section>
+          </section>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 20, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

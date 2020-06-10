@@ -1,0 +1,246 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Source: util/Embed.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: util/Embed.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>// stole from discord.js
+const Colors &#x3D; {
+  DEFAULT: 0x000000,
+  WHITE: 0xFFFFFF,
+  AQUA: 0x1ABC9C,
+  GREEN: 0x2ECC71,
+  BLUE: 0x3498DB,
+  YELLOW: 0xFFFF00,
+  PURPLE: 0x9B59B6,
+  LUMINOUS_VIVID_PINK: 0xE91E63,
+  GOLD: 0xF1C40F,
+  ORANGE: 0xE67E22,
+  RED: 0xE74C3C,
+  GREY: 0x95A5A6,
+  NAVY: 0x34495E,
+  DARK_AQUA: 0x11806A,
+  DARK_GREEN: 0x1F8B4C,
+  DARK_BLUE: 0x206694,
+  DARK_PURPLE: 0x71368A,
+  DARK_VIVID_PINK: 0xAD1457,
+  DARK_GOLD: 0xC27C0E,
+  DARK_ORANGE: 0xA84300,
+  DARK_RED: 0x992D22,
+  DARK_GREY: 0x979C9F,
+  DARKER_GREY: 0x7F8C8D,
+  LIGHT_GREY: 0xBCC0C0,
+  DARK_NAVY: 0x2C3E50,
+  BLURPLE: 0x7289DA,
+  GREYPLE: 0x99AAB5,
+  DARK_BUT_NOT_BLACK: 0x2C2F33,
+  NOT_QUITE_BLACK: 0x23272A
+}
+// no longer stolen
+
+/**
+ * Embed object
+ */
+class Embed {
+  /**
+   * Creates Embed instance
+   */
+  constructor () {
+    /**
+     * Embed object
+     */
+    this.obj &#x3D; {
+      title: null,
+      description: null,
+      url: null,
+      timestamp: null,
+      color: Colors.DEFAULT,
+      fields: [],
+
+      thumbnail: null,
+      footer: null,
+      image: null,
+      author: null
+    }
+  }
+
+  /**
+   * Sets embeds description
+   * @param {String} desc Description
+   * @returns {Embed} This embed instance
+   */
+  description (desc) {
+    this.obj.description &#x3D; desc
+    return this
+  }
+
+  /**
+   * Sets embed title
+   * @param {String} title Title
+   * @param {String} url URL to set
+   * @returns {Embed} This embed instance
+   */
+  title (title, url) {
+    this.obj.title &#x3D; title
+    this.obj.url &#x3D; url || null
+    return this
+  }
+
+  /**
+   * Sets timestamp
+   * @param {Date} date Date to set timestamp too
+   * @returns {Embed} This embed instance
+   */
+  timestamp (date &#x3D; new Date()) {
+    this.obj.timestamp &#x3D; date.toISOString()
+    return this
+  }
+
+  /**
+   * Sets embed color
+   * @param {Number|String} Color
+   * @returns {Embed} This embed instance
+   */
+  color (color) {
+    if (Colors[color]) color &#x3D; Colors[color]
+    if (color instanceof String) color &#x3D; Number(color)
+    this.obj.color &#x3D; color
+    return this
+  }
+
+  /**
+   * Adds a field
+   * @param {String} name Name of field
+   * @param {String} value Value of field
+   * @param {Boolean} inline Whether field is inline
+   * @returns {Embed} This embed instance
+   */
+  field (name, value, inline) {
+    this.obj.fields.push({
+      name: name,
+      value: value,
+      inline: inline
+    })
+    return this
+  }
+
+  /**
+   * Sets thumbnail
+   * @param {String} url URL of thumbnail
+   * @param {Number} width Width
+   * @param {Number} height Height
+   * @returns {Embed} This embed instance
+   */
+  thumbnail (url, width, height) {
+    this.obj.thumbnail &#x3D; {
+      url: url,
+      width: width || null,
+      height: height || null
+    }
+    return this
+  }
+
+  /**
+   * Sets footer
+   * @param {String} text Footer text
+   * @param {String} icon URL of icon
+   * @returns {Embed} This embed instance
+   */
+  footer (text, icon) {
+    this.obj.footer &#x3D; {
+      text: text || null,
+      icon_url: icon || null
+    }
+    return this
+  }
+
+  /**
+   * Sets image
+   * @param {String} url URL of image
+   * @param {Number} width Width
+   * @param {Number} height Height
+   * @returns {Embed} This embed instance
+   */
+  image (url, width, height) {
+    this.obj.image &#x3D; {
+      url: url,
+      width: width || null,
+      height: height || null
+    }
+    return this
+  }
+
+  /**
+   * Sets author
+   * @param {String} name Name of author
+   * @param {String} icon URL of icon
+   * @param {String} url URL link on author
+   * @returns {Embed} This embed instance
+   */
+  author (name, icon, url) {
+    this.obj.author &#x3D; {
+      name: name,
+      icon_url: icon,
+      url: url
+    }
+    return this
+  }
+
+  /**
+   * Renders embed
+   * @returns {Object}
+   */
+  render () {
+    return this.obj
+  }
+}
+
+module.exports &#x3D; Embed
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 20, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

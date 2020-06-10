@@ -1,0 +1,12 @@
+{
+  "source": {
+    "exclude": [
+      "./node_modules",
+      "./util/Collection",
+      "./docs"
+    ]
+  },
+  "opts": {
+    "template": "./node_modules/jsdoc-baseline"
+  }
+}

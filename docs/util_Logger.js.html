@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Source: util/Logger.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: util/Logger.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>class Logger {
+  /**
+   * Logger
+   */
+  constructor (cluster) {
+    /**
+     * Cluster ID
+     * @type {Number}
+     */
+    this.cluster &#x3D; cluster
+
+    /**
+     * Services
+     * @type {Array.&amp;lt;String&gt;}
+     */
+    this.services &#x3D; [
+      &#x27;SERVICES&#x27;,
+      &#x27;DISCORD&#x27;,
+      &#x27;COMMANDS&#x27;,
+      &#x27;EVENTS&#x27;,
+      &#x27;API&#x27;,
+      &#x27;SHARD&#x27;, // 5
+      &#x27;BOT&#x27;,
+      &#x27;SYSTEM&#x27;,
+      &#x27;SHARDER&#x27;,
+      &#x27;SHARD WS&#x27;,
+      &#x27;WEBHOOKS&#x27;, // 10
+      &#x27;DBL&#x27;,
+      &#x27;PRESENCE&#x27;,
+      &#x27;TICKETS&#x27;,
+      &#x27;MASTER&#x27;
+    ]
+
+    this.serviceLength &#x3D; [...this.services].sort((a, b) &#x3D;&gt; {
+      if (a.length &gt; b.length) return -1
+      if (a.length &amp;lt; b.length) return 1
+      return 0
+    })[0].length + 2
+
+    /**
+     * Tasks
+     * @type {Array.&amp;lt;String&gt;}
+     */
+    this.tasks &#x3D; [
+      &#x27;LOAD&#x27;,
+      &#x27;LOADED&#x27;,
+      &#x27;STARTING&#x27;,
+      &#x27;FINISHED&#x27;,
+      &#x27;RAN&#x27;,
+      &#x27;ROUTED&#x27;, // 5
+      &#x27;CONNECT&#x27;,
+      &#x27;CONNECTED&#x27;,
+      &#x27;READY&#x27;,
+      &#x27;OPEN&#x27;,
+      &#x27;CLOSED&#x27;, // 10
+      &#x27;RECONNECT&#x27;,
+      &#x27;SPAWNING&#x27;,
+      &#x27;CENSORED&#x27;,
+      &#x27;CONNECTION&#x27;,
+      &#x27;POST&#x27;, // 15
+      &#x27;POSTED&#x27;,
+      &#x27;SET&#x27;,
+      &#x27;JOINED&#x27;,
+      &#x27;LEFT&#x27;,
+      &#x27;SUBMITTED&#x27;, // 20
+      &#x27;APPROVED&#x27;,
+      &#x27;DENIED&#x27;,
+      &#x27;DESTROYED&#x27;,
+      &#x27;FAILED&#x27;,
+      &#x27;ERROR&#x27;, // 25
+      &#x27;CREATED&#x27;
+    ]
+
+    this.taskLength &#x3D; [...this.tasks].sort((a, b) &#x3D;&gt; {
+      if (a.length &gt; b.length) return -1
+      if (a.length &amp;lt; b.length) return 1
+      return 0
+    })[0].length + 2
+  }
+
+  /**
+   * Log to console
+   * @param {Number} service Service
+   * @param {Number} task Task
+   * @param {String} name Name
+   * @param {String} optional Optional
+   * @param {Boolean} error Whether error
+   */
+  log (service, task, name &#x3D; null, optional &#x3D; null, error &#x3D; false) {
+    const d &#x3D; new Date()
+    const hours &#x3D; d.getHours()
+    const minutes &#x3D; d.getMinutes()
+    const seconds &#x3D; d.getSeconds()
+    const ms &#x3D; d.getMilliseconds()
+    console[error ? &#x27;error&#x27; : &#x27;log&#x27;](&#x60;${hours &amp;lt; 10 ? &#x60;0${hours}&#x60; : hours}:${minutes &amp;lt; 10 ? &#x60;0${minutes}&#x60; : minutes}:${seconds &amp;lt; 10 ? &#x60;0${seconds}&#x60; : seconds}.${ms &amp;lt; 10 ? &#x60;00${ms}&#x60; : ms &amp;lt; 100 ? &#x60;0${ms}&#x60; : ms} | ${this.separate(&#x60;Cluster ${this.cluster}&#x60;, 15)} |${this.separate(this.services[service], this.serviceLength)}|${this.separate(this.tasks[task], this.taskLength)}${name !&#x3D;&#x3D; null ? &#x60;| ${&#x60;${name}&#x60;.replace(/\n/g, &#x27; [] &#x27;)}&#x60; : &#x27;&#x27;}${optional !&#x3D;&#x3D; null ? &#x60; (${optional})&#x60; : &#x27;&#x27;}&#x60;)
+  }
+
+  /**
+   * Make all lines even
+   * @param {String} str String
+   * @param {Number} to What to seperate too
+   */
+  separate (str, to) {
+    let res &#x3D; str
+    let sw &#x3D; 1
+    for (let i &#x3D; 0; i &amp;lt; 100; i++) {
+      if (sw &#x3D;&#x3D;&#x3D; 1) res &#x3D; res + &#x27; &#x27;
+      else res &#x3D; &#x27; &#x27; + res
+
+      if (res.length &gt;&#x3D; to) break
+
+      sw &#x3D; sw * -1
+    }
+    return res
+  }
+}
+
+module.exports &#x3D; Logger
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 20, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

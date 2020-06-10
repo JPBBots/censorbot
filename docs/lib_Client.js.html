@@ -1,0 +1,327 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Source: lib/Client.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: lib/Client.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>const Request &#x3D; require(&#x27;../req&#x27;)
+const EventEmitter &#x3D; require(&#x27;events&#x27;)
+const { readdirSync } &#x3D; require(&#x27;fs&#x27;)
+const path &#x3D; require(&#x27;path&#x27;)
+
+const Shard &#x3D; require(&#x27;./Shard&#x27;)
+const Interface &#x3D; require(&#x27;./Interface&#x27;)
+
+const Collection &#x3D; require(&#x27;../util/Collection&#x27;)
+const Wait &#x3D; require(&#x27;../util/Wait&#x27;)
+const Logger &#x3D; require(&#x27;../util/Logger&#x27;)
+const Utils &#x3D; require(&#x27;../util/Utils&#x27;)
+const GuildShard &#x3D; require(&#x27;../util/GuildShard&#x27;)
+
+/**
+ * @typedef {String} Snowflake Discord ID
+ */
+
+/**
+ * Options used in client creation
+ * @typedef {Object} ClientOptions
+ * @property {Array.&amp;lt;Number&gt;} shards&#x3D;[0] Shards to spawn
+ * @property {Number} shardCount&#x3D;0 Shard Amount
+ * @property {String} api&#x3D;&#x27;https://discord.com/api/v7&#x27; URL of Discord API
+ * @property {Number} spawnTimeout&#x3D;6000 Time between shard spawns
+ * @property {Object} ws Websocket options
+ * @property {String} ws.url&#x3D;&#x27;&#x27; URL of Discord Websocket
+ * @property {String} ws.version&#x3D;&#x27;6&#x27; Version of Discord Websocket to use
+ * @property {String} ws.encoding&#x3D;&#x27;json&#x27; Encoding to use
+ */
+
+/**
+  * Used for general interaction between backend and Discord
+  * @extends EventEmitter
+  */
+class Client extends EventEmitter {
+  /**
+   * Discord Client
+   * @param {String} token Discord Bot Token
+   * @param {Worker} cluster Cluster Worker
+   * @param {ClientOptions} opts Options
+   */
+  constructor (token, cluster, opts) {
+    super()
+
+    /**
+     * Cluster Worker
+     * @type {Cluster}
+     */
+    this.cluster &#x3D; cluster
+
+    /**
+     * Logger
+     * @type {Logger}
+     */
+    this.logger &#x3D; new Logger(this.cluster.id)
+    this.log(0, 0, &#x27;Client&#x27;)
+
+    /**
+     * Discord Bot Token
+     * @type {String}
+     */
+    this.token &#x3D; token
+
+    /**
+     * Utilities
+     * @type {Object}
+     */
+    this.utils &#x3D; Utils
+
+    /**
+     * Discord API interface
+     * @type {Interface}
+     */
+    this.interface &#x3D; new Interface(this)
+
+    /**
+     * Shards
+     * @type {Collection.&amp;lt;Number, Shard&gt;}
+     */
+    this.shards &#x3D; new Collection()
+
+    /**
+     * Whether bot is ready
+     * @type {Boolean}
+     */
+    this.ready &#x3D; false
+
+    /**
+     * Client User
+     * @type {?Object}
+     */
+    this.user &#x3D; null
+
+    /**
+     * Guilds
+     * @type {Collection.&amp;lt;Snowflake, object&gt;}
+     */
+    this.guilds &#x3D; new Collection()
+
+    /**
+     * Channels
+     * @type {Collection.&amp;lt;Snowflake, object&gt;}
+     */
+    this.channels &#x3D; new Collection()
+
+    /**
+     * User dm channels
+     * @type {Collection.&amp;lt;Snowflake, Snowflake&gt;}
+     */
+    this.userChannels &#x3D; new Collection()
+
+    /**
+     * Internal event handling
+     * @type {Object.&amp;lt;String, Function&gt;}
+     */
+    this.internalEvents &#x3D; {}
+
+    /**
+     * Options
+     * @type {ClientOptions}
+     */
+    this.options &#x3D; {
+      shards: opts.shards || [0],
+      shardCount: opts.shardCount || 1,
+      api: &#x27;https://discord.com/api/v7&#x27;,
+      spawnTimeout: 6000,
+      ws: {
+        url: &#x27;&#x27;,
+        version: &#x27;6&#x27;,
+        encoding: &#x27;json&#x27;
+      },
+      ...opts
+    }
+
+    this.log(0, 1, &#x27;Client&#x27;)
+    // this.setup()
+  }
+
+  /**
+   * Log to console
+   * @param {Number} service Service
+   * @param {Number} task Task
+   * @param {String} name Name of log
+   * @param {String} optional Extra log
+   * @param {Boolean} error Whether it&#x27;s an error or not
+   */
+  log (..._) { this.logger.log(..._) }
+
+  /**
+   * Sets up bot
+   */
+  async setup () {
+    this.api &#x3D; Request(this.options.api, { Authorization: &#x60;Bot ${this.token}&#x60; })
+
+    this.log(1, 0, &#x27;Gateway&#x27;)
+    const gateway &#x3D; await this.api
+      .gateway(&#x27;bot&#x27;)
+      .get()
+
+    this.log(1, 1, &#x27;Gateway&#x27;, &#x60;${gateway.url}&#x60;)
+
+    this.options.ws.url &#x3D; gateway.url
+    this.session &#x3D; gateway.session_start_limit
+
+    this.setMaxListeners(50)
+
+    this.setupEvents()
+    this.spawnShards()
+
+    return new Promise(resolve &#x3D;&gt; {
+      this.once(&#x27;READY&#x27;, () &#x3D;&gt; resolve())
+    })
+  }
+
+  /**
+   * Spawns bot shards
+   */
+  async spawnShards () {
+    const Timeout &#x3D; new Wait(this.options.spawnTimeout)
+    this.log(8, 12, &#x60;${this.options.shards.length} shards&#x60;, &#x60;${this.options.shardCount}&#x60;)
+    for (let i &#x3D; 0; i &amp;lt; this.options.shards.length; i++) {
+      const shard &#x3D; new Shard(this, this.options.shards[i])
+      this.shards.set(this.options.shards[i], shard)
+      await shard.spawn()
+      await Timeout.wait()
+    }
+    this.log(8, 1, undefined, &#x60;${this.user.username}#${this.user.discriminator}&#x60;)
+    this.emit(&#x27;READY&#x27;, this.shards)
+    this.ready &#x3D; true
+  }
+
+  /**
+   * Kill and resume a shard
+   * @param {Number} id Shard
+   */
+  async restartShard (id) {
+    const shard &#x3D; this.shards.get(id)
+    if (shard) return shard.restart()
+  }
+
+  /**
+   * Setup bot events
+   */
+  setupEvents () {
+    readdirSync(path.resolve(__dirname, &#x27;./events&#x27;))
+      .forEach(event &#x3D;&gt; {
+        this.internalEvents[event.split(&#x27;.&#x27;)[0]] &#x3D; require(&#x60;./events/${event}&#x60;).bind(this)
+        this.on(
+          event.split(&#x27;.&#x27;)[0],
+          (...d) &#x3D;&gt; this.internalEvents[event.split(&#x27;.&#x27;)[0]](...d)
+        )
+      })
+  }
+
+  /**
+   * Bot overall ping across all shards
+   */
+  get ping () {
+    return this.shards.reduce((a, b) &#x3D;&gt; a + b.ping, 0) / this.shards.size
+  }
+
+  /**
+   * Sets bot status
+   * @param {String} type Presence Type
+   * @param {String} name Game name
+   * @param {String} status Status
+   * @param {?String} stream Stream URL
+   */
+  setStatus (type, name, status &#x3D; &#x27;online&#x27;, stream) {
+    this.shards.forEach(shard &#x3D;&gt; {
+      shard.setStatus({
+        afk: false,
+        status,
+        since: 0,
+        game: {
+          type: this.utils.presenceTypes[type.toLowerCase()],
+          name: name,
+          url: stream
+        }
+      })
+    })
+  }
+
+  /**
+   * Gets shard ID of guild
+   * @param {Snowflake} id Guild
+   * @returns {Number} Shard ID
+   */
+  guildShard (id) {
+    return GuildShard(id, this.options.shardCount)
+  }
+
+  /**
+   * Kills and starts up shard
+   * @param {Number} id Shard
+   * @returns {Promise} Promise
+   */
+  async killShard (id) {
+    id &#x3D; parseInt(id)
+    const shard &#x3D; this.shards.get(id)
+    if (!shard) throw new Error(&#x27;Invalid Shard&#x27;)
+    shard.destroy()
+    this.guilds &#x3D; this.guilds.filter(x &#x3D;&gt; this.guildShard(x.id) !&#x3D;&#x3D; id)
+
+    const newShard &#x3D; new Shard(this, id)
+    this.shards.set(id, newShard)
+
+    await newShard.spawn()
+  }
+}
+
+module.exports &#x3D; Client
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 20, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+<!-- 
+
+  {
+    happening: WHAT WAS HAPPENING WHILST ERRORING
+    error: ERROR MESSAGE
+    ?tryAgain: URL FOR TRY AGAIN
+  }
+
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Error: <%= error %></title>
+    <%- include('googleanalytics') %>
+    <link rel="stylesheet" href="/static/css/base.css" />
+  </head>
+
+<body>
+
+  <%- include('sidebar') %>
+  <div id="mainErrorPage">
+    <h1>Error whilst <%= happening %>!</h1>
+    <h3><%= error %></h3>
+    <% if (tryAgain) { %> 
+      <button onclick="window.location = '<%- tryAgain %>'">Try Again</button> 
+    <% } %>
+  </div>
+  </body>
+</html>

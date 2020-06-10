@@ -1,0 +1,1148 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Class: Dashboard</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
+            <h1><small></small><span class="symbol-name">Dashboard</span></h1>
+            <p class="source-link">Source: <a href="src_lib_services_Dashboard.js.html#source-line-48">src/<wbr>lib/<wbr>services/<wbr>Dashboard.<wbr>js:48</a></p>
+            <div class="symbol-classdesc">
+              <p>Used for methods used throughout the api and dashboard</p>
+            </div>
+            <dl class="dl-compact">
+            </dl>
+          </header>
+          <section id="summary">
+            <div class="summary-callout">
+              <h2 class="summary-callout-heading">Properties</h2>
+              <div class="summary-content">
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Dashboard.html#api">api</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#apiUrl">apiUrl</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#app">app</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#base">base</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#caching">caching</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#capi">capi</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Dashboard.html#cluster">cluster</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#config">config</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#database">database</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#db">db</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#guilds">guilds</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#logger">logger</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Dashboard.html#newToken">newToken</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#onReady">onReady</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#redirectURL">redirectURL</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#server">server</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#updates">updates</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+            <div class="summary-callout">
+              <h2 class="summary-callout-heading">Methods</h2>
+              <div class="summary-content">
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Dashboard.html#adminMiddle">adminMiddle(api, fn)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#callback">callback(req)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#close">close()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#connectDatabase">connectDatabase()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#fail">fail(res, api, state)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#fetchGuilds">fetchGuilds(bearer, res, state, api)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#fetchOAuthUser">fetchOAuthUser(code)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#fetchUser">fetchUser(bearer)</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Dashboard.html#getGuild">getGuild(api)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#getGuilds">getGuilds()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#getInCache">getInCache(user)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#getUserGuilds">getUserGuilds(token, res, state, api)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#guildData">guildData(api, fn)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#load">load()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#log">log(.<wbr>.<wbr>.<wbr>_)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#oauthLogin">oauthLogin(state)</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Dashboard.html#premium">premium(id)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#premiumMiddle">premiumMiddle(api, fn)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#reload">reload()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#setInCache">setInCache(user, value)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#spawn">spawn()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#start">start()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Dashboard.html#validateSettings">validateSettings(obj, guild, f)</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section>
+            <h2 id="Dashboard">new&nbsp;<span class="symbol-name">Dashboard</span><span class="signature"><span class="signature-params">(worker)</span></span></h2>
+            <p>Dashboard</p>
+            <section>
+              <h3>Parameter</h3>
+              <table class="jsdoc-details-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Optional</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <p>worker</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Dashboard Worker</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+            <dl class="dl-compact">
+            </dl>
+          </section>
+          <section>
+            <h2>Properties</h2>
+            <section>
+              <h3 id="api"><span class="symbol-name">api</span><small class="property-type">
+                  &nbsp;<a href="global.html#Request">Request</a></small></h3>
+              <p>Blank discord api</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="apiUrl"><span class="symbol-name">apiUrl</span><small class="property-type">
+                  &nbsp;String</small></h3>
+              <p>API URL</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="app"><span class="symbol-name">app</span><small class="property-type">
+                  &nbsp;nullable Express</small></h3>
+              <p>Express app</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="base"><span class="symbol-name">base</span><small class="property-type">
+                  &nbsp;String</small></h3>
+              <p>Base URL</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="caching"><span class="symbol-name">caching</span><small class="property-type">
+                  &nbsp;Object with <a href="global.html#Snowflake">Snowflake</a> keys and Timeout properties</small></h3>
+              <p>Clear cachings</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="capi"><span class="symbol-name">capi</span><small class="property-type">
+                  &nbsp;<a href="global.html#Request">Request</a></small></h3>
+              <p>Censor Bot API</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="cluster"><span class="symbol-name">cluster</span><small class="property-type">
+                  &nbsp;<a href="WorkerInternals.html">WorkerInternals</a></small></h3>
+              <p>Internal Methods</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="config"><span class="symbol-name">config</span><small class="property-type">
+                  &nbsp;Object</small></h3>
+              <p>Config</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="database"><span class="symbol-name">database</span><small class="property-type">
+                  &nbsp;<a href="Database.html">Database</a></small></h3>
+              <p>Database</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="db"><span class="symbol-name">db</span><small class="property-type">
+                  &nbsp;MongoDB.Collection</small></h3>
+              <p>Database</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="guilds"><span class="symbol-name">guilds</span><small class="property-type">
+                  &nbsp;Object with <a href="global.html#Snowflake">Snowflake</a> keys and Array of <a href="global.html#CachedGuild">CachedGuild</a> properties</small></h3>
+              <p>Guild cache</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="logger"><span class="symbol-name">logger</span><small class="property-type">
+                  &nbsp;<a href="Logger.html">Logger</a></small></h3>
+              <p>Logger</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="newToken"><span class="symbol-name">newToken</span><small class="property-type">
+                  &nbsp;String</small></h3>
+              <p>New token</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="onReady"><span class="symbol-name">onReady</span><small class="property-type">
+                  &nbsp;nullable function()</small></h3>
+              <p>Ran on ready</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="redirectURL"><span class="symbol-name">redirectURL</span><small class="property-type">
+                  &nbsp;String</small></h3>
+              <p>Redirect URL</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="server"><span class="symbol-name">server</span><small class="property-type">
+                  &nbsp;nullable Server</small></h3>
+              <p>HTTP Server</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="updates"><span class="symbol-name">updates</span><small class="property-type">
+                  &nbsp;UpdateManager</small></h3>
+              <p>Updates</p>
+              <dl class="dl-compact">
+              </dl>
+            </section>
+            <h2>Methods</h2>
+            <section>
+              <h3 id="adminMiddle"><span class="symbol-name">adminMiddle</span><span class="signature"><span class="signature-params">(api, fn)</span></span></h3>
+              <p>Admin middleware</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>api</p>
+                      </td>
+                      <td>
+                        <p>Boolean</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Whether API</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>fn</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Callback</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="callback"><span class="symbol-name">callback</span><span class="signature"><span class="signature-params">(req)</span></span></h3>
+              <p>Handle callback</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>req</p>
+                      </td>
+                      <td>
+                        <p>any type</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Req</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="close"><span class="symbol-name">close</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Close server</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="connectDatabase"><span class="symbol-name">connectDatabase</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Connects database</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="fail"><span class="symbol-name">fail</span><span class="signature"><span class="signature-params">(res, api, state)</span></span></h3>
+              <p>Fail a request unauthorized</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>res</p>
+                      </td>
+                      <td>
+                        <p>any type</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Res</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>api</p>
+                      </td>
+                      <td>
+                        <p>Boolean</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Whether api</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>state</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>OAuth State</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="fetchGuilds"><span class="symbol-name">fetchGuilds</span><span class="signature"><span class="signature-params">(bearer, res, state, api)</span>&nbsp;&rarr; <span class="signature-returns"> Promise containing Array of <a href="global.html#CachedGuild">CachedGuild</a></span></span></h3>
+              <p>Fetch user guilds</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>bearer</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User bearer</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>res</p>
+                      </td>
+                      <td>
+                        <p>any type</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Res</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>state</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>State</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>api</p>
+                      </td>
+                      <td>
+                        <p>Boolean</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>API</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Promise containing Array of <a href="global.html#CachedGuild">CachedGuild</a></code> Guilds</p>
+                </dd>
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="fetchOAuthUser"><span class="symbol-name">fetchOAuthUser</span><span class="signature"><span class="signature-params">(code)</span>&nbsp;&rarr; <span class="signature-returns"> Object</span></span></h3>
+              <p>Fetch oauth user</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>code</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#OAuthCode">OAuthCode</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Discord code</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Object</code> OAuth user</p>
+                </dd>
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="fetchUser"><span class="symbol-name">fetchUser</span><span class="signature"><span class="signature-params">(bearer)</span>&nbsp;&rarr; <span class="signature-returns"> Object</span></span></h3>
+              <p>Fetch user</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>bearer</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#OAuthBearer">OAuthBearer</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User bearer</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Object</code> User</p>
+                </dd>
+              </dl>
+              <h3 id="getGuild"><span class="symbol-name">getGuild</span><span class="signature"><span class="signature-params">(api)</span>&nbsp;&rarr; <span class="signature-returns"> function()</span></span></h3>
+              <p>Guild middleware</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>api</p>
+                      </td>
+                      <td>
+                        <p>Boolean</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Whether api or not</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>function()</code> For middleware usage</p>
+                </dd>
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="getGuilds"><span class="symbol-name">getGuilds</span><span class="signature"><span class="signature-params">()</span>&nbsp;&rarr; <span class="signature-returns"> Promise containing Array of <a href="global.html#CachedGuild">CachedGuild</a></span></span></h3>
+              <p>Get user guilds</p>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Promise containing Array of <a href="global.html#CachedGuild">CachedGuild</a></code> User Guilds</p>
+                </dd>
+              </dl>
+              <h3 id="getInCache"><span class="symbol-name">getInCache</span><span class="signature"><span class="signature-params">(user)</span>&nbsp;&rarr; <span class="signature-returns"> Array of <a href="global.html#CachedGuild">CachedGuild</a></span></span></h3>
+              <p>Get user in cache</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>user</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Array of <a href="global.html#CachedGuild">CachedGuild</a></code> Guilds</p>
+                </dd>
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="getUserGuilds"><span class="symbol-name">getUserGuilds</span><span class="signature"><span class="signature-params">(token, res, state, api)</span>&nbsp;&rarr; <span class="signature-returns"> Promise containing Array of <a href="global.html#CachedGuild">CachedGuild</a></span></span></h3>
+              <p>Get made user guilds</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>token</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User token</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>res</p>
+                      </td>
+                      <td>
+                        <p>any type</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Res</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>state</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>State</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>api</p>
+                      </td>
+                      <td>
+                        <p>Boolean</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>API</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Promise containing Array of <a href="global.html#CachedGuild">CachedGuild</a></code> User Guilds</p>
+                </dd>
+              </dl>
+              <h3 id="guildData"><span class="symbol-name">guildData</span><span class="signature"><span class="signature-params">(api, fn)</span>&nbsp;&rarr; <span class="signature-returns"> function()</span></span></h3>
+              <p>Get guild data middleware</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>api</p>
+                      </td>
+                      <td>
+                        <p>Boolean</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Whether api or not</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>fn</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Callback</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>function()</code> For middleware usage</p>
+                </dd>
+              </dl>
+              <h3 id="load"><span class="symbol-name">load</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Load routes</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="log"><span class="symbol-name">log</span><span class="signature"><span class="signature-params">(..._)</span></span></h3>
+              <p>log</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>_</p>
+                      </td>
+                      <td>
+                        <p>any</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>log</p>
+                        <p>Value can be repeated.</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="oauthLogin"><span class="symbol-name">oauthLogin</span><span class="signature"><span class="signature-params">(state)</span>&nbsp;&rarr; <span class="signature-returns"> String</span></span></h3>
+              <p>OAUTH Login url</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>state</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Redirect state</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>String</code> URL to send to</p>
+                </dd>
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="premium"><span class="symbol-name">premium</span><span class="signature"><span class="signature-params">(id)</span>&nbsp;&rarr; <span class="signature-returns"> Object</span></span></h3>
+              <p>Get premium object</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Object</code> Premium object</p>
+                </dd>
+              </dl>
+              <h3 id="premiumMiddle"><span class="symbol-name">premiumMiddle</span><span class="signature"><span class="signature-params">(api, fn)</span></span></h3>
+              <p>Premium middleware</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>api</p>
+                      </td>
+                      <td>
+                        <p>Boolean</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Whether API</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>fn</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Callback function</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="reload"><span class="symbol-name">reload</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Reload routes</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="setInCache"><span class="symbol-name">setInCache</span><span class="signature"><span class="signature-params">(user, value)</span></span></h3>
+              <p>Set guilds into user cache</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>user</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>value</p>
+                      </td>
+                      <td>
+                        <p>Array of <a href="global.html#CachedGuild">CachedGuild</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guilds</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="spawn"><span class="symbol-name">spawn</span><span class="signature"><span class="signature-params">()</span>&nbsp;&rarr; <span class="signature-returns"> Promise</span></span></h3>
+              <p>Spawn dashboard</p>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Promise</code> </p>
+                </dd>
+              </dl>
+              <h3 id="start"><span class="symbol-name">start</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Start app</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="validateSettings"><span class="symbol-name">validateSettings</span><span class="signature"><span class="signature-params">(obj, guild, f)</span>&nbsp;&rarr; <span class="signature-returns"> Boolean</span></span></h3>
+              <p>Validate posted settings</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>obj</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Posted object</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>guild</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild data</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>f</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Ran on failure with string</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>nullable Boolean</code> </p>
+                </dd>
+              </dl>
+            </section>
+          </section>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 20, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

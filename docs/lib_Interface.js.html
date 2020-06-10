@@ -1,0 +1,327 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Source: lib/Interface.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: lib/Interface.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>const ParseMessage &#x3D; require(&#x27;../util/ParseMessage&#x27;)
+
+/**
+ * Used for interaction with Discord Rest API
+ */
+class Interface {
+  /**
+   * Discord Interface
+   * @param {Client} client Client
+   */
+  constructor (client) {
+    this.client &#x3D; client
+  }
+
+  get api () {
+    return this.client.api
+  }
+
+  get utils () {
+    return this.client.utils
+  }
+
+  /**
+   * Delete a message
+   * @param {Snowflake} channel Channel message is in
+   * @param {Snowflake} id Message to delete
+   * @returns {Promise} Promise
+   */
+  async delete (channel, id) {
+    const response &#x3D; await this.api
+      .channels[channel]
+      .messages[id]
+      .delete()
+
+    if (response.success) return true
+
+    throw new Error(
+      this.utils.errors[response.code] || &#x60;(Raw Discord Error) ${response.message}&#x60;
+    )
+  }
+
+  /**
+   * Send a message
+   * @param {Snowflake} channel Channel to send in
+   * @param {String | Object | Embed} content Content of message
+   * @returns {Promise.&amp;lt;Object&gt;} Message object
+   */
+  async send (channel, content) {
+    return this.api
+      .channels[channel]
+      .messages
+      .post({
+        body: ParseMessage(content)
+      })
+  }
+
+  /**
+   * Set a guild member&#x27;s nickname
+   * @param {Snowflake} guild Guild of member
+   * @param {Snowflake} user Member
+   * @param {String} nick Nickname to set member as
+   * @returns {Promise} Promise
+   */
+  async nickname (guild, user, nick) {
+    const response &#x3D; await this.api
+      .guilds[guild]
+      .members[user]
+      .patch({
+        body: {
+          nick: nick
+        }
+      })
+
+    if (response.success) return true
+
+    throw new Error(
+      this.utils.errors[response.code] || &#x60;(Raw Discord Error) ${response.message}&#x60;
+    )
+  }
+
+  /**
+   * Deletes a reaction off a message
+   * @param {Snowflake} channel Channel message is in
+   * @param {Snowflake} message Message
+   * @param {String} reaction Reaction to remove
+   * @param {Snowflake} user User to remove from reaction
+   * @returns {Promise} Promise
+   */
+  async removeReaction (channel, message, reaction, user) {
+    const response &#x3D; await this.api
+      .channels[channel]
+      .messages[message]
+      .reactions[reaction.match(/^[0-9]*$/) ? &#x60;e:${reaction}&#x60; : encodeURIComponent(reaction)] // eslint-disable-line func-call-spacing
+      (user) // eslint-disable-line no-unexpected-multiline
+      .delete()
+
+    if (response.success) return true
+
+    throw new Error(
+      this.utils.errors[response.code] || &#x60;(Raw Discord Error) ${response.message}&#x60;
+    )
+  }
+
+  /**
+   * Adds a reaction to a message
+   * @param {Snowflake} channel Channel message is in
+   * @param {Snowflake} message Message
+   * @param {String} reaction Reaction
+   * @returns {Promise} Promise
+   */
+  async addReaction (channel, message, reaction) {
+    const response &#x3D; await this.api
+      .channels[channel]
+      .messages[message]
+      .reactions[reaction.match(/^[0-9]*$/) ? &#x60;e:${reaction}&#x60; : encodeURIComponent(reaction)] // eslint-disable-line func-call-spacing
+      (&#x27;@me&#x27;) // eslint-disable-line no-unexpected-multiline
+      .put()
+
+    if (response.success) return true
+
+    throw new Error(
+      this.utils.errors[response.code] || &#x60;(Raw Discord Error) ${response.message}&#x60;
+    )
+  }
+
+  /**
+   * Edits a message
+   * @param {Snowflake} channel Channel message is in
+   * @param {Snowflake} id Message
+   * @param {String|Object|Embed} content Content of message
+   * @returns {Promise.&amp;lt;Object&gt;} Edited Message
+   */
+  edit (channel, id, content) {
+    return this.api
+      .channels[channel]
+      .messages[id]
+      .patch({
+        body: ParseMessage(content)
+      })
+  }
+
+  /**
+   * DM a user
+   * @param {Snowflake} user User
+   * @param {String|Object|Embed} content Content of message
+   * @returns {Promise.&amp;lt;Object&gt;} Message object
+   */
+  async dm (user, content) {
+    const channel &#x3D; await this.createUserDM(user)
+
+    return this.send(channel, content)
+  }
+
+  /**
+   * Creates a user DM
+   * @param {Snowflake} user User
+   * @returns {Promise.&amp;lt;Snowflake&gt;} User channel
+   */
+  async createUserDM (user) {
+    const cache &#x3D; this.client.userChannels.get(user)
+    if (cache) return cache
+    const response &#x3D; await this.api
+      .users[&#x27;@me&#x27;]
+      .channels
+      .post({
+        body: {
+          recipient_id: user
+        }
+      })
+
+    if (!response.id) throw new Error(&#x27;Cannot DM User&#x27;)
+
+    this.client.userChannels.set(user, response.id)
+    setTimeout(() &#x3D;&gt; {
+      this.client.userChannels.delete(user)
+    }, 900000)
+    return response.id
+  }
+
+  /**
+   * Edit a channel
+   * @param {Snowflake} channel Channel to edit
+   * @param {Object} obj Edit object
+   * @returns {Promise.&amp;lt;Object&gt;} Edited channel object
+   */
+  editChannel (channel, obj) {
+    return this.api
+      .channels[channel]
+      .patch({
+        body: obj
+      })
+  }
+
+  /**
+   * Bulk-Delete messages
+   * @param {Snowflake} channel Channel to delete messages in
+   * @param {Array.&amp;lt;Snowflake&gt;} messages Messages to delete
+   * @returns {Promise} Promise
+   */
+  bulkDelete (channel, messages) {
+    return this.api
+      .channels[channel]
+      .messages(&#x27;bulk-delete&#x27;)
+      .post({
+        body: {
+          messages
+        }
+      })
+  }
+
+  /**
+   * Add a role to a member
+   * @param {Snowflake} guild Guild of member
+   * @param {Snowflake} user Member
+   * @param {Snowflake} role Role to add
+   * @param {String} reason Reason
+   * @returns {Promise} Promise
+   */
+  addRole (guild, user, role, reason) {
+    return this.api
+      .guilds[guild]
+      .members[user]
+      .roles[role]
+      .put({ reason })
+  }
+
+  /**
+   * Kick a member from a guild
+   * @param {Snowflake} guild Guild of member
+   * @param {Snowflake} user Member
+   * @param {String} reason Reason
+   * @returns {Promise} Promise
+   */
+  kick (guild, user, reason) {
+    return this.api
+      .guilds[guild]
+      .members[user]
+      .delete({ reason })
+  }
+
+  /**
+   * Ban a member from a guild
+   * @param {Snowflake} guild Guild of member
+   * @param {Snowflake} user Member
+   * @param {String} reason Reason
+   * @returns {Promise} Promise
+   */
+  ban (guild, user, reason) {
+    return this.api
+      .guilds[guild]
+      .bans[user]
+      .put({
+        query: { reason }
+      })
+  }
+
+  /**
+   * Leave a guild
+   * @param {Snowflake} id Guild
+   * @returns {Promise} Promise
+   */
+  leaveGuild (id) {
+    return this.api
+      .users[&#x27;@me&#x27;]
+      .guilds[id]
+      .delete({
+        body: {},
+        reason: &#x27;Forcefully Left Guild&#x27;
+      })
+  }
+}
+
+module.exports &#x3D; Interface
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 20, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

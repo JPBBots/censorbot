@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin Page</title>
+    <script src="/static/js/base.js"></script>
+    <link rel="stylesheet" href="/static/css/base.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+    <script>
+      window.lib = new Base({})
+    </script>
+
+  </head>
+  
+  <body>
+  
+    <%- include('sidebar') %>
+
+    <main>
+    <div id="mainAdminPage">
+    <% for (let i in clusters) { %> 
+      <section class='cluster'>
+        <h1>Cluster <%= i %></h1>
+        <% for (let shard of clusters[i].shards) { %>
+          <div class="shard" style="border-color: <%= (['red', 'yellow', 'green'])[shard.state] %>">
+
+            <div class="selectBox" id="shard<%= shard.id %>"><p>Shard <%= shard.id %></p> <select setting="<%= shard.id%>">
+              <option value="0">None</option>
+              <option value="1">Restart</option>
+              <option value="2">Destroy</option>
+            </select></div>
+          </div>    
+        <% } %>
+      </section>
+    <% } %>
+    <button class="save" onclick="lib.post()" class="saveButton" id="apply">Apply</button>
+
+  </div>
+
+</main>
+  </body>
+</html>

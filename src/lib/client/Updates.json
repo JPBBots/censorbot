@@ -1,0 +1,750 @@
+[
+    {
+        "v": "5.1.0",
+        "desc": "Customizable Prefixes",
+        "date": "5/5/2020",
+        "points": [
+            "+ prefix can now be customized on the dashboard",
+            "Leaving it blank will completely remove secondary prefix",
+            "Just mentioning the bot will tell you it's prefix"
+        ]
+    },
+    {
+        "v": "5.0.0",
+        "desc": "Cluster Rewrite",
+        "date": "5/2/2020",
+        "points": [
+             "Bot is now cluster sharded"
+         ]
+    },
+    {
+        "v": "4.2.0",
+        "desc": "New Domain",
+        "date": "4/30/2020",
+        "points": [
+            "Moved base site to censor.bot",
+            "Moved dashboard to dash.censor.bot",
+            "Moved api to api.censor.bot"
+        ]
+    },
+    {
+        "v": "4.1.3",
+        "desc": "Resend Separate",
+        "date": "4/22/2020",
+        "points": [
+            "Allows for toggling between full message censor and specific word censor"
+        ]
+    },
+    {
+        "v": "4.1.2",
+        "desc": "Resend replace premium feature",
+        "date": "3/29/2020",
+        "points": [
+            "Implemented {t:0IsZQKg2:Resend Replace}",
+            "Can now make resend send as spoilers or hashtags"
+        ]
+    },
+    {
+        "v": "4.1.1",
+        "desc": "Updates Site Redone",
+        "date": "3/29/2020",
+        "points": [
+            "Updates are hosted on bot now",
+            "Now uses /v instead of /#v and hashing",
+            "Some design changed too"
+        ]
+    },
+    {
+        "v": "4.1.0",
+        "desc": "Dashboard Logs",
+        "date": "2020-03-22T04:00:00.000Z",
+        "points": [
+            "Implemented {t:RmN5MKz8:Dashboard Logs}"
+        ]
+    },
+    {
+        "v": "4.0.0",
+        "desc": "Full Rewrite!",
+        "date": "2020-03-19T04:00:00.000Z",
+        "points": [
+            "Every single bit of code rewritten",
+            "Moved to custom library, no longer discord.js (cuz it sux)",
+            "Uses client subclasses, like handlers and manager.",
+            "Uses this instead of client in all situations possible",
+            "Improved logger :weary:",
+            "Everything is one process, \"internal sharding\" if you will.",
+            "API and Dashboard now on the same domain",
+            "Added {t:CSgpsb57:base languages} settings and configurator. Add or remove specific languages to censor.",
+            "Removed antighostping entirely",
+            "API is in a prepared state to do multiple clients in the future ;)",
+            "Presence now has a class manager",
+            "Buckets now used for deleting messages and pop message to better counteract spam",
+            "Webhook resend now uses buckets as well",
+            "Resend now censors specific parts of the message (biiiig improvement)",
+            "Tickets are gone for now:tm:"
+        ]
+    },
+    {
+        "v": "3.3.0",
+        "desc": "Dashboard Updates",
+        "date": "2020-02-26T05:00:00.000Z",
+        "points": [
+            "Finished {t:HHmNEX9U:Restructure}",
+            "Implemented {t:C7DLzanj:Filter Backups}",
+            "Added ctrl+s to save settings"
+        ]
+    },
+    {
+        "v": "3.2.1",
+        "desc": "Multiple Minor Updates / QOL",
+        "date": "2020-02-14T05:00:00.000Z",
+        "points": [
+            "Added debug command for easier support",
+            "Sorts roles by position in dashboard",
+            "Reworked events, so that they're reloadable"
+        ]
+    },
+    {
+        "v": "3.2.0",
+        "desc": "Multi-Message setting!",
+        "date": "2020-02-10T05:00:00.000Z",
+        "points": [
+            "{t:IC8NRFbX:Multi-Message} completed",
+            "When enabled, will combine multiple messages from the user in a row.",
+            "Will keep stacking until the message is censored! No more bypasses",
+            "This has been an idea for way too long, finally done.",
+            "Note: premium feature"
+        ]
+    },
+    {
+        "v": "3.1.1",
+        "desc": "Tool tips on dashboard settings",
+        "date": "2020-02-04T05:00:00.000Z",
+        "points": [
+            "Hover over the title of each setting for description",
+            "Has description for each setting now, obv"
+        ]
+    },
+    {
+        "v": "3.1.0",
+        "desc": "Punishment types update",
+        "date": "2020-02-03T05:00:00.000Z",
+        "points": [
+            "More {t:Pwr9q9g2:punishment types}",
+            "Mute type",
+            "Kick type",
+            "Ban type",
+            "Remove of punishment toggle",
+            "^ instead there's just now an off option",
+            "Prepared for time mutes"
+        ]
+    },
+    {
+        "v": "3.0.0",
+        "desc": "Multiple interfaces rewritten",
+        "date": "2020-01-25T05:00:00.000Z",
+        "points": [
+            "Punishments interface remade into class",
+            "^ This will open up to easier interaction",
+            "Remade emsg handler to use uncached and raw events",
+            "Remade nick handler to use uncached and raw events",
+            "Remade react handler to use uncached and raw events",
+            "Began {t:1AhEnpFP:username censoring}",
+            "Began deprecation of anti-ghostping",
+            "Added more aliases to common commands"
+        ]
+    },
+    {
+        "v": "2.6.1",
+        "desc": "Command list update",
+        "date": "2020-01-16T05:00:00.000Z",
+        "points": [
+            "Opened up command list endpoint, built through ejs for interface {t:YNEeRhaL:trello}",
+            "(Endpoints: designed; https://api.jt3ch.net/censorbot/cmd | api; https://api.jt3ch.net/censorbot/cmd.json)",
+            "Replaced censorbot.jt3ch.net/commands with new interface",
+            "Replaced top.gg page with new interface",
+            "Finally fully removed all deprecated one command settings commands (like +on, +filter, etc.)"
+        ]
+    },
+    {
+        "v": "2.6.0",
+        "desc": "Uncensor Feature",
+        "date": "2020-01-13T05:00:00.000Z",
+        "points": [
+            "Uncensor has been added to the dashboard",
+            "Uncensor now censors based on keys and if it matches a key, it stops. Rather than just stopping if it matches at all",
+            "Added some presence features"
+        ]
+    },
+    {
+        "v": "2.5.5",
+        "desc": "More QOL Updates",
+        "date": "2020-01-01T05:00:00.000Z",
+        "points": [
+            "Happy new decade ;)",
+            "If there is no DB entry, dash will make one and fill with blank config, just in case",
+            "* Same with punishment users, will no longer just return if the server doesn't have a config",
+            "Fixed bug where message author would be punished for innap reactions",
+            "Removed ability to go to 0 on punishment amount creating error message"
+        ]
+    },
+    {
+        "v": "2.5.4",
+        "desc": "QOL Update",
+        "date": "2019-12-31T05:00:00.000Z",
+        "points": [
+            "Log now can be none, and default is so, no more errors",
+            "Fixed punishment system so 1 warning = 1 warning",
+            "Uncensor system disabled until it's been rewritten properly"
+        ]
+    },
+    {
+        "v": "2.5.3",
+        "desc": "Settings and Punishments commands disabled",
+        "date": "2019-12-30T05:00:00.000Z",
+        "points": [
+            "Settings command disabled",
+            "Punishments command disabled",
+            "^ Both now redirect to the dashboard",
+            "New join guild message",
+            "Checks if there's a database entry before sending message"
+        ]
+    },
+    {
+        "v": "2.5.2",
+        "desc": "Filter set to different process",
+        "date": "2019-12-16T05:00:00.000Z",
+        "points": [
+            "Filter moved to separate process",
+            "Bot now uses restful methods for said filter",
+            "Should take up less resources as well as be a bit faster"
+        ]
+    },
+    {
+        "v": "2.5.1",
+        "desc": "Premium section of dashboard",
+        "date": "2019-12-09T05:00:00.000Z",
+        "points": [
+            "Premium section of dashboard at /premium",
+            "Removed reload servers button",
+            "Added apis for premium management for dash",
+            "No more commands needed for it owo"
+        ]
+    },
+    {
+        "v": "2.5.0",
+        "desc": "Premium Settings in Dashboard",
+        "date": "2019-12-02T05:00:00.000Z",
+        "points": [
+            "Dashboard now contains resend setting",
+            "Dashboard now contains channels setting",
+            "Both of the above now supported in API",
+            "Grid layout redone to fit new settings",
+            "Premium now exposed at backend layer"
+        ]
+    },
+    {
+        "v": "2.4.0",
+        "desc": "Dashboard redesign",
+        "date": "2019-11-04T05:00:00.000Z",
+        "points": [
+            "Dashboard uses grid now",
+            "New saving and comparison",
+            "Redone mobile design to look actually good",
+            "Dashboard now has OpenGraph cool stuff",
+            "Redone colors and buttons"
+        ]
+    },
+    {
+        "v": "2.3.0",
+        "desc": "Fully revised dashboard",
+        "date": "2019-10-07T04:00:00.000Z",
+        "points": [
+            "Dashboard is now EJS based, and has cool things, really difficult to explain it all",
+            "POSTing new settings is now a one time thing",
+            "Endpoints have been separated into version endpoints, current /v3"
+        ]
+    },
+    {
+        "v": "2.2.6",
+        "desc": "Changed settings command for toggleables",
+        "date": "2019-08-31T04:00:00.000Z",
+        "points": [
+            "Toggleables are no +settings [categpry] on/off",
+            "^ Rather than +settings [cateogry] set on/off",
+            "{t:y1kkQrla:trello}"
+        ]
+    },
+    {
+        "v": "2.2.5",
+        "desc": "Changed limit on poptime for premium",
+        "date": "2019-08-31T04:00:00.000Z",
+        "points": [
+            "Non-premium is limited to 120 second delete time",
+            "Premium will have a limit of up to 600 seconds"
+        ]
+    },
+    {
+        "v": "2.2.4",
+        "desc": "Fixed server filter on base filter disclude",
+        "date": "2019-08-30T04:00:00.000Z",
+        "points": [
+            "Server filter can now contain words from the base filter",
+            "^ the base filter just has to be on",
+            "Whenever the base filter is toggled on, the server filter is cleared"
+        ]
+    },
+    {
+        "v": "2.2.3",
+        "desc": "Seperated base filter",
+        "date": "2019-08-30T04:00:00.000Z",
+        "points": [
+            "Created seperated base filter toggle",
+            "msg, emsg, nick, and react, no longer correspond to base filter",
+            "Changed censor to method in settings, added base for toggling base filter"
+        ]
+    },
+    {
+        "v": "2.2.2",
+        "desc": "New settings command",
+        "date": "2019-08-30T04:00:00.000Z",
+        "points": [
+            "Added +settings command",
+            "Deprecating other settings commands",
+            "Backend for webhook and channels, are in premium"
+        ]
+    },
+    {
+        "v": "2.2.1",
+        "desc": "New DBI",
+        "date": "2019-08-27T04:00:00.000Z",
+        "points": [
+            "All database interaction has been moved to a one class, which will allow for new db in the future",
+            "If that wasnt obvious enough, db will likely change soon!"
+        ]
+    },
+    {
+        "v": "2.2.0",
+        "desc": "Toggle Specific Filters",
+        "date": "2019-08-24T04:00:00.000Z",
+        "points": [
+            "Addressed and implemented {t:hu7eV522:toggle specific filters}",
+            "+on and +off now take an argument as to which filter to toggle (or all)",
+            "Api still needs to be updated, right now, POST sets all to true, GET returns the value of (if) message filter is on"
+        ]
+    },
+    {
+        "v": "2.1.0",
+        "desc": "Log changes",
+        "date": "2019-08-12T04:00:00.000Z",
+        "points": [
+            "When a message is censored, the log will now <u>underline</u> the actual word that was recognized as a curse",
+            "trello idea: {t:3sV2zEAe:here}",
+            "Example: <a href='https://moose.is-mega-q.tk/58a12be4.png'>here</a>"
+        ]
+    },
+    {
+        "v": "2.0.6",
+        "desc": "Minor filter update",
+        "date": "2019-08-03T04:00:00.000Z",
+        "points": [
+            "Added unicode emoji censoring, accessible by adding the name of the emoji to the filter list (this also works for reactions)",
+            "Fixed reactions not properly logging when reacting with innapropriate unicode emojis",
+            "{t:ybbgGv2o:trello reference}"
+        ]
+    },
+    {
+        "v": "2.0.5",
+        "desc": "Dashboard invite update",
+        "date": "2019-07-07T04:00:00.000Z",
+        "points": [
+            "When pressing invite to server it now creates a popup",
+            "When done inviting, callback with rehash",
+            "If returns 401 when 2 it rehashed",
+            "^ This fixed issues when someone kicks the bot after selecting the server in the dashboard (idk)"
+        ]
+    },
+    {
+        "v": "2.0.4",
+        "desc": "Tickets redone",
+        "date": "2019-07-04T04:00:00.000Z",
+        "points": [
+            "Tickets now stored in database",
+            "Tickets now can be managed by JPBBot for faster reaction"
+        ]
+    },
+    {
+        "v": "2.0.3",
+        "desc": "Removes innapropriate emojis",
+        "date": "2019-07-04T04:00:00.000Z",
+        "points": [
+            "Addressed and implemented {t:KkUUZ1TH:bad emoji reaction delete}"
+        ]
+    },
+    {
+        "v": "2.0.2",
+        "desc": "Removed filter backups",
+        "date": "2019-07-03T04:00:00.000Z",
+        "points": [
+            "Due to the redesign, to keep everything clean these have been removed",
+            "They may make a comeback when im not stupidly lazy to make a db for it",
+            "Note: if you had a backup that you wanted to reget I still have most of them, DM jpbberry"
+        ]
+    },
+    {
+        "v": "2.0.1",
+        "desc": "Destructs code blocks, deprecated another idea",
+        "date": "2019-07-02T04:00:00.000Z",
+        "points": [
+            "Addressed and fixed {t:zjNEd4zo:destruct code blocks}",
+            "Deprecated and canceled the development of {t:9Pj6zkE4:settings ui}"
+        ]
+    },
+    {
+        "v": "2.0.0",
+        "desc": "Bot Rewrite",
+        "date": "2019-07-02T04:00:00.000Z",
+        "points": [
+            "Brand new organization for everything having to do with the bot",
+            "DBs now use the raw rethink nodes, rather than the stupid wrapper i made lmao"
+        ]
+    },
+    {
+        "v": "1.14.0",
+        "desc": "Huge rewrite of API and Dashboard",
+        "date": "2019-06-13T04:00:00.000Z",
+        "points": [
+            "CAPI now relies bot cache rather than Discord's API",
+            "CAPI now runs on manager",
+            "Major Performance Increases due to that",
+            "Full dashboard rewrite",
+            "UI speed and responsiveness increase",
+            "Website now relies on updated things rather than re-get",
+            "Everything is great dont @ me"
+        ]
+    },
+    {
+        "v": "1.11.3",
+        "desc": "Moved from array'd roles to single string",
+        "date": "2019-05-26T04:00:00.000Z",
+        "points": [
+            "Roles are now strings rather than [array, of, strings]",
+            "No roles are now null rather than strung 'none'",
+            "API now presents object rather than array of objects",
+            "Planned update {t:z1TaxRpn:multiple censor roles} has been canceled"
+        ]
+    },
+    {
+        "v": "1.11.2",
+        "desc": "Added yet again, more dashboard features",
+        "date": "2019-05-17T04:00:00.000Z",
+        "points": [
+            "Index page now has a no popup button, which allows redirects rather than popup",
+            "Fixed a few scripts for unsupportive engines, such as IE, Safari and older FireFox clients",
+            "Moved to dedicated window popup, rather than then using jQuery"
+        ]
+    },
+    {
+        "v": "1.11.1",
+        "desc": "Fixed small bug in updates site",
+        "date": "2019-05-16T04:00:00.000Z",
+        "points": [
+            "Bug; console would error out that module isn't defined",
+            "Effected; all those console dwellers :eyes:",
+            "Point of failure; no es6 support because it's a browser but I need module for endpoint usage",
+            "Fixed by; adding a var module = module || {}; allow for either to be interacted with"
+        ]
+    },
+    {
+        "v": "1.11.0",
+        "desc": "Huge specifically dashboard update",
+        "date": "2019-05-16T04:00:00.000Z",
+        "points": [
+            "ServerID's now stored as hashes",
+            "All setting points have been moved into folder to look nicer :p",
+            "^ Due to this, all the .html variants have been REMOVED from the static site",
+            "All interaction functions have been moved to two main clientRequest and authRequest for interaction",
+            "Easy dynamic integration has been added",
+            "Faster cookie => localStorage swap and use processing",
+            "Added message to the bottom of the screen to let the user know when a request is in process",
+            "^ This is attached to every authRequest(), allowing all request to be further regarded to the user"
+        ]
+    },
+    {
+        "v": "1.10.0",
+        "desc": "Endpoint and Dashboard Update",
+        "date": "2019-05-15T04:00:00.000Z",
+        "points": [
+            "Endpoint changed into seperate methods",
+            "All different types of purposes moved to the same point",
+            "Dashboard fully updated to use authenticated server requests",
+            "Fixed owner no roles => no permissions glitch",
+            "Added API documentation <a href='https://censorbot.jt3ch.net/docs'>here</a>",
+            "Database interaction fully changed, making it much faster",
+            "Authorization fully changed, now requires a header that looks like 'ServerID Bearer'",
+            "Endpoint now waits for database to be updated before sending a response",
+            "^ Webpanel now uses this and waits for response to actually refresh the settings, this decreases chances of having to reload to see changes",
+            "Errors no longer push you back to the home page, (Unless a bearer mismatch), instead will make a simple alert box with a user friendly error message",
+            "Dashboard now has better interactability styling, like pointer cursors on buttons, and opacity changes on hover"
+        ]
+    },
+    {
+        "v": "1.9.1",
+        "desc": "Fixed server filter being affected by base off bug",
+        "date": "2019-05-10T04:00:00.000Z",
+        "points": [
+            "Instead of killing filter if off, takes global into consideration",
+            "Point of failure; new 1.9.0"
+        ]
+    },
+    {
+        "v": "1.9.0",
+        "desc": "Large Everything to do with filter Update",
+        "date": "2019-05-09T04:00:00.000Z",
+        "points": [
+            "Moved to class base filtering",
+            "Moved to class based resolving",
+            "Filter hotswapping much faster",
+            "Matching against array largely optimized",
+            "Edited message & nickname censoring have been brough to the same level as messages in priority",
+            "Edited message and nickname log embed now has inline fields",
+            "Log message is now class based",
+            "Admin log message is now class based",
+            "Less unneeded recognition when it comes to role & field uncensoring",
+            "Linked bypasses being worked on extensively",
+            "Much more that im too lazy to go in on sorry"
+        ]
+    },
+    {
+        "v": "1.8.2",
+        "desc": "Major response time improvements",
+        "date": "2019-05-08T04:00:00.000Z",
+        "points": [
+            "WebSocketManager Changed node-ws => uWebSocket (uws)",
+            "Ping has been sliced more than a half!",
+            "Better and faster message reaction"
+        ]
+    },
+    {
+        "v": "1.8.1",
+        "desc": "Setlog command update",
+        "date": "2019-05-04T04:00:00.000Z",
+        "points": [
+            "Warning for when users try to set the channel to general",
+            "To prevent new users from setting their channel to general and proceed to complain about it in the support server",
+            "The command can now take an extra argument of --, to allow override of this general chat log ban",
+            "No longer looks like it errors for brand new setlogs which scare away new users",
+            "Now awaits for the channel to update to avoid said error, so now has a warning that it'll take a little bit."
+        ]
+    },
+    {
+        "v": "1.8.0",
+        "desc": "Added command aliasing",
+        "date": "2019-05-03T04:00:00.000Z",
+        "points": [
+            "Commands are now aliased on the backend",
+            "Commands that just said 'same as ...' removed from help menu",
+            "These aliases can now be found on the <a href='/commands'>commands</a> page"
+        ]
+    },
+    {
+        "v": "1.7.1",
+        "desc": "Added commands site",
+        "date": "2019-04-29T04:00:00.000Z",
+        "points": [
+            "Added <a href='/commands'>commands page</a>",
+            "Added link to said page in the footer"
+        ]
+    },
+    {
+        "v": "1.7.0",
+        "desc": "Major Index Site Redesign",
+        "date": "2019-04-27T04:00:00.000Z",
+        "points": [
+            "Check out the <a href='/'>Index Site</a> it's much different now :p"
+        ]
+    },
+    {
+        "v": "1.6.3",
+        "desc": "Fixed Edited Message & Nickname Log Message",
+        "date": "2019-04-27T04:00:00.000Z",
+        "points": [
+            "Fixed concatenation for users in Nickname log",
+            "Fixed concatenation for users in Edied Message log",
+            "Fixed concatenation for channels in Nickname log",
+            "Fixed concatenation for channels in Edited Message log",
+            "Also fixed the default avatarURL for users in edited message and nickname log"
+        ]
+    },
+    {
+        "v": "1.6.2",
+        "desc": "Punishments Bug fix",
+        "date": "2019-04-24T04:00:00.000Z",
+        "points": [
+            "Bug: Punishments settings help would delete instantly",
+            "Reporter: Kriscross102#5789",
+            "Point of failure: New system for deleting messages over time",
+            "Fixed By: Fixing said new system, all is well"
+        ]
+    },
+    {
+        "v": "1.6.1",
+        "desc": "Backend update",
+        "date": "2019-04-24T04:00:00.000Z",
+        "points": [
+            "Moved from Discord.JS v11 to v12.0.0-dev",
+            "Sharding and stability changes",
+            "If you notice anything messed up DM the owner please!"
+        ]
+    },
+    {
+        "v": "1.6.0",
+        "desc": "Punishments!!",
+        "date": "2019-04-24T04:00:00.000Z",
+        "points": [
+            "Added new command +punishments",
+            "Added warning counter every censor, (if punishments are enabled)",
+            "Setting punishment example: +punishments set 3 @role",
+            "^ This means people will get @role after they curse 3 times!"
+        ]
+    },
+    {
+        "v": "1.5.1",
+        "desc": "Filter pick update",
+        "date": "2019-04-23T04:00:00.000Z",
+        "points": [
+            "Turns new line (\\n) into spaces instead!"
+        ]
+    },
+    {
+        "v": "1.5.0",
+        "desc": "Filter process update",
+        "date": "2019-04-23T04:00:00.000Z",
+        "points": [
+            "Fixed 1+1 length arg combination",
+            "Added new 1+* combination",
+            "^ If arg1 length is 1, and arg2 length isn't 1, then it will append arg1 to the beginning of arg2"
+        ]
+    },
+    {
+        "v": "1.4.2",
+        "desc": "Update site update",
+        "date": "2019-04-22T04:00:00.000Z",
+        "points": [
+            "Added date to every update",
+            "Show's update on every update on the site"
+        ]
+    },
+    {
+        "v": "1.4.1",
+        "desc": "Ticket manager update",
+        "date": "2019-04-22T04:00:00.000Z",
+        "points": [
+            "Moved all ticket warnings, and bans to database",
+            "All ticket warnings have been reset as a side-effect"
+        ]
+    },
+    {
+        "v": "1.4.0",
+        "desc": "Shard Update",
+        "date": "2019-04-22T04:00:00.000Z",
+        "points": [
+            "Updated shard count; 3 > 4"
+        ]
+    },
+    {
+        "v": "1.3.1",
+        "desc": "Full website update",
+        "date": "2019-04-18T04:00:00.000Z",
+        "points": [
+            "Made favicon via dynamic endpoints",
+            "Made stats on home page via dynamic endpoints",
+            "Go back avatars, on the updates and supports websitr set to use dynamic endpoints",
+            "Added TODO for remaking the commands part of the index page",
+            "This will also become dynamic once its done"
+        ]
+    },
+    {
+        "v": "1.3.0",
+        "desc": "Updates site update",
+        "date": "2019-04-17T04:00:00.000Z",
+        "points": [
+            "OG data is now dependent",
+            "Meaning individual updates will have their own og data",
+            "By using the endpoints https://censorbot.jt3ch.net/updates/v/VERSION_NUMBER"
+        ]
+    },
+    {
+        "v": "1.2.2",
+        "desc": "Website retired",
+        "date": "2019-04-14T04:00:00.000Z",
+        "points": [
+            "The censorbot.ml website has been officially retired."
+        ]
+    },
+    {
+        "v": "1.2.1",
+        "desc": "Removed ticket notice on message",
+        "date": "2019-04-11T04:00:00.000Z",
+        "points": [
+            "Instead of saying [message] | Mistake? do +ticket, it's just only [message]",
+            "This is to avoid randos constantly joining and getting mad when words that should be censored, are, get this, censored, wow!",
+            "As much as we've done to prevent false tickets, there's always idiots."
+        ]
+    },
+    {
+        "v": "1.2.0",
+        "desc": "Major <a href='https://censorbot.jt3ch.net/dash/'>dashboard</a> update",
+        "date": "2019-04-11T04:00:00.000Z",
+        "points": [
+            "Made all endpoints dependent on database, rather than bot connecting to the websocket",
+            "^^ Increase speed overall",
+            "Better responsiveness on actual webpage",
+            "Fixed some typos :p"
+        ]
+    },
+    {
+        "v": "1.1.0",
+        "desc": "Added embed for latest updates in OG",
+        "date": "2019-04-09T04:00:00.000Z",
+        "points": [
+            "Added OG meta data for the site",
+            "It will update every new update, they don't last forever but it's cool :p"
+        ]
+    },
+    {
+        "v": "1.0.3",
+        "desc": "Endpoints update",
+        "date": "2019-04-09T04:00:00.000Z",
+        "points": [
+            "Added api/servercount endpoint",
+            "Using said endpoint on the index page and now there's server count there again!"
+        ]
+    },
+    {
+        "v": "1.0.2",
+        "desc": "Fixed /support page",
+        "date": "2019-04-07T04:00:00.000Z",
+        "points": [
+            "Fixed <a href='https://censorbot.jt3ch.net/support/#customfilter'>Custom Filter</a> section where \"Add your own words\" wouldn't link"
+        ]
+    },
+    {
+        "v": "1.0.1",
+        "desc": "Test update",
+        "date": "2019-04-04T04:00:00.000Z",
+        "points": [
+            "Just to",
+            "Test the changing",
+            "Between two updates"
+        ]
+    },
+    {
+        "v": "1.0.0",
+        "desc": "First Update",
+        "date": "2019-04-04T04:00:00.000Z",
+        "points": [
+            "Added updates"
+        ]
+    }
+]

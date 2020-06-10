@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Censor Bot Dashboard</title>
+    <%- include('googleanalytics') %>
+    <link rel="stylesheet" href="/static/css/base.css">
+  </head>
+  <body>
+
+    <%- include('sidebar') %>
+
+    <div id="mainGuildsPage">
+      <% guilds.forEach(guild => { %>
+        <div id="guildCard" onclick="window.location='/<%- guild.i %>'">
+          <img id='guildIcon' src="<%= guild.a ? `https://cdn.discordapp.com/icons/${guild.i}/${guild.a}` : 'https://cdn.discordapp.com/embed/avatars/1.png' %>" alt="Guild" onerror="this.src= 'https://cdn.discordapp.com/embed/avatars/1.png'">
+
+          <p id="guildName"><%= guild.n %></p>
+        </div>
+      <% }) %>
+    </div>
+  </body>
+</html>

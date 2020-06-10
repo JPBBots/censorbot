@@ -1,0 +1,58 @@
+{
+  "name": "censorbot",
+  "version": "6.0.0",
+  "description": "Anti-Swear bot for discord",
+  "main": "./src/index.js",
+  "scripts": {
+    "testguild": "node ./src/lib/dashboard/testGuilds",
+    "test": "node . -b",
+    "s": "standard --fix -v",
+    "log": "pm2 logs censorbot",
+    "commit": "git add . && echo \"Commit Message:\" && read msg && git commit -m \"$msg\"",
+    "push": "git push",
+    "jsdoc": "jsdoc ./ -r -c ./jsdoc.json --verbose -d ./docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpbberry/censorbot.git"
+  },
+  "author": "JPBBerry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jpbberry/censorbot/issues"
+  },
+  "homepage": "https://github.com/jpbberry/censorbot#readme",
+  "devDependencies": {
+    "standard": "*",
+    "jsdoc-baseline": "*"
+  },
+  "dependencies": {
+    "body-parser": "1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "ejs": "3.0.1",
+    "emoji-unicode-map": "1.1.10",
+    "express": "4.17.1",
+    "moment": "2.24.0",
+    "moment-duration-format": "2.3.2",
+    "mongodb": "3.5.5",
+    "node-fetch": "2.6.0",
+    "os-utils": "0.0.14",
+    "ws": "7.2.3"
+  },
+  "standard": {
+    "ignore": [
+      "src/dashboard/views/*",
+      "src/dashboard/static/*",
+      "docs/*"
+    ],
+    "globals": [
+      "BigInt"
+    ]
+  },
+  "eslintConfig": {
+    "rules": {
+      "func-call-spacing": "off"
+    }
+  }
+}

@@ -1,0 +1,475 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Class: DiscordWebsocket</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
+            <h1><small></small><span class="symbol-name">DiscordWebsocket</span></h1>
+            <p class="source-link">Source: <a href="lib_Websocket.js.html#source-line-13">lib/<wbr>Websocket.<wbr>js:13</a></p>
+            <div class="symbol-classdesc">
+              <p>Discord websocket broker for individual shards</p>
+            </div>
+            <dl class="dl-compact">
+            </dl>
+          </header>
+          <section id="summary">
+            <div class="summary-callout">
+              <h2 class="summary-callout-heading">Properties</h2>
+              <div class="summary-content">
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="DiscordWebsocket.html#client">client</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#connected">connected</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#connectTimeout">connectTimeout</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#hbInterval">hbInterval</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="DiscordWebsocket.html#op7">op7</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#reconnecting">reconnecting</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#s">s</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#sessionID">sessionID</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="DiscordWebsocket.html#shard">shard</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#waitingHeartbeat">waitingHeartbeat</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#ws">ws</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+            <div class="summary-callout">
+              <h2 class="summary-callout-heading">Methods</h2>
+              <div class="summary-content">
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="DiscordWebsocket.html#ack">ack()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#close">close(code, reason)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#heartbeat">heartbeat()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#hello">hello(msg)</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="DiscordWebsocket.html#kill">kill()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#message">message(data)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#open">open()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#reconnect">reconnect()</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="DiscordWebsocket.html#send">send(event, data)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#sendRaw">sendRaw(data)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="DiscordWebsocket.html#setup">setup()</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section>
+            <h2 id="DiscordWebsocket">new&nbsp;<span class="symbol-name">DiscordWebsocket</span><span class="signature"><span class="signature-params">(shard)</span></span></h2>
+            <p>Websocket for connecting to the Discord WebSocket</p>
+            <section>
+              <h3>Parameter</h3>
+              <table class="jsdoc-details-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Optional</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <p>shard</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Initiating shard</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+            <dl class="dl-compact">
+              <dt>Extends</dt>
+              <dd>EventEmitter</dd>
+            </dl>
+          </section>
+          <section>
+            <h2>Properties</h2>
+            <section>
+              <h3 id="client"><span class="symbol-name">client</span><small class="property-type">
+                  &nbsp;<a href="Client.html">Client</a></small></h3>
+              <p>Client</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="connected"><span class="symbol-name">connected</span><small class="property-type">
+                  &nbsp;Boolean</small></h3>
+              <p>Whether ws is in a state for receiving events</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="connectTimeout"><span class="symbol-name">connectTimeout</span><small class="property-type">
+                  &nbsp;nullable Timeout</small></h3>
+              <p>Timeout for making sure ws is connected</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="hbInterval"><span class="symbol-name">hbInterval</span><small class="property-type">
+                  &nbsp;nullable Timeout</small></h3>
+              <p>Heartbeat</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="op7"><span class="symbol-name">op7</span><small class="property-type">
+                  &nbsp;Boolean</small></h3>
+              <p>Whether is resuming because of dispatched op 7</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="reconnecting"><span class="symbol-name">reconnecting</span><small class="property-type">
+                  &nbsp;Boolean</small></h3>
+              <p>Whether ws is reconnecting</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="s"><span class="symbol-name">s</span><small class="property-type">
+                  &nbsp;nullable Number</small></h3>
+              <p>Last event ID</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="sessionID"><span class="symbol-name">sessionID</span><small class="property-type">
+                  &nbsp;nullable String</small></h3>
+              <p>Session ID</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="shard"><span class="symbol-name">shard</span><small class="property-type">
+                  &nbsp;<a href="Shard.html">Shard</a></small></h3>
+              <p>Shard</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="waitingHeartbeat"><span class="symbol-name">waitingHeartbeat</span><small class="property-type">
+                  &nbsp;Boolean</small></h3>
+              <p>Whether or not websocket is awaiting a heartbeat ack</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="ws"><span class="symbol-name">ws</span><small class="property-type">
+                  &nbsp;nullable Websocket</small></h3>
+              <p>Websocket Client</p>
+              <dl class="dl-compact">
+              </dl>
+            </section>
+            <h2>Methods</h2>
+            <section>
+              <h3 id="ack"><span class="symbol-name">ack</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Handles heartbeat acknowledge</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="close"><span class="symbol-name">close</span><span class="signature"><span class="signature-params">(code, reason)</span></span></h3>
+              <p>Handles close from websocket</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>code</p>
+                      </td>
+                      <td>
+                        <p>Number</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Close code</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>reason</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Close reason</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="heartbeat"><span class="symbol-name">heartbeat</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Sends a heartbeat</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="hello"><span class="symbol-name">hello</span><span class="signature"><span class="signature-params">(msg)</span></span></h3>
+              <p>Handles hello event</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>msg</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Message object</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="kill"><span class="symbol-name">kill</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Kills websocket</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="message"><span class="symbol-name">message</span><span class="signature"><span class="signature-params">(data)</span></span></h3>
+              <p>Handles message from websocket</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>data</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Raw event data</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="open"><span class="symbol-name">open</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Handles open from websocket</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="reconnect"><span class="symbol-name">reconnect</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Reconnects websocket</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="send"><span class="symbol-name">send</span><span class="signature"><span class="signature-params">(event, data)</span></span></h3>
+              <p>Sends event to websocket</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>event</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Event name</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>data</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Event data</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="sendRaw"><span class="symbol-name">sendRaw</span><span class="signature"><span class="signature-params">(data)</span></span></h3>
+              <p>Sends packet to websocket</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>data</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Data</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="setup"><span class="symbol-name">setup</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Sets up ws</p>
+              <dl class="dl-compact">
+              </dl>
+            </section>
+          </section>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 20, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

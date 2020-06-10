@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Invite</title>
+  <%- include('googleanalytics') %>
+
+  <link rel="stylesheet" href="/static/css/base.css" />
+</head>
+
+<body>
+
+  <%- include('sidebar') %>
+
+  <div id="mainInvitePage">
+  <h1>The bot is not in this server!</h1>
+  <button id="invite" onclick="invite(true)">Invite</button>
+  <a href="<%= invite %>">No popup</a>
+</div>
+<script>
+  function invite () {
+    document.getElementById("invite").innerText = "Inviting..."
+      var win = window.open('<%= invite %>', 'oauth', 'width=600,height=1000')
+      var interval = setInterval(function() {
+        if(win.closed) window.location.reload()
+      }, 1000)
+      setTimeout(function() {
+        clearInterval(interval);
+        alert("Took too long to invite the bot. Manual reload required once done.");
+      }, 180000)
+  }
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,333 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Source: src/lib/services/Filter.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: src/lib/services/Filter.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>const emojis &#x3D; require(&#x27;emoji-unicode-map&#x27;)
+delete require.cache[require.resolve(&#x27;../../filter/filters.js&#x27;)]
+const filters &#x3D; require(&#x27;../../filter/filters.js&#x27;)
+
+module.exports &#x3D; class JPBFilter {
+  constructor (client, linkBypFile) {
+    client.log(0, 0, &#x27;Filter&#x27;)
+    this.linkBypFile &#x3D; linkBypFile
+    this.linkByp &#x3D; require(linkBypFile).links
+    this.client &#x3D; client
+    this.replaceSpots &#x3D; {
+      spaces: /(_|\/|\\|\.|\n|&amp;amp;|-|\+|&#x3D;|:|~|,|\?|\s+)/gi,
+      nothing: /(&quot;|\*|&#x27;|\||&#x60;|&amp;lt;|&gt;|#|!|\(|\)|\[|\]|\{|\}|;|%)/gi
+    }
+    this.emoji_lookup &#x3D; {
+      &#x27;🇦&#x27;: &#x27;a&#x27;,
+      &#x27;🇧&#x27;: &#x27;b&#x27;,
+      &#x27;🅱&#x27;: &#x27;b&#x27;,
+      &#x27;🇨&#x27;: &#x27;c&#x27;,
+      &#x27;🇩&#x27;: &#x27;d&#x27;,
+      &#x27;🇪&#x27;: &#x27;e&#x27;,
+      &#x27;🇫&#x27;: &#x27;f&#x27;,
+      &#x27;🇬&#x27;: &#x27;g&#x27;,
+      &#x27;🇭&#x27;: &#x27;h&#x27;,
+      &#x27;🇮&#x27;: &#x27;i&#x27;,
+      &#x27;🇯&#x27;: &#x27;j&#x27;,
+      &#x27;🇰&#x27;: &#x27;k&#x27;,
+      &#x27;🇱&#x27;: &#x27;l&#x27;,
+      &#x27;🇲&#x27;: &#x27;m&#x27;,
+      &#x27;🇳&#x27;: &#x27;n&#x27;,
+      &#x27;🇴&#x27;: &#x27;o&#x27;,
+      &#x27;🇵&#x27;: &#x27;p&#x27;,
+      &#x27;🇶&#x27;: &#x27;q&#x27;,
+      &#x27;🇷&#x27;: &#x27;r&#x27;,
+      &#x27;🇸&#x27;: &#x27;s&#x27;,
+      &#x27;🇹&#x27;: &#x27;t&#x27;,
+      &#x27;🇺&#x27;: &#x27;u&#x27;,
+      &#x27;🇻&#x27;: &#x27;v&#x27;,
+      &#x27;🇼&#x27;: &#x27;w&#x27;,
+      &#x27;🇽&#x27;: &#x27;x&#x27;,
+      &#x27;🇾&#x27;: &#x27;y&#x27;,
+      &#x27;🇿&#x27;: &#x27;z&#x27;,
+      &#x27;🖕&#x27;: &#x27;fuck&#x27;
+    }
+    this.client.log(0, 1, &#x27;Filter&#x27;)
+  }
+
+  reload () {
+    this.reloadFilter()
+    this.reloadLinkByp()
+  }
+
+  reloadFilter () {
+    delete require.cache[require.resolve(this.filterFile)]
+    this.filter &#x3D; require(this.filterFile)
+  }
+
+  reloadLinkByp () {
+    delete require.cache[require.resolve(this.linkBypFile)]
+    this.linkByp &#x3D; require(this.linkBypFile).links
+  }
+
+  addToBypass (key, newValue) {
+    if (!this.filter[key]) this.filter[key] &#x3D; []
+    if (newValue) this.filter[key].push(newValue)
+    return this.filter
+  }
+
+  /**
+     *
+     * @param {String} content - Content of message
+     * @param {Boolean} GLOBAL - If global filter
+     * @param {Array} SERVER - Server filter array
+     * @param {Array} UNCENSOR - Uncensor array
+     * @returns {Object&amp;lt;censor&amp;lt;boolean&gt;, method&amp;lt;String&gt;, word&amp;lt;RegExp&gt;, arg&amp;lt;String&gt;&gt;} - Response
+     */
+  test (content, GLOBAL &#x3D; true, LANGS &#x3D; [], SERVER &#x3D; false, UNCENSOR &#x3D; false) {
+    var res &#x3D; {
+      censor: false,
+      method: &#x27;none&#x27;,
+      word: null,
+      arg: [],
+      uncensor: false
+    }
+    const init &#x3D; () &#x3D;&gt; {
+      // if (UNCENSOR &amp;amp;&amp;amp; UNCENSOR[0]) {
+      //   var uncensorRes &#x3D; this.testAgainstArray(this.resolveContent(content).join(&#x27; &#x27;), UNCENSOR)
+      //   if (uncensorRes[0]) {
+      //     res.censor &#x3D; false
+      //     return
+      //   };
+      // }
+      const resolvedContent &#x3D; this.resolveContent(content)
+      res.resolved &#x3D; resolvedContent.join(&#x27; &#x27;)
+
+      if (GLOBAL) {
+        var baseFilter &#x3D; this.testWithBypass(resolvedContent, filters(LANGS), UNCENSOR)
+        if (baseFilter.stopped) {
+          res.censor &#x3D; true
+          res.method &#x3D; &#x27;base&#x27;
+          res.word &#x3D; undefined
+          res.arg &#x3D; res.arg.concat(baseFilter.args)
+        }
+        if (baseFilter.uncensor) res.uncensor &#x3D; baseFilter.uncensor
+      }
+
+      if (SERVER &amp;amp;&amp;amp; SERVER[0]) {
+        var serverFilter &#x3D; this.testAgainstArray(resolvedContent.join(&#x27; &#x27;), SERVER, UNCENSOR)
+        if (serverFilter[0]) {
+          res.censor &#x3D; true
+          res.method &#x3D; &#x27;server&#x27;
+          res.word &#x3D; serverFilter[1]
+          res.arg &#x3D; res.arg.concat(serverFilter[2])
+        }
+        if (serverFilter[3]) res.uncensor &#x3D; serverFilter[3]
+      }
+    }
+    init()
+    if (res.censor &amp;amp;&amp;amp; this.client) this.addNum()
+    return res
+  }
+
+  removeAccents (str) {
+    var accents &#x3D; &#x27;$ÀÁÂÃÄÅĄĀāàáâãäåąßβÒÓÔÕÕÖØŐòóôőõöøĎďDŽdžÈÉÊËĘèéêëęðÇçČčĆćÐÌÍÎÏĪìíîïīÙÚÛÜŰùűúûüĽĹŁľĺłÑŇŃňñńŔŕŠŚŞšśşŤťŸÝÿýŽŻŹžżźđĢĞģğµ§ṈṉΑΒΝΗΕΙΤƎ△ıскР¡0İĩį@кёаі&#x27;
+    var accentsOut &#x3D; &#x27;sAAAAAAAAaaaaaaaabbOOOOOOOOoooooooDdDZdzEEEEEeeeeeeCcCcCcDIIIIIiiiiiUUUUUuuuuuLLLlllNNNnnnRrSSSsssTtYYyyZZZzzzdGGggusNnABNHEITeaickpioiiiakeai&#x27;
+    str &#x3D; str.split(&#x27;&#x27;)
+    var strLen &#x3D; str.length
+    var i, x
+    for (i &#x3D; 0; i &amp;lt; strLen; i++) {
+      if ((x &#x3D; accents.indexOf(str[i])) !&#x3D;&#x3D; -1) {
+        str[i] &#x3D; accentsOut[x]
+      }
+    }
+    return str.join(&#x27;&#x27;)
+  }
+
+  ;
+  resolveContent (str &#x3D; &#x27;&#x27;) {
+    return this.resolveTwos(this.resolveOnes(this.resolvePlusCharacters(this.removeAccents(this.removeLinks(this.resolveEmoji(str.split(&#x27; &#x27;))).join(&#x27; &#x27;).replace(this.replaceSpots.spaces, &#x27; &#x27;).replace(this.replaceSpots.nothing, &#x27;&#x27;)).slice().trim().split(/ +/g))))
+  }
+
+  resolveEmoji (arr) {
+    for (var i &#x3D; 0; i &amp;lt; arr.length; i++) {
+      if (this.emoji_lookup[arr[i]]) arr[i] &#x3D; this.emoji_lookup[arr[i]]
+      var thing &#x3D; emojis.get(arr[i])
+      if (thing) arr[i] &#x3D; thing
+    }
+    return arr
+  }
+
+  resolveOnes (arr) {
+    arr &#x3D; arr.reduce(([last, acc], e) &#x3D;&gt; {
+      if (e.length &#x3D;&#x3D;&#x3D; 1 &amp;amp;&amp;amp; (!last || last.length &#x3D;&#x3D;&#x3D; 1)) {
+        if (acc.length &#x3D;&#x3D;&#x3D; 0) {
+          acc.push(e)
+        } else {
+          acc[acc.length - 1] +&#x3D; e
+        }
+      } else {
+        acc.push(e)
+      }
+      return [e, acc]
+    }, [undefined, []])[1]
+    for (var i &#x3D; 0; i &amp;lt; arr.length; i++) {
+      if (arr[i] &amp;amp;&amp;amp; arr[i + 1]) {
+        if (arr[i].length &#x3D;&#x3D;&#x3D; 1 &amp;amp;&amp;amp; arr[i + 1].length &#x3D;&#x3D;&#x3D; 1) {
+          arr[i] &#x3D; arr[i] + arr[i + 1]
+          arr[i + 1] &#x3D; &#x27;&#x27;
+        } else if (arr[i].length &#x3D;&#x3D;&#x3D; 1 &amp;amp;&amp;amp; arr[i + 1].length !&#x3D;&#x3D; 1) {
+          arr[i + 1] &#x3D; arr[i] + arr[i + 1]
+          arr[i] &#x3D; &#x27;&#x27;
+        } else continue
+      } else continue
+    }
+    return arr
+  }
+
+  resolveTwos (arr) {
+    for (var i &#x3D; 0; i &amp;lt; arr.length; i++) {
+      if (!arr[i]) continue
+      if (!arr[i + 1]) continue
+      const arr1 &#x3D; arr[i]
+      const arr2 &#x3D; arr[i + 1]
+      if (arr1.length &#x3D;&#x3D;&#x3D; 2 &amp;amp;&amp;amp; arr2.length &#x3D;&#x3D;&#x3D; 2) {
+        arr[i] &#x3D; arr1 + arr2
+        arr[i + 1] &#x3D; &#x27;&#x27;
+      }
+    }
+    return arr
+  }
+
+  resolvePlusCharacters (arr) {
+    return arr.join(&#x27; &#x27;).replace(/(s)\1{3,}/g, &#x27;$1$1&#x27;).replace(/(.)\1{3,}/g, &#x27;$1&#x27;).split(&#x27; &#x27;)
+  }
+
+  testAgainstArray (content, arr, UNCENSOR) {
+    var res &#x3D; false
+    var site
+    var arg &#x3D; []
+    var uncensor &#x3D; false
+    arr.forEach(a &#x3D;&gt; {
+      let reg
+      try {
+        reg &#x3D; new RegExp(a, &#x27;gi&#x27;)
+      } catch (e) {
+        console.log(a + &#x27;err&#x27;)
+      }
+      if (!reg) return
+      var match &#x3D; content.match(reg)
+      if (UNCENSOR &amp;amp;&amp;amp; UNCENSOR.some(x &#x3D;&gt; x.match(reg) &amp;amp;&amp;amp; content.match(new RegExp(x, &#x27;gi&#x27;)))) return uncensor &#x3D; true // eslint-disable-line no-return-assign
+      if (match) {
+        res &#x3D; true
+        site &#x3D; a
+        arg.push(reg)
+      }
+    })
+    return [res, site, arg, uncensor]
+  }
+
+  testWithBypass (args, obj, uncensor) {
+    var res &#x3D; {
+      stopped: false,
+      args: [],
+      uncensor: false
+    }
+    args.forEach(arg &#x3D;&gt; {
+      Object.keys(obj).forEach(wrd &#x3D;&gt; {
+        const word &#x3D; new RegExp(wrd, &#x27;gi&#x27;)
+        if (uncensor &amp;amp;&amp;amp; uncensor.some(u &#x3D;&gt; u.match(word) &amp;amp;&amp;amp; arg.match(new RegExp(u, &#x27;gi&#x27;)))) return res.uncensor &#x3D; true // eslint-disable-line no-return-assign
+        if (arg.match(word)) {
+          const array &#x3D; obj[wrd.toLowerCase()]
+          var stop &#x3D; false
+          array.forEach(bypass &#x3D;&gt; {
+            if (stop) return
+            const sio &#x3D; new RegExp(bypass, &#x27;gi&#x27;)
+            if (arg.match(sio)) {
+              stop &#x3D; true
+            }
+          })
+          if (!stop) {
+            res.stopped &#x3D; true
+            res.args.push(word)
+          }
+        }
+      })
+    })
+    return res
+  }
+
+  removeLinks (arr) {
+    for (var i &#x3D; 0; i &amp;lt; arr.length; i++) {
+      if (arr[i]) {
+        if (arr[i].match(/http/gi)) {
+          let ok &#x3D; false
+          this.linkByp.forEach(bs &#x3D;&gt; {
+            const bsr &#x3D; new RegExp(bs, &#x27;gi&#x27;)
+            if (arr[i].match(bsr)) {
+              ok &#x3D; true
+            }
+          })
+          if (ok &#x3D;&#x3D;&#x3D; true) {
+            arr &#x3D; arr.filter(f &#x3D;&gt; f !&#x3D;&#x3D; arr[i])
+          }
+        }
+      }
+    }
+    return arr
+  }
+
+  addNum () {
+    this.client.db.collection(&#x27;stats&#x27;).updateOne({
+      id: &#x27;deleted&#x27;
+    }, {
+      $inc: {
+        amount: 1
+      }
+    })
+  }
+}
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on May 20, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>
