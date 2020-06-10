@@ -62,7 +62,7 @@ class Base { // eslint-disable-line no-unused-vars
 
   _isEqual (obj1, obj2) {
     let res = true
-    Object.keys(obj1).forEach(key => {
+    Object.keys(obj2).forEach(key => {
       if (obj1[key] && obj1[key].constructor === Array) {
         if (obj1[key].some(a => !obj2[key].some(b => a === b)) || obj2[key].some(a => !obj1[key].some(b => a === b))) res = false
         return
