@@ -103,7 +103,7 @@ function insert (obj) {
   }
 }
 
-function post() {
+function post () {
   hideChangeBar()
   var xhr = new XMLHttpRequest()
   xhr.open('POST', window.location.href)

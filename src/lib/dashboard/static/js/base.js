@@ -1,4 +1,4 @@
-/* global XMLHttpRequest, Event, alert, Tagify */
+/* global XMLHttpRequest, showToast, hideChangeBar, Event, Tagify */
 
 class Base { // eslint-disable-line no-unused-vars
   constructor (settings, useBar = false, addMissingTags = false) {
