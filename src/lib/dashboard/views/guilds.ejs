@@ -12,7 +12,7 @@
     <div id="mainGuildsPage">
       <% guilds.forEach(guild => { %>
         <div id="guildCard" onclick="window.location='/<%- guild.i %>'">
-          <img id='guildIcon' src="<%= guild.a ? `https://cdn.discordapp.com/icons/${guild.i}/${guild.a}` : 'https://cdn.discordapp.com/embed/avatars/1.png' %>" alt="Guild" onerror="this.src= 'https://cdn.discordapp.com/embed/avatars/1.png'">
+          <img id='guildIcon' src="<%= guild.a ? `https://cdn.discordapp.com/icons/${guild.i}/${guild.a}` : 'https://cdn.discordapp.com/embed/avatars/1.png' %>" alt="Guild"">
 
           <p id="guildName"><%= guild.n %></p>
         </div>

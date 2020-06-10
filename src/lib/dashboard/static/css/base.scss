@@ -54,6 +54,8 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
     background-color: map-get($map: $colors, $key: "blurple");
     @include flex();
 
+    border-bottom: 1px solid map-get($map: $colors, $key: "greyple");;
+
     .showSidebar {
         display: none;
     }
@@ -62,6 +64,12 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
         text-align: center;
         font-weight: 600;
         font-size: 4rem;
+    }
+
+    img {
+        height: 3rem;
+        width: auto;
+        vertical-align: middle;
     }
 }
 
@@ -149,6 +157,8 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
     grid-gap: 3%;
     overflow-y: auto;
 
+    margin-bottom: 1rem;
+
     div#guildCard {
         background-color: map-get($map: $background, $key: "dark");
         @include flex();
@@ -188,7 +198,7 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
     padding: 2rem 1rem 1rem 1rem;
     overflow-y: auto;
 
-
+    .left{
     *[title] {
         position: relative;
     }
@@ -203,9 +213,25 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
     width: max-content;
     }
 
-    .switch[title]:hover:before {
-        left: 4rem;
+}
+
+.right {
+    *[title] {
+        position: relative;
     }
+    *[title]:hover:before {
+     content: attr(title);
+     position: absolute;
+    top: -2rem;
+    right: -4rem;
+    background-color: map-get($map: $background, $key: 'dark');
+    padding: 3px;
+    border-radius: 8px;
+    font-size: medium;
+    width: max-content;
+    }
+}
+
 
 
     .hrGrey {
@@ -491,6 +517,11 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
 }
 }
 
+main, #mainGuildsPage, #mainGuildPage, #mainInvitePage, #mainPremPage, #mainAdminPage, #mainErrorPage, #mainLoginPage {
+    overflow-x: scroll;
+    height: 100%;
+}
+
 #saveButton {
     position: fixed;
     width: var(--switch-width);
@@ -721,7 +752,11 @@ changes {
 
 .tagify__input:before { color: map-get($map: $colors, $key: 'white'); }
 
-
+@media (max-width: 1111px) and (min-width: 755px) {
+    #mainGuildsPage {
+        grid-template-columns: 1fr 1fr 1fr 1fr !important;
+    }
+}
 @media (max-width: 1111px) {
     main {
         grid-area: main;
@@ -732,17 +767,21 @@ changes {
         p {
             font-size: 2rem;
         }
+
+        img {
+            height: 2rem;
+        }
         .showSidebar {
             display: block;
             position: absolute;
             left: 1rem;
-
+            cursor: pointer;
             
 
             &:before {
                 content: '≡';
                 font-size: 2rem;
-                transition: font-size 1s ease-in-out;
+                transition: font-size 0.5s ease-in-out;
             }
         &.hide {
            &:before {
@@ -762,7 +801,7 @@ changes {
         width: 50%;
         padding-top: 3rem;
 
-        transition: left 1s ease-in-out;
+        transition: left 0.5s ease-in-out;
 
         div > button {
             font-size: 2rem;
@@ -777,6 +816,8 @@ changes {
             top: 1rem;
             right: 1rem;
 
+            cursor: pointer;
+
             &:before {
                 content: 'X';
                 font-size: 2rem;
@@ -785,14 +826,13 @@ changes {
     } 
  
     body {
-        ;
      grid-template-areas: "header header"
      "main main";
      grid-template-rows: 5.5vh auto;
     }
 
     #mainGuildsPage {
-        grid-template-columns: 1fr 1fr;;
+        grid-template-columns: 1fr 1fr;
     }
     #mainPremPage {
 
@@ -840,7 +880,7 @@ changes {
         width: 100%;
 
         .changes {
-            width: 100%;
+            width: 95%;
             padding: 2%;
         }
     }

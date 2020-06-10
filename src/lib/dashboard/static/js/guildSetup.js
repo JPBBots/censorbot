@@ -84,7 +84,8 @@ window.lib.addTag('channels', {
   maxTags: window.premium ? Infinity : 0,
   callbacks: {},
   dropdown: {
-    enabled: 0
+    enabled: 0,
+    maxItems: window.guild.c.length
   }
 })
 
