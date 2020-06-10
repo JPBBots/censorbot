@@ -29,6 +29,10 @@ class Worker extends EventEmitter {
      */
     this.id = data.id
 
+    /**
+     * Job
+     * @type {Job}
+     */
     this.job = jobs[data.job]
 
     const Client = require(this.job.client)

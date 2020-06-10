@@ -12,7 +12,7 @@ class Cluster extends EventEmitter {
   /**
    * Cluster Worker
    * @param {Number} id Cluster ID
-   * @param {Number} job Job of cluster
+   * @param {jobInt} job Job of cluster
    * @param {Array.<Number>} shards Array of shard IDs
    * @param {Master} master Master
    * @param {Boolean} inactive Whether to spawn inactive
@@ -28,7 +28,7 @@ class Cluster extends EventEmitter {
 
     /**
      * Job of cluster
-     * @type {Number}
+     * @type {jobInt}
      */
     this.job = job
 

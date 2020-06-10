@@ -60,6 +60,10 @@ class Worker extends EventEmitter {
      */
     this.id &#x3D; data.id
 
+    /**
+     * Job
+     * @type {Job}
+     */
     this.job &#x3D; jobs[data.job]
 
     const Client &#x3D; require(this.job.client)
