@@ -2,9 +2,11 @@ exports.run = function (message, args) {
   this.send(
     this.embed
       .title('Credits')
-      .field('Head Developer', 'JPBBerry#0742' + ' : [Twitter](https://twitter.com/jpbberry) - [Instagram](https://instagram.com/jpbberry) ')
-      .field('Icon Art', 'higbead#0871')
-      .field('Translators', 'English: Literally everyone\nSpanish: JPBBerry#0742\nPolish: Marcel#0473')
+      .field('Head Developer', '[JPBBerry](https://jt3ch.net)', true)
+      .field('Dashboard Designer', '[Bowser](https://dev.jazzmoon.ca)', true)
+      .field('Icon Art', 'higbead#0871', true)
+      .field('Head Helper', '𝔹𝕒𝕓𝕪 𝕊𝕡𝕚𝕟𝕖𝕝#1332', true)
+      .field('Translators', 'English: Literally everyone\nSpanish: JPBBerry#0742\nPolish: Marcel#0473', true)
   )
 }
 exports.info = {
