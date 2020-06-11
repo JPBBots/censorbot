@@ -519,7 +519,7 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
 }
 
 main, #mainGuildsPage, #mainGuildPage, #mainInvitePage, #mainPremPage, #mainAdminPage, #mainErrorPage, #mainLoginPage {
-    overflow-x: scroll;
+    overflow-y: scroll;
     height: 100%;
 }
 
