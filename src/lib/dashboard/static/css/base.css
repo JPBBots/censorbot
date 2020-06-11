@@ -47,6 +47,7 @@ body {
       grid-template-rows: 12.5vh auto;
   -ms-grid-columns: 15vw auto;
       grid-template-columns: 15vw auto;
+  position: relative;
 }
 
 button {

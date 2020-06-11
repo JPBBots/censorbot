@@ -47,6 +47,7 @@ body {
         "sidebar main";
     grid-template-rows: 12.5vh auto;
     grid-template-columns: 15vw auto;
+    position: relative;
 }
 
 button { background-color: map-get($map: $colors, $key: "greyple"); }
