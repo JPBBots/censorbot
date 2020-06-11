@@ -41,7 +41,7 @@ body {
     color: map-get($map: $colors, $key: "white");
     font-family: 'Noto Sans', sans-serif;
     height: 100vh;
-    overflow: hidden;
+    overflow-y: scroll;
     display: grid;
     grid-template-areas: "header header"
         "sidebar main";
