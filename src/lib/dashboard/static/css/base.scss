@@ -522,7 +522,7 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
 }
 
 main, #mainGuildsPage, #mainGuildPage, #mainInvitePage, #mainPremPage, #mainAdminPage, #mainErrorPage, #mainLoginPage {
-    overflow-y: auto !important;
+    //overflow-y: auto !important;
     height: 100%;
     -webkit-overflow-scrolling: touch;
 }
@@ -765,7 +765,7 @@ changes {
 @media (max-width: 1111px) {
     main {
         grid-area: main;
-        overflow-y: auto;
+        //overflow-y: auto;
         -webkit-overflow-scrolling: touch;
     }
     #header {

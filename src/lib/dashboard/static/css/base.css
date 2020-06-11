@@ -716,7 +716,6 @@ button {
 }
 
 main, #mainGuildsPage, #mainGuildPage, #mainInvitePage, #mainPremPage, #mainAdminPage, #mainErrorPage, #mainLoginPage {
-  overflow-y: auto !important;
   height: 100%;
   -webkit-overflow-scrolling: touch;
 }
@@ -1072,7 +1071,6 @@ changes .changes button.save {
     -ms-grid-column: 1;
     -ms-grid-column-span: 2;
     grid-area: main;
-    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
   #header p {
