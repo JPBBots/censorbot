@@ -54,7 +54,7 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
 
 #header {
     grid-area: header;
-    background-color: map-get($map: $colors, $key: "blurple");
+    background-color: map-get($map: $colors, $key: "green");
     @include flex();
 
     border-bottom: 1px solid map-get($map: $colors, $key: "greyple");;

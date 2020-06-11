@@ -59,7 +59,7 @@ button {
   -ms-grid-column: 1;
   -ms-grid-column-span: 2;
   grid-area: header;
-  background-color: var(--blurple);
+  background-color: var(--green);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
