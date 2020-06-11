@@ -39,7 +39,6 @@ body {
   color: var(--white);
   font-family: 'Noto Sans', sans-serif;
   height: 100vh;
-  overflow-y: scroll;
   display: -ms-grid;
   display: grid;
       grid-template-areas: "header header" "sidebar main";
@@ -281,9 +280,11 @@ button {
 
 #mainGuildPage .left *[title] {
   position: relative;
+  z-index: 998;
 }
 
 #mainGuildPage .left *[title]:hover:before {
+  z-index: 998;
   content: attr(title);
   position: absolute;
   top: -2rem;
@@ -297,14 +298,16 @@ button {
 }
 
 #mainGuildPage .right *[title] {
+  z-index: 998;
   position: relative;
 }
 
 #mainGuildPage .right *[title]:hover:before {
+  z-index: 998;
   content: attr(title);
   position: absolute;
   top: -2rem;
-  right: -4rem;
+  right: 0rem;
   background-color: var(--background-darkest);
   padding: 3px;
   border-radius: 8px;
@@ -714,9 +717,15 @@ button {
   background-color: var(--blurple);
 }
 
-main, #mainGuildsPage, #mainGuildPage, #mainInvitePage, #mainPremPage, #mainAdminPage, #mainErrorPage, #mainLoginPage {
-  height: 100%;
-  -webkit-overflow-scrolling: touch;
+@media (min-width: 1111px) {
+  body {
+    overflow-y: hidden;
+  }
+  main, #mainGuildsPage, #mainGuildPage, #mainInvitePage, #mainPremPage, #mainAdminPage, #mainErrorPage, #mainLoginPage {
+    overflow-y: auto !important;
+    height: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 #saveButton {
@@ -954,7 +963,7 @@ input:checked + .slider:before {
 }
 
 changes {
-  position: absolute;
+  position: fixed;
   bottom: 2%;
   width: 85vw;
   display: -webkit-box;
@@ -1065,12 +1074,20 @@ changes .changes button.save {
 }
 
 @media (max-width: 1111px) {
-  main {
+  body {
+    overflow-y: auto !important;
+  }
+  main, #mainGuildsPage, #mainGuildPage, #mainInvitePage, #mainPremPage, #mainAdminPage, #mainErrorPage, #mainLoginPage {
     -ms-grid-row: 2;
     -ms-grid-column: 1;
     -ms-grid-column-span: 2;
     grid-area: main;
     -webkit-overflow-scrolling: touch;
+  }
+  #header {
+    position: fixed;
+    width: 100vw;
+    z-index: 999;
   }
   #header p {
     font-size: 2rem;
@@ -1097,10 +1114,11 @@ changes .changes button.save {
     z-index: 1000;
     display: -ms-grid;
     display: grid;
-    position: absolute;
-    top: 5.5vh;
+    position: fixed;
+    top: 0;
     left: -50%;
-    height: calc(100% - 5.5vh);
+    height: 100%;
+    max-height: 100%;
     width: 50%;
     padding-top: 3rem;
     -webkit-transition: left 0.5s ease-in-out;
@@ -1140,7 +1158,6 @@ changes .changes button.save {
   }
   #mainGuildPage {
     height: 100%;
-    overflow-x: scroll;
   }
   #mainGuildPage .selectBox > select {
     width: 100% !important;
