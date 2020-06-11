@@ -81,6 +81,7 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
     display: grid;
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr;
+    max-height: calc(100vh - 12.5vh);
 
     p {
         text-align: center;
@@ -159,7 +160,7 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
     grid-template-rows: repeat(3, 1fr);
     grid-gap: 3%;
-    overflow-y: auto;
+    //overflow-y: auto;
 
     margin-bottom: 1rem;
 
@@ -200,7 +201,7 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
 #mainGuildPage {
     grid-area: main;
     padding: 2rem 1rem 1rem 1rem;
-    overflow-y: auto;
+    //overflow-y: auto;
 
     .left{
     *[title] {

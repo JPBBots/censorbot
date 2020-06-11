@@ -104,6 +104,7 @@ button {
       grid-template-rows: 1fr 1fr;
   -ms-grid-columns: 1fr;
       grid-template-columns: 1fr;
+  max-height: calc(100vh - 12.5vh);
   background-color: var(--background-darkest);
   color: var(--white);
 }
@@ -217,7 +218,6 @@ button {
   -ms-grid-rows: (1fr)[3];
       grid-template-rows: repeat(3, 1fr);
   grid-gap: 3%;
-  overflow-y: auto;
   margin-bottom: 1rem;
 }
 
@@ -277,7 +277,6 @@ button {
   -ms-grid-column: 2;
   grid-area: main;
   padding: 2rem 1rem 1rem 1rem;
-  overflow-y: auto;
 }
 
 #mainGuildPage .left *[title] {
