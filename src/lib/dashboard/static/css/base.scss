@@ -26,6 +26,8 @@
     padding: 0;
     box-sizing: border-box;
 
+    -webkit-overflow-scrolling: touch;
+
     &:not(input, select) {
         -webkit-user-select: none;
         -moz-user-select: none;
