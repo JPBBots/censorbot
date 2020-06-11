@@ -135,17 +135,18 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
     }
 }
 
+/*
 ::-webkit-scrollbar {
     width: 12px;
-    /* for vertical scrollbars */
     height: 12px;
-    /* for horizontal scrollbars */
     border-radius: 3rem;
 }
 
 ::-webkit-scrollbar-track { background: map-get($map: $background, $key: "mid"); }
 
 ::-webkit-scrollbar-thumb { background: map-get($map: $background, $key: "dark"); }
+
+*/
 
 /* Home Page Styles */
 #mainGuildsPage {

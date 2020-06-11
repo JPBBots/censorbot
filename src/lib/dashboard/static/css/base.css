@@ -190,22 +190,18 @@ button {
   background-color: var(--blurple);
 }
 
+/*
 ::-webkit-scrollbar {
-  width: 12px;
-  /* for vertical scrollbars */
-  height: 12px;
-  /* for horizontal scrollbars */
-  border-radius: 3rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 3rem;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--background-dark);
-}
+::-webkit-scrollbar-track { background: map-get($map: $background, $key: "mid"); }
 
-::-webkit-scrollbar-thumb {
-  background: var(--background-darkest);
-}
+::-webkit-scrollbar-thumb { background: map-get($map: $background, $key: "dark"); }
 
+*/
 /* Home Page Styles */
 #mainGuildsPage {
   -ms-grid-row: 2;
