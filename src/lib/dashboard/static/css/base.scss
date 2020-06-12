@@ -55,7 +55,7 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
 
 #header {
     grid-area: header;
-    background-color: map-get($map: $colors, $key: "green");
+    background-color: map-get($map: $colors, $key: "blurple");
     @include flex();
 
     border-bottom: 1px solid map-get($map: $colors, $key: "greyple");;
@@ -447,7 +447,7 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
     padding: 1rem;
 
     #apply {
-        position: absolute;
+        position: fixed;
         right: 2rem;
         bottom: 1.5rem;
     }
@@ -708,6 +708,7 @@ changes {
     width: 85vw;
     @include flex();
     pointer-events: none;
+    z-index: 977;
 
     transition: bottom 0.5s ease-in-out;
 
@@ -901,6 +902,7 @@ changes {
 
     changes {
         width: 100%;
+        bottom: 5%;
 
         .changes {
             width: 95%;
