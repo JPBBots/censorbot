@@ -1,2 +1,1258 @@
-@charset "UTF-8";@import url(https://fonts.googleapis.com/css2?family=Noto+Sans&display=tap);:root{--blurple:#7289DA;--white:#ffffff;--greyple:#99aab5;--dGreyple:#81898f;--disabledWhite:#dbd7d7;--dark:#2c2f33;--darkest:#23272a;--background-light:#35393F;--background-dark:#2E3136;--background-darkest:#202225;--corner:2rem;--inputLight:#3F444B;--switch-width:60px;--green:#00B484}*{margin:0;padding:0;-webkit-box-sizing:border-box;box-sizing:border-box;-webkit-overflow-scrolling:touch}*{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}body{background-color:var(--background-light);color:var(--white);font-family:'Noto Sans',sans-serif;height:100vh;display:-ms-grid;display:grid;grid-template-areas:"header header" "sidebar main";-ms-grid-rows:12.5vh auto;grid-template-rows:12.5vh auto;-ms-grid-columns:15vw auto;grid-template-columns:15vw auto;position:relative}button{background-color:var(--greyple)}#header{-ms-grid-row:1;-ms-grid-column:1;-ms-grid-column-span:2;grid-area:header;background-color:var(--green);display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;border-bottom:1px solid var(--greyple)}#header .showSidebar{display:none}#header p{text-align:center;font-weight:600;font-size:4rem}#header img{height:3rem;width:auto;vertical-align:middle}#sidebar{-ms-grid-row:2;-ms-grid-column:1;grid-area:sidebar;display:-ms-grid;display:grid;-ms-grid-rows:1fr 1fr;grid-template-rows:1fr 1fr;-ms-grid-columns:1fr;grid-template-columns:1fr;max-height:calc(100vh - 12.5vh);background-color:var(--background-darkest);color:var(--white)}#sidebar p{text-align:center;padding-top:2rem}#sidebar .close{display:none}#sidebar div#top{padding:2rem 0;-ms-grid-row:1;grid-row:1;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:start;-ms-flex-pack:start;justify-content:flex-start;-webkit-box-align:center;-ms-flex-align:center;align-items:center}#sidebar div#bottom{padding:1rem 0;-ms-grid-row:2;grid-row:2;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:end;-ms-flex-pack:end;justify-content:flex-end;-webkit-box-align:center;-ms-flex-align:center;align-items:center}#sidebar div#bottom a{color:var(--white);-webkit-transition:.3s;transition:.3s}#sidebar div#bottom a:focus,#sidebar div#bottom a:hover{color:var(--greyple)!important}#sidebar div#bottom a:visited{color:var(--blurple)}#sidebar div>button{background-color:#7b91a0;color:var(--white);width:80%;height:20%;font-size:2rem;border-radius:8px;border:none;outline:0;margin:1rem 0;cursor:pointer}#sidebar div>button:focus,#sidebar div>button:hover{-webkit-transition:background-color .15s ease-in-out;transition:background-color .15s ease-in-out;background-color:var(--blurple)}#mainGuildsPage{-ms-grid-row:2;-ms-grid-column:2;grid-area:main;padding:2rem 1rem 1rem 1rem;display:-ms-grid;display:grid;-ms-grid-columns:(minmax(170px,1fr)) [auto-fill];grid-template-columns:repeat(auto-fill,minmax(170px,1fr));-ms-grid-rows:(1fr)[3];grid-template-rows:repeat(3,1fr);grid-gap:3%;margin-bottom:1rem}#mainGuildsPage div#guildCard{background-color:var(--background-darkest);display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;border-radius:var(--corner);cursor:pointer;-webkit-transition:all .12s;transition:all .12s}#mainGuildsPage div#guildCard:focus,#mainGuildsPage div#guildCard:hover{-webkit-box-shadow:0 0 20px 15px var(--blurple);box-shadow:0 0 20px 15px var(--blurple)}#mainGuildsPage div#guildCard p#guildName{padding:2.75rem .25rem .5rem .25rem;font-weight:400;text-align:center;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;word-wrap:break-word;-webkit-line-clamp:2;-webkit-box-orient:vertical;max-width:100%;justify-self:flex-end}#mainGuildsPage div#guildCard img#guildIcon{max-width:80%;min-width:70%;padding-top:1rem;border-radius:35%}#mainGuildPage{-ms-grid-row:2;-ms-grid-column:2;grid-area:main;padding:2rem 1rem 1rem 1rem}#mainGuildPage .left [title]{position:relative;z-index:998}#mainGuildPage .left [title]:hover:before{z-index:998;content:attr(title);position:absolute;top:-2rem;background-color:var(--background-darkest);padding:3px;border-radius:8px;font-size:medium;width:-webkit-max-content;width:-moz-max-content;width:max-content}#mainGuildPage .right [title]{z-index:998;position:relative}#mainGuildPage .right [title]:hover:before{z-index:998;content:attr(title);position:absolute;top:-2rem;right:0;background-color:var(--background-darkest);padding:3px;border-radius:8px;font-size:medium;width:-webkit-max-content;width:-moz-max-content;width:max-content}#mainGuildPage .hrGrey{border-color:var(--greyple)}#mainGuildPage div:nth-of-type(1)>h1{border-top-left-radius:var(--corner);border-top-right-radius:var(--corner);border:none}#mainGuildPage div:last-of-type section{border-bottom-left-radius:var(--corner);border-bottom-right-radius:var(--corner);border-bottom:3px solid var(--greyple);margin-bottom:1rem}#mainGuildPage div:last-of-type[data-open=false]>h1{-webkit-transition:ease-in-out .3s;transition:ease-in-out .3s;-webkit-transition-delay:.4s;transition-delay:.4s;border-bottom-left-radius:var(--corner);border-bottom-right-radius:var(--corner);margin-bottom:1rem}#mainGuildPage div h1{position:relative;-webkit-transition:background-color .18s;transition:background-color .18s;width:100%;padding:1rem 2rem .5rem 2rem;background-color:var(--blurple);cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border-top:1px var(--dark) solid}#mainGuildPage div section{display:inline-block;width:100%;padding:.75rem;border-left:3px solid var(--greyple);border-right:3px solid var(--greyple);display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center}#mainGuildPage div section h3{-ms-flex-item-align:start;align-self:flex-start;width:-webkit-fit-content;width:-moz-fit-content;width:fit-content;padding:.5rem 0}#mainGuildPage div section .switch{-ms-flex-item-align:end;align-self:flex-end}#mainGuildPage div section.general div.sectionParent,#mainGuildPage div section.punishments div.sectionParent{display:-ms-grid;display:grid;-ms-grid-columns:1fr 1fr;grid-template-columns:1fr 1fr;-webkit-column-gap:.5rem;column-gap:.5rem}#mainGuildPage div section.general div.sectionParent .left,#mainGuildPage div section.punishments div.sectionParent .left{-ms-grid-column:1;grid-column:1}#mainGuildPage div section.general div.sectionParent .right,#mainGuildPage div section.punishments div.sectionParent .right{-ms-grid-column:2;grid-column:2}#mainGuildPage div section.punishments>div.sectionParent>div.left{text-align:right}#mainGuildPage div section.punishments>div.sectionParent>div.left small{color:var(--greyple)}#mainGuildPage div section.filter div.sectionParent,#mainGuildPage div section.other div.sectionParent{display:-ms-grid;display:grid;-ms-grid-columns:3fr 1fr;grid-template-columns:3fr 1fr;-webkit-column-gap:.5rem;column-gap:.5rem}#mainGuildPage div section.filter div.sectionParent .left,#mainGuildPage div section.other div.sectionParent .left{-ms-grid-column:1;grid-column:1;display:-ms-grid;display:grid;-ms-grid-columns:3fr 1fr;grid-template-columns:3fr 1fr;-ms-grid-rows:min-content;grid-template-rows:-webkit-min-content;grid-template-rows:min-content}#mainGuildPage div section.filter div.sectionParent .left h3,#mainGuildPage div section.other div.sectionParent .left h3{-ms-grid-column:1;grid-column:1}#mainGuildPage div section.filter div.sectionParent .left label,#mainGuildPage div section.other div.sectionParent .left label{-ms-grid-column:2;grid-column:2;-ms-flex-item-align:start;align-self:flex-start;position:relative;right:var(--switch-width)}#mainGuildPage div section.filter div.sectionParent .left div,#mainGuildPage div section.other div.sectionParent .left div{-ms-grid-column:1;-ms-grid-column-span:1;grid-column:1/span 1}#mainGuildPage div section.filter div.sectionParent .right,#mainGuildPage div section.other div.sectionParent .right{-ms-grid-column:2;grid-column:2;border:solid var(--greyple) 3px;border-radius:8px;padding:1rem;height:-webkit-fit-content;height:-moz-fit-content;height:fit-content}#mainGuildPage div section.filter div.sectionParent .right p.rightTitle,#mainGuildPage div section.other div.sectionParent .right p.rightTitle{text-align:center;font-weight:600;text-decoration:underline;font-size:150%}#mainGuildPage div section.filter div.sectionParent .right h3,#mainGuildPage div section.other div.sectionParent .right h3{display:inline-block}#mainGuildPage div section.filter div.sectionParent .right label,#mainGuildPage div section.other div.sectionParent .right label{float:right}#mainGuildPage div[data-open=true]>h1:after{content:'∨';-webkit-transition:all .3s;transition:all .3s;position:absolute;right:1.5rem;color:var(--white)}#mainGuildPage div[data-open=false] h1{background-color:var(--greyple)}#mainGuildPage div[data-open=false] h1:after{content:'∨';-webkit-transition:all .3s;transition:all .3s;-webkit-transform:rotate(-90deg);transform:rotate(-90deg);position:absolute;right:1.5rem;color:var(--white)}#mainGuildPage div[data-open=false] section{display:none}#mainInvitePage{-ms-grid-row:2;-ms-grid-column:2;grid-area:main;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center}#mainInvitePage button{background-color:#7b91a0;color:var(--white);width:30%;height:10%;font-size:2rem;border-radius:8px;border:none;outline:0;margin:1rem 0;cursor:pointer}#mainInvitePage button:focus,#mainInvitePage button:hover{-webkit-transition:background-color .15s ease-in-out;transition:background-color .15s ease-in-out;background-color:var(--blurple)}#mainPremPage{-ms-grid-row:2;-ms-grid-column:2;grid-area:main}#mainPremPage #title{text-align:center}#mainPremPage #title a{color:var(--blurple)!important}#mainPremPage #title a:focus,#mainPremPage #title a:hover{color:var(--blurple)!important}#mainPremPage .center{padding-top:2rem;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center}#mainPremPage .inputBox{width:50%}#mainAdminPage{-ms-grid-row:2;-ms-grid-column:2;grid-area:main;padding:1rem}#mainAdminPage #apply{position:absolute;right:2rem;bottom:1.5rem}#mainAdminPage button{background-color:#7b91a0;color:var(--white);width:10%;height:5%;font-size:1rem;border-radius:8px;border:none;outline:0;margin:1rem 0;cursor:pointer}#mainAdminPage button:focus,#mainAdminPage button:hover{-webkit-transition:background-color .15s ease-in-out;transition:background-color .15s ease-in-out;background-color:var(--blurple)}#mainAdminPage .cluster{display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-box!important;border-radius:var(--corner);border:2px solid var(--greyple);padding:10px}#mainAdminPage .cluster h1{text-align:center;border-bottom:1px solid var(--greyple);margin-bottom:1rem}#mainAdminPage .shard{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;margin:1rem;min-width:50px;border-style:solid;border-width:2px;border-radius:var(--corner);padding:10px;width:-webkit-fit-content;width:-moz-fit-content;width:fit-content;display:inline-block}#mainAdminPage .shard .selectBox{min-height:3rem}#mainErrorPage,#mainLoginPage{-ms-grid-row:2;-ms-grid-column:2;grid-area:main;text-align:center;padding-top:1rem}#mainErrorPage button,#mainLoginPage button{background-color:#7b91a0;color:var(--white);width:10%;height:5%;font-size:1rem;border-radius:8px;border:none;outline:0;margin:1rem 0;cursor:pointer}#mainErrorPage button:focus,#mainErrorPage button:hover,#mainLoginPage button:focus,#mainLoginPage button:hover{-webkit-transition:background-color .15s ease-in-out;transition:background-color .15s ease-in-out;background-color:var(--blurple)}@media (min-width:1111px){body{overflow-y:hidden}#mainAdminPage,#mainErrorPage,#mainGuildPage,#mainGuildsPage,#mainInvitePage,#mainLoginPage,#mainPremPage,main{overflow-y:auto!important;height:100%;-webkit-overflow-scrolling:touch}}#saveButton{position:fixed;width:var(--switch-width);height:var(--switch-width);bottom:40px;right:40px;background-color:var(--blurple);color:#fff;border-radius:50px;text-align:center;-webkit-box-shadow:2px 2px 3px var(--greyple);box-shadow:2px 2px 3px var(--greyple)}.switch{position:relative;display:inline-block;width:var(--switch-width);height:34px}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:var(--greyple);-webkit-transition:.4s;transition:.4s}.slider[disabled]{background-color:var(--dGreyple)}.slider[disabled]:before{background-color:var(--disabledWhite)}.slider:before{position:absolute;content:"";height:26px;width:26px;left:4px;bottom:4px;background-color:var(--white);-webkit-transition:.4s;transition:.4s}.slider.round{border-radius:34px}.slider.round:before{border-radius:50%}input:checked+.slider{background-color:var(--blurple)}input :focus+.slider{-webkit-box-shadow:0 0 1px var(--blurple);box-shadow:0 0 1px var(--blurple)}input:checked+.slider:before{-webkit-transform:translateX(26px);transform:translateX(26px)}.inputBox{background:var(--inputLight);border-radius:8px;display:-ms-grid;display:grid;-ms-grid-columns:2fr 4fr;grid-template-columns:2fr 4fr;margin:.25rem 0;height:-webkit-fit-content;height:-moz-fit-content;height:fit-content}.inputBox p{background:var(--dark);padding:5% 1%;border-top-left-radius:8px;border-bottom-left-radius:8px;-ms-grid-column:1;grid-column:1;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.inputBox input{background:0 0;outline:0!important;border:none!important;color:#fff;font-size:larger;-ms-grid-column:2;-ms-grid-column-span:5;grid-column:2/span 5;margin-left:1rem}.inputBox input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}.inputBox.has2Buttons,.inputBox.hasButton{-ms-grid-columns:3fr 4fr 1fr;grid-template-columns:3fr 4fr 1fr}.inputBox.has2Buttons input,.inputBox.hasButton input{-ms-grid-column:2;-ms-grid-column-span:1;grid-column:2/3}.inputBox.has2Buttons button,.inputBox.hasButton button{color:var(--white);border-top-right-radius:1rem;border-bottom-right-radius:1rem;-ms-grid-column:3;-ms-grid-column-span:1;grid-column:3/4;font-size:130%;border:none;outline:0}.inputBox.has2Buttons{-ms-grid-columns:2fr 3fr 1fr 1fr;grid-template-columns:2fr 3fr 1fr 1fr}.inputBox.has2Buttons button:nth-of-type(1){border-radius:0;border-right:1px var(--dark) solid}.inputBox.has2Buttons button:nth-of-type(2){-ms-grid-column:4;-ms-grid-column-span:1;grid-column:4/5}.selectBox{background:var(--inputLight);border-radius:8px;display:-ms-grid;display:grid;-ms-grid-columns:2fr 4fr;grid-template-columns:2fr 4fr;margin:.25rem 0}.selectBox p,.selectBox select{display:inline-block}.selectBox i,.selectBox p{background:var(--dark);margin-right:1%;padding:5% 1%;border-top-left-radius:8px;border-bottom-left-radius:8px;-ms-grid-column:1;grid-column:1;text-align:center;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.selectBox select{background:0 0;outline:0;width:-webkit-max-content;width:-moz-max-content;width:max-content;border:none;color:#fff;font-size:larger;-ms-grid-column:2;-ms-grid-column-span:3;grid-column:2/5;min-width:100%;margin-right:1rem}.selectBox select option{background:var(--background-light);border:none}changes{position:fixed;bottom:2%;width:85vw;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;pointer-events:none;-webkit-transition:bottom .5s ease-in-out;transition:bottom .5s ease-in-out}changes.hidden{bottom:-10%}changes .changes{-webkit-transition:none;transition:none;pointer-events:all;display:-ms-grid;display:grid;-ms-grid-columns:(1fr)[5];grid-template-columns:repeat(5,1fr);background-color:var(--background-darkest);border-radius:.5rem;padding:.5rem 1rem;width:50%}changes .changes p{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:start;-ms-flex-align:start;align-items:flex-start;-ms-grid-column:1;-ms-grid-column-span:4;grid-column:1/span 4;font-size:110%}changes .changes button{padding:.5rem;border-radius:8px;border:none;outline:0;color:var(--white);font-weight:500;font-size:110%;cursor:pointer}changes .changes button.reset{-ms-grid-column:5;-ms-grid-column-span:1;grid-column:5/span 1;background-color:var(--background-darkest);margin-right:.25rem;text-decoration:underline}changes .changes button.save{-ms-grid-column:6;-ms-grid-column-span:1;grid-column:6/span 1;background-color:var(--green)}.tagify__dropdown__wrapper{background-color:var(--background-light)}.tagify,.tagify--focus,.tagifyInput{border:none;outline:0}.tagify__input:before{color:var(--white)}@media (max-width:1111px) and (min-width:755px){#mainGuildsPage{-ms-grid-columns:1fr 1fr 1fr 1fr!important;grid-template-columns:1fr 1fr 1fr 1fr!important}}@media (max-width:1111px){body{overflow-y:auto!important}#mainAdminPage,#mainErrorPage,#mainGuildPage,#mainGuildsPage,#mainInvitePage,#mainLoginPage,#mainPremPage,main{-ms-grid-row:2;-ms-grid-column:1;-ms-grid-column-span:2;grid-area:main;-webkit-overflow-scrolling:touch}#header{position:fixed;width:100vw;z-index:999}#header p{font-size:2rem}#header img{height:2rem}#header .showSidebar{display:block;position:absolute;left:1rem;cursor:pointer}#header .showSidebar:before{content:'≡';font-size:2rem;-webkit-transition:font-size .5s ease-in-out;transition:font-size .5s ease-in-out}#header .showSidebar.hide:before{font-size:0}#sidebar{z-index:1000;display:-ms-grid;display:grid;position:fixed;top:0;left:-50%;height:100%;max-height:100%;width:50%;padding-top:3rem;-webkit-transition:left .5s ease-in-out;transition:left .5s ease-in-out}#sidebar div>button{font-size:2rem}#sidebar.show{left:0}#sidebar .close{display:block;position:absolute;top:1rem;right:1rem;cursor:pointer}#sidebar .close:before{content:'X';font-size:2rem}body{grid-template-areas:"header header" "main main";-ms-grid-rows:5.5vh auto;grid-template-rows:5.5vh auto}#mainGuildsPage{-ms-grid-columns:1fr 1fr;grid-template-columns:1fr 1fr}#mainPremPage .inputBox{width:90%!important}#mainAdminPage button,#mainErrorPage button,#mainLoginPage button{width:30%}#mainGuildPage{height:100%}#mainGuildPage .selectBox>select{width:100%!important}#mainGuildPage .inputBox{width:100%}#mainGuildPage .inputBox input{width:inherit}#mainGuildPage .sectionParent{-ms-grid-columns:1fr!important;grid-template-columns:1fr!important}#mainGuildPage .sectionParent .right{-ms-grid-column:1!important;grid-column:1!important}#mainGuildPage .filter .sectionParent .left,#mainGuildPage .other .sectionParent .left{-ms-grid-columns:1fr!important;grid-template-columns:1fr!important}changes{width:100%}changes .changes{width:95%;padding:2%}}#snackbar{visibility:hidden;min-width:250px;margin-left:-125px;background-color:var(--background-darkest);color:#fff;text-align:center;border-radius:8px;padding:16px;position:fixed;z-index:1;left:50%;bottom:50px}#snackbar.show{visibility:visible;-webkit-animation:fadein .5s,fadeout .5s 2.5s;animation:fadein .5s,fadeout .5s 2.5s}@-webkit-keyframes fadein{from{bottom:0;opacity:0}to{bottom:50px;opacity:1}}@keyframes fadein{from{bottom:0;opacity:0}to{bottom:50px;opacity:1}}@-webkit-keyframes fadeout{from{bottom:50px;opacity:1}to{bottom:0;opacity:0}}@keyframes fadeout{from{bottom:50px;opacity:1}to{bottom:0;opacity:0}}
+@charset "UTF-8";
+/* Variables Styles */
+/* All Page Styles */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans&display=tap");
+:root {
+  --blurple: #7289DA;
+  --white: #ffffff;
+  --greyple: #99aab5;
+  --dGreyple: #81898f;
+  --disabledWhite: #dbd7d7;
+  --dark: #2c2f33;
+  --darkest: #23272a;
+  --background-light: #35393F;
+  --background-dark: #2E3136;
+  --background-darkest: #202225;
+  --corner: 2rem;
+  --inputLight: #3F444B;
+  --switch-width: 60px;
+  --green: #00B484;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+body {
+  background-color: var(--background-light);
+  color: var(--white);
+  font-family: 'Noto Sans', sans-serif;
+  height: 100vh;
+  display: -ms-grid;
+  display: grid;
+      grid-template-areas: "header header" "sidebar main";
+  -ms-grid-rows: 12.5vh auto;
+      grid-template-rows: 12.5vh auto;
+  -ms-grid-columns: 15vw auto;
+      grid-template-columns: 15vw auto;
+  position: relative;
+}
+
+button {
+  background-color: var(--greyple);
+}
+
+#header {
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 2;
+  grid-area: header;
+  background-color: var(--blurple);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-bottom: 1px solid var(--greyple);
+}
+
+#header .showSidebar {
+  display: none;
+}
+
+#header p {
+  text-align: center;
+  font-weight: 600;
+  font-size: 4rem;
+}
+
+#header img {
+  height: 3rem;
+  width: auto;
+  vertical-align: middle;
+}
+
+#sidebar {
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+  grid-area: sidebar;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-rows: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+  -ms-grid-columns: 1fr;
+      grid-template-columns: 1fr;
+  max-height: calc(100vh - 12.5vh);
+  background-color: var(--background-darkest);
+  color: var(--white);
+}
+
+#sidebar p {
+  text-align: center;
+  padding-top: 2rem;
+}
+
+#sidebar .close {
+  display: none;
+}
+
+#sidebar div#top {
+  padding: 2rem 0;
+  -ms-grid-row: 1;
+  grid-row: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#sidebar div#bottom {
+  padding: 1rem 0;
+  -ms-grid-row: 2;
+  grid-row: 2;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#sidebar div#bottom a {
+  color: var(--white);
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+
+#sidebar div#bottom a:focus, #sidebar div#bottom a:hover {
+  color: var(--greyple) !important;
+}
+
+#sidebar div#bottom a:visited {
+  color: var(--blurple);
+}
+
+#sidebar div > button {
+  background-color: #7b91a0;
+  color: var(--white);
+  width: 80%;
+  height: 20%;
+  font-size: 2rem;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  margin: 1rem 0;
+  cursor: pointer;
+}
+
+#sidebar div > button:hover, #sidebar div > button:focus {
+  -webkit-transition: background-color 0.15s ease-in-out;
+  transition: background-color 0.15s ease-in-out;
+  background-color: var(--blurple);
+}
+
+/*
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+    border-radius: 3rem;
+}
+
+::-webkit-scrollbar-track { background: map-get($map: $background, $key: "mid"); }
+
+::-webkit-scrollbar-thumb { background: map-get($map: $background, $key: "dark"); }
+
+*/
+/* Home Page Styles */
+#mainGuildsPage {
+  -ms-grid-row: 2;
+  -ms-grid-column: 2;
+  grid-area: main;
+  padding: 2rem 1rem 1rem 1rem;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (minmax(170px, 1fr))[auto-fill];
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  -ms-grid-rows: (1fr)[3];
+      grid-template-rows: repeat(3, 1fr);
+  grid-gap: 3%;
+  margin-bottom: 1rem;
+}
+
+#mainGuildsPage div#guildCard {
+  background-color: var(--background-darkest);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-radius: var(--corner);
+  cursor: pointer;
+  -webkit-transition: all 0.12s;
+  transition: all 0.12s;
+}
+
+#mainGuildsPage div#guildCard:hover, #mainGuildsPage div#guildCard:focus {
+  -webkit-box-shadow: 0px 0px 20px 15px var(--blurple);
+          box-shadow: 0px 0px 20px 15px var(--blurple);
+}
+
+#mainGuildsPage div#guildCard p#guildName {
+  padding: 2.75rem 0.25rem 0.5rem 0.25rem;
+  font-weight: 400;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  word-wrap: break-word;
+  -webkit-line-clamp: 2;
+  /* number of lines to show */
+  -webkit-box-orient: vertical;
+  max-width: 100%;
+  justify-self: flex-end;
+}
+
+#mainGuildsPage div#guildCard img#guildIcon {
+  max-width: 80%;
+  min-width: 70%;
+  padding-top: 1rem;
+  border-radius: 35%;
+}
+
+/* Guild Settings Page Styles */
+#mainGuildPage {
+  -ms-grid-row: 2;
+  -ms-grid-column: 2;
+  grid-area: main;
+  padding: 2rem 1rem 1rem 1rem;
+}
+
+#mainGuildPage .left *[title] {
+  position: relative;
+  z-index: 998;
+}
+
+#mainGuildPage .left *[title]:hover:before {
+  z-index: 998;
+  content: attr(title);
+  position: absolute;
+  top: -2rem;
+  background-color: var(--background-darkest);
+  padding: 3px;
+  border-radius: 8px;
+  font-size: medium;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+}
+
+#mainGuildPage .right *[title] {
+  z-index: 998;
+  position: relative;
+}
+
+#mainGuildPage .right *[title]:hover:before {
+  z-index: 998;
+  content: attr(title);
+  position: absolute;
+  top: -2rem;
+  right: 0rem;
+  background-color: var(--background-darkest);
+  padding: 3px;
+  border-radius: 8px;
+  font-size: medium;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+}
+
+#mainGuildPage .hrGrey {
+  border-color: var(--greyple);
+}
+
+#mainGuildPage div:nth-of-type(1) > h1 {
+  border-top-left-radius: var(--corner);
+  border-top-right-radius: var(--corner);
+  border: none;
+}
+
+#mainGuildPage div:last-of-type section {
+  border-bottom-left-radius: var(--corner);
+  border-bottom-right-radius: var(--corner);
+  border-bottom: 3px solid var(--greyple);
+  margin-bottom: 1rem;
+}
+
+#mainGuildPage div:last-of-type[data-open="false"] > h1 {
+  -webkit-transition: ease-in-out 0.3s;
+  transition: ease-in-out 0.3s;
+  -webkit-transition-delay: 0.4s;
+          transition-delay: 0.4s;
+  border-bottom-left-radius: var(--corner);
+  border-bottom-right-radius: var(--corner);
+  margin-bottom: 1rem;
+}
+
+#mainGuildPage div h1 {
+  position: relative;
+  -webkit-transition: background-color 0.18s;
+  transition: background-color 0.18s;
+  width: 100%;
+  padding: 1rem 2rem 0.5rem 2rem;
+  background-color: var(--blurple);
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border-top: 1px var(--dark) solid;
+}
+
+#mainGuildPage div section {
+  display: inline-block;
+  width: 100%;
+  padding: 0.75rem;
+  border-left: 3px solid var(--greyple);
+  border-right: 3px solid var(--greyple);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#mainGuildPage div section h3 {
+  -ms-flex-item-align: start;
+      align-self: flex-start;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 0.5rem 0;
+}
+
+#mainGuildPage div section .switch {
+  -ms-flex-item-align: end;
+      align-self: flex-end;
+}
+
+#mainGuildPage div section.general div.sectionParent, #mainGuildPage div section.punishments div.sectionParent {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
+  -webkit-column-gap: 0.5rem;
+          column-gap: 0.5rem;
+}
+
+#mainGuildPage div section.general div.sectionParent .left, #mainGuildPage div section.punishments div.sectionParent .left {
+  -ms-grid-column: 1;
+  grid-column: 1;
+}
+
+#mainGuildPage div section.general div.sectionParent .right, #mainGuildPage div section.punishments div.sectionParent .right {
+  -ms-grid-column: 2;
+  grid-column: 2;
+}
+
+#mainGuildPage div section.punishments > div.sectionParent > div.left {
+  text-align: right;
+}
+
+#mainGuildPage div section.punishments > div.sectionParent > div.left small {
+  color: var(--greyple);
+}
+
+#mainGuildPage div section.filter div.sectionParent, #mainGuildPage div section.other div.sectionParent {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 3fr 1fr;
+      grid-template-columns: 3fr 1fr;
+  -webkit-column-gap: 0.5rem;
+          column-gap: 0.5rem;
+}
+
+#mainGuildPage div section.filter div.sectionParent .left, #mainGuildPage div section.other div.sectionParent .left {
+  -ms-grid-column: 1;
+  grid-column: 1;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 3fr 1fr;
+      grid-template-columns: 3fr 1fr;
+  -ms-grid-rows: min-content;
+      grid-template-rows: -webkit-min-content;
+      grid-template-rows: min-content;
+}
+
+#mainGuildPage div section.filter div.sectionParent .left h3, #mainGuildPage div section.other div.sectionParent .left h3 {
+  -ms-grid-column: 1;
+  grid-column: 1;
+}
+
+#mainGuildPage div section.filter div.sectionParent .left label, #mainGuildPage div section.other div.sectionParent .left label {
+  -ms-grid-column: 2;
+  grid-column: 2;
+  -ms-flex-item-align: start;
+      align-self: flex-start;
+  position: relative;
+  right: var(--switch-width);
+}
+
+#mainGuildPage div section.filter div.sectionParent .left div, #mainGuildPage div section.other div.sectionParent .left div {
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 1;
+  grid-column: 1 / span 1;
+}
+
+#mainGuildPage div section.filter div.sectionParent .right, #mainGuildPage div section.other div.sectionParent .right {
+  -ms-grid-column: 2;
+  grid-column: 2;
+  border: solid var(--greyple) 3px;
+  border-radius: 8px;
+  padding: 1rem;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+#mainGuildPage div section.filter div.sectionParent .right p.rightTitle, #mainGuildPage div section.other div.sectionParent .right p.rightTitle {
+  text-align: center;
+  font-weight: 600;
+  text-decoration: underline;
+  font-size: 150%;
+}
+
+#mainGuildPage div section.filter div.sectionParent .right h3, #mainGuildPage div section.other div.sectionParent .right h3 {
+  display: inline-block;
+}
+
+#mainGuildPage div section.filter div.sectionParent .right label, #mainGuildPage div section.other div.sectionParent .right label {
+  float: right;
+}
+
+#mainGuildPage div[data-open="true"] > h1:after {
+  content: '∨';
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  position: absolute;
+  right: 1.5rem;
+  color: var(--white);
+}
+
+#mainGuildPage div[data-open="false"] h1 {
+  background-color: var(--greyple);
+}
+
+#mainGuildPage div[data-open="false"] h1:after {
+  content: '∨';
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  -webkit-transform: rotate(-90deg);
+          transform: rotate(-90deg);
+  position: absolute;
+  right: 1.5rem;
+  color: var(--white);
+}
+
+#mainGuildPage div[data-open="false"] section {
+  display: none;
+}
+
+#mainInvitePage {
+  -ms-grid-row: 2;
+  -ms-grid-column: 2;
+  grid-area: main;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#mainInvitePage button {
+  background-color: #7b91a0;
+  color: var(--white);
+  width: 30%;
+  height: 10%;
+  font-size: 2rem;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  margin: 1rem 0;
+  cursor: pointer;
+}
+
+#mainInvitePage button:hover, #mainInvitePage button:focus {
+  -webkit-transition: background-color 0.15s ease-in-out;
+  transition: background-color 0.15s ease-in-out;
+  background-color: var(--blurple);
+}
+
+#mainPremPage {
+  -ms-grid-row: 2;
+  -ms-grid-column: 2;
+  grid-area: main;
+}
+
+#mainPremPage #title {
+  text-align: center;
+}
+
+#mainPremPage #title a {
+  color: var(--blurple) !important;
+}
+
+#mainPremPage #title a:focus, #mainPremPage #title a:hover {
+  color: var(--blurple) !important;
+}
+
+#mainPremPage .center {
+  padding-top: 2rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#mainPremPage .inputBox {
+  width: 50%;
+}
+
+#mainAdminPage {
+  -ms-grid-row: 2;
+  -ms-grid-column: 2;
+  grid-area: main;
+  padding: 1rem;
+}
+
+#mainAdminPage #apply {
+  position: fixed;
+  right: 2rem;
+  bottom: 1.5rem;
+}
+
+#mainAdminPage button {
+  background-color: #7b91a0;
+  color: var(--white);
+  width: 10%;
+  height: 5%;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  margin: 1rem 0;
+  cursor: pointer;
+}
+
+#mainAdminPage button:hover, #mainAdminPage button:focus {
+  -webkit-transition: background-color 0.15s ease-in-out;
+  transition: background-color 0.15s ease-in-out;
+  background-color: var(--blurple);
+}
+
+#mainAdminPage .cluster {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  display: -webkit-box !important;
+  border-radius: var(--corner);
+  border: 2px solid var(--greyple);
+  padding: 10px;
+}
+
+#mainAdminPage .cluster h1 {
+  text-align: center;
+  border-bottom: 1px solid var(--greyple);
+  margin-bottom: 1rem;
+}
+
+#mainAdminPage .shard {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 1rem;
+  min-width: 50px;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: var(--corner);
+  padding: 10px;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  display: inline-block;
+}
+
+#mainAdminPage .shard .selectBox {
+  min-height: 3rem;
+}
+
+#mainErrorPage, #mainLoginPage {
+  -ms-grid-row: 2;
+  -ms-grid-column: 2;
+  grid-area: main;
+  text-align: center;
+  padding-top: 1rem;
+}
+
+#mainErrorPage button, #mainLoginPage button {
+  background-color: #7b91a0;
+  color: var(--white);
+  width: 10%;
+  height: 5%;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  margin: 1rem 0;
+  cursor: pointer;
+}
+
+#mainErrorPage button:hover, #mainErrorPage button:focus, #mainLoginPage button:hover, #mainLoginPage button:focus {
+  -webkit-transition: background-color 0.15s ease-in-out;
+  transition: background-color 0.15s ease-in-out;
+  background-color: var(--blurple);
+}
+
+@media (min-width: 1111px) {
+  body {
+    overflow-y: hidden;
+  }
+  main, #mainGuildsPage, #mainGuildPage, #mainInvitePage, #mainPremPage, #mainAdminPage, #mainErrorPage, #mainLoginPage {
+    overflow-y: auto !important;
+    height: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+#saveButton {
+  position: fixed;
+  width: var(--switch-width);
+  height: var(--switch-width);
+  bottom: 40px;
+  right: 40px;
+  background-color: var(--blurple);
+  color: #FFF;
+  border-radius: 50px;
+  text-align: center;
+  -webkit-box-shadow: 2px 2px 3px var(--greyple);
+          box-shadow: 2px 2px 3px var(--greyple);
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: var(--switch-width);
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--greyple);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider[disabled] {
+  background-color: var(--dGreyple);
+}
+
+.slider[disabled]:before {
+  background-color: var(--disabledWhite);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: var(--white);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--blurple);
+}
+
+input *:focus + .slider {
+  -webkit-box-shadow: 0 0 1px var(--blurple);
+          box-shadow: 0 0 1px var(--blurple);
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+          transform: translateX(26px);
+}
+
+.inputBox {
+  background: var(--inputLight);
+  border-radius: 8px;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 2fr 4fr;
+      grid-template-columns: 2fr 4fr;
+  margin: 0.25rem 0;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+.inputBox p {
+  background: var(--dark);
+  padding: 5% 1%;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  -ms-grid-column: 1;
+  grid-column: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.inputBox input {
+  background: none;
+  outline: none !important;
+  border: none !important;
+  color: white;
+  font-size: larger;
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 5;
+  grid-column: 2/span 5;
+  margin-left: 1rem;
+}
+
+.inputBox input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.inputBox.hasButton, .inputBox.has2Buttons {
+  -ms-grid-columns: 3fr 4fr 1fr;
+      grid-template-columns: 3fr 4fr 1fr;
+}
+
+.inputBox.hasButton input, .inputBox.has2Buttons input {
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 1;
+  grid-column: 2/3;
+}
+
+.inputBox.hasButton button, .inputBox.has2Buttons button {
+  color: var(--white);
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  -ms-grid-column: 3;
+  -ms-grid-column-span: 1;
+  grid-column: 3/4;
+  font-size: 130%;
+  border: none;
+  outline: none;
+}
+
+.inputBox.has2Buttons {
+  -ms-grid-columns: 2fr 3fr 1fr 1fr;
+      grid-template-columns: 2fr 3fr 1fr 1fr;
+}
+
+.inputBox.has2Buttons button:nth-of-type(1) {
+  border-radius: 0;
+  border-right: 1px var(--dark) solid;
+}
+
+.inputBox.has2Buttons button:nth-of-type(2) {
+  -ms-grid-column: 4;
+  -ms-grid-column-span: 1;
+  grid-column: 4/5;
+}
+
+.selectBox {
+  background: var(--inputLight);
+  border-radius: 8px;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 2fr 4fr;
+      grid-template-columns: 2fr 4fr;
+  margin: 0.25rem 0;
+}
+
+.selectBox p, .selectBox select {
+  display: inline-block;
+}
+
+.selectBox p, .selectBox i {
+  background: var(--dark);
+  margin-right: 1%;
+  padding: 5% 1%;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  -ms-grid-column: 1;
+  grid-column: 1;
+  text-align: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.selectBox select {
+  background: none;
+  outline: none;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  border: none;
+  color: white;
+  font-size: larger;
+  -ms-grid-column: 2;
+  -ms-grid-column-span: 3;
+  grid-column: 2/5;
+  min-width: 100%;
+  margin-right: 1rem;
+}
+
+.selectBox select option {
+  background: var(--background-light);
+  border: none;
+}
+
+changes {
+  position: fixed;
+  bottom: 2%;
+  width: 85vw;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  pointer-events: none;
+  z-index: 977;
+  -webkit-transition: bottom 0.5s ease-in-out;
+  transition: bottom 0.5s ease-in-out;
+}
+
+changes.hidden {
+  bottom: -10%;
+}
+
+changes .changes {
+  -webkit-transition: none;
+  transition: none;
+  pointer-events: all;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (1fr)[5];
+      grid-template-columns: repeat(5, 1fr);
+  background-color: var(--background-darkest);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  width: 50%;
+}
+
+changes .changes p {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 4;
+  grid-column: 1/span 4;
+  font-size: 110%;
+}
+
+changes .changes button {
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  color: var(--white);
+  font-weight: 500;
+  font-size: 110%;
+  cursor: pointer;
+}
+
+changes .changes button.reset {
+  -ms-grid-column: 5;
+  -ms-grid-column-span: 1;
+  grid-column: 5/span 1;
+  background-color: var(--background-darkest);
+  margin-right: 0.25rem;
+  text-decoration: underline;
+}
+
+changes .changes button.save {
+  -ms-grid-column: 6;
+  -ms-grid-column-span: 1;
+  grid-column: 6/span 1;
+  background-color: var(--green);
+}
+
+.tagify__dropdown__wrapper {
+  background-color: var(--background-light);
+}
+
+.tagifyInput, .tagify, .tagify--focus {
+  border: none;
+  outline: none;
+}
+
+.tagify__input:before {
+  color: var(--white);
+}
+
+@media (max-width: 1111px) and (min-width: 755px) {
+  #mainGuildsPage {
+    -ms-grid-columns: 1fr 1fr 1fr 1fr !important;
+        grid-template-columns: 1fr 1fr 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 1111px) {
+  body {
+    overflow-y: auto !important;
+  }
+  main, #mainGuildsPage, #mainGuildPage, #mainInvitePage, #mainPremPage, #mainAdminPage, #mainErrorPage, #mainLoginPage {
+    -ms-grid-row: 2;
+    -ms-grid-column: 1;
+    -ms-grid-column-span: 2;
+    grid-area: main;
+    -webkit-overflow-scrolling: touch;
+  }
+  #header {
+    position: fixed;
+    width: 100vw;
+    z-index: 999;
+  }
+  #header p {
+    font-size: 2rem;
+  }
+  #header img {
+    height: 2rem;
+  }
+  #header .showSidebar {
+    display: block;
+    position: absolute;
+    left: 1rem;
+    cursor: pointer;
+  }
+  #header .showSidebar:before {
+    content: '≡';
+    font-size: 2rem;
+    -webkit-transition: font-size 0.5s ease-in-out;
+    transition: font-size 0.5s ease-in-out;
+  }
+  #header .showSidebar.hide:before {
+    font-size: 0;
+  }
+  #sidebar {
+    z-index: 1000;
+    display: -ms-grid;
+    display: grid;
+    position: fixed;
+    top: 0;
+    left: -50%;
+    height: 100%;
+    max-height: 100%;
+    width: 50%;
+    padding-top: 3rem;
+    -webkit-transition: left 0.5s ease-in-out;
+    transition: left 0.5s ease-in-out;
+  }
+  #sidebar div > button {
+    font-size: 2rem;
+  }
+  #sidebar.show {
+    left: 0;
+  }
+  #sidebar .close {
+    display: block;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+  }
+  #sidebar .close:before {
+    content: 'X';
+    font-size: 2rem;
+  }
+  body {
+        grid-template-areas: "header header" "main main";
+    -ms-grid-rows: 5.5vh auto;
+        grid-template-rows: 5.5vh auto;
+  }
+  #mainGuildsPage {
+    -ms-grid-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
+  }
+  #mainPremPage .inputBox {
+    width: 90% !important;
+  }
+  #mainErrorPage button, #mainLoginPage button, #mainAdminPage button {
+    width: 30%;
+  }
+  #mainGuildPage {
+    height: 100%;
+  }
+  #mainGuildPage .selectBox > select {
+    width: 100% !important;
+  }
+  #mainGuildPage .inputBox {
+    width: 100%;
+  }
+  #mainGuildPage .inputBox input {
+    width: inherit;
+  }
+  #mainGuildPage .sectionParent {
+    -ms-grid-columns: 1fr !important;
+        grid-template-columns: 1fr !important;
+  }
+  #mainGuildPage .sectionParent .right {
+    -ms-grid-column: 1 !important;
+    grid-column: 1 !important;
+  }
+  #mainGuildPage .filter .sectionParent .left, #mainGuildPage .other .sectionParent .left {
+    -ms-grid-columns: 1fr !important;
+        grid-template-columns: 1fr !important;
+  }
+  changes {
+    width: 100%;
+    bottom: 5%;
+  }
+  changes .changes {
+    width: 95%;
+    padding: 2%;
+  }
+}
+
+#snackbar {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: var(--background-darkest);
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 50px;
+}
+
+#snackbar.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 50px;
+    opacity: 1;
+  }
+}
+
+@keyframes fadein {
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 50px;
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeout {
+  from {
+    bottom: 50px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes fadeout {
+  from {
+    bottom: 50px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
+}
 /*# sourceMappingURL=base.css.map */
