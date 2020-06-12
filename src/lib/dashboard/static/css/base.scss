@@ -26,6 +26,8 @@
     padding: 0;
     box-sizing: border-box;
 
+    -webkit-overflow-scrolling: touch;
+
     &:not(input, select) {
         -webkit-user-select: none;
         -moz-user-select: none;
@@ -39,19 +41,21 @@ body {
     color: map-get($map: $colors, $key: "white");
     font-family: 'Noto Sans', sans-serif;
     height: 100vh;
-    overflow: hidden;
     display: grid;
     grid-template-areas: "header header"
         "sidebar main";
     grid-template-rows: 12.5vh auto;
     grid-template-columns: 15vw auto;
+    position: relative;
 }
+
+
 
 button { background-color: map-get($map: $colors, $key: "greyple"); }
 
 #header {
     grid-area: header;
-    background-color: map-get($map: $colors, $key: "blurple");
+    background-color: map-get($map: $colors, $key: "green");
     @include flex();
 
     border-bottom: 1px solid map-get($map: $colors, $key: "greyple");;
@@ -78,6 +82,7 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
     display: grid;
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr;
+    max-height: calc(100vh - 12.5vh);
 
     p {
         text-align: center;
@@ -135,17 +140,18 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
     }
 }
 
+/*
 ::-webkit-scrollbar {
     width: 12px;
-    /* for vertical scrollbars */
     height: 12px;
-    /* for horizontal scrollbars */
     border-radius: 3rem;
 }
 
 ::-webkit-scrollbar-track { background: map-get($map: $background, $key: "mid"); }
 
 ::-webkit-scrollbar-thumb { background: map-get($map: $background, $key: "dark"); }
+
+*/
 
 /* Home Page Styles */
 #mainGuildsPage {
@@ -155,7 +161,7 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
     grid-template-rows: repeat(3, 1fr);
     grid-gap: 3%;
-    overflow-y: auto;
+    //overflow-y: auto;
 
     margin-bottom: 1rem;
 
@@ -196,13 +202,15 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
 #mainGuildPage {
     grid-area: main;
     padding: 2rem 1rem 1rem 1rem;
-    overflow-y: auto;
+    //overflow-y: auto;
 
     .left{
     *[title] {
         position: relative;
+        z-index: 998;
     }
     *[title]:hover:before {
+        z-index: 998;
      content: attr(title);
      position: absolute;
     top: -2rem;
@@ -217,13 +225,15 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
 
 .right {
     *[title] {
+        z-index: 998;
         position: relative;
     }
     *[title]:hover:before {
+        z-index: 998;
      content: attr(title);
      position: absolute;
     top: -2rem;
-    right: -4rem;
+    right: 0rem;
     background-color: map-get($map: $background, $key: 'dark');
     padding: 3px;
     border-radius: 8px;
@@ -517,9 +527,15 @@ button { background-color: map-get($map: $colors, $key: "greyple"); }
 }
 }
 
-main, #mainGuildsPage, #mainGuildPage, #mainInvitePage, #mainPremPage, #mainAdminPage, #mainErrorPage, #mainLoginPage {
-    overflow-x: scroll;
-    height: 100%;
+@media (min-width: 1111px) {
+    body{
+    overflow-y: hidden;
+    }
+    main, #mainGuildsPage, #mainGuildPage, #mainInvitePage, #mainPremPage, #mainAdminPage, #mainErrorPage, #mainLoginPage {
+        overflow-y: auto !important;
+        height: 100%;
+        -webkit-overflow-scrolling: touch;
+    }
 }
 
 #saveButton {
@@ -687,7 +703,7 @@ input {
 }
 
 changes {
-    position: absolute;
+    position: fixed;
     bottom: 2%;
     width: 85vw;
     @include flex();
@@ -758,11 +774,18 @@ changes {
     }
 }
 @media (max-width: 1111px) {
-    main {
+
+    body {
+        overflow-y: auto !important;
+    }
+    main, #mainGuildsPage, #mainGuildPage, #mainInvitePage, #mainPremPage, #mainAdminPage, #mainErrorPage, #mainLoginPage {
         grid-area: main;
-        overflow-x: scroll;
+        -webkit-overflow-scrolling: touch;
     }
     #header {
+        position: fixed;
+        width: 100vw;
+        z-index: 999;
 
         p {
             font-size: 2rem;
@@ -794,10 +817,11 @@ changes {
     #sidebar {
         z-index: 1000;
         display: grid;
-        position: absolute;
-        top: 5.5vh;
+        position: fixed;
+        top: 0;
         left: -50%;
-        height: calc(100% - 5.5vh);
+        height: 100%;
+        max-height: 100%;
         width: 50%;
         padding-top: 3rem;
 
@@ -849,7 +873,6 @@ changes {
     
     #mainGuildPage {
         height: 100%;
-        overflow-x: scroll;
         .selectBox > select{
             width: 100% !important;
         }
