@@ -5,3 +5,5 @@ TODO.txt
 
 src/config/*/private.js
 src/filter/filters/*
+
+!src/filter/filters/README.md
