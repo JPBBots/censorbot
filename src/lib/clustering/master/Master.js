@@ -1,14 +1,14 @@
-const Collection = require('../../../util/Collection')
-const Wait = require('../../../util/Wait')
+const Collection = require('../../../../util/Collection')
+const Wait = require('../../../../util/Wait')
 const Timeout = new Wait(5000)
-const Logger = require('../../../util/Logger')
+const Logger = require('../../../../util/Logger')
 
 const Cluster = require('./Cluster')
 const ShardManager = require('./ShardManager')
 
 const MasterAPI = require('./MasterAPI')
 
-const { internalPort, clusters } = require('../../config')
+const { internalPort, clusters } = require('../../../config')
 
 /**
  * For controlling and starting clusters

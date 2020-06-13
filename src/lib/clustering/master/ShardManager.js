@@ -1,5 +1,5 @@
-const Collection = require('../../../util/Collection')
-const Wait = require('../../../util/Wait')
+const Collection = require('../../../../util/Collection')
+const Wait = require('../../../../util/Wait')
 
 const Timeout = new Wait(6000)
 

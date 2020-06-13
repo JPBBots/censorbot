@@ -1,6 +1,6 @@
 const EventEmitter = require('events')
 
-const jobs = require('./Jobs')
+const jobs = require('../Jobs')
 
 const WorkerInternals = require('./WorkerInternals')
 

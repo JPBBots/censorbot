@@ -1,3 +1,3 @@
-const Master = require('./lib/clustering/Master')
+const Master = require('./lib/clustering/master/Master')
 
 module.exports = new Master()

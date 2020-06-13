@@ -5,8 +5,6 @@ const Request = require('../../../req')
 
 const CommandHandler = require('../bot/CommandHandler')
 const EventHandler = require('../bot/EventHandler')
-const DBL = require('../bot/DBL')
-const PresenceManager = require('../bot/PresenceManager')
 
 const Reloader = require('./Reloader')
 const Internals = require('./Internals')
@@ -113,11 +111,6 @@ class CensorBot extends Client {
      */
     this.punishments = new Punishments(this)
     /**
-     * Presence manager
-     * @type {PresenceManager}
-     */
-    this.presence = new PresenceManager(this)
-    /**
      * Buckets
      * @type {BucketManager}
      */
@@ -152,14 +145,6 @@ class CensorBot extends Client {
         this.presence.set('d')
       }
     })
-
-    /**
-     * DBL Interface
-     * @type {DBL}
-     */
-    if (this.cluster.id === this.config.clusters.length - 1) {
-      this.dbl = new DBL(this)
-    }
   }
 
   /**

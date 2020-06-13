@@ -1,7 +1,7 @@
 const Express = require('express')
 const bodyParser = require('body-parser')
 
-const guildShard = require('../../../util/GuildShard')
+const guildShard = require('../../../../util/GuildShard')
 
 const fs = require('fs')
 const { resolve } = require('path')
