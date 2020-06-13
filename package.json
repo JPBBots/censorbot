@@ -1,6 +1,6 @@
 {
   "name": "censorbot",
-  "version": "6.0.0",
+  "version": "6.0.0a",
   "description": "Anti-Swear bot for discord",
   "main": "./src/index.js",
   "scripts": {
