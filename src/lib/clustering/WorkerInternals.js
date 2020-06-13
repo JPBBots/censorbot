@@ -1,8 +1,8 @@
-const Request = require('../req')
+const Request = require('../../../req')
 
-const { internalPort } = require('../src/config')
+const { internalPort } = require('../../config')
 
-const Collection = require('../util/Collection')
+const Collection = require('../../../util/Collection')
 
 /**
  * Worker internal methods for brokering master internals

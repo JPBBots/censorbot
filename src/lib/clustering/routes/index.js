@@ -1,6 +1,6 @@
 const suc = { success: true }
-const Collection = require('../../util/Collection')
-const GenerateID = require('../../util/GenerateID')
+const Collection = require('../../../../util/Collection')
+const GenerateID = require('../../../../util/GenerateID')
 
 const HelpMes = new Collection()
 
