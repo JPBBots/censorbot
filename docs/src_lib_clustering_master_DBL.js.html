@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Source: src/lib/client/UpdatesManager.js</title>
+  <title>Source: src/lib/clustering/master/DBL.js</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -26,77 +26,56 @@
         </div>
         <div id="jsdoc-main" role="main">
           <header class="page-header">
-            <h1>Source: src/lib/client/UpdatesManager.js</h1>
+            <h1>Source: src/lib/clustering/master/DBL.js</h1>
           </header>
           <article>
-            <pre class="prettyprint linenums"><code>/**
- * Used for listing and pushing censor bot updates
+            <pre class="prettyprint linenums"><code>const Request &#x3D; require(&#x27;../../../../req&#x27;)
+
+/**
+ * Used for interacting with the DBL (top.gg) api
  */
-class UpdatesManager {
+class DBL {
   /**
-   * Updates Manager
-   * @param {Client} client Client
+   * DBL interface
+   * @param {Master} master Master
+   * @param {String} dbl DBL token
    */
-  constructor (client) {
+  constructor (master, dbl) {
     /**
-     * Client
-     * @type {Client}
+     * Master
+     * @type {Master}
      */
-    this.client &#x3D; client
+    this.master &#x3D; master
 
     /**
-     * Updates
-     * @type {Array.&amp;lt;Object&gt;}
+     * DBL API
+     * @type {Request}
      */
-    this.updates &#x3D; []
-
-    this.load()
+    this.api &#x3D; Request(&#x27;https://top.gg/api&#x27;, { Authorization: dbl })
   }
 
   /**
-   * (Re)load updates
+   * Post stats
+   * @returns {Promise.&amp;lt;Object&gt;} Response
    */
-  load () {
-    delete require.cache[require.resolve(&#x27;./Updates.json&#x27;)]
+  async post () {
+    if (this.master.beta) return this.master.log(&#x27;Beta mode on, skipping post&#x27;)
+    const guilds &#x3D; await this.master.api.sendToAll(&#x27;GUILD_COUNT&#x27;, {}, true)
 
-    this.updates &#x3D; require(&#x27;./Updates.json&#x27;)
-  }
-
-  /**
-   * List updates
-   */
-  list () {
-    return this.updates.map(x &#x3D;&gt; {
-      return {
-        v: x.v,
-        desc: x.desc,
-        date: new Date(x.date)
-      }
-    })
-  }
-
-  /**
-   * Get specific update
-   * @param {String} v Version
-   * @param {Boolean} browser Whether requested from browser
-   */
-  getUpdate (v, browser) {
-    const update &#x3D; this.updates.find(x &#x3D;&gt; x.v &#x3D;&#x3D;&#x3D; v)
-    if (!update) return null
-
-    if (browser) {
-      update.points &#x3D; update.points.map(x &#x3D;&gt; {
-        return x.replace(/{t:(.+):(.+)}/g, &#x27;&amp;lt;a href&#x3D;&quot;https://trello.com/c/$1&quot;&gt;$2&amp;lt;/a&gt;&#x27;)
+    const healthCheck &#x3D; await this.master.api.sendToAll(&#x27;CLUSTER_STATS&#x27;, {}, true)
+    if (healthCheck.some(a &#x3D;&gt; a.shards.some(b &#x3D;&gt; !b.connected))) return this.master.log(&#x27;Skipping post as there are offline shards!&#x27;)
+    await this.api
+      .bots
+      .stats
+      .post({
+        body: {
+          shards: guilds.flat()
+        }
       })
-    }
-
-    update.date &#x3D; new Date(update.date)
-
-    return update
   }
 }
 
-module.exports &#x3D; UpdatesManager
+module.exports &#x3D; DBL
 </code></pre>
           </article>
         </div>

@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Source: src/lib/client/UpdatesManager.js</title>
+  <title>Source: src/lib/clustering/master/ShardManager.js</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -26,77 +26,77 @@
         </div>
         <div id="jsdoc-main" role="main">
           <header class="page-header">
-            <h1>Source: src/lib/client/UpdatesManager.js</h1>
+            <h1>Source: src/lib/clustering/master/ShardManager.js</h1>
           </header>
           <article>
-            <pre class="prettyprint linenums"><code>/**
- * Used for listing and pushing censor bot updates
+            <pre class="prettyprint linenums"><code>const Collection &#x3D; require(&#x27;../../../../util/Collection&#x27;)
+const Wait &#x3D; require(&#x27;../../../../util/Wait&#x27;)
+
+const Timeout &#x3D; new Wait(6000)
+
+/**
+ * Shard manager for taking spawning requests and starting them
  */
-class UpdatesManager {
+class ShardManager {
   /**
-   * Updates Manager
-   * @param {Client} client Client
+   * Shard Master
+   * @param {Master} master Master
    */
-  constructor (client) {
+  constructor (master) {
     /**
-     * Client
-     * @type {Client}
+     * Master
+     * @type {Master}
      */
-    this.client &#x3D; client
+    this.master &#x3D; master
 
     /**
-     * Updates
-     * @type {Array.&amp;lt;Object&gt;}
+     * Shard queue
+     * @type {Collection.&amp;lt;Number, Number&gt;}
      */
-    this.updates &#x3D; []
+    this.queue &#x3D; new Collection()
 
-    this.load()
+    /**
+     * Whether or not sharder is in the process of looping
+     * @type {Boolean}
+     */
+    this.looping &#x3D; false
   }
 
   /**
-   * (Re)load updates
+   * Add shard spawn to queue
+   * @param {Number} shard Shard to spawn
    */
-  load () {
-    delete require.cache[require.resolve(&#x27;./Updates.json&#x27;)]
+  addShard (shard) {
+    this.queue.set(shard, shard)
 
-    this.updates &#x3D; require(&#x27;./Updates.json&#x27;)
+    if (!this.looping &amp;amp;&amp;amp; this.master.spawned) this.spawn()
   }
 
-  /**
-   * List updates
-   */
-  list () {
-    return this.updates.map(x &#x3D;&gt; {
-      return {
-        v: x.v,
-        desc: x.desc,
-        date: new Date(x.date)
-      }
-    })
-  }
+  async spawn () {
+    const nextShard &#x3D; this.queue.first()
+    if (nextShard &#x3D;&#x3D;&#x3D; undefined) {
+      this.looping &#x3D; false
 
-  /**
-   * Get specific update
-   * @param {String} v Version
-   * @param {Boolean} browser Whether requested from browser
-   */
-  getUpdate (v, browser) {
-    const update &#x3D; this.updates.find(x &#x3D;&gt; x.v &#x3D;&#x3D;&#x3D; v)
-    if (!update) return null
-
-    if (browser) {
-      update.points &#x3D; update.points.map(x &#x3D;&gt; {
-        return x.replace(/{t:(.+):(.+)}/g, &#x27;&amp;lt;a href&#x3D;&quot;https://trello.com/c/$1&quot;&gt;$2&amp;lt;/a&gt;&#x27;)
-      })
+      this.master.presence.go()
+      return
     }
 
-    update.date &#x3D; new Date(update.date)
+    this.looping &#x3D; true
 
-    return update
+    const cluster &#x3D; this.master.api.shardCluster(nextShard)
+
+    if (!cluster) return
+    await cluster.send(&#x27;SPAWN_SHARD&#x27;, { id: nextShard }, true)
+
+    this.queue.delete(nextShard)
+
+    await Timeout.wait()
+
+    return this.spawn()
   }
 }
 
-module.exports &#x3D; UpdatesManager
+module.exports &#x3D; ShardManager
 </code></pre>
           </article>
         </div>
