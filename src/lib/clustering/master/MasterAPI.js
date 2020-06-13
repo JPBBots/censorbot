@@ -3,8 +3,7 @@ const bodyParser = require('body-parser')
 
 const guildShard = require('../../../../util/GuildShard')
 
-const fs = require('fs')
-const { resolve } = require('path')
+const LoadRoutes = require('../../../../util/LoadRoutes')
 
 /**
  * API management and utility methods
@@ -59,22 +58,7 @@ class MasterAPI {
       extended: true
     }))
 
-    const loadFolder = (path, current) => {
-      const routes = fs.readdirSync(resolve(__dirname, path))
-      routes.forEach(route => {
-        if (fs.lstatSync(resolve(__dirname, path, route)).isDirectory()) return loadFolder(path + '/' + route, current + (route + '/'))
-        if (!route.endsWith('.js')) return
-        delete require.cache[require.resolve(resolve(__dirname, path, route))]
-        const routeFile = require(resolve(__dirname, path, route))
-        if (!routeFile) return
-
-        const routeName = route.replace(/index/gi, '').split('.')[0]
-        const router = Express.Router()
-        routeFile.bind(this)(router)
-        this.app.use(`/${current}${routeName}`, router)
-      })
-    }
-    loadFolder('./routes', '')
+    LoadRoutes(this, this.app, __dirname, './routes')
   }
 
   /**
