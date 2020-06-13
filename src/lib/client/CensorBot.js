@@ -141,9 +141,6 @@ class CensorBot extends Client {
 
     this.setup().then(() => {
       this.log('All shards on cluster ready')
-      if (this.cluster.id === this.config.clusters.length - 1) {
-        this.presence.set('d')
-      }
     })
   }
 

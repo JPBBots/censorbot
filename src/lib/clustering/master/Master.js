@@ -5,10 +5,12 @@ const Logger = require('../../../../util/Logger')
 
 const Cluster = require('./Cluster')
 const ShardManager = require('./ShardManager')
+const DBL = require('./DBL')
+const PresenceManager = require('./PresenceManager')
 
 const MasterAPI = require('./MasterAPI')
 
-const { internalPort, clusters } = require('../../../config')
+const { internalPort, clusters, dbl } = require('../../../config')
 
 /**
  * For controlling and starting clusters
@@ -43,10 +45,37 @@ class Master {
     this.spawned = false
 
     /**
+     * Whether in beta mode
+     * @type {Boolean}
+     */
+    this.beta = process.argv.includes('-b')
+
+    /**
      * Shard Manager
      * @type {ShardManager}
      */
     this.sharder = new ShardManager(this)
+
+    /**
+     * DBL
+     * @type {DBL}
+     */
+    this.dbl = new DBL(this, dbl)
+
+    /**
+     * Presence Manager
+     * @type {PresenceManager}
+     */
+    this.presence = new PresenceManager(this)
+
+    /**
+     * 30 minute interval for DBL and presence
+     * @type {Timeout}
+     */
+    this.clock = setInterval(() => {
+      this.presence.go()
+      this.dbl.post()
+    }, 1800000)
 
     /**
      * Logger
@@ -99,11 +128,13 @@ class Master {
 
     await Timeout.wait()
 
-    this.spawned = true
-
     this.log('All clusters spawned. Starting shards')
 
-    this.sharder.spawn()
+    await this.sharder.spawn()
+
+    this.spawned = true
+
+    this.log('All shards spawned')
   }
 
   async restartCluster (id) {
