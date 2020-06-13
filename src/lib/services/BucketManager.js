@@ -85,7 +85,7 @@ class BucketManager {
     this.timeouts.delete(channel)
     this.clears.delete(channel)
 
-    if (msgs.length < 2) return this.client.interface.delete(channel, msgs[0])
+    if (msgs.length < 2) return this.client.interface.delete(channel, msgs[0]).catch(() => {})
 
     this.client.interface.bulkDelete(channel, msgs)
       .catch(() => {})
