@@ -4,6 +4,12 @@ module.exports = function (r) {
   r.post('/', (req, res) => {
     this.loadRoutes()
 
+    delete require.cache[require.resolve('../PresenceManager.js')]
+
+    const PresenceManager = require('../PresenceManager')
+
+    this.master.presence = new PresenceManager(this.master)
+
     this.sendToAll('RELOAD_INTERNALS', {}, false, false)
 
     res.json(suc)
