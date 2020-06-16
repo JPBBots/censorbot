@@ -99,6 +99,13 @@ class PresenceManager {
   }
 
   /**
+   * rose
+   */
+  rose () {
+    this.status('WATCHING', 'rose be a qt', 'online')
+  }
+
+  /**
    * Restarting
    */
   restart () {
