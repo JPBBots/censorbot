@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Source: src/lib/clustering/master/Master.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: src/lib/clustering/master/Master.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>const Collection &#x3D; require(&#x27;../../../../util/Collection&#x27;)
+const Wait &#x3D; require(&#x27;../../../../util/Wait&#x27;)
+const Timeout &#x3D; new Wait(5000)
+const Logger &#x3D; require(&#x27;../../../../util/Logger&#x27;)
+
+const Cluster &#x3D; require(&#x27;./Cluster&#x27;)
+const ShardManager &#x3D; require(&#x27;./ShardManager&#x27;)
+const DBL &#x3D; require(&#x27;./DBL&#x27;)
+const PresenceManager &#x3D; require(&#x27;./PresenceManager&#x27;)
+
+const MasterAPI &#x3D; require(&#x27;./MasterAPI&#x27;)
+
+const { internalPort, clusters, dbl } &#x3D; require(&#x27;../../../config&#x27;)
+
+/**
+ * For controlling and starting clusters
+ */
+class Master {
+  /**
+   * Cluster Master
+   */
+  constructor () {
+    /**
+     * Holds all the worker threads
+     * @type {Collection.&amp;lt;Number, Worker&gt;}
+     */
+    this.clusters &#x3D; new Collection()
+
+    /**
+     * Internal clusters
+     * @type {Array.&amp;lt;Array.&amp;lt;Number&gt;&gt;}
+     */
+    this.internalClusters &#x3D; clusters
+
+    /**
+     * Internal Methods
+     * @type {MasterAPI}
+     */
+    this.api &#x3D; new MasterAPI(this, internalPort)
+
+    /**
+     * Whether all clusters have been spawned
+     * @type {Boolean}
+     */
+    this.spawned &#x3D; false
+
+    /**
+     * Whether in beta mode
+     * @type {Boolean}
+     */
+    this.beta &#x3D; process.argv.includes(&#x27;-b&#x27;)
+
+    /**
+     * Shard Manager
+     * @type {ShardManager}
+     */
+    this.sharder &#x3D; new ShardManager(this)
+
+    /**
+     * DBL
+     * @type {DBL}
+     */
+    this.dbl &#x3D; new DBL(this, dbl)
+
+    /**
+     * Presence Manager
+     * @type {PresenceManager}
+     */
+    this.presence &#x3D; new PresenceManager(this)
+
+    /**
+     * 30 minute interval for DBL and presence
+     * @type {Timeout}
+     */
+    this.clock &#x3D; setInterval(() &#x3D;&gt; {
+      this.presence.go()
+      this.dbl.post()
+    }, 1800000)
+
+    /**
+     * Logger
+     * @type {Logger}
+     */
+    this.logger &#x3D; new Logger(&#x27;Master&#x27;)
+
+    this.log(&#x27;Cluster master has loaded&#x27;)
+
+    this.spawnWorkers()
+  }
+
+  /**
+   * Total number of shards
+   * @type {Number}
+   */
+  get shardCount () {
+    return this.internalClusters.reduce((a, b) &#x3D;&gt; a + b.length, 0)
+  }
+
+  /**
+   * Log
+   * @param  {...any} _ Log
+   */
+  log (..._) {
+    this.logger.log(..._)
+  }
+
+  _createWorker (id, job, shards, inactive) {
+    const cluster &#x3D; new Cluster(id, job, shards, this, inactive)
+
+    if (!inactive) this.clusters.set(id, cluster)
+
+    return cluster
+  }
+
+  /**
+   * Spawn workers
+   */
+  async spawnWorkers () {
+    this.log(&#x27;Spawning workers&#x27;)
+
+    this._createWorker(&#x27;dash&#x27;, 1)
+
+    for (let i &#x3D; 0; i &amp;lt; this.internalClusters.length; i++) {
+      this._createWorker(i, 0, this.internalClusters[i])
+    }
+
+    await Promise.all(this.clusters.map(x &#x3D;&gt; x.spawn()))
+
+    await Timeout.wait()
+
+    this.log(&#x27;All clusters spawned. Starting shards&#x27;)
+
+    await this.sharder.spawn()
+
+    this.spawned &#x3D; true
+
+    this.log(&#x27;All shards spawned&#x27;)
+  }
+
+  async restartCluster (id) {
+    if (!isNaN(id)) id &#x3D; Number(id)
+
+    const currentCluster &#x3D; this.clusters.get(id)
+    if (!currentCluster) return
+
+    currentCluster.dying &#x3D; true
+    currentCluster.send(&#x27;KILL&#x27;)
+
+    this._createWorker(id, currentCluster.job, this.internalClusters[id])
+
+    await Timeout.wait()
+    return true
+  }
+}
+
+module.exports &#x3D; Master
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on June 13, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

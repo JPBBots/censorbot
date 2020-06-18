@@ -1,6 +1,6 @@
 const EventEmitter = require('events')
 
-const jobs = require('./Jobs')
+const jobs = require('../Jobs')
 
 const WorkerInternals = require('./WorkerInternals')
 
@@ -74,11 +74,15 @@ class Worker extends EventEmitter {
   async spawn (spawned, inactive) {
     this.inactive = inactive
 
+    if (this.job.i === 0) {
+      this.client.once('REGISTERED', () => {
+        this.send('READY')
+      })
+    }
+
     await this.client.start()
 
-    if (spawned && this.job.i === 0) this.client.presence.d()
-
-    this.send('READY')
+    if (this.job.i !== 0) this.send('READY')
   }
 
   /**

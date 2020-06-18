@@ -10,7 +10,7 @@ module.exports = function (shard) {
       }
     })
   } else {
-    this.presence.go()
+    this.cluster.internal.setPresence()
   }
   this.interface.send(this.config.channels.status, `Startup | Cluster: ${this.cluster.id} | Shard: ${shard.id}`)
 }

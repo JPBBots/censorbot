@@ -4,20 +4,20 @@
 class PresenceManager {
   /**
    * Presence manager
-   * @param {Client} client Client
+   * @param {Master} master Master
    */
-  constructor (client) {
+  constructor (master) {
     /**
-     * Client
-     * @type {Client}
+     * Master
+     * @type {Master}
      */
-    this.client = client
+    this.master = master
 
     /**
      * Presence currently selected
-     * @type {?String}
+     * @type {String}
      */
-    this.select = null
+    this.select = 'd'
 
     /**
      * Custom status content
@@ -34,7 +34,7 @@ class PresenceManager {
    * @param {String} set Presence
    */
   set (set) {
-    this.client.log(`Presence set to ${set}`)
+    this.master.log(`Presence set to ${set}`)
 
     this.select = set
 
@@ -47,7 +47,7 @@ class PresenceManager {
   go () {
     if (!this.select) return
 
-    this.client.cluster.internal.setPresence(this.select)
+    this[this.select]()
   }
 
   /**
@@ -55,7 +55,7 @@ class PresenceManager {
    * @param  {...any} opt Presence object
    */
   status (...opt) {
-    this.client.setStatus(...opt)
+    this.master.api.sendToAll('PRESENCE', opt)
   }
 
   /**
@@ -73,7 +73,8 @@ class PresenceManager {
    * Default
    */
   async d () {
-    this.status('WATCHING', `For Bad Words | ${(await this.client.cluster.internal.guildCount(true)).toLocaleString()} Servers`)
+    const guilds = await this.master.api.sendToAll('GUILD_COUNT', {}, true)
+    this.status('WATCHING', `For Bad Words | ${(guilds.reduce((a, b) => a + b.reduce((c, d) => c + d, 0), 0)).toLocaleString()} Servers`)
   }
 
   /**
@@ -95,6 +96,13 @@ class PresenceManager {
    */
   streaming () {
     this.status('STREAMING', 'My Development', 'online', 'https://twitch.tv/jpbberry')
+  }
+
+  /**
+   * rose
+   */
+  rose () {
+    this.status('WATCHING', 'rose be a qt', 'online')
   }
 
   /**

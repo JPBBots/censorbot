@@ -1,8 +1,8 @@
-const Request = require('../req')
+const Request = require('../../../../req')
 
-const { internalPort } = require('../src/config')
+const { internalPort } = require('../../../config')
 
-const Collection = require('../util/Collection')
+const Collection = require('../../../../util/Collection')
 
 /**
  * Worker internal methods for brokering master internals
@@ -100,13 +100,21 @@ class WorkerInternals {
         shard = this.worker.client.shards.get(data.id)
         if (!shard) return
         if (data.destroy) {
-          this.worker.client.presence.restart()
+          shard.setStatus({
+            afk: false,
+            status: 'dnd',
+            since: 0,
+            game: {
+              type: 0,
+              name: 'Restarting...'
+            }
+          })
           return this.worker.client.killShard(data.id)
         }
         shard.restart()
         break
       case 'PRESENCE':
-        this.worker.client.presence[data]()
+        this.worker.client.setStatus(...data)
         break
       case 'ACTIVATE':
         this.worker.inactive = false
@@ -277,9 +285,10 @@ class WorkerInternals {
 
   /**
    * Sets a presence on all shards
-   * @param {String} presence Presence name
+   * @param {?String} presence Presence name
    */
   setPresence (presence) {
+    if (!presence) return this.api.presence.post()
     this.api
       .presence[presence]
       .put()

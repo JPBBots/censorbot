@@ -69,7 +69,7 @@ class Cluster extends EventEmitter {
    * Setup worker thread
    */
   setup () {
-    this.thread = new Worker(resolve('./service.js'), { workerData: { beta: process.argv.includes('-b'), id: this.id, job: this.job, shards: this.shards, shardCount: this.master.shardCount } })
+    this.thread = new Worker(resolve('../worker/service.js'), { workerData: { beta: process.argv.includes('-b'), id: this.id, job: this.job, shards: this.shards, shardCount: this.master.shardCount } })
 
     this.thread.on('message', (msg) => {
       this.emit(msg.e, msg.d, msg.i)

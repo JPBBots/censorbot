@@ -15,7 +15,7 @@ module.exports = async function (message) {
   if (this.commands) {
     const cmd = this.commands.event(message, db.prefix)
 
-    if (this.config.deleteCommands.includes(cmd)) return this.interface.delete(message.channel_id, message.id)
+    if (this.config.deleteCommands.includes(cmd)) return this.interface.delete(message.channel_id, message.id).catch(() => {})
   }
 
   const channel = this.channels.get(message.channel_id)

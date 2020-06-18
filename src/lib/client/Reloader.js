@@ -65,18 +65,6 @@ class Reloader {
         const BucketManager = require(resolve(lib, './services/BucketManager'))
         this.client.buckets = new BucketManager(this.client)
         break
-      case 'dbl':
-        if (this.client.cluster.id !== this.client.config.clusters.length - 1) return
-        clearInterval(this.client.dbl.interval)
-        delete require.cache[require.resolve(resolve(lib, './bot/DBL'))]
-        const DBL = require(resolve(lib, './bot/DBL'))
-        this.client.dbl = new DBL(this.client)
-        break
-      case 'presence':
-        delete require.cache[require.resolve(resolve(lib, './bot/PresenceManager'))]
-        const PresenceManager = require(resolve(lib, './bot/PresenceManager'))
-        this.client.presence = new PresenceManager(this.client)
-        break
       case 'interface':
         delete require.cache[require.resolve(resolve(__dirname, '../../../lib/Interface'))]
         const Interface = require(resolve(__dirname, '../../../lib/Interface'))
@@ -99,11 +87,6 @@ class Reloader {
         delete require.cache[require.resolve(resolve(lib, './services/TicketManager'))]
         const TicketManager = require(resolve(lib, './services/TicketManager'))
         this.client.tickets = new TicketManager(this.client)
-        break
-      case 'updates':
-        delete require.cache[require.resolve(resolve(lib, './client/UpdatesManager'))]
-        const UpdatesManager = require(resolve(lib, './client/UpdatesManager'))
-        this.client.updates = new UpdatesManager(this.client)
         break
       case 'internals':
         delete require.cache[require.resolve(resolve(lib, './client/Internals'))]

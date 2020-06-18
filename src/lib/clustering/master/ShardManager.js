@@ -1,5 +1,5 @@
-const Collection = require('../util/Collection')
-const Wait = require('../util/Wait')
+const Collection = require('../../../../util/Collection')
+const Wait = require('../../../../util/Wait')
 
 const Timeout = new Wait(6000)
 
@@ -45,6 +45,8 @@ class ShardManager {
     const nextShard = this.queue.first()
     if (nextShard === undefined) {
       this.looping = false
+
+      this.master.presence.go()
       return
     }
 
@@ -59,7 +61,7 @@ class ShardManager {
 
     await Timeout.wait()
 
-    this.spawn()
+    return this.spawn()
   }
 }
 
