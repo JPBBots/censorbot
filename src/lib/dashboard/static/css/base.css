@@ -982,13 +982,13 @@ changes {
       -ms-flex-align: center;
           align-items: center;
   pointer-events: none;
-  z-index: 977;
-  -webkit-transition: bottom 0.5s ease-in-out;
-  transition: bottom 0.5s ease-in-out;
+  z-index: 999;
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
 changes.hidden {
-  bottom: -10%;
+  bottom: -20vh;
 }
 
 changes .changes {
