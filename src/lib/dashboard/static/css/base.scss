@@ -708,12 +708,12 @@ changes {
     width: 85vw;
     @include flex();
     pointer-events: none;
-    z-index: 977;
+    z-index: 999;
 
-    transition: bottom 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
 
     &.hidden {
-        bottom: -10%;
+        bottom: -20vh;
     }
 
     .changes {
