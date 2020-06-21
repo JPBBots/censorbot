@@ -23,6 +23,7 @@ class Internals {
    * @param {Object} res Filter response
    */
   logCensor (type, content, user, guild, res) {
+    this.client.log(`Censored (${type}) ${user.username}#${user.discriminator}(${user.id}) in ${guild}: ${content}`)
     this.client.webhooks.send('log', {
       content: `\`\`\`${content.replace(/`/g, '\'')}\`\`\``,
       embeds: [
