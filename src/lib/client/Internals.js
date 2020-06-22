@@ -45,7 +45,7 @@ class Internals {
     return this.client.guilds.reduce((a, b) => {
       a[this.client.options.shards.indexOf(this.client.guildShard(b.id))]++
       return a
-    }, this.client.shards.reduce((a) => a.concat([0]), []))
+    }, Array(this.client.shards.size).fill(0))
   }
 }
 
