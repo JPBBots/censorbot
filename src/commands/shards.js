@@ -18,6 +18,8 @@ exports.run = async function (message, args) {
     msg += table(arr)
   }
 
+  this.invokeCooldown()
+
   this.send('```\n' +
     `${msg}\nCurrent: Cluster ${this.client.cluster.id} | Shard ${this.client.guildShard(message.guild_id)}` +
   '```')
@@ -25,6 +27,7 @@ exports.run = async function (message, args) {
 exports.info = {
   name: 'shards',
   description: 'Shows shard info',
+  cooldown: 1,
   format: '{prefix}shards',
   aliases: []
 }

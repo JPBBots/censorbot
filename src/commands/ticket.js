@@ -8,6 +8,7 @@ exports.run = function (message, args) {
   }
   this.client.tickets.add(args.join(' '), message.author.id)
     .then(() => {
+      this.invokeCooldown()
       this.send(
         this.embed
           .title('Ticket Submitted')
@@ -27,5 +28,6 @@ exports.info = {
   name: 'ticket',
   usage: '{prefix}ticket [word/phrase]',
   description: 'Submits a ticket for when words shouldn\'t be censored',
+  cooldown: 5,
   aliases: []
 }

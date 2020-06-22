@@ -4,15 +4,28 @@
 class Command {
   /**
    * For handling messages to a command site
-   * @param {Client} client Client
+   * @param {CommandHandler} CommandHanlder Command Handler
    * @param {Object} message Message object
+   * @param {Cmd} cmd Command object
    */
-  constructor (client, message) {
+  constructor (CommandHandler, message, cmd) {
     /**
      * Client
      * @type {Client}
      */
-    this.client = client
+    this.client = CommandHandler.client
+
+    /**
+     * Command Handler
+     * @type {CommandHandler}
+     */
+    this.handler = CommandHandler
+
+    /**
+     * Command object
+     * @type {Object}
+     */
+    this.cmd = cmd
 
     /**
      * Message Object
@@ -55,6 +68,15 @@ class Command {
     } catch (err) {
 
     }
+  }
+
+  invokeCooldown () {
+    if (!this.cmd.info.cooldown) return
+    this.handler.cooldowns.set(`${this.msg.author.id}${this.cmd.info.name}`, Date.now() + (this.cmd.info.cooldown * 60000))
+
+    setTimeout(() => {
+      this.handler.cooldowns.delete(`${this.msg.author.id}${this.cmd.info.name}`)
+    }, this.cmd.info.cooldown * 60000)
   }
 }
 

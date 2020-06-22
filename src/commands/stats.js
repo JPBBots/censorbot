@@ -1,5 +1,4 @@
 const moment = require('moment')
-require('moment-duration-format')
 
 exports.run = async function (message, args) {
   const m = await this.send(this.embed
@@ -57,11 +56,14 @@ exports.run = async function (message, args) {
     }
   }
 
+  this.invokeCooldown()
+
   this.client.interface.edit(message.channel_id, m.id, stats)
 }
 exports.info = {
   name: 'stats',
   description: 'Displays {name} stats',
+  cooldown: 1,
   format: '{prefix}stats',
   aliases: ['about']
 }

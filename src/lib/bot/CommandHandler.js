@@ -5,6 +5,9 @@ const Collection = require('../../../util/Collection')
 delete require.cache[require.resolve('./Command')]
 const Command = require('./Command')
 
+const moment = require('moment')
+require('moment-duration-format')
+
 /**
  * Used for taking in message events and running commands
  */
@@ -22,9 +25,15 @@ class CommandHandler {
 
     /**
      * Commands
-     * @type {Collection}
+     * @type {Collection.<String, Command>}
      */
     this.commands = new Collection()
+
+    /**
+     * Cooldown list
+     * @type {Collection.<String, Number>}
+     */
+    this.cooldowns = new Collection()
 
     this.load()
   }
@@ -82,7 +91,10 @@ class CommandHandler {
 
     if (cmd.info.admin && !await this.client.isAdmin(msg.author.id)) return this.client.interface.send(msg.channel_id, 'You do not have permission to run this command.')
 
-    cmd.run.bind(new Command(this.client, msg))(msg, args, prefix)
+    const cooldown = this.cooldowns.get(`${msg.author.id}${cmd.info.name}`)
+    if (cooldown) return this.client.interface.send(msg.channel_id, `Please wait **${moment.duration(cooldown - Date.now()).format('m[m] s[s]')}** before running this command again.`)
+
+    cmd.run.bind(new Command(this, msg, cmd))(msg, args, prefix)
 
     this.client.log(`${msg.author.username}#${msg.author.discriminator} (${msg.author.id}) ran ${command}`)
   }

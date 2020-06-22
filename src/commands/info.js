@@ -9,11 +9,14 @@ exports.run = async function (message, args) {
     embed.field(typeof x.id === 'number' ? `Cluster ${x.id}` : x.id, `${(x.usage / 1024 / 1024).toFixed(0)}MB`, true)
   })
 
+  this.invokeCooldown()
+
   this.send(embed)
 }
 exports.info = {
   name: 'info',
   description: 'Displays performance info.',
+  cooldown: 1,
   format: '{prefix}info',
   aliases: ['i']
 }
