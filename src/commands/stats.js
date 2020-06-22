@@ -1,6 +1,5 @@
 const moment = require('moment')
 require('moment-duration-format')
-const { cpuUsage } = require('os-utils')
 
 exports.run = async function (message, args) {
   const m = await this.send(this.embed
@@ -20,17 +19,10 @@ exports.run = async function (message, args) {
         name: this.client.user.username + '',
         url: this.client.config.website + ''
       },
+      footer: {
+        text: 'For shard info do +shards, for performance info do +info'
+      },
       fields: [
-        {
-          name: ':chart_with_downwards_trend: Memory Usage',
-          value: ((process.memoryUsage().heapUsed) / 1024 / 1024).toFixed(0) + ' MB',
-          inline: true
-        },
-        {
-          name: ':desktop: CPU Usage',
-          value: ((await (new Promise(resolve => cpuUsage(resolve)))) * 100).toFixed(1) + '%',
-          inline: true
-        },
         {
           name: ':envelope_with_arrow: Ping',
           value: timestamp - new Date(message.timestamp).getTime() + 'ms',
@@ -43,12 +35,7 @@ exports.run = async function (message, args) {
         },
         {
           name: ':clock1: Uptime',
-          value: moment.duration(process.uptime() * 1000).format(' D [days], H [hrs], m [mins], s [secs]'),
-          inline: true
-        },
-        {
-          name: ':control_knobs: Current Version',
-          value: 'v' + this.client.updates.list()[0].v,
+          value: moment.duration(process.uptime() * 1000).format(' D [days], H [hrs], m [mins]'),
           inline: true
         },
         {
@@ -76,5 +63,5 @@ exports.info = {
   name: 'stats',
   description: 'Displays {name} stats',
   format: '{prefix}stats',
-  aliases: ['info', 'about']
+  aliases: ['about']
 }
