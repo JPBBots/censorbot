@@ -74,7 +74,7 @@ class Base { // eslint-disable-line no-unused-vars
 
   _getElm (id) {
     if (!id) return document.querySelectorAll('[setting]')
-    return document.querySelector(`[setting=${id}]`.replace(/\./, '\\.'))
+    return document.querySelector(`[setting="${id}"]`.replace(/\./, '\\.'))
   }
 
   _typer (set, elm, value, keyed) {
@@ -179,7 +179,7 @@ class Base { // eslint-disable-line no-unused-vars
     console.log('Inserting object')
     const res = this._flatten(obj)
     for (var key in res) {
-      var elm = document.querySelector(`[setting=${key}]`.replace(/\./, '\\.'))
+      var elm = this._getElm(key)
       if (!elm) {
         console.log(`${key} : ${res[key]}`)
         continue

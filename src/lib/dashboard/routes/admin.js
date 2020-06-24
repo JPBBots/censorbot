@@ -18,9 +18,10 @@ module.exports = function (r) {
 
   r.post('/', async (req, res) => {
     Object.keys(req.body).forEach(shard => {
-      if (req.body[shard] !== '0') this.cluster.internal.restart(shard, req.body[shard] === '2')
+      if (req.body[shard]) this.cluster.internal.restart(shard, true)
+      req.body[shard] = false
     })
 
-    res.status(200).json({})
+    res.status(200).json(req.body)
   })
 }

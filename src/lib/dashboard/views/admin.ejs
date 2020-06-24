@@ -23,13 +23,10 @@
         <h1>Cluster <%= i %></h1>
         <% for (let shard of clusters[i].shards) { %>
           <div class="shard" style="border-color: <%= (['red', 'yellow', 'green'])[shard.state] %>">
-
-            <div class="selectBox" id="shard<%= shard.id %>"><p>Shard <%= shard.id %></p> <select setting="<%= shard.id%>">
-              <option value="0">None</option>
-              <option value="1">Restart</option>
-              <option value="2">Destroy</option>
-            </select></div>
-          </div>    
+            <p>Shard <%= shard.id %></p>
+            <label class="switch"><input type="checkbox" typed='boolean' setting='<%= shard.id %>'><span
+              class="slider round"></span></label>
+            </div>
         <% } %>
       </section>
     <% } %>
