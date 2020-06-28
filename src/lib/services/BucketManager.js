@@ -97,45 +97,28 @@ class BucketManager {
    * @param {Snowflake} user User
    * @param {Object} db Guild database
    */
-  pop (channel, user, db) {
-    if (!this.clears.has(channel + user)) {
-      this.popMsg(channel, user, db)
-      return this.clears.set(channel + user, setTimeout(() => {
-        this.clears.delete(channel + user)
-      }, 2000))
-    }
+  async pop (channel, user, db) {
+    if (this.buckets.has(channel + user)) return
 
-    clearTimeout(this.clears.get(channel + user))
-
-    if (this.timeouts.has(channel + user)) return
-
-    this.timeouts.set(channel + user, setTimeout(() => {
-      this.popMsg(channel, user, db)
-    }, 2000))
-  }
-
-  /**
-   * Execute pop message bucket
-   * @param {Snowflake} channel Channel
-   * @param {Snowflake} user User
-   * @param {Object} db Guild Database
-   */
-  async popMsg (channel, user, db) {
-    this.clears.delete(channel + user)
-    this.timeouts.delete(channel + user)
+    this.buckets.set(channel + user, true)
 
     const popMsg = await this.client.interface.send(channel,
       this.client.embed
         .color('RED')
         .description(`<@${user}> ${db.msg.content || this.client.config.defaultMsg}`)
     )
-    if (popMsg.id) {
-      if (db.msg.deleteAfter) {
-        setTimeout(() => {
-          this.client.interface.delete(channel, popMsg.id)
-            .catch(() => {})
-        }, db.msg.deleteAfter)
-      }
+    if (popMsg.id && db.msg.deleteAfter) {
+      setTimeout(() => {
+        this.client.interface.delete(channel, popMsg.id)
+          .catch(() => {})
+          .then(() => {
+            this.buckets.delete(channel + user)
+          })
+      }, db.msg.deleteAfter)
+    } else {
+      setTimeout(() => {
+        this.buckets.delete(channel + user)
+      }, 10000)
     }
   }
 }
