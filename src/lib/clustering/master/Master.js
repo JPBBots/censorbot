@@ -141,14 +141,13 @@ class Master {
     if (!isNaN(id)) id = Number(id)
 
     const currentCluster = this.clusters.get(id)
-    if (!currentCluster) return
+    if (!currentCluster) return false
 
     currentCluster.dying = true
     currentCluster.send('KILL')
 
-    this._createWorker(id, currentCluster.job, this.internalClusters[id])
+    await this._createWorker(id, currentCluster.job, this.internalClusters[id]).spawn()
 
-    await Timeout.wait()
     return true
   }
 }

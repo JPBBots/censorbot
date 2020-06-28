@@ -263,7 +263,7 @@ class WorkerInternals {
    * @param {Number} id Cluster ID
    */
   killCluster (id) {
-    this.api
+    return this.api
       .clusters[id]
       .delete()
   }

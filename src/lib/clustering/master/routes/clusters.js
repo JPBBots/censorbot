@@ -13,9 +13,7 @@ module.exports = function (r) {
     }
   })
 
-  r.delete('/:clusterid', (req, res) => {
-    this.master.restartCluster(req.params.clusterid)
-
-    res.json(suc)
+  r.delete('/:clusterid', async (req, res) => {
+    res.json({ success: await this.master.restartCluster(req.params.clusterid) })
   })
 }
