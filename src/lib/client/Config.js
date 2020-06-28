@@ -108,9 +108,11 @@ const verify = (obj, premium, guild) => {
           : v === null || v === false
       ),
       deleteAfter: checker('msg.deleteAfter', (v) =>
-        !(v !== null && !Number.isInteger(v)) &&
-        v > 0 &&
-        v <= (!premium ? 120 * 1000 : 600 * 1000)
+        v === null
+          ? true
+          : (Number.isInteger(v) &&
+          v > 0 &&
+          v <= (!premium ? 120 * 1000 : 600 * 1000))
       )
     },
     punishment: {
