@@ -110,6 +110,10 @@ class Database {
         delete newObj.webhook_replace
         delete newObj.webhook_separate
         delete newObj.pop_delete
+
+        // falls through
+      case 2:
+        newObj.invites = false
         break
       default:
         break

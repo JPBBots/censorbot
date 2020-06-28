@@ -20,13 +20,15 @@ module.exports = async function (message) {
 
   const channel = this.channels.get(message.channel_id)
 
+  const inviteCensor = db.invites && message.content.match(this.utils.inviteRegex)
+
   if (
     !channel ||
     !message.member ||
      message.type !== 0 ||
      channel.type !== 0 ||
      message.author.bot ||
-     channel.nsfw
+     (inviteCensor ? false : channel.nsfw)
   ) return this.multi.delete(message.channel_id)
 
   if (
@@ -65,7 +67,7 @@ module.exports = async function (message) {
 
   content += message.content
 
-  const res = this.filter.test(content, db.base, db.languages, db.filter, db.uncensor)
+  const res = inviteCensor ? ({ censor: true, method: 'invites', word: 'invite', arg: [] }) : this.filter.test(content, db.base, db.languages, db.filter, db.uncensor)
 
   if (res.uncensor) this.multi.delete(message.channel_id)
 
@@ -99,7 +101,7 @@ module.exports = async function (message) {
 
   this.punishments.addOne(message.guild_id, message.author.id, db)
 
-  if (db.webhook.enabled) {
+  if (!inviteCensor && db.webhook.enabled) {
     if (db.webhook.separate) {
       const send = res.resolved.split(' ')
       const finished = []

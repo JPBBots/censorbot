@@ -6,11 +6,14 @@ module.exports = async function (message) {
     !message.member ||
      message.type !== 0 ||
      channel.type !== 0 ||
-     message.author.bot ||
-     channel.nsfw
+     message.author.bot
   ) return
 
   const db = await this.db.config(message.guild_id)
+
+  const inviteCensor = db.invites && message.content.match(this.utils.inviteRegex)
+
+  if (inviteCensor ? false : channel.nsfw) return
 
   if (
     !db.censor.emsg ||
@@ -38,7 +41,7 @@ module.exports = async function (message) {
 
   if (!multiline) content += message.content
 
-  const res = this.filter.test(content, db.base, db.languages, db.filter, db.uncensor)
+  const res = inviteCensor ? ({ censor: true, method: 'invites', word: 'invite', arg: [] }) : this.filter.test(content, db.base, db.languages, db.filter, db.uncensor)
 
   if (!res.censor) return
 
