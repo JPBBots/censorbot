@@ -14,6 +14,6 @@ module.exports = function (r) {
   })
 
   r.get('/info', async (req, res) => {
-    res.json(await this.sendToAll('INFO', {}, true, false))
+    res.json([{ id: 'master', usage: process.memoryUsage().heapUsed }, ...await this.sendToAll('INFO', {}, true, false)])
   })
 }
