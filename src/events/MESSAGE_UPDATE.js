@@ -29,12 +29,15 @@ module.exports = async function (message) {
     if (this.multi.has(message.channel_id)) {
       multi = this.multi.get(message.channel_id)
       if (Object.prototype.hasOwnProperty.call(multi.msg, message.id)) {
-        multiline = true
+        if (Object.keys(multi.msg).length > 1) multiline = true
+
+        delete multi.msg[message.id]
+
+        content += Object.values(multi.msg).join('')
+
         multi.msg[message.id] = message.content
 
         this.multi.set(message.channel_id, multi)
-
-        content += Object.values(multi.msg).join('')
       }
     }
   }
