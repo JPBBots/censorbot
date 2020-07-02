@@ -1,3 +1,4 @@
+
 /**
  * Used for setting and updating bot presences
  */
@@ -118,6 +119,12 @@ class PresenceManager {
   custom () {
     this.status(this.customs[0], this.customs[1], this.customs[2])
   }
-}
+
+  /**
+   * Limit
+   */
+  limit () {
+    this.status('WATCHING', 'Limit being a dumby', 'online')
+  }
 
 module.exports = PresenceManager
