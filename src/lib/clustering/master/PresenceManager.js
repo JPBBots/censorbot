@@ -120,19 +120,11 @@ class PresenceManager {
     this.status(this.customs[0], this.customs[1], this.customs[2])
   }
 
-/**
+  /**
    * Limit
    */
-  Limit () {
-    this.status('WATCHING', 'Limit being a smarty', 'online')
+  limit () {
+    this.status('WATCHING', 'Limit being a dumby', 'online')
   }
 
 module.exports = PresenceManager
-
-
-
-
-
-
-
-
