@@ -126,7 +126,7 @@ const verify = (obj, premium, guild) => {
       replace: checker('webhook.replace', (v) => constants.webhookReplaces.includes(v), true)
     },
     multi: checker('multi', (v) => typeof v === 'boolean', true),
-    prefix: checker('prefix', (v) => typeof v === 'string' && v.length <= 10),
+    prefix: checker('prefix', (v) => v === null ? true : typeof v === 'string' && v.length <= 10),
     channels: checker('channels', (v) =>
       v &&
       v.constructor === Array &&
