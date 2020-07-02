@@ -124,7 +124,7 @@ class PresenceManager {
    * Limit
    */
   limit () {
-    this.status('WATCHING', 'Limit being a dumby', 'online')
+    this.status('WATCHING', 'Limit being a smarty', 'online')
   }
 }
 
