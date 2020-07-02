@@ -126,5 +126,6 @@ class PresenceManager {
   limit () {
     this.status('WATCHING', 'Limit being a dumby', 'online')
   }
+}
 
 module.exports = PresenceManager
