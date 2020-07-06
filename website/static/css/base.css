@@ -175,6 +175,7 @@ a:hover {
 @media (max-width: 600px) {
   #box {
     position: unset;
+    display: unset;
   }
 }
 
