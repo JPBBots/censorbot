@@ -6,18 +6,6 @@
   </div>
   <h2 id="title">Censor Bot</h2>
   <div id="user">
-    <div id="hasUser" class="hidden">
-      <img onclick="document.getElementById('userMenu').classList.toggle('hide')" title="loading" src="" id="avatar">
-      <div id="userMenu" class="hide">
-        <a href="javascript:api.redirect('/servers')">Servers</a>
-        <a href="javascript:api.redirect('/premium')" onclick="">Premium</a>
-        <a href="javascript:api.redirect('/support')" onclick="">Support Server</a>
-        <a href="javascript:api.logout()" style="color: red">Logout</a>
-      </div>
-    </div>
-    <div id="hasntUser" class="hidden">
-      <button onclick="api.login()" id="login">Login</button>
-    </div>
   </div>
 
   <script>
@@ -58,7 +46,7 @@
               href: "#",
               innerText: 'Support',
               events: {
-                click: () => api.redirect('/servers')
+                click: () => api.redirect('/support')
               }
             }),
             ...(user.admin ?
