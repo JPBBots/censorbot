@@ -18,56 +18,104 @@
     <div id="hasntUser" class="hidden">
       <button onclick="api.login()" id="login">Login</button>
     </div>
-    <script>
-
-      const hasUser = document.getElementById('hasUser')
-      const hasntUser = document.getElementById('hasntUser')
-
-      api.register({
-        login: (user) => {
-          const img = document.getElementById('avatar')
-          img.title = user.tag
-          img.src = user.avatar
-            ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`
-            : `https://cdn.discordapp.com/embed/avatars/${Number(user.tag.split('#')[1]) % 5}.png`
-
-          hasntUser.classList.add('hidden')
-          hasUser.classList.remove('hidden')
-
-          if (user.admin) {
-            document.getElementById('userMenu').appendChild(
-              _.elm('a', {
-                href: "javascript:api.redirect('/admin')",
-                innerText: 'Admin',
-                id: 'admin'
-              })
-            )
-          } else {
-            if (document.getElementById('admin')) document.getElementById('userMenu').removeChild(document.getElementById('admin'))
-          }
-        },
-        logout: () => {
-          hasUser.classList.add('hidden')
-          hasntUser.classList.remove('hidden')
-        }
-      })
-
-      document.onload = () => {
-        document.getElementById('root').focus()
-        document.getElementById('root').onblur = () => {
-          document.getElementById('root').focus()
-        }
-      }
-      window.addEventListener('click', (event) => {
-        if (!event.target.parentElement.parentElement.matches('#user')) {
-          document.getElementById('userMenu').classList.add('hide')
-        }
-      })
-
-      document.getElementById('login').oncontextmenu = (e) => {
-        e.preventDefault()
-        api.login(null, true)
-      }
-    </script>
   </div>
+
+  <script>
+    api.register({
+      login: (user) => {
+        _.setRoot([
+          _.elm('img', {
+            id: 'avatar',
+            title: user.tag,
+            src: user.avatar
+              ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`
+              : `https://cdn.discordapp.com/embed/avatars/${Number(user.tag.split('#')[1]) % 5}.png`,
+            events: {
+              click: () => {
+                document.getElementById('userMenu').classList.toggle('hide')
+              }
+            }
+          }),
+          _.elm('div', {
+            id: 'userMenu',
+            classes: ['hide']
+          }, [
+            _.elm('a', {
+              href: "#",
+              innerText: 'Servers',
+              events: {
+                click: () => api.redirect('/servers')
+              }
+            }),
+            _.elm('a', {
+              href: "#",
+              innerText: 'Premium',
+              events: {
+                click: () => api.redirect('/premium')
+              }
+            }),
+            _.elm('a', {
+              href: "#",
+              innerText: 'Support',
+              events: {
+                click: () => api.redirect('/servers')
+              }
+            }),
+            ...(user.admin ?
+              [
+                _.elm('a', {
+                  href: '#',
+                  innerText: 'Admin',
+                  events: {
+                    click: () => api.redirect('/admin')
+                  }
+                })
+              ]
+            : []),
+            _.elm('a', {
+              href: "#",
+              innerText: 'Logout',
+              events: {
+                click: () => api.logout()
+              }
+            }, {
+              style: 'color: red'
+            })
+          ])
+        ], 'user')
+      },
+      logout: () => {
+        _.setRoot(_.elm('button', {
+          id: 'login',
+          innerText: 'Login',
+          events: {
+            click: () => api.login(),
+            contextmenu: (elm, e) => {
+              e.preventDefault()
+              api.login(null, true)
+            }
+          }
+        }), 'user')
+      },
+      logging: () => {
+        _.setRoot(_.elm('div'), 'user')
+      }
+    })
+
+    const hasUser = document.getElementById('hasUser')
+    const hasntUser = document.getElementById('hasntUser')
+
+
+    document.onload = () => {
+      document.getElementById('root').focus()
+      document.getElementById('root').onblur = () => {
+        document.getElementById('root').focus()
+      }
+    }
+    window.addEventListener('click', (event) => {
+      if (!event.target.parentElement.matches('#user')) {
+        document.getElementById('userMenu').classList.add('hide')
+      }
+    })
+  </script>
 </div>
