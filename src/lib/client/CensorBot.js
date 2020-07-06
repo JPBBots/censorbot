@@ -74,7 +74,7 @@ class CensorBot extends Client {
      * Censor Bot API
      * @type {Request}
      */
-    this.capi = Request('https://censor.bot', {}, { format: 'text' })
+    this.capi = Request('https://api.jt3ch.net', {}, { format: 'text' })
 
     // this.start()
   }

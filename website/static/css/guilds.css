@@ -1,0 +1,60 @@
+#root {
+  display: inline !important;
+}
+
+.guild {
+  cursor: pointer;
+  float: left;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(1, 1fr);
+  grid-template-areas:
+    "icon name";
+
+  width: 20%;
+  background-color: var(--bar);
+  border-radius: 15%;
+  margin: 1rem;
+  padding: 1rem;
+}
+
+.guild:hover {
+  transition: 0.5s;
+  opacity: 0.5;
+}
+
+.icon {
+  grid-area: icon;
+  border-radius: 50%;
+}
+
+.name {
+  grid-area: name;
+  text-align: center;
+  top: 25%;
+  position: relative;
+
+}
+
+@media (min-width: 981px) and (max-width: 1480px) {
+  .guild {
+    width: 26%;
+  }
+}
+
+@media (max-width: 700px) {
+  .guild {
+    width: 43%;
+  }
+  .name {
+    top: unset;
+    font-size: 4vw;
+  }
+}
+
+@media (max-width: 600px) {
+  .guild {
+    min-width: 80%;
+    width: fit-content;
+  }
+}

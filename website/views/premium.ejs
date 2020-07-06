@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Censor Bot Premium</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.1.0/dist/tagify.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.1.0/dist/tagify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/inputs.css">
+    <script src="/static/js/capi.js"></script>
+    <script src="/static/js/base.js"></script>
+    <%- include('header') %>
+  </head>
+  <body>
+    <div id="box">
+      <%- include('base.ejs') %>
+      <div id="root">
+        <center>
+          <h1 class="notice">Premium</h1>
+          <p>
+            Premium supports our bot and unlocks some coolio features! 
+          </p>
+          <button onclick="window.open('https://patreon.com/censorbot')">Get premium</button>
+          <h1 class="notice">Premium Features</h1>
+          <section>
+            <h2>Mutli-Line</h2>
+            <p>
+              Multi-Line allows the bot to pickup multiple messages stacked ontop of eachother.
+            </p>
+          </section>
+          <section>
+            <h2>Resend</h2>
+            <p>
+              Resend allows the bot to take a users message, cover the curses and essentially send <br />
+              it again with a webhook that looks like the original user sent it however with everything blurred out.
+            </p>
+          </section>
+          <section>
+            <h2>Ignore Channels</h2>
+            <p>
+              This allows for you to specify which channels for the bot to ignore instead of setting them to NSFW.
+            </p>
+          </section>
+          <section>
+            <h2>Some other increased limitation</h2>
+            Server filter word cap 150 words => 500 words <br />
+            Uncensor list word cap 150 words => 500 words <br />
+            Pop Message delete time cap 120 seconds => 600 seconds
+          </section>
+          <h1 class="notice">Manage Your Premium Servers</h1>
+          <h3 id="servercount" class="hidden">Servers Used: <b id="used">loading...</b> / <b id="total">loading...</b></h3>
+          <div id="settings"></div>
+          <div style="height: 40vh"></div>
+          <script>
+            const res = document.getElementById('settings')
+            const used = document.getElementById('used')
+            const total = document.getElementById('total')
+            const servercount = document.getElementById('servercount')
+
+            api.register({
+              login: () => {
+                api.getPremium()
+                  .then(({ premium, guilds }) => {
+
+                    _.setRoot([
+                      _.elm('input', {
+                        placholder: 'add servers'
+                      }, {
+                        setting: 'guilds',
+                        typed: 'tagArray'
+                      }),
+                      _.elm('button', {
+                        innerText: 'Save',
+                        onclick: () => lib.post()
+                      })],
+                    res)
+
+                    window.lib = new Base({ guilds: premium.guilds }, false, true, '/premium')
+
+                    function changeCount() {
+                      if (!lib.ready) return
+                      used.innerText = `${lib.create().guilds.length}`
+                    }
+
+                    lib.addTag('guilds', {
+                      whitelist: guilds.map(g => ({ value: g.n, id: g.i })),
+                      maxTags: premium.count,
+                      dropdown: {
+                        enabled: 0,
+                        maxItems: guilds.length
+                      },
+                      callbacks: {
+                        add: changeCount,
+                        remove: changeCount,
+                        invalid: (e) => {
+                          if (e.detail.message === 'number of tags exceeded') return window.lib.tell('Not enough premium servers.') // TODO
+                        }
+                      }
+                    })
+
+                    lib.ready = true
+
+                    lib.insert(lib.settings)
+
+                    total.innerText = premium.count
+                    changeCount()
+
+                    servercount.classList.remove('hidden')
+                  })
+                  .catch(err => {
+                    console.log(err)
+                    total.innerText = '0'
+                    used.innerText = '0'
+                    servercount.classList.remove('hidden')
+
+                    _.setRoot(
+                      _.elm('button', {
+                        innerText: 'Get Premium',
+                        onclick: () => window.open('https://patreon.com/censorbot')
+                      }),
+                    res)
+                  })
+              },
+              logout: () => {
+                servercount.classList.add('hidden')
+
+                _.preset.login('to add/remove premium servers', res)
+              },
+              logging: () => _.preset.loading(res)
+            })
+          </script>
+        </center>
+      </div>
+    </div>
+  </body>
+</html>

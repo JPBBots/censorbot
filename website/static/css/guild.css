@@ -1,0 +1,62 @@
+section > div > h3, section > div > div > h3 {
+  display: inline;
+}
+
+section > div, section > div > div {
+  margin: 5px;
+}
+
+section > div > *:not(h3), section > div > div > *:not(h3) {
+  position: relative;
+}
+
+section {
+  /* float: left; */
+  /* width: 48%; */
+  border: 2px var(--bar) solid
+}
+
+section > h1 {
+  color: white;
+}
+
+
+#settings {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas:
+    "general         general filter filter"
+    "punishments punishments filter filter"
+    ".            other other            .";
+
+  text-align: center;
+}
+
+#general {
+  grid-area: general
+}
+
+#filter {
+  grid-area: filter
+}
+
+#punishments {
+  grid-area: punishments
+}
+
+#other {
+  grid-area: other
+}
+
+@media screen and (max-width: 900px) {
+  #settings {
+    grid-template-columns: repeat(1, 1fr) !important;
+    grid-template-rows: repeat(4, 0.5fr) !important;
+    grid-template-areas:
+      "general"
+      "filter"
+      "punishments"
+      "other" !important;
+  }
+}

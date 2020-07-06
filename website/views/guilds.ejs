@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Censor Bot Dashboard</title>
+    <%- include('header') %>
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/guilds.css">
+    <script src="/static/js/capi.js"></script>
+  </head>
+  <body>
+    <div id="box">
+    <%- include('base') %>
+
+    <div id="root">
+    </div>
+    <script>
+      api.register({
+        login: async () => {
+          const guilds = await api.getGuilds()
+            .catch(() => api.logout())
+
+          if (!guilds) return
+
+          _.setRoot(guilds.map(guild => 
+            _.elm('div', {
+              id: guild.i,
+              classes: ['guild'],
+              onclick: () => {
+                api.redirect(`/servers/${guild.i}`)
+              }
+            }, [
+              _.elm('img', {
+                src: guild.a 
+                  ? `https://cdn.discordapp.com/icons/${guild.i}/${guild.a}`
+                  : 'https://cdn.discordapp.com/embed/avatars/1.png',
+                classes: ['icon']
+              }),
+              _.elm('p', {
+                innerText: guild.n,
+                classes: ['name']
+              })
+            ]
+          )))
+        },
+        logout: () => _.preset.login('to see your servers'),
+        logging: _.preset.loading
+      })
+    </script>
+  </div>
+  </body>
+</html>

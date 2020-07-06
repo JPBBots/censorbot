@@ -118,7 +118,7 @@ class Master {
   async spawnWorkers () {
     this.log('Spawning workers')
 
-    this._createWorker('dash', 1)
+    this._createWorker('api', 1)
 
     for (let i = 0; i < this.internalClusters.length; i++) {
       this._createWorker(i, 0, this.internalClusters[i])

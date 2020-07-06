@@ -7,7 +7,7 @@ module.exports = [
   },
   { // dashboard
     i: 1,
-    client: resolve('../dashboard/Manager')
+    client: resolve('../api/Manager')
   }
 ]
 
@@ -15,7 +15,7 @@ module.exports = [
  * @typedef {Number} jobInt Job identifier
  * @example
  *  0 = Bot cluster
- *  1 = Dashboard
+ *  1 = api
  */
 
 /**

@@ -1,0 +1,29 @@
+.cluster {
+  border: 1px black solid;
+  display: inline-block;
+  margin: 5px
+}
+
+.cluster > div {
+  cursor: pointer;
+  margin: 5px;
+  border: 1px black solid;
+  transition: 0.5s
+}
+
+.cluster > div:hover {
+  transition: 0.5s;
+  opacity: 0.5
+}
+
+[state='2'] {
+  border-color: green !important;
+}
+
+[state='1'] {
+  border-color: yellow !important;
+}
+
+[state='0'] {
+  border-color: red !important;
+}

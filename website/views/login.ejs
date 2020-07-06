@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%- include('header') %>
+    </head>
+    <body>
+        <h2>If you got here on accident, just press normal!</h2>
+        <button onclick="go()">Normal</button>
+        <button onclick="go('ptb')">PTB</button>
+        <button onclick="go('canary')">Canary</button>
+        <script>
+            function go (ext) {
+                window.location.replace(`${window.location.protocol}//${window.location.hostname}/api/auth${ext ? `/${ext}` : ''}`)
+            }
+        </script>
+    </body>
+</html>

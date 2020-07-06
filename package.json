@@ -1,6 +1,6 @@
 {
   "name": "censorbot",
-  "version": "6.0.0a",
+  "version": "7.0.0",
   "description": "Anti-Swear bot for discord",
   "main": "./src/index.js",
   "scripts": {
@@ -33,7 +33,6 @@
     "ejs": "3.0.1",
     "emoji-unicode-map": "1.1.10",
     "express": "4.17.1",
-    "ip": "^1.1.5",
     "moment": "2.24.0",
     "moment-duration-format": "2.3.2",
     "mongodb": "3.5.5",

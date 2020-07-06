@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Settings</title>
+
+  <%- include('header') %>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.1.0/dist/tagify.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.1.0/dist/tagify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+  <!-- <script src="/static/js/builder.js"></script> -->
+  <script src="/static/js/base.js"></script>
+  <script src="/static/js/capi.js"></script>
+
+  <link rel="stylesheet" href="/static/css/base.css" />
+  <link rel="stylesheet" href="/static/css/guild.css" />
+  <link rel="stylesheet" href="/static/css/inputs.css" />
+</head>
+
+<body>
+  <div id="box">
+
+  <%- include('base') %>
+  <div id="root">
+    <center id="navi">
+      <h2><a href= "/servers">Servers</a> > <a id='guildName'>[Server Name]</a></h2>
+      <div id="premiumMsg" class="hidden">
+        <a href="/premium">Buy premium to help support the bot and get some neat features!</a>
+      </div>
+    </center>
+    <div id="settings" class="hidden">
+    <section id="general">
+      <h1>General</h1>
+      <div><h3 title="The prefix in which the bot responds to for commands.">Prefix</h3>
+        <input maxlength="10" placeholder="None" typed="none" setting="prefix"></div>
+      <div><h3 title="Channel to log infractions, as well as punishment outcomes.">Log Channel</h3>
+        <select typed="list" setting="log" channels>
+          <option value="null">None</option>
+        </select></div>
+      <div><h3 title="Role to ignore completely with the filter.">Uncensor Role</h3> 
+        <select typed="list" setting="role" roles>
+          <option value="null">None</option>
+        </select></div>
+      <div><h3 title="Ignore specific channels without having to make it NSFW.">Ignore Channels</h3>
+        <input placeholder="Add Channels" typed="tagArray" setting="channels" premium></div>
+    </section>
+    <section id="filter">
+      <h1>Filter</h1>
+      <div><h3 title="Whether to use the bot's premade filter that is managed by staff.">Base Filter</h3>
+        <input type="checkbox" typed='boolean' setting='base'></div>
+      <div><h3 title="Whether to censor invites.">Censor Invites</h3>
+        <input type="checkbox" typed='boolean' setting='invites'></div>
+      <div><h3 title="Whether to censor multiple messages combined together to scan.">Multi-Line</h3>
+        <input type="checkbox" typed='boolean' setting='multi' premium></div>
+      <div><h3 title="Sets what languages the base filter uses">Filters</h3>
+        <input placeholder="Add Filters" typed="tagArray" setting="languages"></div>
+      <div><h3 title="Custom filter that are bound to this server.">Server Filter</h3>
+        <input placeholder='Add Words' typed='tagArray' setting="filter">
+        <button onclick="window.lib.clearTags('filter')">Clear</button></div>
+      <div><h3 title="Words to ignore from the base filter in this server.">Uncensor Words</h3>
+        <input placeholder='Add Words' typed='tagArray'setting="uncensor">
+        <button onclick="window.lib.clearTags('uncensor')">Clear</button></div>
+      <h2>Censor Methods</h2>
+        <div><h3>Messages</h3>
+          <input type="checkbox" typed='boolean' setting='censor.msg'></div>
+        <div><h3>Edited Messages</h3>
+          <input type="checkbox" typed='boolean' setting='censor.emsg'></div>
+        <div><h3>Nicknames</h3>
+          <input type="checkbox" typed='boolean' setting='censor.nick'></div>
+        <div><h3>Reactions</h3>
+          <input type="checkbox" typed='boolean' setting='censor.react'></div>
+    </section>
+    <section id="punishments">
+      <h1>Punishments</h1>
+      <div><h3 title="Type of punishment to perform once amount has been reached.">Punishment</h3>
+        <select typed="typeNum" setting="punishment.type">
+          <option value="0">Off</option>
+          <option value="1">Mute</option>
+          <option value="2">Kick</option>
+          <option value="3">Ban</option>
+        </select></div>
+      <div><h3 title="Amount of infractions that when met will perform the action on that user.">Amount</h3> 
+        <input type="number" inputmode="numeric" typed="typeNum" min="1" max="50" setting="punishment.amount">
+        <br /><small>Amount of infactions before punishment</small></div>
+      <div><h3 title="Role to give once amount reached, (Suggested: a muted role)">Mute Role</h3>
+        <select typed="list" disabled setting="punishment.role" roles>
+          <option value="null">None</option>
+        </select></div>
+      </section>
+    <section id="other">
+      <h1>Other</h1>
+      <div><h3 title="Settings for the message that comes up when someones message is deleted.">Pop Delete Time</h3>
+        <input type="number" inputmode="numeric" placeholder="Never" min="0" max="600" typed="time" setting="msg.deleteAfter">
+        <small>seconds</small></div>
+      <div><h3 title="Settings for the message that comes up when someones message is deleted.">Pop Message</h3>
+        <input typed="message" maxlength="100" setting="msg.content" id="popMessageInput">
+        <button onclick="document.getElementById('popMessageInput').value='Default'">Default</button>
+        <button onclick="document.getElementById('popMessageInput').value='Off'">Off</button></div>
+
+        <div>
+          <h2>Resend</h2>
+          <div><h3 title="Resend someone censored message with the message censored in a spoiler.">Toggle</h3>
+            <input type="checkbox" typed='boolean' setting='webhook.enabled'premium></div>
+          <div><h3>Seperate</h3>
+            <input type="checkbox" typed='boolean' setting='webhook.separate' premium></div>
+          <div><h3>Seperate Replace</h3> 
+            <select typed="typeNum" setting="webhook.replace" premium>
+              <option value="0">Spoilers</option>
+              <option value="1">Hashtags</option>
+            </select></div>
+        </div>
+      </section>
+      <button id="save" onclick="lib.post()" disabled>Save Changes</button>
+    </div>
+    <div style="height: 8vh"></div>
+    <div id="not">
+    </div>
+    </div>
+    <script src="/static/js/guildSetup.js"></script>
+  <script>
+    const id = location.pathname.split('/').slice(-1)[0]
+    const settings = document.getElementById('settings')
+    const not = document.getElementById('not')
+    const premiumMsg = document.getElementById('premiumMsg')
+    api.register({
+      login: () => {
+        function go () {
+          api.getGuild(id)
+            .then((res) => {
+              console.log('loaded')
+              window.lib = new Base(res.db, true, false, `/guilds/${id}`)
+              window.guild = res.guild
+              window.premium = res.premium
+
+              premiumMsg.classList[premium ? 'add' : 'remove']('hidden')
+
+              document.title = `${guild.n} Settings`
+              document.getElementById('guildName').innerText = guild.n
+
+              guild.c.forEach(channel => {
+                _.addToAll('[channels]', 
+                  _.elm('option', {
+                    value: channel.id,
+                    innerText: `#${channel.name}`
+                  }, {
+                    removing: ''
+                  })
+                )
+              })
+
+              guild.r.forEach(role => {
+                _.addToAll('[roles]', 
+                  _.elm('option', {
+                    value: role.id,
+                    innerText: `@${role.name}`
+                  }, {
+                    removing: ''
+                  })
+                )
+              })
+
+              setup()
+
+              lib.reset()
+
+              not.classList.add('hidden')
+              settings.classList.remove('hidden')
+
+              
+              lib.ready = true
+            })
+            .catch(err => {
+              console.log(err)
+              const error = ({
+                'Not In Guild': 1
+              })[err]
+              settings.classList.add('hidden')
+
+              _.setRoot(
+                _.elm('center', [
+                  _.elm('h1', {
+                    innerText: error === 1 ? 'Bot is not in this server!' : `Error while editing server: ${err}`
+                  }),
+                  _.elm('button', {
+                    innerText: error === 1 ? 'Invite' : 'Back to servers',
+                    events: {
+                      click: error === 1 
+                        ? async () => {
+                          await api.invite(id)
+                          go()
+                        }
+                        : () => api.redirect('/servers')
+                    }
+                  })
+                ])
+              , not)
+
+              not.classList.remove('hidden')
+            })
+          }
+        go()
+      },
+      logout: () => {
+        settings.classList.add('hidden')
+        premiumMsg.classList.add('hidden')
+
+        _.removeAll('[removing]')
+
+        document.title = 'Please log in'
+        document.getElementById('guildName').innerText = "[Guild Name]"
+
+        _.preset.login('to edit server', not)
+
+        not.classList.remove('hidden')
+      },
+      logging: () => {
+        settings.classList.add('hidden')
+
+        _.preset.loading(not)
+
+        not.classList.remove('hidden')
+      }
+    })
+  </script>
+</box>
+</body>
+</html>

@@ -83,13 +83,14 @@ class WorkerInternals {
         resolve({
           cluster: {
             memory: process.memoryUsage().heapUsed,
-            uptime: process.uptime()
+            uptime: process.uptime(),
+            id: this.worker.id
           },
           shards: this.worker.client.shards.map(shard => {
             return {
               id: shard.id,
               ping: shard.ping,
-              state: shard.connected ? 2 : !shard.ws.connected && shard.ws.opened ? 1 : 0,
+              state: shard.registering ? 1 : shard.connected ? 2 : !shard.ws.connected && shard.ws.opened ? 1 : 0,
               connected: shard.connected,
               guilds: this.worker.client.guilds.filter(x => this.worker.client.guildShard(x.id) === shard.id).size
             }
@@ -121,6 +122,7 @@ class WorkerInternals {
         break
       case 'SPAWN_SHARD':
         shard = this.worker.client.shards.get(data.id)
+        shard.registering = false
         shard.spawn()
 
         shard.ws.once('READY', () => {

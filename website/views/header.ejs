@@ -1,0 +1,25 @@
+<link rel="shortcut icon" href="https://censor.bot/censorbot.png" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-111382716-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag('js', new Date());
+
+  gtag('config', 'UA-111382716-4');
+</script>
+
+<script src="/static/js/DOM.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta property="og:image" content="https://censor.bot/static/censorbot.png">
+<meta name="theme-color" content="#ff3d00">
+<% if (locals.dash) { %>
+  <meta property="og:title" content="Censor Bot Dashboard">
+  <meta property="og:description" content="Change and customize Censor Bot for your server(s)!">
+<% } else { %>
+  <meta property="og:title" content="Censor Bot">
+  <meta property="og:description" content="Easy to use advanced content filtering for your Discord server(s)!">
+<% } %>
