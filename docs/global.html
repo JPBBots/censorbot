@@ -39,6 +39,9 @@
                     <dt><a href="global.html#ClusterStats">ClusterStats</a></dt>
                     <dd>
                     </dd>
+                    <dt><a href="global.html#DashboardUser">DashboardUser</a></dt>
+                    <dd>
+                    </dd>
                     <dt><a href="global.html#Job">Job</a></dt>
                     <dd>
                     </dd>
@@ -64,17 +67,20 @@
                     <dt><a href="global.html#SmallID">SmallID</a></dt>
                     <dd>
                     </dd>
+                    <dt><a href="global.html#Snowflake">Snowflake</a></dt>
+                    <dd>
+                    </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="global.html#Snowflake">Snowflake</a></dt>
-                    <dd>
-                    </dd>
                     <dt><a href="global.html#Ticket">Ticket</a></dt>
                     <dd>
                     </dd>
                     <dt><a href="global.html#TicketBan">TicketBan</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="global.html#UserGuilds">UserGuilds</a></dt>
                     <dd>
                     </dd>
                     <dt><a href="global.html#WebhookReplace">WebhookReplace</a></dt>
@@ -419,6 +425,96 @@
               </section>
               <dl class="dl-compact">
               </dl>
+              <h3 id="DashboardUser"><span class="symbol-name">DashboardUser</span><small class="property-type">
+                  &nbsp;Object</small></h3>
+              <p>Dashboard user stored in database</p>
+              <section>
+                <h4>Properties</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>token</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User CAPI token</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>bearer</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User Discord OAuth Token</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>avatar</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User avatar hash</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>tag</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User tag (Username#DISCRIM)</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
               <h3 id="Job"><span class="symbol-name">Job</span><small class="property-type">
                   &nbsp;Objectt</small></h3>
               <p>Job</p>
@@ -755,6 +851,54 @@ api
                       </td>
                       <td>
                         <p>When user was banned</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="UserGuilds"><span class="symbol-name">UserGuilds</span><small class="property-type">
+                  &nbsp;Object</small></h3>
+              <p>Returned from getGuilds</p>
+              <section>
+                <h4>Properties</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>DashboardUser</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User object</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>guilds</p>
+                      </td>
+                      <td>
+                        <p>Array of <a href="global.html#CachedGuild">CachedGuild</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User guilds</p>
                       </td>
                     </tr>
                   </tbody>

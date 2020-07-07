@@ -16,6 +16,16 @@ const Crypto = require('crypto')
  */
 
 /**
+ * Dashboard user stored in database
+ * @typedef {Object} DashboardUser
+ * @property {Snowflake} id User ID
+ * @property {String} token User CAPI token
+ * @property {String} bearer User Discord OAuth Token
+ * @property {String} avatar User avatar hash
+ * @property {String} tag User tag (Username#DISCRIM)
+ */
+
+/**
  * OAuth2 Methods
  */
 class OAuth2 {
@@ -63,6 +73,12 @@ class OAuth2 {
       .digest('hex')
   }
 
+  /**
+   * Process user OAuth callback
+   * @param {String} code OAuth Code
+   * @param {String} host Host domain (from headers $Host)
+   * @returns {String} CAPI Token belonging to user to store
+   */
   async callback (code, host) {
     const oauthUser = await this._bearer(code, host)
     if (!oauthUser) throw new Error('Invalid Code')
@@ -88,6 +104,18 @@ class OAuth2 {
     return token
   }
 
+  /**
+   * Returned from getGuilds
+   * @typedef {Object} UserGuilds
+   * @property {Object} DashboardUser User object
+   * @property {Array<CachedGuild>} guilds User guilds
+   */
+
+  /**
+   * Get users guilds
+   * @param {String} token User CAPI Token
+   * @returns {UserGuilds}
+   */
   async getGuilds (token) {
     const cache = this.guildCache.get(token)
 
