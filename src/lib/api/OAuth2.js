@@ -107,7 +107,7 @@ class OAuth2 {
   /**
    * Returned from getGuilds
    * @typedef {Object} UserGuilds
-   * @property {Object} DashboardUser User object
+   * @property {DashboardUser} user User object
    * @property {Array<CachedGuild>} guilds User guilds
    */
 
