@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Source: src/lib/client/Internals.js</title>
+  <title>Source: src/lib/api/App.js</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -26,61 +26,84 @@
         </div>
         <div id="jsdoc-main" role="main">
           <header class="page-header">
-            <h1>Source: src/lib/client/Internals.js</h1>
+            <h1>Source: src/lib/api/App.js</h1>
           </header>
           <article>
-            <pre class="prettyprint linenums"><code>/**
- * Used for methods that should be accessible from everywhere throughout censor bot
+            <pre class="prettyprint linenums"><code>const Express &#x3D; require(&#x27;express&#x27;)
+
+const Path &#x3D; require(&#x27;path&#x27;)
+
+const bodyParser &#x3D; require(&#x27;body-parser&#x27;)
+const cookieParser &#x3D; require(&#x27;cookie-parser&#x27;)
+const cors &#x3D; require(&#x27;cors&#x27;)
+
+const LoadRoutes &#x3D; require(&#x27;../../../util/LoadRoutes&#x27;)
+
+/**
+ * Express app manager
  */
-class Internals {
+class App {
   /**
-   * Internal Methods
-   * @param {Client} client Client
+   * Dashboard App
+   * @param {Manager} manager Manager
    */
-  constructor (client) {
+  constructor (manager) {
     /**
-     * Client
-     * @type {Client}
+     * Manager
+     * @type {Manager}
      */
-    this.client &#x3D; client
+    this.manager &#x3D; manager
+
+    /**
+     * Express app
+     * @type {?ExpressApp}
+     */
+    this.app &#x3D; null
   }
 
   /**
-   * Log a censor
-   * @param {String} type Type
-   * @param {String} content Content
-   * @param {Object} user User
-   * @param {Snowflake} guild Guild
-   * @param {Object} res Filter response
+   * Load app
    */
-  logCensor (type, content, user, guild, res) {
-    this.client.log(&#x60;Censored (${type}) ${user.username}#${user.discriminator}(${user.id}) in ${guild}: ${content}&#x60;)
-    this.client.webhooks.send(&#x27;log&#x27;, {
-      content: &#x60;\&#x60;\&#x60;\&#x60;${content.replace(/&#x60;/g, &#x27;\&#x27;&#x27;)}\&#x60;\&#x60;\&#x60;&#x60;,
-      embeds: [
-        this.client.embed
-          .title(type)
-          .description(&#x60;&amp;lt;@${user.id}&gt;(${user.id}) in ${guild}&#x60;)
-          .field(&#x27;Method&#x27;, res.method)
-          .field(&#x27;Arg&#x27;, res.arg.map(x &#x3D;&gt; x.toString()).join(&#x27;, &#x27;))
-          .render()
-      ]
+  load () {
+    return new Promise(resolve &#x3D;&gt; {
+      this.app &#x3D; Express()
+
+      this._loadRoutes()
+
+      this.app.listen(this.manager.config.port, () &#x3D;&gt; {
+        resolve()
+      })
     })
   }
 
   /**
-   * Formatted guild counts
-   * @type {Array.&amp;lt;Number&gt;}
+   * Load routes and middleware
    */
-  get formatted () {
-    return this.client.guilds.reduce((a, b) &#x3D;&gt; {
-      a[this.client.options.shards.indexOf(this.client.guildShard(b.id))]++
-      return a
-    }, Array(this.client.shards.size).fill(0))
+  _loadRoutes () {
+    this.app.use(bodyParser.json())
+    this.app.use(bodyParser.urlencoded({
+      extended: true
+    }))
+
+    this.app.use(cookieParser())
+
+    this.app.use(cors())
+
+    this.app.use((req, res, next) &#x3D;&gt; {
+      if (!req.url.match(/static|updates\/./gi)) this.manager.log(&#x60;${req.method} ${req.url}&#x60;)
+
+      req.api &#x3D; req.originalUrl.split(&#x27;?&#x27;)[0].endsWith(&#x27;.json&#x27;) || req.method !&#x3D;&#x3D; &#x27;GET&#x27;
+
+      next()
+    })
+
+    this.app.use(&#x27;/static&#x27;, Express.static(Path.resolve(__dirname, &#x27;./static&#x27;)))
+
+    LoadRoutes(this.manager, this.app, __dirname, &#x27;./routes&#x27;)
   }
 }
 
-module.exports &#x3D; Internals
+module.exports &#x3D; App
 </code></pre>
           </article>
         </div>

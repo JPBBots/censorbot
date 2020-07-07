@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Class: Punishments</title>
+  <title>Class: Cache</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -25,10 +25,10 @@
         <div id="jsdoc-main" role="main">
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
-            <h1><small></small><span class="symbol-name">Punishments</span></h1>
-            <p class="source-link">Source: <a href="src_lib_services_Punishments.js.html#source-line-18">src/<wbr>lib/<wbr>services/<wbr>Punishments.<wbr>js:18</a></p>
+            <h1><small></small><span class="symbol-name">Cache</span></h1>
+            <p class="source-link">Source: <a href="util_Cache.js.html#source-line-12">util/<wbr>Cache.<wbr>js:12</a></p>
             <div class="symbol-classdesc">
-              <p>Used for managing warnings and distributing punishments</p>
+              <p>Collection that deletes entries after a certain amount of time</p>
             </div>
             <dl class="dl-compact">
             </dl>
@@ -39,14 +39,14 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Punishments.html#client">client</a></dt>
+                    <dt><a href="Cache.html#time">time</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Punishments.html#db">db</a></dt>
+                    <dt><a href="Cache.html#timeouts">timeouts</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -60,14 +60,14 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Punishments.html#addOne">addOne(guild, user, db)</a></dt>
+                    <dt><a href="Cache.html#get">get(key)</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Punishments.html#punish">punish(guild, user, db, warning, inDB)</a></dt>
+                    <dt><a href="Cache.html#set">set(key, val)</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -78,8 +78,8 @@
             </div>
           </section>
           <section>
-            <h2 id="Punishments">new&nbsp;<span class="symbol-name">Punishments</span><span class="signature"><span class="signature-params">(client)</span></span></h2>
-            <p>Punishments Manager</p>
+            <h2 id="Cache">new&nbsp;<span class="symbol-name">Cache</span><span class="signature"><span class="signature-params">(time)</span></span></h2>
+            <p>Cache</p>
             <section>
               <h3>Parameter</h3>
               <table class="jsdoc-details-table">
@@ -94,7 +94,7 @@
                 <tbody>
                   <tr>
                     <td>
-                      <p>client</p>
+                      <p>time</p>
                     </td>
                     <td>
                       <p>&nbsp;</p>
@@ -103,36 +103,37 @@
                       <p>&nbsp;</p>
                     </td>
                     <td>
-                      <p>Client</p>
+                      <p>Death rate in milliseconds</p>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </section>
             <dl class="dl-compact">
+              <dt>Extends</dt>
+              <dd>Collection</dd>
             </dl>
           </section>
           <section>
             <h2>Properties</h2>
             <section>
-              <h3 id="client"><span class="symbol-name">client</span><small class="property-type">
-                  &nbsp;<a href="Client.html">Client</a></small></h3>
-              <p>Client</p>
+              <h3 id="time"><span class="symbol-name">time</span><small class="property-type">
+                  &nbsp;Number</small></h3>
+              <p>Death rate in milliseconds</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="db"><span class="symbol-name">db</span><small class="property-type">
-                  &nbsp;MongoDB.Collection</small></h3>
-              <p>Database</p>
+              <h3 id="timeouts"><span class="symbol-name">timeouts</span><small class="property-type">
+                  &nbsp;Object with any type keys and Timeout properties</small></h3>
+              <p>Timeout store</p>
               <dl class="dl-compact">
               </dl>
             </section>
             <h2>Methods</h2>
             <section>
-              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
-              <h3 id="addOne"><span class="symbol-name">addOne</span><span class="signature"><span class="signature-params">(guild, user, db)</span></span></h3>
-              <p>Adds a user punishment</p>
+              <h3 id="get"><span class="symbol-name">get</span><span class="signature"><span class="signature-params">(key)</span></span></h3>
+              <p>Get</p>
               <section>
-                <h4>Parameters</h4>
+                <h4>Parameter</h4>
                 <table class="jsdoc-details-table">
                   <thead>
                     <tr>
@@ -145,44 +146,16 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>guild</p>
+                        <p>key</p>
                       </td>
                       <td>
-                        <p><a href="global.html#Snowflake">Snowflake</a></p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Guild</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>user</p>
-                      </td>
-                      <td>
-                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                        <p>any type</p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>User</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>db</p>
-                      </td>
-                      <td>
-                        <p>Object</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Database</p>
+                        <p>Get key</p>
                       </td>
                     </tr>
                   </tbody>
@@ -190,9 +163,8 @@
               </section>
               <dl class="dl-compact">
               </dl>
-              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
-              <h3 id="punish"><span class="symbol-name">punish</span><span class="signature"><span class="signature-params">(guild, user, db, warning, inDB)</span></span></h3>
-              <p>Punishes a user</p>
+              <h3 id="set"><span class="symbol-name">set</span><span class="signature"><span class="signature-params">(key, val)</span></span></h3>
+              <p>Set</p>
               <section>
                 <h4>Parameters</h4>
                 <table class="jsdoc-details-table">
@@ -207,72 +179,30 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>guild</p>
+                        <p>key</p>
                       </td>
                       <td>
-                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                        <p>any type</p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>Guild</p>
+                        <p>Key</p>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <p>user</p>
+                        <p>val</p>
                       </td>
                       <td>
-                        <p><a href="global.html#Snowflake">Snowflake</a></p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>User</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>db</p>
-                      </td>
-                      <td>
-                        <p>Object</p>
+                        <p>any type</p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>Database</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>warning</p>
-                      </td>
-                      <td>
-                        <p>Number</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Warning amount</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>inDB</p>
-                      </td>
-                      <td>
-                        <p>Boolean</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>In Database</p>
+                        <p>Value</p>
                       </td>
                     </tr>
                   </tbody>

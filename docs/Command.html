@@ -26,7 +26,7 @@
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
             <h1><small></small><span class="symbol-name">Command</span></h1>
-            <p class="source-link">Source: <a href="src_lib_bot_Command.js.html#source-line-10">src/<wbr>lib/<wbr>bot/<wbr>Command.<wbr>js:10</a></p>
+            <p class="source-link">Source: <a href="src_lib_bot_Command.js.html#source-line-11">src/<wbr>lib/<wbr>bot/<wbr>Command.<wbr>js:11</a></p>
             <div class="symbol-classdesc">
               <p>Used for each instance of ran commands for easier interaction and customizable actions</p>
             </div>
@@ -42,22 +42,30 @@
                     <dt><a href="Command.html#client">client</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="Command.html#config">config</a></dt>
+                    <dt><a href="Command.html#cmd">cmd</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
+                    <dt><a href="Command.html#config">config</a></dt>
+                    <dd>
+                    </dd>
                     <dt><a href="Command.html#embed">embed</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Command.html#handler">handler</a></dt>
                     <dd>
                     </dd>
                     <dt><a href="Command.html#msg">msg</a></dt>
                     <dd>
                     </dd>
                   </dl>
-                </div>
-                <div class="summary-column">
                 </div>
               </div>
             </div>
@@ -84,7 +92,7 @@
             </div>
           </section>
           <section>
-            <h2 id="Command">new&nbsp;<span class="symbol-name">Command</span><span class="signature"><span class="signature-params">(client, message)</span></span></h2>
+            <h2 id="Command">new&nbsp;<span class="symbol-name">Command</span><span class="signature"><span class="signature-params">(CommandHanlder, message, cmd)</span></span></h2>
             <p>For handling messages to a command site</p>
             <section>
               <h3>Parameters</h3>
@@ -100,7 +108,7 @@
                 <tbody>
                   <tr>
                     <td>
-                      <p>client</p>
+                      <p>CommandHanlder</p>
                     </td>
                     <td>
                       <p>&nbsp;</p>
@@ -109,7 +117,7 @@
                       <p>&nbsp;</p>
                     </td>
                     <td>
-                      <p>Client</p>
+                      <p>Command Handler</p>
                     </td>
                   </tr>
                   <tr>
@@ -126,6 +134,20 @@
                       <p>Message object</p>
                     </td>
                   </tr>
+                  <tr>
+                    <td>
+                      <p>cmd</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Command object</p>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </section>
@@ -140,6 +162,11 @@
               <p>Client</p>
               <dl class="dl-compact">
               </dl>
+              <h3 id="cmd"><span class="symbol-name">cmd</span><small class="property-type">
+                  &nbsp;Object</small></h3>
+              <p>Command object</p>
+              <dl class="dl-compact">
+              </dl>
               <h3 id="config"><span class="symbol-name">config</span><small class="property-type">
                   &nbsp;Object</small></h3>
               <p>Client config</p>
@@ -148,6 +175,11 @@
               <h3 id="embed"><span class="symbol-name">embed</span><small class="property-type">
                   &nbsp;<a href="Embed.html">Embed</a></small></h3>
               <p>New embed</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="handler"><span class="symbol-name">handler</span><small class="property-type">
+                  &nbsp;<a href="CommandHandler.html">CommandHandler</a></small></h3>
+              <p>Command Handler</p>
               <dl class="dl-compact">
               </dl>
               <h3 id="msg"><span class="symbol-name">msg</span><small class="property-type">
@@ -209,7 +241,7 @@
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on June 13, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on July 7, 2020.
       </p>
     </div>
   </footer>

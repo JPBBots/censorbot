@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Source: src/lib/client/Internals.js</title>
+  <title>Source: util/Cache.js</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -26,61 +26,74 @@
         </div>
         <div id="jsdoc-main" role="main">
           <header class="page-header">
-            <h1>Source: src/lib/client/Internals.js</h1>
+            <h1>Source: util/Cache.js</h1>
           </header>
           <article>
-            <pre class="prettyprint linenums"><code>/**
- * Used for methods that should be accessible from everywhere throughout censor bot
+            <pre class="prettyprint linenums"><code>const Collection &#x3D; require(&#x27;./Collection&#x27;)
+
+/**
+ * Collection that deletes entries after a certain amount of time
+ * @extends Collection
  */
-class Internals {
+class Cache extends Collection {
   /**
-   * Internal Methods
-   * @param {Client} client Client
+   * Cache
+   * @param {Number} time Death rate in milliseconds
    */
-  constructor (client) {
+  constructor (time) {
+    super()
+
     /**
-     * Client
-     * @type {Client}
+     * Death rate in milliseconds
+     * @type {Number}
      */
-    this.client &#x3D; client
+    this.time &#x3D; time
+
+    /**
+     * Timeout store
+     * @type {Collection.&amp;lt;*, Timeout&gt;}
+     */
+    this.timeouts &#x3D; new Collection()
   }
 
   /**
-   * Log a censor
-   * @param {String} type Type
-   * @param {String} content Content
-   * @param {Object} user User
-   * @param {Snowflake} guild Guild
-   * @param {Object} res Filter response
+   * Get
+   * @param {*} key Get key
    */
-  logCensor (type, content, user, guild, res) {
-    this.client.log(&#x60;Censored (${type}) ${user.username}#${user.discriminator}(${user.id}) in ${guild}: ${content}&#x60;)
-    this.client.webhooks.send(&#x27;log&#x27;, {
-      content: &#x60;\&#x60;\&#x60;\&#x60;${content.replace(/&#x60;/g, &#x27;\&#x27;&#x27;)}\&#x60;\&#x60;\&#x60;&#x60;,
-      embeds: [
-        this.client.embed
-          .title(type)
-          .description(&#x60;&amp;lt;@${user.id}&gt;(${user.id}) in ${guild}&#x60;)
-          .field(&#x27;Method&#x27;, res.method)
-          .field(&#x27;Arg&#x27;, res.arg.map(x &#x3D;&gt; x.toString()).join(&#x27;, &#x27;))
-          .render()
-      ]
-    })
+  get (key) {
+    if (!super.has(key)) return null
+
+    this._resetTimer(key)
+
+    return super.get(key)
   }
 
   /**
-   * Formatted guild counts
-   * @type {Array.&amp;lt;Number&gt;}
+   * Set
+   * @param {*} key Key
+   * @param {*} val Value
    */
-  get formatted () {
-    return this.client.guilds.reduce((a, b) &#x3D;&gt; {
-      a[this.client.options.shards.indexOf(this.client.guildShard(b.id))]++
-      return a
-    }, Array(this.client.shards.size).fill(0))
+  set (key, val) {
+    super.set(key, val)
+
+    this._resetTimer(key)
+  }
+
+  _resetTimer (key) {
+    if (this.timeouts.has(key)) return this.timeouts.get(key).refresh()
+    this.timeouts.set(key, setTimeout(() &#x3D;&gt; {
+      super.delete(key)
+      this.timeouts.delete(key)
+    }, this.time))
+  }
+
+  delete (key) {
+    super.delete(key)
+    this.timeouts.delete(key)
   }
 }
 
-module.exports &#x3D; Internals
+module.exports &#x3D; Cache
 </code></pre>
           </article>
         </div>

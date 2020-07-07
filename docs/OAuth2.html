@@ -26,7 +26,7 @@
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
             <h1><small></small><span class="symbol-name">OAuth2</span></h1>
-            <p class="source-link">Source: <a href="src_lib_dashboard_OAuth2.js.html#source-line-26">src/<wbr>lib/<wbr>dashboard/<wbr>OAuth2.<wbr>js:26</a></p>
+            <p class="source-link">Source: <a href="src_lib_api_OAuth2.js.html#source-line-26">src/<wbr>lib/<wbr>api/<wbr>OAuth2.<wbr>js:26</a></p>
             <div class="symbol-classdesc">
               <p>OAuth2 Methods</p>
             </div>
@@ -42,6 +42,10 @@
                     <dt><a href="OAuth2.html#api">api</a></dt>
                     <dd>
                     </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
                     <dt><a href="OAuth2.html#guildCache">guildCache</a></dt>
                     <dd>
                     </dd>
@@ -52,12 +56,7 @@
                     <dt><a href="OAuth2.html#manager">manager</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="OAuth2.html#timeouts">timeouts</a></dt>
-                    <dd>
-                    </dd>
                   </dl>
-                </div>
-                <div class="summary-column">
                 </div>
               </div>
             </div>
@@ -69,17 +68,7 @@
                     <dt><a href="OAuth2.html#_bearer">_bearer(code)</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="OAuth2.html#_get">_get(token)</a></dt>
-                    <dd>
-                    </dd>
-                  </dl>
-                </div>
-                <div class="summary-column">
-                  <dl class="dl-summary-callout">
                     <dt><a href="OAuth2.html#_guilds">_guilds(bearer)</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="OAuth2.html#_set">_set(token, guilds)</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -93,6 +82,8 @@
                     <dd>
                     </dd>
                   </dl>
+                </div>
+                <div class="summary-column">
                 </div>
               </div>
             </div>
@@ -150,11 +141,6 @@
               <p>Manager</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="timeouts"><span class="symbol-name">timeouts</span><small class="property-type">
-                  &nbsp;Object with Token keys and Timeout properties</small></h3>
-              <p>Timeouts of cache dumping</p>
-              <dl class="dl-compact">
-              </dl>
             </section>
             <h2>Methods</h2>
             <section>
@@ -196,39 +182,6 @@
                   <p><code>Object</code> OAuth User</p>
                 </dd>
               </dl>
-              <h3 id="_get"><span class="symbol-name">_get</span><span class="signature"><span class="signature-params">(token)</span></span></h3>
-              <p>Get in cache</p>
-              <section>
-                <h4>Parameter</h4>
-                <table class="jsdoc-details-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Optional</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <p>token</p>
-                      </td>
-                      <td>
-                        <p>Token</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Token</p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </section>
-              <dl class="dl-compact">
-              </dl>
               <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
               <h3 id="_guilds"><span class="symbol-name">_guilds</span><span class="signature"><span class="signature-params">(bearer)</span>&nbsp;&rarr; <span class="signature-returns"> Array of <a href="global.html#CachedGuild">CachedGuild</a></span></span></h3>
               <p>Fetches guilds of whom bearer belongs to</p>
@@ -266,53 +219,6 @@
                 <dd>
                   <p><code>Array of <a href="global.html#CachedGuild">CachedGuild</a></code> Array of fetched guilds</p>
                 </dd>
-              </dl>
-              <h3 id="_set"><span class="symbol-name">_set</span><span class="signature"><span class="signature-params">(token, guilds)</span></span></h3>
-              <p>Set guilds into cache</p>
-              <section>
-                <h4>Parameters</h4>
-                <table class="jsdoc-details-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Optional</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <p>token</p>
-                      </td>
-                      <td>
-                        <p>Token</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Token of user to cache</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>guilds</p>
-                      </td>
-                      <td>
-                        <p>Array of <a href="global.html#CachedGuild">CachedGuild</a></p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Array of cached guilds</p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </section>
-              <dl class="dl-compact">
               </dl>
               <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
               <h3 id="_user"><span class="symbol-name">_user</span><span class="signature"><span class="signature-params">(bearer)</span>&nbsp;&rarr; <span class="signature-returns"> Object</span></span></h3>
@@ -370,7 +276,7 @@
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on June 13, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on July 7, 2020.
       </p>
     </div>
   </footer>

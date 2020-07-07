@@ -1,0 +1,233 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Source: src/lib/api/OAuth2.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: src/lib/api/OAuth2.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>const Request &#x3D; require(&#x27;../../../req&#x27;)
+
+const Cache &#x3D; require(&#x27;../../../util/Cache&#x27;)
+const encodeJSON &#x3D; require(&#x27;../../../util/encodeJSON&#x27;)
+
+const Crypto &#x3D; require(&#x27;crypto&#x27;)
+
+/**
+ * Guilds cached for oauth/dashboard use
+ * @typedef {Object} CachedGuild
+ * @property {Snowflake} i ID of guild
+ * @property {String} n Name of guild
+ * @property {String} a Icon hash of guild
+ * @property {Array.&amp;lt;Channel&gt;} c Channels
+ * @property {Array.&amp;lt;Role&gt;} r Roles
+ */
+
+/**
+ * OAuth2 Methods
+ */
+class OAuth2 {
+  /**
+   * OAuth2
+   * @param {Manager} manager Manager
+   */
+  constructor (manager) {
+    /**
+     * Manager
+     * @type {Manager}
+     */
+    this.manager &#x3D; manager
+
+    /**
+     * Discord API
+     * @type {Request}
+     */
+    this.api &#x3D; new Request(&#x27;https://discord.com/api&#x27;)
+
+    /**
+     * Guild cache
+     * @type {Cache.&amp;lt;Token, Array.&amp;lt;CachedGuild&gt;&gt;}
+     */
+    this.guildCache &#x3D; new Cache(this.config.dashOptions.guildCacheWipeTimeout)
+  }
+
+  get db () {
+    return this.manager.db.collection(&#x27;users&#x27;)
+  }
+
+  get config () {
+    return this.manager.config
+  }
+
+  /**
+   * Creates a token
+   * @returns {String} New Token
+   */
+  createToken () {
+    return Crypto.createHash(&#x27;sha256&#x27;)
+      .update(Crypto.randomBytes(8).toString(&#x27;hex&#x27;))
+      .update(&#x60;${Date.now()}&#x60;)
+      .update(&#x60;${this.config.oauth.mysecret}&#x60;)
+      .digest(&#x27;hex&#x27;)
+  }
+
+  async callback (code, host) {
+    const oauthUser &#x3D; await this._bearer(code, host)
+    if (!oauthUser) throw new Error(&#x27;Invalid Code&#x27;)
+
+    if (!oauthUser.scope.includes(&#x27;identify&#x27;) || !oauthUser.scope.includes(&#x27;guilds&#x27;)) throw new Error(&#x27;Invalid Scopes&#x27;) // double check cuz y not
+
+    const user &#x3D; await this._user(oauthUser.access_token)
+    if (!user) throw new Error(&#x27;Invalid User&#x27;)
+
+    let token
+
+    const currentUser &#x3D; await this.db.findOne({ id: user.id })
+    if (currentUser) {
+      token &#x3D; currentUser.token
+
+      await this.db.updateOne({ id: user.id }, { $set: { bearer: oauthUser.access_token, avatar: user.avatar, tag: &#x60;${user.username}#${user.discriminator}&#x60; } })
+    } else {
+      token &#x3D; this.createToken()
+
+      await this.db.insertOne({ id: user.id, token, bearer: oauthUser.access_token, avatar: user.avatar, tag: &#x60;${user.username}#${user.discriminator}&#x60; })
+    }
+
+    return token
+  }
+
+  async getGuilds (token) {
+    const cache &#x3D; this.guildCache.get(token)
+
+    const user &#x3D; await this.db.findOne({ token })
+    if (!user) return false
+
+    user.admin &#x3D; await this.manager.isAdmin(user.id)
+
+    if (cache) return { user, guilds: cache }
+
+    const guilds &#x3D; await this._guilds(user.bearer)
+    if (!guilds) return false
+
+    this.guildCache.set(token, guilds)
+
+    return { guilds, user }
+  }
+
+  /**
+   * Fetches guilds of whom bearer belongs to
+   * @param {String} bearer User bearer
+   * @returns {Array.&amp;lt;CachedGuild&gt;} Array of fetched guilds
+   */
+  async _guilds (bearer) {
+    const guilds &#x3D; await this.api
+      .users[&#x27;@me&#x27;]
+      .guilds
+      .get({
+        headers: {
+          Authorization: &#x60;Bearer ${bearer}&#x60;
+        }
+      })
+
+    if (!guilds || guilds.constructor !&#x3D;&#x3D; Array) return false
+
+    return guilds
+      .filter(x &#x3D;&gt; (x.permissions &amp;amp; this.config.dashOptions.requiredPermissionBit) !&#x3D;&#x3D; 0 || x.owner)
+      .map(x &#x3D;&gt; ({ n: x.name, i: x.id, a: x.icon }))
+  }
+
+  /**
+   * Fetches user of whom bearer belongs to
+   * @param {String} bearer User Bearer
+   * @returns {Object} User Object
+   */
+  async _user (bearer) {
+    const user &#x3D; await this.api
+      .users[&#x27;@me&#x27;]
+      .get({
+        headers: {
+          Authorization: &#x60;Bearer ${bearer}&#x60;
+        }
+      })
+
+    if (!user || !user.id) return
+
+    return user
+  }
+
+  /**
+   * Fetch bearer from oauth code
+   * @param {String} code Code received from oauth transaction
+   * @returns {Object} OAuth User
+   */
+  async _bearer (code, host) {
+    const user &#x3D; await this.api
+      .oauth2
+      .token
+      .post({
+        headers: {
+          &#x27;Content-Type&#x27;: &#x27;application/x-www-form-urlencoded&#x27;
+        },
+        body: {
+          client_id: this.config.oauth.id,
+          client_secret: this.config.oauth.secret,
+          code,
+          grant_type: &#x27;authorization_code&#x27;,
+          redirect_uri: &#x60;https://${host}/api/auth/callback&#x60;,
+          scope: &#x27;identify guilds&#x27;
+        },
+        parser: encodeJSON
+      })
+    if (!user || !user.access_token) return false
+
+    return user
+  }
+}
+
+module.exports &#x3D; OAuth2
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on July 7, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>
