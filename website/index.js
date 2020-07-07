@@ -18,6 +18,10 @@ app.get('/', (req, res) => {
   res.render('index')
 })
 
+app.get('/tos', (req, res) => {
+  res.render('tos')
+})
+
 app.get('/invite', (req, res) => {
   res.render('invite')
 })
