@@ -78,7 +78,7 @@ class Capi {
     const cache = window.sessionStorage.getItem('CachedGuilds')
     if (cache) return JSON.parse(cache)
 
-    return await this.request('GET', '/guilds')
+    return this.request('GET', '/guilds')
       .then(guilds => {
         if (guilds) window.sessionStorage.setItem('CachedGuilds', JSON.stringify(guilds))
         return guilds
