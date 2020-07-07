@@ -49,7 +49,7 @@ class Cache extends Collection {
   }
 
   _resetTimer (key) {
-    if (this.timeouts.has(key)) clearTimeout(this.timeouts.get(key))
+    if (this.timeouts.has(key)) return this.timeouts.get(key).refresh()
     this.timeouts.set(key, setTimeout(() => {
       super.delete(key)
       this.timeouts.delete(key)
