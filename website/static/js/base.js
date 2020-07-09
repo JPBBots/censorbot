@@ -50,10 +50,11 @@ class Base { // eslint-disable-line no-unused-vars
 
   update () {
     if (!this.ready || !this.useBar) return
-    if (this.useBar) document.getElementById('save').innerText = 'Save Changes'
 
-    if (!this.changed) document.getElementById('save').setAttribute('disabled', '')
-    else document.getElementById('save').removeAttribute('disabled')
+    if (!this.changed) {
+      document.getElementById('save').setAttribute('disabled', '')
+      if (this.useBar) document.getElementById('save').innerText = 'Save Changes'
+    } else document.getElementById('save').removeAttribute('disabled')
   }
 
   addTag (tagName, options) {
