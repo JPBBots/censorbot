@@ -100,6 +100,7 @@ class WorkerInternals {
       case 'RESTART':
         shard = this.worker.client.shards.get(data.id)
         if (!shard) return
+        shard.ws.emit('RESTARTING')
         if (data.destroy) {
           shard.setStatus({
             afk: false,
@@ -126,6 +127,9 @@ class WorkerInternals {
         shard.spawn()
 
         shard.ws.once('READY', () => {
+          resolve()
+        })
+        shard.ws.once('RESTARTING', () => {
           resolve()
         })
         break

@@ -53,8 +53,11 @@ class ShardManager {
     this.looping = true
 
     const cluster = this.master.api.shardCluster(nextShard)
+    if (!cluster) {
+      this.looping = false
+      return
+    }
 
-    if (!cluster) return
     await cluster.send('SPAWN_SHARD', { id: nextShard }, true)
 
     this.queue.delete(nextShard)
