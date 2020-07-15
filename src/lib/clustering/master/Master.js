@@ -144,7 +144,7 @@ class Master {
     currentCluster.dying = true
     currentCluster.send('KILL')
 
-    await this._createWorker(id, currentCluster.job, this.internalClusters[id]).spawn()
+    await this._createWorker(id, currentCluster.job, this.internalClusters[id])
 
     return true
   }
