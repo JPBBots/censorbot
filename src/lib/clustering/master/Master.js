@@ -107,7 +107,7 @@ class Master {
   _createWorker (id, job, shards, inactive) {
     const cluster = new Cluster(id, job, shards, this, inactive)
 
-    if (!inactive) this.clusters.set(id, cluster)
+    if (!inactive) this.clusters.set(`${id}`, cluster)
 
     return cluster
   }
@@ -138,9 +138,7 @@ class Master {
   }
 
   async restartCluster (id) {
-    if (!isNaN(id)) id = Number(id)
-
-    const currentCluster = this.clusters.get(id)
+    const currentCluster = this.clusters.get(`${id}`)
     if (!currentCluster) return false
 
     currentCluster.dying = true

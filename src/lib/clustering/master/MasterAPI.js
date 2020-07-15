@@ -80,7 +80,7 @@ class MasterAPI {
 
     for (let i = 0; i < this.master.internalClusters.length; i++) {
       if (this.master.internalClusters[i].includes(parseInt(id))) {
-        guildCluster = this.master.clusters.get(i)
+        guildCluster = this.master.clusters.get(`${i}`)
         break
       }
     }
