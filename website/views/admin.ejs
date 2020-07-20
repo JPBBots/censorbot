@@ -59,7 +59,7 @@
             let lastUpdate = Date.now() - 5000
             const interval = setInterval(() => {
               timer.innerText = `Updating in ${((5000 - (Date.now() - lastUpdate)) / 1000).toFixed(1)} seconds`
-              if ((Date.now() - lastUpdate) > 4000) {
+              if (((Date.now() - lastUpdate) > 4000) && !document.hidden) {
                 lastUpdate = Date.now()
                 api.request('GET', '/admin')
                   .then(res => {
