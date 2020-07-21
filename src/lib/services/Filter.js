@@ -128,7 +128,7 @@ class Filter {
         addSpot(
           split[spI],
           i,
-          spI
+          spI + i
         )
       }
     }
