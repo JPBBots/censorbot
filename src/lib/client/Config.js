@@ -1,6 +1,5 @@
 const config = {
-  base: true,
-  languages: ['en', 'es', 'off'],
+  filters: ['en', 'es', 'off'],
   censor: {
     msg: true,
     emsg: true,
@@ -23,7 +22,7 @@ const config = {
   webhook: {
     enabled: false,
     replace: 0,
-    separate: false
+    separate: true
   },
   channels: [],
   multi: false,
@@ -32,8 +31,8 @@ const config = {
 }
 
 const constants = {
-  currentVersion: 3,
-  allowedLanguages: ['en', 'es', 'off', 'ru', 'de'],
+  currentVersion: 4,
+  allowedFilters: ['en', 'es', 'off', 'ru', 'de'],
   punishmentTypes: [0, 1, 2, 3],
   webhookReplaces: [0, 1]
 }
@@ -66,12 +65,11 @@ const verify = (obj, premium, guild) => {
       : defaultPieces[piece]
 
   return {
-    base: checker('base', (v) => typeof v === 'boolean'),
-    languages: checker('languages', (v) =>
+    filters: checker('filters', (v) =>
       v &&
       v.constructor === Array &&
       !v.some(a =>
-        !constants.allowedLanguages.some(b => a === b) ||
+        !constants.allowedFilters.some(b => a === b) ||
         v.filter(x => x === a).length > 1
       )
     ),

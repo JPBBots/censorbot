@@ -24,17 +24,26 @@ class Internals {
    */
   logCensor (type, content, user, guild, res) {
     this.client.log(`Censored (${type}) ${user.username}#${user.discriminator}(${user.id}) in ${guild}: ${content}`)
-    this.client.webhooks.send('log', {
-      content: `\`\`\`${content.replace(/`/g, '\'')}\`\`\``,
-      embeds: [
-        this.client.embed
-          .title(type)
-          .description(`<@${user.id}>(${user.id}) in ${guild}`)
-          .field('Method', res.method)
-          .field('Arg', res.arg.map(x => x.toString()).join(', '))
-          .render()
-      ]
+
+    this.client.db.collection('stats').updateOne({
+      id: 'deleted'
+    }, {
+      $inc: {
+        amount: 1
+      }
     })
+    // this will be disabled until a better solution is found.
+    // this.client.webhooks.send('log', {
+    //   content: `\`\`\`${content.replace(/`/g, '\'')}\`\`\``,
+    //   embeds: [
+    //     this.client.embed
+    //       .title(type)
+    //       .description(`<@${user.id}>(${user.id}) in ${guild}`)
+    //       .field('Method', res.filters.join(', '))
+    //       .field('Arg', res.places.map(x => x.toString()).join(', '))
+    //       .render()
+    //   ]
+    // })
   }
 
   /**

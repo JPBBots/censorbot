@@ -32,7 +32,7 @@ class Reloader {
       case 'filter':
         delete require.cache[require.resolve(resolve(lib, './services/Filter.js'))]
         const Filter = require(resolve(lib, './services/Filter.js'))
-        this.client.filter = new Filter(this.client, '../../filter/linkbyp.json')
+        this.client.filter = new Filter()
         break
       case 'punish':
         delete require.cache[require.resolve(resolve(lib, './services/Punishments.js'))]

@@ -9,8 +9,7 @@ module.exports = {
   dashboard: 'https://dash.censor.bot',
   inviteSite: 'https://censor.bot/invite',
   clusters: [
-    [0, 1],
-    [2, 3]
+    [0]
   ],
   dashPrefix: 'dasha'
 }

@@ -23,7 +23,7 @@ module.exports = async function (reaction) {
 
   content += reaction.emoji.name
 
-  const res = this.filter.test(content, db.base, db.languages, db.filter, db.uncensor)
+  const res = this.filter.test(content, db.filters, db.filter, db.uncensor)
 
   if (!res.censor) return
 
@@ -41,7 +41,7 @@ module.exports = async function (reaction) {
           `https://discord.com/channels/${reaction.guild_id}/${reaction.channel_id}/${reaction.message_id}`
         }) ${errMsg ? `\n\nError: ${errMsg}` : ''}`)
         .field('Reaction', content, true)
-        .field('Method', res.method, true)
+        .field('Filter(s)', res.filters.map(x => this.filter.filterMasks[x]).join(', '), true)
         .timestamp()
         .footer('https://patreon.com/censorbot')
     )

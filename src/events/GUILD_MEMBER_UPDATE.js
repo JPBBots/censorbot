@@ -16,7 +16,7 @@ module.exports = async function (member) {
 
   content += member.nick
 
-  const res = this.filter.test(content, db.base, db.languages, db.filter, db.uncensor)
+  const res = this.filter.test(content, db.filters, db.filter, db.uncensor)
 
   if (!res.censor) return
 
@@ -31,8 +31,8 @@ module.exports = async function (member) {
       this.embed
         .title('Removed Nickname')
         .description(`User <@${member.user.id}>${errMsg ? `\n\nError: ${errMsg}` : ''}`)
-        .field('Nickname', content, true)
-        .field('Method', res.method, true)
+        .field('Nickname', this.filter.surround(content, res.ranges, '__'), true)
+        .field('Filter(s)', res.filters.map(x => this.filter.filterMasks[x]).join(', '), true)
         .timestamp()
         .footer('https://patreon.com/censorbot')
     )

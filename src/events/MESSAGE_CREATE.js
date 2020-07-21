@@ -1,12 +1,3 @@
-const resends = [
-  (c) => {
-    return `||${c}||`
-  },
-  (c) => {
-    return '#'.repeat(c.length)
-  }
-]
-
 module.exports = async function (message) {
   const db = await this.db.config(message.guild_id)
 
@@ -37,39 +28,30 @@ module.exports = async function (message) {
       db.channels.includes(message.channel_id)
   ) return
 
-  let multiline = false
   let multi
-  let content = ''
+  let content
 
   if (db.multi) {
-    if (this.multi.has(message.channel_id)) {
-      multi = this.multi.get(message.channel_id)
-      if (multi.user !== message.author.id) {
-        this.multi.delete(message.channel_id)
-      } else {
-        content += Object.values(multi.msg).join('')
-
-        multi.msg[message.id] = message.content
-
-        this.multi.set(message.channel_id, multi)
-
-        multiline = true
-      }
+    multi = this.multi.get(message.channel_id)
+    if (!multi) {
+      multi = {}
+      multi.user = message.author.id
+      multi.msg = [ { id: message.id, content: message.content } ]
     } else {
-      const ob = {}
-      ob[message.id] = message.content
-      this.multi.set(message.channel_id, {
-        user: message.author.id,
-        msg: ob
-      })
+      if (multi.user !== message.author.id) {
+        multi.user = message.author.id
+        multi.msg = []
+      }
+      multi.msg.push({ id: message.id, content: message.content })
     }
+    this.multi.set(message.channel_id, multi)
+
+    content = multi.msg.map(x => x.content).join(' ')
+  } else {
+    content = message.content
   }
 
-  content += message.content
-
-  const res = inviteCensor ? ({ censor: true, method: 'invites', word: 'invite', arg: [] }) : this.filter.test(content, db.base, db.languages, db.filter, db.uncensor)
-
-  if (res.uncensor) this.multi.delete(message.channel_id)
+  const res = inviteCensor ? ({ censor: true, ranges: [], filters: ['invites'], places: [] }) : this.filter.test(content, db.filters, db.filter, db.uncensor)
 
   if (!res.censor) return
 
@@ -77,8 +59,8 @@ module.exports = async function (message) {
 
   let errMsg
 
-  if (multiline) {
-    this.interface.bulkDelete(message.channel_id, Object.keys(multi.msg))
+  if (multi && multi.msg.length > 1) {
+    this.interface.bulkDelete(message.channel_id, multi.msg.map(x => x.id))
   } else errMsg = await this.buckets.set(message.channel_id, message.id)
 
   this.multi.delete(message.channel_id)
@@ -92,8 +74,8 @@ module.exports = async function (message) {
       this.embed
         .title('Deleted Message')
         .description(`From <@${message.author.id}> in <#${message.channel_id}>${errMsg ? `\n\nError: ${errMsg}` : ''}`)
-        .field('Message', content, true)
-        .field('Method', res.method, true)
+        .field('Message', this.filter.surround(content, res.ranges, '__'), true)
+        .field('Filter(s)', res.filters.map(x => this.filter.filterMasks[x]).join(', '), true)
         .timestamp()
         .footer('https://patreon.com/censorbot')
     )
@@ -102,21 +84,14 @@ module.exports = async function (message) {
   this.punishments.addOne(message.guild_id, message.author.id, db)
 
   if (!inviteCensor && db.webhook.enabled) {
+    content = content.replace(/\|/g, '')
     if (db.webhook.separate) {
-      const send = res.resolved.split(' ')
-      const finished = []
-      res.arg.forEach(x => {
-        send.forEach((s, i) => {
-          if (finished.includes(i)) return
-          if (s.match(x)) {
-            send[i] = resends[db.webhook.replace || 0](s)
-            finished.push(i)
-          }
-        })
-      })
-      this.webhooks.sendAs(message.channel_id, message.author, message.member.nick || message.author.username, send.join(' '))
+      content = this.filter.surround(content, res.ranges, '||')
+
+      if (db.webhook.replace === 1) content = content.split(/\|\|/g).reduce((a, b) => [(a[0] + (a[1] === 1 ? '#'.repeat(b.length) : b)), (a[1] * -1)], ['', -1])[0]
+      this.webhooks.sendAs(message.channel_id, message.author, message.member.nick || message.author.username, `${content}`)
     } else {
-      this.webhooks.sendAs(message.channel_id, message.author, message.member.nick || message.author.username, `Contains Curse:\n||${content.replace(/\|/g, '')}||`)
+      this.webhooks.sendAs(message.channel_id, message.author, message.member.nick || message.author.username, `Contains Curse:\n||${content}||`)
     }
   }
 }

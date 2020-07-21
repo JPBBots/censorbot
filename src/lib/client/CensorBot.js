@@ -104,7 +104,7 @@ class CensorBot extends Client {
      * Filter
      * @type {Filter}
      */
-    this.filter = new Filter(this, '../../filter/linkbyp.json')
+    this.filter = new Filter()
     /**
      * Punishment manager
      * @type {Punishments}

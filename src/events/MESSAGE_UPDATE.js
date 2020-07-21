@@ -21,30 +21,30 @@ module.exports = async function (message) {
       db.channels.includes(message.channel_id)
   ) return
 
-  let multiline = false
   let multi
-  let content = ''
+  let content
 
   if (db.multi) {
-    if (this.multi.has(message.channel_id)) {
-      multi = this.multi.get(message.channel_id)
-      if (Object.prototype.hasOwnProperty.call(multi.msg, message.id)) {
-        if (Object.keys(multi.msg).length > 1) multiline = true
-
-        delete multi.msg[message.id]
-
-        content += Object.values(multi.msg).join('')
-
-        multi.msg[message.id] = message.content
-
-        this.multi.set(message.channel_id, multi)
-      }
+    multi = this.multi.get(message.channel_id)
+    if (!multi) {
+      multi = {}
+      multi.user = message.author.id
+      multi.msg = []
     }
+
+    const piece = multi.msg.find(x => x.id === message.id)
+
+    if (!piece) multi.msg.push({ id: message.id, content: message.content })
+    else piece.content = message.content
+
+    this.multi.set(message.channel_id, multi)
+
+    content = multi.msg.map(x => x.content).join(' ')
+  } else {
+    content = message.content
   }
 
-  if (!multiline) content += message.content
-
-  const res = inviteCensor ? ({ censor: true, method: 'invites', word: 'invite', arg: [] }) : this.filter.test(content, db.base, db.languages, db.filter, db.uncensor)
+  const res = inviteCensor ? ({ censor: true, method: 'invites', word: 'invite', arg: [] }) : this.filter.test(content, db.filters, db.filter, db.uncensor)
 
   if (!res.censor) return
 
@@ -52,8 +52,8 @@ module.exports = async function (message) {
 
   let errMsg
 
-  if (multiline) {
-    this.interface.bulkDelete(message.channel_id, Object.keys(multi.msg))
+  if (multi && multi.msg.length > 1) {
+    this.interface.bulkDelete(message.channel_id, multi.msg.map(x => x.id))
   } else {
     errMsg = await this.interface.delete(message.channel_id, message.id)
       .then(_ => false)
@@ -83,8 +83,8 @@ module.exports = async function (message) {
       this.embed
         .title('Deleted Edited Message')
         .description(`From <@${message.author.id}> in <#${message.channel_id}>${errMsg ? `\n\nError: ${errMsg}` : ''}`)
-        .field('Message', content, true)
-        .field('Method', res.method, true)
+        .field('Message', this.filter.surround(content, res.ranges, '__'), true)
+        .field('Filter(s)', res.filters.map(x => this.filter.filterMasks[x]).join(', '), true)
         .timestamp()
         .footer('https://patreon.com/censorbot')
     )

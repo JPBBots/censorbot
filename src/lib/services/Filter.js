@@ -1,277 +1,239 @@
-const emojis = require('emoji-unicode-map')
-delete require.cache[require.resolve('../../filter/filters.js')]
-const filters = require('../../filter/filters.js')
+const replaceSpots = {
+  spaces: /_|\/|\\|\.|\n|&|-|\+|=|:|~|,|\?|\s+/gi,
+  nothing: /"|\*|'|\||`|<|>|#|!|\(|\)|\[|\]|\{|\}|;|%|​|‍/gi // eslint-disable-line no-irregular-whitespace
+}
 
-module.exports = class JPBFilter {
-  constructor (client, linkBypFile) {
-    this.linkBypFile = linkBypFile
-    this.linkByp = require(linkBypFile).links
-    this.client = client
-    this.replaceSpots = {
-      spaces: /(_|\/|\\|\.|\n|&|-|\+|=|:|~|,|\?|\s+)/gi,
-      nothing: /("|\*|'|\||`|<|>|#|!|\(|\)|\[|\]|\{|\}|;|%|​|‍)/gi // eslint-disable-line no-irregular-whitespace
+const JPBExp = require('../../filter/JPBExp')
+
+const converter = {
+  in: ('\\$,ā,à,á,â,ã,ä,å,ą,ß,β,ò,ó,ô,ő,õ,ö,ø,Ď,ď,D,Ž,d,ž,è,é,ê,ë,ę,ð,Ç,ç,Č,č,Ć,ć,Ð,ì,í,î,ï,ī,ù,ű,ú,û,ü,ľ,ĺ,ł,ň,ñ,ń,Ŕ,ŕ,š,ś,ş,Ť,ť,ÿ,ý,ž,ż,ź,đ,ģ,ğ,µ,§,Ṉ,ṉ,Α,Β,Ν,Η,Ε,Ι,Τ,Ǝ,△,ı,с,к,Р,¡,0,İ,ĩ,į,@,к,ё,а,і,3,1,' + // accents
+    '🇦,🇧,🅱,🇨,🇩,🇪,🇫,🇬,🇭,🇮,🇯,🇰,🇱,🇲,🇳,🇴,🇵,🇶,🇷,🇸,🇹,🇺,🇻,🇼,🇽,🇾,🇿,🖕') // emojis
+    .split(',').map(x => new RegExp(x, 'g')),
+  out: ('s,a,a,a,a,a,a,a,a,b,b,o,o,o,o,o,o,o,d,d,d,z,d,z,e,e,e,e,e,e,c,c,c,c,c,c,d,i,i,i,i,i,u,u,u,u,u,l,l,l,n,n,n,r,r,s,s,s,t,t,y,y,z,z,z,d,g,g,u,s,n,n,a,b,n,h,e,i,t,e,a,i,c,k,p,i,o,i,i,i,a,k,e,a,i,e,i,' + // accents
+    'a,b,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,fuck') // emojis
+    .split(',')
+}
+
+const GetFilters = require('../../filter/filters')
+
+/**
+ * Filter for testing against words
+ */
+class Filter {
+  /**
+   * Filter
+   */
+  constructor () {
+    /**
+     * Filters
+     * @type {Object.<Languages, Array.<JPBExp>>}
+     */
+    this.filters = null
+
+    this.filterMasks = {
+      en: 'English',
+      es: 'Spanish',
+      off: 'Offensive',
+      de: 'German',
+      ru: 'Russian',
+      server: 'Server',
+      invites: 'Invites'
     }
-    this.emoji_lookup = {
-      '🇦': 'a',
-      '🇧': 'b',
-      '🅱': 'b',
-      '🇨': 'c',
-      '🇩': 'd',
-      '🇪': 'e',
-      '🇫': 'f',
-      '🇬': 'g',
-      '🇭': 'h',
-      '🇮': 'i',
-      '🇯': 'j',
-      '🇰': 'k',
-      '🇱': 'l',
-      '🇲': 'm',
-      '🇳': 'n',
-      '🇴': 'o',
-      '🇵': 'p',
-      '🇶': 'q',
-      '🇷': 'r',
-      '🇸': 's',
-      '🇹': 't',
-      '🇺': 'u',
-      '🇻': 'v',
-      '🇼': 'w',
-      '🇽': 'x',
-      '🇾': 'y',
-      '🇿': 'z',
-      '🖕': 'fuck'
+
+    this._loadFilters()
+  }
+
+  _loadFilters () {
+    this.filters = GetFilters()
+  }
+
+  surround (text, ranges, sur) {
+    function surroundRange (txt, range) {
+      txt = txt.split(/\s+/)
+
+      txt[range[0]] = `${sur}${txt[range[0]]}`
+      txt[range[1] - (txt[range[1]] ? 0 : 1)] = `${txt[range[1] - (txt[range[1]] ? 0 : 1)] || ''}${sur}`
+
+      return txt.join(' ')
     }
-  }
 
-  reload () {
-    this.reloadFilter()
-    this.reloadLinkByp()
-  }
-
-  reloadFilter () {
-    delete require.cache[require.resolve(this.filterFile)]
-    this.filter = require(this.filterFile)
-  }
-
-  reloadLinkByp () {
-    delete require.cache[require.resolve(this.linkBypFile)]
-    this.linkByp = require(this.linkBypFile).links
-  }
-
-  addToBypass (key, newValue) {
-    if (!this.filter[key]) this.filter[key] = []
-    if (newValue) this.filter[key].push(newValue)
-    return this.filter
+    return ranges.reduce((a, b) => surroundRange(a, b), text)
   }
 
   /**
-     *
-     * @param {String} content - Content of message
-     * @param {Boolean} GLOBAL - If global filter
-     * @param {Array} SERVER - Server filter array
-     * @param {Array} UNCENSOR - Uncensor array
-     * @returns {Object<censor<boolean>, method<String>, word<RegExp>, arg<String>>} - Response
-     */
-  test (content, GLOBAL = true, LANGS = [], SERVER = false, UNCENSOR = false) {
-    var res = {
-      censor: false,
-      method: 'none',
-      word: null,
-      arg: [],
-      uncensor: false
-    }
-    const init = () => {
-      // if (UNCENSOR && UNCENSOR[0]) {
-      //   var uncensorRes = this.testAgainstArray(this.resolveContent(content).join(' '), UNCENSOR)
-      //   if (uncensorRes[0]) {
-      //     res.censor = false
-      //     return
-      //   };
-      // }
-      const resolvedContent = this.resolveContent(content)
-      res.resolved = resolvedContent.join(' ')
+   * Filter resolved piece
+   * @typedef {Object} ResolvedPiece
+   * @property {String} t Resolved text
+   * @property {Array.<Number>} i Index range
+   * @example
+   *   .i[0] // Starting index
+   *   .i[1] // Ending index
+   */
 
-      if (GLOBAL) {
-        var baseFilter = this.testWithBypass(resolvedContent, filters(LANGS), UNCENSOR)
-        if (baseFilter.stopped) {
-          res.censor = true
-          res.method = 'base'
-          res.word = undefined
-          res.arg = res.arg.concat(baseFilter.args)
-        }
-        if (baseFilter.uncensor) res.uncensor = baseFilter.uncensor
+  /**
+   * Resolve content
+   * @param {String} content Content
+   * @returns {Array.<ResolvedPiece>}
+   */
+  resolve (content) {
+    // base stuff
+    content = content
+      .toLowerCase()
+      .replace(/<#?@?!?&?(\d+)>/g, '') // mentions
+      .replace(/<:(\w+):(\d+)>/g, '$1')
+      .replace(/ +/g, ' ') // multiple spaces
+      .replace(/(.)\1{2,}/g, '$1$1') // multiple characters only come up once
+
+    for (const i in converter.in) { // convert special character like accents and emojis into their readable counterparts
+      content = content.replace(converter.in[i], converter.out[i])
+    }
+
+    let res = Array(content.split(replaceSpots.spaces).length + 1).fill().map(() => ({ i: [], t: '' })) // array of default objects
+
+    content = content.split(' ')
+
+    function addSpot (text, spot, index) {
+      if (!res[index]) return false
+      res[index].t = text
+
+      function checkSpots (s) { // if indexes are outside of the range of the current spot, adjust the range
+        if (s < res[index].i[0]) res[index].i[0] = s
+        if (s > res[index].i[1]) res[index].i[1] = s
       }
 
-      if (SERVER && SERVER[0]) {
-        var serverFilter = this.testAgainstArray(resolvedContent.join(' '), SERVER, UNCENSOR)
-        if (serverFilter[0]) {
-          res.censor = true
-          res.method = 'server'
-          res.word = serverFilter[1]
-          res.arg = res.arg.concat(serverFilter[2])
-        }
-        if (serverFilter[3]) res.uncensor = serverFilter[3]
-      }
-    }
-    init()
-    if (res.censor && this.client) this.addNum()
-    return res
-  }
-
-  removeAccents (str) {
-    var accents = '$ÀÁÂÃÄÅĄĀāàáâãäåąßβÒÓÔÕÕÖØŐòóôőõöøĎďDŽdžÈÉÊËĘèéêëęðÇçČčĆćÐÌÍÎÏĪìíîïīÙÚÛÜŰùűúûüĽĹŁľĺłÑŇŃňñńŔŕŠŚŞšśşŤťŸÝÿýŽŻŹžżźđĢĞģğµ§ṈṉΑΒΝΗΕΙΤƎ△ıскР¡0İĩį@кёаі31'
-    var accentsOut = 'sAAAAAAAAaaaaaaaabbOOOOOOOOoooooooDdDZdzEEEEEeeeeeeCcCcCcDIIIIIiiiiiUUUUUuuuuuLLLlllNNNnnnRrSSSsssTtYYyyZZZzzzdGGggusNnABNHEITeaickpioiiiakeaiei'
-    str = str.split('')
-    var strLen = str.length
-    var i, x
-    for (i = 0; i < strLen; i++) {
-      if ((x = accents.indexOf(str[i])) !== -1) {
-        str[i] = accentsOut[x]
-      }
-    }
-    return str.join('')
-  }
-
-  ;
-  resolveContent (str = '') {
-    return this.resolveTwos(this.resolveOnes(this.resolvePlusCharacters(this.removeAccents(this.removeLinks(this.resolveEmoji(str.split(' '))).join(' ').replace(this.replaceSpots.spaces, ' ').replace(this.replaceSpots.nothing, '')).slice().trim().split(/ +/g))))
-  }
-
-  resolveEmoji (arr) {
-    for (var i = 0; i < arr.length; i++) {
-      if (this.emoji_lookup[arr[i]]) arr[i] = this.emoji_lookup[arr[i]]
-      var thing = emojis.get(arr[i])
-      if (thing) arr[i] = thing
-    }
-    return arr
-  }
-
-  resolveOnes (arr) {
-    arr = arr.reduce(([last, acc], e) => {
-      if (e.length === 1 && (!last || last.length === 1)) {
-        if (acc.length === 0) {
-          acc.push(e)
+      if (Array.isArray(spot)) {
+        if (res[index].i.length < 1) {
+          res[index].i = spot
         } else {
-          acc[acc.length - 1] += e
+          checkSpots(spot[0])
+          checkSpots(spot[1])
         }
       } else {
-        acc.push(e)
-      }
-      return [e, acc]
-    }, [undefined, []])[1]
-    for (var i = 0; i < arr.length; i++) {
-      if (arr[i] && arr[i + 1]) {
-        if (arr[i].length === 1 && arr[i + 1].length === 1) {
-          arr[i] = arr[i] + arr[i + 1]
-          arr[i + 1] = ''
-        } else if (arr[i].length === 1 && arr[i + 1].length !== 1) {
-          arr[i + 1] = arr[i] + arr[i + 1]
-          arr[i] = ''
-        } else continue
-      } else continue
-    }
-    return arr
-  }
-
-  resolveTwos (arr) {
-    for (var i = 0; i < arr.length; i++) {
-      if (!arr[i]) continue
-      if (!arr[i + 1]) continue
-      const arr1 = arr[i]
-      const arr2 = arr[i + 1]
-      if (arr1.length === 2 && arr2.length === 2) {
-        arr[i] = arr1 + arr2
-        arr[i + 1] = ''
-      }
-    }
-    return arr
-  }
-
-  resolvePlusCharacters (arr) {
-    return arr.join(' ').replace(/(s)\1{3,}/g, '$1$1').replace(/(.)\1{3,}/g, '$1').split(' ')
-  }
-
-  testAgainstArray (content, arr, UNCENSOR) {
-    var res = false
-    var site
-    var arg = []
-    var uncensor = false
-    arr.forEach(a => {
-      let reg
-      try {
-        reg = new RegExp(a, 'gi')
-      } catch (e) {
-        console.log(a + 'err')
-      }
-      if (!reg) return
-      var match = content.match(reg)
-      if (UNCENSOR && UNCENSOR.some(x => x.match(reg) && content.match(new RegExp(x, 'gi')))) return uncensor = true // eslint-disable-line no-return-assign
-      if (match) {
-        res = true
-        site = a
-        arg.push(reg)
-      }
-    })
-    return [res, site, arg, uncensor]
-  }
-
-  testWithBypass (args, obj, uncensor) {
-    var res = {
-      stopped: false,
-      args: [],
-      uncensor: false
-    }
-    args.forEach(arg => {
-      Object.keys(obj).forEach(wrd => {
-        const word = new RegExp(wrd, 'gi')
-        if (uncensor && uncensor.some(u => u.match(word) && arg.match(new RegExp(u, 'gi')))) return res.uncensor = true // eslint-disable-line no-return-assign
-        if (arg.match(word)) {
-          const array = obj[wrd.toLowerCase()]
-          var stop = false
-          array.forEach(bypass => {
-            if (stop) return
-            const sio = new RegExp(bypass, 'gi')
-            if (arg.match(sio)) {
-              stop = true
-            }
-          })
-          if (!stop) {
-            res.stopped = true
-            res.args.push(word)
-          }
+        if (res[index].i.length < 1) {
+          res[index].i = [spot, spot]
+        } else {
+          checkSpots(spot)
         }
-      })
+      }
+
+      return true
+    }
+
+    for (let i = 0; i < content.length; i++) { // base index pushing to array
+      const split = content[i]
+        .replace(replaceSpots.nothing, '')
+        .split(replaceSpots.spaces)
+
+      for (const text of split) {
+        addSpot(
+          text,
+          i,
+          i
+        )
+      }
+    }
+
+    for (let i = 0; i < res.length; i++) { // combine < 3 character bits together
+      const s = res[i]
+
+      if (s.t && (s.t.length < 3) && res[i + 1]) {
+        if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
+          s.t = ''
+          s.i = []
+        }
+      }
+    }
+
+    for (let i = res.length; i > -1; i--) { // combine < 3 character bits together but going backwards
+      const s = res[i]
+      if (!s) continue
+
+      if (s.t && (s.t.length < 3) && res[i - 1]) {
+        if (addSpot(res[i - 1].t + s.t, s.i, i - 1)) {
+          s.t = ''
+          s.i = []
+        }
+      }
+    }
+
+    res = res.filter(x => x.t) // remove any blank spaces
+
+    for (let i = 0; i < res.length; i++) { // combine pieces that ends and start with the same character
+      const s = res[i]
+
+      if (s.t && res[i + 1] && (s.t[s.t.length - 1] === res[i + 1].t[0])) {
+        if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
+          s.t = ''
+        }
+      }
+    }
+
+    content = res.filter(x => x.t) // remove any blank spaces (again)
+
+    return content
+  }
+
+  /**
+   * Response from filter
+   * @typedef {Object} FilterResponse
+   * @property {Array.<Array.<Number>>} censor Index ranges
+   * @property {Languages} filters Filters that picked up a censor
+   */
+
+  /**
+   * Test against filter
+   * @param {String} text Text to test
+   * @param {Languages} filters Filters
+   * @param {Array.<String>} server Extra filter
+   * @param {Array.<String>} uncensor Extra bypass
+   * @returns {FilterResponse}
+   */
+  test (text, filters = ['en', 'es', 'off'], server = [], uncensor = []) {
+    const content = this.resolve(text)
+
+    const res = {
+      censor: false,
+      ranges: [],
+      filters: [],
+      places: []
+    }
+
+    const filter = { server: server.map(x => new JPBExp(x)) }
+
+    for (const filt in this.filters) {
+      if (filters.includes(filt)) filter[filt] = this.filters[filt]
+    }
+
+    content.forEach(piece => {
+      let done = false
+      for (const key in filter) {
+        for (const part of filter[key]) {
+          if (!part.test(piece.t, uncensor)) continue
+
+          done = true
+
+          res.censor = true
+          res.ranges.push(piece.i)
+          if (!res.filters.includes(key)) res.filters.push(key)
+          res.places.push(part)
+
+          break
+        }
+        if (done) break
+      }
     })
+
+    for (let i = 0; i < res.ranges.length; i++) {
+      if (res.ranges[i + 1] && res.ranges[i][1] === res.ranges[i + 1][0]) {
+        res.ranges[i + 1][0] = res.ranges[i][0]
+        delete res.ranges[i]
+      }
+    }
+
+    res.ranges = res.ranges.filter(x => x)
+
     return res
   }
-
-  removeLinks (arr) {
-    for (var i = 0; i < arr.length; i++) {
-      if (arr[i]) {
-        if (arr[i].match(/http/gi)) {
-          let ok = false
-          this.linkByp.forEach(bs => {
-            const bsr = new RegExp(bs, 'gi')
-            if (arr[i].match(bsr)) {
-              ok = true
-            }
-          })
-          if (ok === true) {
-            arr = arr.filter(f => f !== arr[i])
-          }
-        }
-      }
-    }
-    return arr
-  }
-
-  addNum () {
-    this.client.db.collection('stats').updateOne({
-      id: 'deleted'
-    }, {
-      $inc: {
-        amount: 1
-      }
-    })
-  }
 }
+
+module.exports = Filter

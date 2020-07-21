@@ -58,6 +58,8 @@ class Cache extends Collection {
 
   delete (key) {
     super.delete(key)
+    const timeout = this.timeouts.get(key)
+    if (timeout) clearTimeout(timeout)
     this.timeouts.delete(key)
   }
 }

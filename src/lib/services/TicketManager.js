@@ -68,7 +68,7 @@ class TicketManager {
     const isBanned = await this.isBanned(user)
     if (isBanned.banned) throw new Error(`User is banned for \`${isBanned.reason}\``)
 
-    const res = this.client.filter.test(word, true, this.client.db.defaultConfig.languages, false, false)
+    const res = this.client.filter.test(word, this.client.db.Config.constants.allowedFilters)
     if (!res.censor) throw new Error('Phrase is not censored by the base filter')
 
     const tickets = await this.db.find({}).toArray()
@@ -163,13 +163,13 @@ class TicketManager {
         .timestamp()
     )
 
-    const res = this.client.filter.test(ticket.word, true, this.client.db.defaultConfig.languages, false, false)
+    const res = this.client.filter.test(ticket.word, this.client.db.Config.constants.allowedFilters)
 
     const msg = await this.client.interface.send(this.client.config.channels.approved,
       this.client.embed
         .title(`Ticket (${id})`)
         .description(`<@${ticket.user}> accepted by <@${admin.id}> \`\`\`${ticket.word}\`\`\``)
-        .field('Methods', res.arg.map(x => x.toString()).join(', '))
+        .field('Methods', res.places.map(x => x.toString()).join(', '))
         .timestamp()
     )
     this.client.interface.addReaction(this.client.config.channels.approved, msg.id, this.client.config.emojis.yes)

@@ -114,6 +114,14 @@ class Database {
         // falls through
       case 2:
         newObj.invites = false
+
+        // falls through
+      case 3:
+        if (!obj.base) newObj.filters = []
+        else newObj.filters = obj.languages
+
+        delete newObj.base
+        delete newObj.languages
         break
       default:
         break

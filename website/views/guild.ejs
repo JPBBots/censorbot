@@ -47,14 +47,12 @@
     </section>
     <section id="filter">
       <h1>Filter</h1>
-      <div><h3 title="Whether to use the bot's premade filter that is managed by staff.">Base Filter</h3>
-        <input type="checkbox" typed='boolean' setting='base'></div>
       <div><h3 title="Whether to censor invites.">Censor Invites</h3>
         <input type="checkbox" typed='boolean' setting='invites'></div>
       <div><h3 title="Whether to censor multiple messages combined together to scan.">Multi-Line</h3>
         <input type="checkbox" typed='boolean' setting='multi' premium></div>
-      <div><h3 title="Sets what languages the base filter uses">Filters</h3>
-        <input placeholder="Add Filters" typed="tagArray" setting="languages"></div>
+      <div><h3 title="Sets what filters the base filter uses">Pre-Built Filters</h3>
+        <input placeholder="Add Filters" typed="tagArray" setting="filters"></div>
       <div><h3 title="Custom filter that are bound to this server.">Server Filter</h3>
         <input placeholder='Add Words' typed='tagArray' setting="filter">
         <button onclick="window.lib.clearTags('filter')">Clear</button></div>
@@ -102,7 +100,7 @@
           <h2>Resend</h2>
           <div><h3 title="Resend someone censored message with the message censored in a spoiler.">Toggle</h3>
             <input type="checkbox" typed='boolean' setting='webhook.enabled'premium></div>
-          <div><h3 title="Whether to separate curses and normal words in the resend (BETA/UNSTABLE).">Separate</h3>
+          <div><h3 title="Whether to separate curses and normal words in the resend.">Separate</h3>
             <input type="checkbox" typed='boolean' setting='webhook.separate' premium></div>
           <div><h3 title="What to replace/cover curses with when Separate is enabled.">Seperate Replace</h3> 
             <select typed="typeNum" setting="webhook.replace" premium>

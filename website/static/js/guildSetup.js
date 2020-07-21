@@ -28,8 +28,14 @@ function setup () {
     if (this.value == "") this.value = "null"
   })
 
-  window.lib.addTag('languages', {
-    whitelist: [{ id: "en", value: "English" }, { id: "es", value: "Spanish" }, { id: "off", value: "Offensive" }],
+  window.lib.addTag('filters', {
+    whitelist: [
+      { id: "en", value: "English" },
+      { id: "es", value: "Spanish" },
+      { id: "off", value: "Offensive" },
+      { id: 'de', value: 'German (BETA)' },
+      { id: 'ru', value: 'Russian (BETA)' }
+    ],
     enforceWhitelist: true,
     callbacks: {},
     dropdown: {
