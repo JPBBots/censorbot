@@ -48,11 +48,15 @@ class Filter {
   }
 
   surround (text, ranges, sur) {
+    const used = []
     function surroundRange (txt, range) {
+      if (used.some(x => x[0] === range[0] || x[1] === range[1])) return txt
       txt = txt.split(/\s+/)
 
       txt[range[0]] = `${sur}${txt[range[0]]}`
       txt[range[1] - (txt[range[1]] ? 0 : 1)] = `${txt[range[1] - (txt[range[1]] ? 0 : 1)] || ''}${sur}`
+
+      used.push(range)
 
       return txt.join(' ')
     }
@@ -125,6 +129,7 @@ class Filter {
         .split(replaceSpots.spaces)
 
       for (let spI = 0; spI < split.length; spI++) {
+        res.push({ i: [i, i], t: split[spI], n: true })
         addSpot(
           split[spI],
           i,
@@ -136,6 +141,8 @@ class Filter {
     for (let i = 0; i < res.length; i++) { // combine < 3 character bits together
       const s = res[i]
 
+      if (s.n) continue
+
       if (s.t && (s.t.length < 3) && res[i + 1]) {
         if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
           s.t = ''
@@ -146,7 +153,7 @@ class Filter {
 
     for (let i = res.length; i > -1; i--) { // combine < 3 character bits together but going backwards
       const s = res[i]
-      if (!s) continue
+      if (!s || s.n) continue
 
       if (s.t && (s.t.length < 3) && res[i - 1]) {
         if (addSpot(res[i - 1].t + s.t, s.i, i - 1)) {
@@ -160,6 +167,8 @@ class Filter {
 
     for (let i = 0; i < res.length; i++) { // combine pieces that ends and start with the same character
       const s = res[i]
+
+      if (s.n) continue
 
       if (s.t && res[i + 1] && (s.t[s.t.length - 1] === res[i + 1].t[0])) {
         if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
