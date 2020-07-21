@@ -124,11 +124,11 @@ class Filter {
         .replace(replaceSpots.nothing, '')
         .split(replaceSpots.spaces)
 
-      for (const text of split) {
+      for (let spI = 0; spI < split.length; spI++) {
         addSpot(
-          text,
+          split[spI],
           i,
-          i
+          spI
         )
       }
     }
