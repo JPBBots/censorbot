@@ -141,9 +141,8 @@ class Filter {
     for (let i = 0; i < res.length; i++) { // combine < 3 character bits together
       const s = res[i]
 
-      if (s.n) continue
-
       if (s.t && (s.t.length < 3) && res[i + 1]) {
+        if (s.n || res[i + 1].n) continue
         if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
           s.t = ''
           s.i = []
@@ -153,9 +152,10 @@ class Filter {
 
     for (let i = res.length; i > -1; i--) { // combine < 3 character bits together but going backwards
       const s = res[i]
-      if (!s || s.n) continue
+      if (!s) continue
 
       if (s.t && (s.t.length < 3) && res[i - 1]) {
+        if (s.n || res[i - 1].n) continue
         if (addSpot(res[i - 1].t + s.t, s.i, i - 1)) {
           s.t = ''
           s.i = []
@@ -168,9 +168,8 @@ class Filter {
     for (let i = 0; i < res.length; i++) { // combine pieces that ends and start with the same character
       const s = res[i]
 
-      if (s.n) continue
-
       if (s.t && res[i + 1] && (s.t[s.t.length - 1] === res[i + 1].t[0])) {
+        if (s.n || res[i + 1].n) continue
         if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
           s.t = ''
         }

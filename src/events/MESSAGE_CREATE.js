@@ -77,7 +77,7 @@ module.exports = async function (message) {
         .field('Message', this.filter.surround(content, res.ranges, '__'), true)
         .field('Filter(s)', res.filters.map(x => this.filter.filterMasks[x]).join(', '), true)
         .timestamp()
-        .footer('https://patreon.com/censorbot')
+        .footer('Mistake? Do +ticket (underlined part)')
     )
   }
 
