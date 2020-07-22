@@ -1,6 +1,6 @@
 const replaceSpots = {
-  spaces: /_|\/|\\|\.|\n|&|-|\+|=|:|~|,|\?|\s+/gi,
-  nothing: /"|\*|'|\||`|<|>|#|!|\(|\)|\[|\]|\{|\}|;|%|​|‍/gi // eslint-disable-line no-irregular-whitespace
+  spaces: /_|\/|\\|\.|\n|&|-|\+|=|:|~|,|\?|\(|\)|\s+/gi,
+  nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|​|‍/gi // eslint-disable-line no-irregular-whitespace
 }
 
 const JPBExp = require('../../filter/JPBExp')
@@ -14,7 +14,14 @@ const converter = {
     .split(',')
 }
 
+const firstShortWords = ['an']
+const shortWords = ['it', 'at', 'xd']
+
 const GetFilters = require('../../filter/filters')
+
+function inRange (x, min, max) {
+  return ((x - min) * (x - max) <= 0)
+}
 
 /**
  * Filter for testing against words
@@ -50,8 +57,8 @@ class Filter {
   surround (text, ranges, sur) {
     const used = []
     function surroundRange (txt, range) {
-      if (used.some(x => x[0] === range[0] || x[1] === range[1])) return txt
-      txt = txt.split(/\s+/)
+      if (used.some(x => inRange(range[0], ...x) && inRange(range[1], ...x))) return txt
+      txt = txt.split(/ +/)
 
       txt[range[0]] = `${sur}${txt[range[0]]}`
       txt[range[1] - (txt[range[1]] ? 0 : 1)] = `${txt[range[1] - (txt[range[1]] ? 0 : 1)] || ''}${sur}`
@@ -84,8 +91,7 @@ class Filter {
     content = content
       .toLowerCase()
       .replace(/<#?@?!?&?(\d+)>/g, '') // mentions
-      .replace(/<:(\w+):(\d+)>/g, '$1')
-      .replace(/ +/g, ' ') // multiple spaces
+      .replace(/<:(\w+):(\d+)>/g, '$1') // emojis
       .replace(/(.)\1{2,}/g, '$1$1') // multiple characters only come up once
 
     for (const i in converter.in) { // convert special character like accents and emojis into their readable counterparts
@@ -140,6 +146,7 @@ class Filter {
 
     for (let i = 0; i < res.length; i++) { // combine < 3 character bits together
       const s = res[i]
+      if (firstShortWords.includes(s.t)) continue
 
       if (s.t && (s.t.length < 3) && res[i + 1]) {
         if (s.n || res[i + 1].n) continue
@@ -152,7 +159,7 @@ class Filter {
 
     for (let i = res.length; i > -1; i--) { // combine < 3 character bits together but going backwards
       const s = res[i]
-      if (!s) continue
+      if (!s || shortWords.includes(s.t)) continue
 
       if (s.t && (s.t.length < 3) && res[i - 1]) {
         if (s.n || res[i - 1].n) continue
