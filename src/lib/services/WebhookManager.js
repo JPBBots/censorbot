@@ -97,7 +97,12 @@ class WebhookManager {
         query: {
           wait: true
         },
-        body: ParseMessage(content, true)
+        body: {
+          ...ParseMessage(content, true),
+          allowed_mentions: {
+            parse: ['users']
+          }
+        }
       })
 
     if (bucketed) return
