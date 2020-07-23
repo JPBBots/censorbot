@@ -23,6 +23,8 @@ function inRange (x, min, max) {
   return ((x - min) * (x - max) <= 0)
 }
 
+const linkRegex = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/
+
 /**
  * Filter for testing against words
  */
@@ -93,6 +95,14 @@ class Filter {
       .replace(/<#?@?!?&?(\d+)>/g, '') // mentions
       .replace(/<:(\w+):(\d+)>/g, '$1') // emojis
       .replace(/(.)\1{2,}/g, '$1$1') // multiple characters only come up once
+
+    content = content.split(' ')
+
+    for (const i in content) {
+      content[i] = content[i].replace(linkRegex, '$3')
+    }
+
+    content = content.join(' ')
 
     for (const i in converter.in) { // convert special character like accents and emojis into their readable counterparts
       content = content.replace(converter.in[i], converter.out[i])

@@ -3,6 +3,7 @@ const Webhook = require('../../../lib/Webhook')
 const Collection = require('../../../util/Collection')
 const GetAvatar = require('../../../util/GetAvatar')
 const ParseMessage = require('../../../util/ParseMessage')
+const Cache = require('../../../util/Cache')
 
 /**
  * Used for managing preset webhooks and websocket middle methods
@@ -27,9 +28,9 @@ class WebhookManager {
 
     /**
      * SendAS Webhook Bucket
-     * @type {Collection.<Snowflake, Object>}
+     * @type {Cache.<Snowflake, Object>}
      */
-    this.bucket = new Collection()
+    this.bucket = new Cache(30000)
   }
 
   /**
@@ -72,12 +73,8 @@ class WebhookManager {
    * @param {String|Object|Embed} content Message content
    */
   async sendAs (channel, user, name, content) {
-    let webhook
-    let bucketed = false
-    if (this.bucket.has(channel + user.id)) {
-      bucketed = true
-      webhook = this.bucket.get(channel + user.id)
-    } else {
+    let webhook = this.bucket.get(channel + user.id)
+    if (!webhook) {
       const avatar = await GetAvatar(user.id, user.avatar, user.discriminator)
       webhook = await this.client.api
         .channels[channel]
@@ -88,7 +85,13 @@ class WebhookManager {
             avatar
           }
         })
-      this.bucket.set(channel + user.id, webhook)
+
+      this.bucket.set(channel + user.id, webhook, () => {
+        console.log('wh deleted')
+        this.client.api
+          .webhooks[webhook.id][webhook.token]
+          .delete()
+      })
     }
 
     await this.client.api
@@ -104,16 +107,6 @@ class WebhookManager {
           }
         }
       })
-
-    if (bucketed) return
-
-    setTimeout(() => {
-      this.bucket.delete(channel + user.id)
-
-      this.client.api
-        .webhooks[webhook.id][webhook.token]
-        .delete()
-    }, 15000)
   }
 }
 

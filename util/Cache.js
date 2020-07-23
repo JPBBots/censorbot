@@ -41,18 +41,20 @@ class Cache extends Collection {
    * Set
    * @param {*} key Key
    * @param {*} val Value
+   * @param {Function} cb Ran when item is deleted
    */
-  set (key, val) {
+  set (key, val, cb = () => {}) {
     super.set(key, val)
 
-    this._resetTimer(key)
+    this._resetTimer(key, cb)
   }
 
-  _resetTimer (key) {
+  _resetTimer (key, cb) {
     if (this.timeouts.has(key)) return this.timeouts.get(key).refresh()
     this.timeouts.set(key, setTimeout(() => {
       super.delete(key)
       this.timeouts.delete(key)
+      cb()
     }, this.time))
   }
 
