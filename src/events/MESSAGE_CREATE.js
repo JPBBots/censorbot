@@ -36,7 +36,7 @@ module.exports = async function (message) {
     if (!multi) {
       multi = {}
       multi.user = message.author.id
-      multi.msg = [ { id: message.id, content: message.content } ]
+      multi.msg = [{ id: message.id, content: message.content }]
     } else {
       if (multi.user !== message.author.id) {
         multi.user = message.author.id
