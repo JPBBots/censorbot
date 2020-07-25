@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Source: src/lib/clustering/master/DBL.js</title>
+  <title>Source: src/filter/JPBExp.js</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -26,56 +26,47 @@
         </div>
         <div id="jsdoc-main" role="main">
           <header class="page-header">
-            <h1>Source: src/lib/clustering/master/DBL.js</h1>
+            <h1>Source: src/filter/JPBExp.js</h1>
           </header>
           <article>
-            <pre class="prettyprint linenums"><code>const Request &#x3D; require(&#x27;../../../../req&#x27;)
-
-/**
- * Used for interacting with the DBL (top.gg) api
+            <pre class="prettyprint linenums"><code>/**
+ * RegExp which takes an array of uncensored parts to use in .test
+ * @extends RegExp
  */
-class DBL {
+class JPBExp extends RegExp {
   /**
-   * DBL interface
-   * @param {Master} master Master
-   * @param {String} dbl DBL token
+   * JPBExp
+   * @param {String} regex RegEx Statement
+   * @param {Array.&amp;lt;String&gt;} uncensor Bits to uncensor
    */
-  constructor (master, dbl) {
-    /**
-     * Master
-     * @type {Master}
-     */
-    this.master &#x3D; master
+  constructor (regex, uncensor &#x3D; []) {
+    super(regex)
 
-    /**
-     * DBL API
-     * @type {Request}
-     */
-    this.api &#x3D; Request(&#x27;https://top.gg/api&#x27;, { Authorization: dbl })
+    this.uncensor &#x3D; uncensor.map(x &#x3D;&gt; new RegExp(x))
   }
 
   /**
-   * Post stats
-   * @returns {Promise.&amp;lt;Object&gt;} Response
+   * Test
+   * @param {String} str String to test against
+   * @param {?Array.&amp;lt;String&gt;} uncensor Extra uncensors
+   * @returns {Boolean} Whether it matches or not
    */
-  async post () {
-    if (this.master.beta) return this.master.log(&#x27;Beta mode on, skipping post&#x27;)
-    const guilds &#x3D; await this.master.api.sendToAll(&#x27;GUILD_COUNT&#x27;, {}, true)
+  test (str, uncensor &#x3D; []) {
+    if (!str.match(this)) return false
 
-    const healthCheck &#x3D; await this.master.api.sendToAll(&#x27;CLUSTER_STATS&#x27;, {}, true)
-    if (healthCheck.some(a &#x3D;&gt; a.shards.some(b &#x3D;&gt; !b.connected))) return this.master.log(&#x27;Skipping post as there are offline shards!&#x27;)
-    await this.api
-      .bots
-      .stats
-      .post({
-        body: {
-          shards: guilds.flat()
-        }
-      })
+    if ([...this.uncensor,
+      ...uncensor.filter(x &#x3D;&gt; x.match(this)).map(x &#x3D;&gt; new RegExp(x))]
+      .some(x &#x3D;&gt; str.match(x))) return false
+
+    return true
+  }
+
+  toJSON () {
+    return this.toString()
   }
 }
 
-module.exports &#x3D; DBL
+module.exports &#x3D; JPBExp
 </code></pre>
           </article>
         </div>

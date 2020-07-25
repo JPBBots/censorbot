@@ -29,283 +29,270 @@
             <h1>Source: src/lib/services/Filter.js</h1>
           </header>
           <article>
-            <pre class="prettyprint linenums"><code>const emojis &#x3D; require(&#x27;emoji-unicode-map&#x27;)
-delete require.cache[require.resolve(&#x27;../../filter/filters.js&#x27;)]
-const filters &#x3D; require(&#x27;../../filter/filters.js&#x27;)
+            <pre class="prettyprint linenums"><code>const replaceSpots &#x3D; {
+  spaces: /_|\/|\\|\.|\n|&amp;amp;|-|\+|&#x3D;|:|~|,|\?|\(|\)|\s+/gi,
+  nothing: /&quot;|\*|&#x27;|\||&#x60;|&amp;lt;|&gt;|#|!|\[|\]|\{|\}|;|%|​|‍/gi // eslint-disable-line no-irregular-whitespace
+}
 
-module.exports &#x3D; class JPBFilter {
-  constructor (client, linkBypFile) {
-    this.linkBypFile &#x3D; linkBypFile
-    this.linkByp &#x3D; require(linkBypFile).links
-    this.client &#x3D; client
-    this.replaceSpots &#x3D; {
-      spaces: /(_|\/|\\|\.|\n|&amp;amp;|-|\+|&#x3D;|:|~|,|\?|\s+)/gi,
-      nothing: /(&quot;|\*|&#x27;|\||&#x60;|&amp;lt;|&gt;|#|!|\(|\)|\[|\]|\{|\}|;|%|​|‍)/gi // eslint-disable-line no-irregular-whitespace
+const JPBExp &#x3D; require(&#x27;../../filter/JPBExp&#x27;)
+
+const converter &#x3D; {
+  in: (&#x27;\\$,ā,à,á,â,ã,ä,å,ą,ß,β,ò,ó,ô,ő,õ,ö,ø,Ď,ď,D,Ž,d,ž,è,é,ê,ë,ę,ð,Ç,ç,Č,č,Ć,ć,Ð,ì,í,î,ï,ī,ù,ű,ú,û,ü,ľ,ĺ,ł,ň,ñ,ń,Ŕ,ŕ,š,ś,ş,Ť,ť,ÿ,ý,ž,ż,ź,đ,ģ,ğ,µ,§,Ṉ,ṉ,Α,Β,Ν,Η,Ε,Ι,Τ,Ǝ,△,ı,с,к,Р,¡,0,İ,ĩ,į,@,к,ё,а,і,3,1,&#x27; + // accents
+    &#x27;🇦,🇧,🅱,🇨,🇩,🇪,🇫,🇬,🇭,🇮,🇯,🇰,🇱,🇲,🇳,🇴,🇵,🇶,🇷,🇸,🇹,🇺,🇻,🇼,🇽,🇾,🇿,🖕&#x27;) // emojis
+    .split(&#x27;,&#x27;).map(x &#x3D;&gt; new RegExp(x, &#x27;g&#x27;)),
+  out: (&#x27;s,a,a,a,a,a,a,a,a,b,b,o,o,o,o,o,o,o,d,d,d,z,d,z,e,e,e,e,e,e,c,c,c,c,c,c,d,i,i,i,i,i,u,u,u,u,u,l,l,l,n,n,n,r,r,s,s,s,t,t,y,y,z,z,z,d,g,g,u,s,n,n,a,b,n,h,e,i,t,e,a,i,c,k,p,i,o,i,i,i,a,k,e,a,i,e,i,&#x27; + // accents
+    &#x27;a,b,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,fuck&#x27;) // emojis
+    .split(&#x27;,&#x27;)
+}
+
+const firstShortWords &#x3D; [&#x27;an&#x27;]
+const shortWords &#x3D; [&#x27;it&#x27;, &#x27;at&#x27;, &#x27;xd&#x27;]
+
+const GetFilters &#x3D; require(&#x27;../../filter/filters&#x27;)
+
+function inRange (x, min, max) {
+  return ((x - min) * (x - max) &amp;lt;&#x3D; 0)
+}
+
+const linkRegex &#x3D; /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/
+
+/**
+ * Filter for testing against words
+ */
+class Filter {
+  /**
+   * Filter
+   */
+  constructor () {
+    /**
+     * Filters
+     * @type {Object.&amp;lt;Languages, Array.&amp;lt;JPBExp&gt;&gt;}
+     */
+    this.filters &#x3D; null
+
+    this.filterMasks &#x3D; {
+      en: &#x27;English&#x27;,
+      es: &#x27;Spanish&#x27;,
+      off: &#x27;Offensive&#x27;,
+      de: &#x27;German&#x27;,
+      ru: &#x27;Russian&#x27;,
+      server: &#x27;Server&#x27;,
+      invites: &#x27;Invites&#x27;
     }
-    this.emoji_lookup &#x3D; {
-      &#x27;🇦&#x27;: &#x27;a&#x27;,
-      &#x27;🇧&#x27;: &#x27;b&#x27;,
-      &#x27;🅱&#x27;: &#x27;b&#x27;,
-      &#x27;🇨&#x27;: &#x27;c&#x27;,
-      &#x27;🇩&#x27;: &#x27;d&#x27;,
-      &#x27;🇪&#x27;: &#x27;e&#x27;,
-      &#x27;🇫&#x27;: &#x27;f&#x27;,
-      &#x27;🇬&#x27;: &#x27;g&#x27;,
-      &#x27;🇭&#x27;: &#x27;h&#x27;,
-      &#x27;🇮&#x27;: &#x27;i&#x27;,
-      &#x27;🇯&#x27;: &#x27;j&#x27;,
-      &#x27;🇰&#x27;: &#x27;k&#x27;,
-      &#x27;🇱&#x27;: &#x27;l&#x27;,
-      &#x27;🇲&#x27;: &#x27;m&#x27;,
-      &#x27;🇳&#x27;: &#x27;n&#x27;,
-      &#x27;🇴&#x27;: &#x27;o&#x27;,
-      &#x27;🇵&#x27;: &#x27;p&#x27;,
-      &#x27;🇶&#x27;: &#x27;q&#x27;,
-      &#x27;🇷&#x27;: &#x27;r&#x27;,
-      &#x27;🇸&#x27;: &#x27;s&#x27;,
-      &#x27;🇹&#x27;: &#x27;t&#x27;,
-      &#x27;🇺&#x27;: &#x27;u&#x27;,
-      &#x27;🇻&#x27;: &#x27;v&#x27;,
-      &#x27;🇼&#x27;: &#x27;w&#x27;,
-      &#x27;🇽&#x27;: &#x27;x&#x27;,
-      &#x27;🇾&#x27;: &#x27;y&#x27;,
-      &#x27;🇿&#x27;: &#x27;z&#x27;,
-      &#x27;🖕&#x27;: &#x27;fuck&#x27;
+
+    this._loadFilters()
+  }
+
+  _loadFilters () {
+    this.filters &#x3D; GetFilters()
+  }
+
+  surround (text, ranges, sur) {
+    const used &#x3D; []
+    function surroundRange (txt, range) {
+      if (used.some(x &#x3D;&gt; inRange(range[0], ...x) &amp;amp;&amp;amp; inRange(range[1], ...x))) return txt
+      txt &#x3D; txt.split(/ +/)
+
+      txt[range[0]] &#x3D; &#x60;${sur}${txt[range[0]]}&#x60;
+      txt[range[1] - (txt[range[1]] ? 0 : 1)] &#x3D; &#x60;${txt[range[1] - (txt[range[1]] ? 0 : 1)] || &#x27;&#x27;}${sur}&#x60;
+
+      used.push(range)
+
+      return txt.join(&#x27; &#x27;)
     }
-  }
 
-  reload () {
-    this.reloadFilter()
-    this.reloadLinkByp()
-  }
-
-  reloadFilter () {
-    delete require.cache[require.resolve(this.filterFile)]
-    this.filter &#x3D; require(this.filterFile)
-  }
-
-  reloadLinkByp () {
-    delete require.cache[require.resolve(this.linkBypFile)]
-    this.linkByp &#x3D; require(this.linkBypFile).links
-  }
-
-  addToBypass (key, newValue) {
-    if (!this.filter[key]) this.filter[key] &#x3D; []
-    if (newValue) this.filter[key].push(newValue)
-    return this.filter
+    return ranges.reduce((a, b) &#x3D;&gt; surroundRange(a, b), text)
   }
 
   /**
-     *
-     * @param {String} content - Content of message
-     * @param {Boolean} GLOBAL - If global filter
-     * @param {Array} SERVER - Server filter array
-     * @param {Array} UNCENSOR - Uncensor array
-     * @returns {Object&amp;lt;censor&amp;lt;boolean&gt;, method&amp;lt;String&gt;, word&amp;lt;RegExp&gt;, arg&amp;lt;String&gt;&gt;} - Response
-     */
-  test (content, GLOBAL &#x3D; true, LANGS &#x3D; [], SERVER &#x3D; false, UNCENSOR &#x3D; false) {
-    var res &#x3D; {
-      censor: false,
-      method: &#x27;none&#x27;,
-      word: null,
-      arg: [],
-      uncensor: false
-    }
-    const init &#x3D; () &#x3D;&gt; {
-      // if (UNCENSOR &amp;amp;&amp;amp; UNCENSOR[0]) {
-      //   var uncensorRes &#x3D; this.testAgainstArray(this.resolveContent(content).join(&#x27; &#x27;), UNCENSOR)
-      //   if (uncensorRes[0]) {
-      //     res.censor &#x3D; false
-      //     return
-      //   };
-      // }
-      const resolvedContent &#x3D; this.resolveContent(content)
-      res.resolved &#x3D; resolvedContent.join(&#x27; &#x27;)
+   * Filter resolved piece
+   * @typedef {Object} ResolvedPiece
+   * @property {String} t Resolved text
+   * @property {Array.&amp;lt;Number&gt;} i Index range
+   * @example
+   *   .i[0] // Starting index
+   *   .i[1] // Ending index
+   */
 
-      if (GLOBAL) {
-        var baseFilter &#x3D; this.testWithBypass(resolvedContent, filters(LANGS), UNCENSOR)
-        if (baseFilter.stopped) {
-          res.censor &#x3D; true
-          res.method &#x3D; &#x27;base&#x27;
-          res.word &#x3D; undefined
-          res.arg &#x3D; res.arg.concat(baseFilter.args)
-        }
-        if (baseFilter.uncensor) res.uncensor &#x3D; baseFilter.uncensor
+  /**
+   * Resolve content
+   * @param {String} content Content
+   * @returns {Array.&amp;lt;ResolvedPiece&gt;}
+   */
+  resolve (content) {
+    // base stuff
+    content &#x3D; content
+      .toLowerCase()
+      .replace(/&amp;lt;#?@?!?&amp;amp;?(\d+)&gt;/g, &#x27;&#x27;) // mentions
+      .replace(/&amp;lt;:(\w+):(\d+)&gt;/g, &#x27;$1&#x27;) // emojis
+      .replace(/(.)\1{2,}/g, &#x27;$1$1&#x27;) // multiple characters only come up once
+
+    content &#x3D; content.split(&#x27; &#x27;)
+
+    for (const i in content) {
+      content[i] &#x3D; content[i].replace(linkRegex, &#x27;$3&#x27;)
+    }
+
+    content &#x3D; content.join(&#x27; &#x27;)
+
+    for (const i in converter.in) { // convert special character like accents and emojis into their readable counterparts
+      content &#x3D; content.replace(converter.in[i], converter.out[i])
+    }
+
+    let res &#x3D; Array(content.split(replaceSpots.spaces).length + 1).fill().map(() &#x3D;&gt; ({ i: [], t: &#x27;&#x27; })) // array of default objects
+
+    content &#x3D; content.split(&#x27; &#x27;)
+
+    function addSpot (text, spot, index) {
+      if (!res[index]) return false
+      res[index].t &#x3D; text
+
+      function checkSpots (s) { // if indexes are outside of the range of the current spot, adjust the range
+        if (s &amp;lt; res[index].i[0]) res[index].i[0] &#x3D; s
+        if (s &gt; res[index].i[1]) res[index].i[1] &#x3D; s
       }
 
-      if (SERVER &amp;amp;&amp;amp; SERVER[0]) {
-        var serverFilter &#x3D; this.testAgainstArray(resolvedContent.join(&#x27; &#x27;), SERVER, UNCENSOR)
-        if (serverFilter[0]) {
-          res.censor &#x3D; true
-          res.method &#x3D; &#x27;server&#x27;
-          res.word &#x3D; serverFilter[1]
-          res.arg &#x3D; res.arg.concat(serverFilter[2])
-        }
-        if (serverFilter[3]) res.uncensor &#x3D; serverFilter[3]
-      }
-    }
-    init()
-    if (res.censor &amp;amp;&amp;amp; this.client) this.addNum()
-    return res
-  }
-
-  removeAccents (str) {
-    var accents &#x3D; &#x27;$ÀÁÂÃÄÅĄĀāàáâãäåąßβÒÓÔÕÕÖØŐòóôőõöøĎďDŽdžÈÉÊËĘèéêëęðÇçČčĆćÐÌÍÎÏĪìíîïīÙÚÛÜŰùűúûüĽĹŁľĺłÑŇŃňñńŔŕŠŚŞšśşŤťŸÝÿýŽŻŹžżźđĢĞģğµ§ṈṉΑΒΝΗΕΙΤƎ△ıскР¡0İĩį@кёаі31&#x27;
-    var accentsOut &#x3D; &#x27;sAAAAAAAAaaaaaaaabbOOOOOOOOoooooooDdDZdzEEEEEeeeeeeCcCcCcDIIIIIiiiiiUUUUUuuuuuLLLlllNNNnnnRrSSSsssTtYYyyZZZzzzdGGggusNnABNHEITeaickpioiiiakeaiei&#x27;
-    str &#x3D; str.split(&#x27;&#x27;)
-    var strLen &#x3D; str.length
-    var i, x
-    for (i &#x3D; 0; i &amp;lt; strLen; i++) {
-      if ((x &#x3D; accents.indexOf(str[i])) !&#x3D;&#x3D; -1) {
-        str[i] &#x3D; accentsOut[x]
-      }
-    }
-    return str.join(&#x27;&#x27;)
-  }
-
-  ;
-  resolveContent (str &#x3D; &#x27;&#x27;) {
-    return this.resolveTwos(this.resolveOnes(this.resolvePlusCharacters(this.removeAccents(this.removeLinks(this.resolveEmoji(str.split(&#x27; &#x27;))).join(&#x27; &#x27;).replace(this.replaceSpots.spaces, &#x27; &#x27;).replace(this.replaceSpots.nothing, &#x27;&#x27;)).slice().trim().split(/ +/g))))
-  }
-
-  resolveEmoji (arr) {
-    for (var i &#x3D; 0; i &amp;lt; arr.length; i++) {
-      if (this.emoji_lookup[arr[i]]) arr[i] &#x3D; this.emoji_lookup[arr[i]]
-      var thing &#x3D; emojis.get(arr[i])
-      if (thing) arr[i] &#x3D; thing
-    }
-    return arr
-  }
-
-  resolveOnes (arr) {
-    arr &#x3D; arr.reduce(([last, acc], e) &#x3D;&gt; {
-      if (e.length &#x3D;&#x3D;&#x3D; 1 &amp;amp;&amp;amp; (!last || last.length &#x3D;&#x3D;&#x3D; 1)) {
-        if (acc.length &#x3D;&#x3D;&#x3D; 0) {
-          acc.push(e)
+      if (Array.isArray(spot)) {
+        if (res[index].i.length &amp;lt; 1) {
+          res[index].i &#x3D; spot
         } else {
-          acc[acc.length - 1] +&#x3D; e
+          checkSpots(spot[0])
+          checkSpots(spot[1])
         }
       } else {
-        acc.push(e)
-      }
-      return [e, acc]
-    }, [undefined, []])[1]
-    for (var i &#x3D; 0; i &amp;lt; arr.length; i++) {
-      if (arr[i] &amp;amp;&amp;amp; arr[i + 1]) {
-        if (arr[i].length &#x3D;&#x3D;&#x3D; 1 &amp;amp;&amp;amp; arr[i + 1].length &#x3D;&#x3D;&#x3D; 1) {
-          arr[i] &#x3D; arr[i] + arr[i + 1]
-          arr[i + 1] &#x3D; &#x27;&#x27;
-        } else if (arr[i].length &#x3D;&#x3D;&#x3D; 1 &amp;amp;&amp;amp; arr[i + 1].length !&#x3D;&#x3D; 1) {
-          arr[i + 1] &#x3D; arr[i] + arr[i + 1]
-          arr[i] &#x3D; &#x27;&#x27;
-        } else continue
-      } else continue
-    }
-    return arr
-  }
-
-  resolveTwos (arr) {
-    for (var i &#x3D; 0; i &amp;lt; arr.length; i++) {
-      if (!arr[i]) continue
-      if (!arr[i + 1]) continue
-      const arr1 &#x3D; arr[i]
-      const arr2 &#x3D; arr[i + 1]
-      if (arr1.length &#x3D;&#x3D;&#x3D; 2 &amp;amp;&amp;amp; arr2.length &#x3D;&#x3D;&#x3D; 2) {
-        arr[i] &#x3D; arr1 + arr2
-        arr[i + 1] &#x3D; &#x27;&#x27;
-      }
-    }
-    return arr
-  }
-
-  resolvePlusCharacters (arr) {
-    return arr.join(&#x27; &#x27;).replace(/(s)\1{3,}/g, &#x27;$1$1&#x27;).replace(/(.)\1{3,}/g, &#x27;$1&#x27;).split(&#x27; &#x27;)
-  }
-
-  testAgainstArray (content, arr, UNCENSOR) {
-    var res &#x3D; false
-    var site
-    var arg &#x3D; []
-    var uncensor &#x3D; false
-    arr.forEach(a &#x3D;&gt; {
-      let reg
-      try {
-        reg &#x3D; new RegExp(a, &#x27;gi&#x27;)
-      } catch (e) {
-        console.log(a + &#x27;err&#x27;)
-      }
-      if (!reg) return
-      var match &#x3D; content.match(reg)
-      if (UNCENSOR &amp;amp;&amp;amp; UNCENSOR.some(x &#x3D;&gt; x.match(reg) &amp;amp;&amp;amp; content.match(new RegExp(x, &#x27;gi&#x27;)))) return uncensor &#x3D; true // eslint-disable-line no-return-assign
-      if (match) {
-        res &#x3D; true
-        site &#x3D; a
-        arg.push(reg)
-      }
-    })
-    return [res, site, arg, uncensor]
-  }
-
-  testWithBypass (args, obj, uncensor) {
-    var res &#x3D; {
-      stopped: false,
-      args: [],
-      uncensor: false
-    }
-    args.forEach(arg &#x3D;&gt; {
-      Object.keys(obj).forEach(wrd &#x3D;&gt; {
-        const word &#x3D; new RegExp(wrd, &#x27;gi&#x27;)
-        if (uncensor &amp;amp;&amp;amp; uncensor.some(u &#x3D;&gt; u.match(word) &amp;amp;&amp;amp; arg.match(new RegExp(u, &#x27;gi&#x27;)))) return res.uncensor &#x3D; true // eslint-disable-line no-return-assign
-        if (arg.match(word)) {
-          const array &#x3D; obj[wrd.toLowerCase()]
-          var stop &#x3D; false
-          array.forEach(bypass &#x3D;&gt; {
-            if (stop) return
-            const sio &#x3D; new RegExp(bypass, &#x27;gi&#x27;)
-            if (arg.match(sio)) {
-              stop &#x3D; true
-            }
-          })
-          if (!stop) {
-            res.stopped &#x3D; true
-            res.args.push(word)
-          }
+        if (res[index].i.length &amp;lt; 1) {
+          res[index].i &#x3D; [spot, spot]
+        } else {
+          checkSpots(spot)
         }
-      })
+      }
+
+      return true
+    }
+
+    for (let i &#x3D; 0; i &amp;lt; content.length; i++) { // base index pushing to array
+      const split &#x3D; content[i]
+        .replace(replaceSpots.nothing, &#x27;&#x27;)
+        .split(replaceSpots.spaces)
+
+      for (let spI &#x3D; 0; spI &amp;lt; split.length; spI++) {
+        res.push({ i: [i, i], t: split[spI], n: true })
+        addSpot(
+          split[spI],
+          i,
+          spI + i
+        )
+      }
+    }
+
+    for (let i &#x3D; 0; i &amp;lt; res.length; i++) { // combine &amp;lt; 3 character bits together
+      const s &#x3D; res[i]
+      if (firstShortWords.includes(s.t)) continue
+
+      if (s.t &amp;amp;&amp;amp; (s.t.length &amp;lt; 3) &amp;amp;&amp;amp; res[i + 1]) {
+        if (s.n || res[i + 1].n) continue
+        if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
+          s.t &#x3D; &#x27;&#x27;
+          s.i &#x3D; []
+        }
+      }
+    }
+
+    for (let i &#x3D; res.length; i &gt; -1; i--) { // combine &amp;lt; 3 character bits together but going backwards
+      const s &#x3D; res[i]
+      if (!s || shortWords.includes(s.t)) continue
+
+      if (s.t &amp;amp;&amp;amp; (s.t.length &amp;lt; 3) &amp;amp;&amp;amp; res[i - 1]) {
+        if (s.n || res[i - 1].n) continue
+        if (addSpot(res[i - 1].t + s.t, s.i, i - 1)) {
+          s.t &#x3D; &#x27;&#x27;
+          s.i &#x3D; []
+        }
+      }
+    }
+
+    res &#x3D; res.filter(x &#x3D;&gt; x.t) // remove any blank spaces
+
+    for (let i &#x3D; 0; i &amp;lt; res.length; i++) { // combine pieces that ends and start with the same character
+      const s &#x3D; res[i]
+
+      if (s.t &amp;amp;&amp;amp; res[i + 1] &amp;amp;&amp;amp; (s.t[s.t.length - 1] &#x3D;&#x3D;&#x3D; res[i + 1].t[0])) {
+        if (s.n || res[i + 1].n) continue
+        if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
+          s.t &#x3D; &#x27;&#x27;
+        }
+      }
+    }
+
+    content &#x3D; res.filter(x &#x3D;&gt; x.t) // remove any blank spaces (again)
+
+    return content
+  }
+
+  /**
+   * Response from filter
+   * @typedef {Object} FilterResponse
+   * @property {Array.&amp;lt;Array.&amp;lt;Number&gt;&gt;} censor Index ranges
+   * @property {Languages} filters Filters that picked up a censor
+   */
+
+  /**
+   * Test against filter
+   * @param {String} text Text to test
+   * @param {Languages} filters Filters
+   * @param {Array.&amp;lt;String&gt;} server Extra filter
+   * @param {Array.&amp;lt;String&gt;} uncensor Extra bypass
+   * @returns {FilterResponse}
+   */
+  test (text, filters &#x3D; [&#x27;en&#x27;, &#x27;es&#x27;, &#x27;off&#x27;], server &#x3D; [], uncensor &#x3D; []) {
+    const content &#x3D; this.resolve(text)
+
+    const res &#x3D; {
+      censor: false,
+      ranges: [],
+      filters: [],
+      places: []
+    }
+
+    const filter &#x3D; { server: server.map(x &#x3D;&gt; new JPBExp(x)) }
+
+    for (const filt in this.filters) {
+      if (filters.includes(filt)) filter[filt] &#x3D; this.filters[filt]
+    }
+
+    content.forEach(piece &#x3D;&gt; {
+      let done &#x3D; false
+      for (const key in filter) {
+        for (const part of filter[key]) {
+          if (!part.test(piece.t, uncensor)) continue
+
+          done &#x3D; true
+
+          res.censor &#x3D; true
+          res.ranges.push(piece.i)
+          if (!res.filters.includes(key)) res.filters.push(key)
+          res.places.push(part)
+
+          break
+        }
+        if (done) break
+      }
     })
+
+    for (let i &#x3D; 0; i &amp;lt; res.ranges.length; i++) {
+      if (res.ranges[i + 1] &amp;amp;&amp;amp; res.ranges[i][1] &#x3D;&#x3D;&#x3D; res.ranges[i + 1][0]) {
+        res.ranges[i + 1][0] &#x3D; res.ranges[i][0]
+        delete res.ranges[i]
+      }
+    }
+
+    res.ranges &#x3D; res.ranges.filter(x &#x3D;&gt; x)
+
     return res
   }
-
-  removeLinks (arr) {
-    for (var i &#x3D; 0; i &amp;lt; arr.length; i++) {
-      if (arr[i]) {
-        if (arr[i].match(/http/gi)) {
-          let ok &#x3D; false
-          this.linkByp.forEach(bs &#x3D;&gt; {
-            const bsr &#x3D; new RegExp(bs, &#x27;gi&#x27;)
-            if (arr[i].match(bsr)) {
-              ok &#x3D; true
-            }
-          })
-          if (ok &#x3D;&#x3D;&#x3D; true) {
-            arr &#x3D; arr.filter(f &#x3D;&gt; f !&#x3D;&#x3D; arr[i])
-          }
-        }
-      }
-    }
-    return arr
-  }
-
-  addNum () {
-    this.client.db.collection(&#x27;stats&#x27;).updateOne({
-      id: &#x27;deleted&#x27;
-    }, {
-      $inc: {
-        amount: 1
-      }
-    })
-  }
 }
+
+module.exports &#x3D; Filter
 </code></pre>
           </article>
         </div>
@@ -316,7 +303,7 @@ module.exports &#x3D; class JPBFilter {
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on July 7, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on July 25, 2020.
       </p>
     </div>
   </footer>

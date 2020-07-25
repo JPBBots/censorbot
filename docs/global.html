@@ -42,16 +42,19 @@
                     <dt><a href="global.html#DashboardUser">DashboardUser</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="global.html#Job">Job</a></dt>
+                    <dt><a href="global.html#FilterResponse">FilterResponse</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="global.html#jobInt">jobInt</a></dt>
+                    <dt><a href="global.html#Job">Job</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
+                    <dt><a href="global.html#jobInt">jobInt</a></dt>
+                    <dd>
+                    </dd>
                     <dt><a href="global.html#Languages">Languages</a></dt>
                     <dd>
                     </dd>
@@ -61,19 +64,22 @@
                     <dt><a href="global.html#Request">Request</a></dt>
                     <dd>
                     </dd>
+                    <dt><a href="global.html#ResolvedPiece">ResolvedPiece</a></dt>
+                    <dd>
+                    </dd>
                     <dt><a href="global.html#ShardStats">ShardStats</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="global.html#SmallID">SmallID</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="global.html#Snowflake">Snowflake</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
+                    <dt><a href="global.html#SmallID">SmallID</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="global.html#Snowflake">Snowflake</a></dt>
+                    <dd>
+                    </dd>
                     <dt><a href="global.html#Ticket">Ticket</a></dt>
                     <dd>
                     </dd>
@@ -515,6 +521,54 @@
               </section>
               <dl class="dl-compact">
               </dl>
+              <h3 id="FilterResponse"><span class="symbol-name">FilterResponse</span><small class="property-type">
+                  &nbsp;Object</small></h3>
+              <p>Response from filter</p>
+              <section>
+                <h4>Properties</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>censor</p>
+                      </td>
+                      <td>
+                        <p>Array of Array of Number</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Index ranges</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>filters</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Languages">Languages</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Filters that picked up a censor</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
               <h3 id="Job"><span class="symbol-name">Job</span><small class="property-type">
                   &nbsp;Objectt</small></h3>
               <p>Job</p>
@@ -630,6 +684,63 @@ api
 
 // &#x3D;&gt; POST https://api.jt3ch.net/this/is/a/test/hi?test&#x3D;a BODY &#x27;{&quot;hi&quot;: true }&#x27;</code></pre>
                 </div>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="ResolvedPiece"><span class="symbol-name">ResolvedPiece</span><small class="property-type">
+                  &nbsp;Object</small></h3>
+              <p>Filter resolved piece</p>
+              <section>
+                <h4>
+                  Example
+                </h4>
+                <div>
+                  <pre class="prettyprint"><code>.i[0] // Starting index
+  .i[1] // Ending index</code></pre>
+                </div>
+              </section>
+              <section>
+                <h4>Properties</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>t</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Resolved text</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>i</p>
+                      </td>
+                      <td>
+                        <p>Array of Number</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Index range</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </section>
               <dl class="dl-compact">
               </dl>
@@ -930,7 +1041,7 @@ api
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on July 7, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on July 25, 2020.
       </p>
     </div>
   </footer>

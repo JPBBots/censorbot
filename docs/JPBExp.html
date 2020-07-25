@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Class: App</title>
+  <title>Class: JPBExp</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -25,52 +25,26 @@
         <div id="jsdoc-main" role="main">
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
-            <h1><small></small><span class="symbol-name">App</span></h1>
-            <p class="source-link">Source: <a href="src_lib_api_App.js.html#source-line-19">src/<wbr>lib/<wbr>api/<wbr>App.<wbr>js:19</a></p>
+            <h1><small></small><span class="symbol-name">JPBExp</span></h1>
+            <p class="source-link">Source: <a href="src_filter_JPBExp.js.html#source-line-11">src/<wbr>filter/<wbr>JPBExp.<wbr>js:11</a></p>
             <div class="symbol-classdesc">
-              <p>Express app manager</p>
+              <p>RegExp which takes an array of uncensored parts to use in .test</p>
             </div>
             <dl class="dl-compact">
             </dl>
           </header>
           <section id="summary">
             <div class="summary-callout">
-              <h2 class="summary-callout-heading">Properties</h2>
+              <h2 class="summary-callout-heading">Method</h2>
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="App.html#app">app</a></dt>
+                    <dt><a href="JPBExp.html#test">test(str, uncensor)</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
-                  <dl class="dl-summary-callout">
-                    <dt><a href="App.html#manager">manager</a></dt>
-                    <dd>
-                    </dd>
-                  </dl>
-                </div>
-                <div class="summary-column">
-                </div>
-              </div>
-            </div>
-            <div class="summary-callout">
-              <h2 class="summary-callout-heading">Methods</h2>
-              <div class="summary-content">
-                <div class="summary-column">
-                  <dl class="dl-summary-callout">
-                    <dt><a href="App.html#_loadRoutes">_loadRoutes()</a></dt>
-                    <dd>
-                    </dd>
-                  </dl>
-                </div>
-                <div class="summary-column">
-                  <dl class="dl-summary-callout">
-                    <dt><a href="App.html#load">load()</a></dt>
-                    <dd>
-                    </dd>
-                  </dl>
                 </div>
                 <div class="summary-column">
                 </div>
@@ -78,10 +52,10 @@
             </div>
           </section>
           <section>
-            <h2 id="App">new&nbsp;<span class="symbol-name">App</span><span class="signature"><span class="signature-params">(manager)</span></span></h2>
-            <p>Dashboard App</p>
+            <h2 id="JPBExp">new&nbsp;<span class="symbol-name">JPBExp</span><span class="signature"><span class="signature-params">(regex, uncensor)</span></span></h2>
+            <p>JPBExp</p>
             <section>
-              <h3>Parameter</h3>
+              <h3>Parameters</h3>
               <table class="jsdoc-details-table">
                 <thead>
                   <tr>
@@ -94,7 +68,7 @@
                 <tbody>
                   <tr>
                     <td>
-                      <p>manager</p>
+                      <p>regex</p>
                     </td>
                     <td>
                       <p>&nbsp;</p>
@@ -103,38 +77,85 @@
                       <p>&nbsp;</p>
                     </td>
                     <td>
-                      <p>Manager</p>
+                      <p>RegEx Statement</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p>uncensor</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Bits to uncensor</p>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </section>
             <dl class="dl-compact">
+              <dt>Extends</dt>
+              <dd>RegExp</dd>
             </dl>
           </section>
           <section>
-            <h2>Properties</h2>
+            <h2>Method</h2>
             <section>
-              <h3 id="app"><span class="symbol-name">app</span><small class="property-type">
-                  &nbsp;nullable ExpressApp</small></h3>
-              <p>Express app</p>
+              <h3 id="test"><span class="symbol-name">test</span><span class="signature"><span class="signature-params">(str, uncensor)</span>&nbsp;&rarr; <span class="signature-returns"> Boolean</span></span></h3>
+              <p>Test</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>str</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>String to test against</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>uncensor</p>
+                      </td>
+                      <td>
+                        <p>Array of String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Extra uncensors</p>
+                        <p>Value can be null.</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
               <dl class="dl-compact">
-              </dl>
-              <h3 id="manager"><span class="symbol-name">manager</span><small class="property-type">
-                  &nbsp;<a href="Manager.html">Manager</a></small></h3>
-              <p>Manager</p>
-              <dl class="dl-compact">
-              </dl>
-            </section>
-            <h2>Methods</h2>
-            <section>
-              <h3 id="_loadRoutes"><span class="symbol-name">_loadRoutes</span><span class="signature"><span class="signature-params">()</span></span></h3>
-              <p>Load routes and middleware</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="load"><span class="symbol-name">load</span><span class="signature"><span class="signature-params">()</span></span></h3>
-              <p>Load app</p>
-              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Boolean</code> Whether it matches or not</p>
+                </dd>
               </dl>
             </section>
           </section>

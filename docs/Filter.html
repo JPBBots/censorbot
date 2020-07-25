@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Class: Internals</title>
+  <title>Class: Filter</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -25,47 +25,47 @@
         <div id="jsdoc-main" role="main">
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
-            <h1><small></small><span class="symbol-name">Internals</span></h1>
-            <p class="source-link">Source: <a href="src_lib_client_Internals.js.html#source-line-9">src/<wbr>lib/<wbr>client/<wbr>Internals.<wbr>js:9</a></p>
+            <h1><small></small><span class="symbol-name">Filter</span></h1>
+            <p class="source-link">Source: <a href="src_lib_services_Filter.js.html#source-line-35">src/<wbr>lib/<wbr>services/<wbr>Filter.<wbr>js:35</a></p>
             <div class="symbol-classdesc">
-              <p>Used for methods that should be accessible from everywhere throughout censor bot</p>
+              <p>Filter for testing against words</p>
             </div>
             <dl class="dl-compact">
             </dl>
           </header>
           <section id="summary">
             <div class="summary-callout">
-              <h2 class="summary-callout-heading">Properties</h2>
+              <h2 class="summary-callout-heading">Property</h2>
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Internals.html#client">client</a></dt>
+                    <dt><a href="Filter.html#filters">filters</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
-                  <dl class="dl-summary-callout">
-                    <dt><a href="Internals.html#formatted">formatted</a></dt>
-                    <dd>
-                    </dd>
-                  </dl>
                 </div>
                 <div class="summary-column">
                 </div>
               </div>
             </div>
             <div class="summary-callout">
-              <h2 class="summary-callout-heading">Method</h2>
+              <h2 class="summary-callout-heading">Methods</h2>
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Internals.html#logCensor">logCensor(type, content, user, guild, res)</a></dt>
+                    <dt><a href="Filter.html#resolve">resolve(content)</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Filter.html#test">test(text, filters, server, uncensor)</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
                 </div>
                 <div class="summary-column">
                 </div>
@@ -73,60 +73,26 @@
             </div>
           </section>
           <section>
-            <h2 id="Internals">new&nbsp;<span class="symbol-name">Internals</span><span class="signature"><span class="signature-params">(client)</span></span></h2>
-            <p>Internal Methods</p>
-            <section>
-              <h3>Parameter</h3>
-              <table class="jsdoc-details-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Optional</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <p>client</p>
-                    </td>
-                    <td>
-                      <p>&nbsp;</p>
-                    </td>
-                    <td>
-                      <p>&nbsp;</p>
-                    </td>
-                    <td>
-                      <p>Client</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
+            <h2 id="Filter">new&nbsp;<span class="symbol-name">Filter</span><span class="signature"><span class="signature-params">()</span></span></h2>
+            <p>Filter</p>
             <dl class="dl-compact">
             </dl>
           </section>
           <section>
-            <h2>Properties</h2>
+            <h2>Property</h2>
             <section>
-              <h3 id="client"><span class="symbol-name">client</span><small class="property-type">
-                  &nbsp;<a href="Client.html">Client</a></small></h3>
-              <p>Client</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="formatted"><span class="symbol-name">formatted</span><small class="property-type">
-                  &nbsp;Array of Number</small></h3>
-              <p>Formatted guild counts</p>
+              <h3 id="filters"><span class="symbol-name">filters</span><small class="property-type">
+                  &nbsp;Object with <a href="global.html#Languages">Languages</a> keys and Array of <a href="JPBExp.html">JPBExp</a> properties</small></h3>
+              <p>Filters</p>
               <dl class="dl-compact">
               </dl>
             </section>
-            <h2>Method</h2>
+            <h2>Methods</h2>
             <section>
-              <h3 id="logCensor"><span class="symbol-name">logCensor</span><span class="signature"><span class="signature-params">(type, content, user, guild, res)</span></span></h3>
-              <p>Log a censor</p>
+              <h3 id="resolve"><span class="symbol-name">resolve</span><span class="signature"><span class="signature-params">(content)</span>&nbsp;&rarr; <span class="signature-returns"> Array of <a href="global.html#ResolvedPiece">ResolvedPiece</a></span></span></h3>
+              <p>Resolve content</p>
               <section>
-                <h4>Parameters</h4>
+                <h4>Parameter</h4>
                 <table class="jsdoc-details-table">
                   <thead>
                     <tr>
@@ -137,20 +103,6 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>
-                        <p>type</p>
-                      </td>
-                      <td>
-                        <p>String</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Type</p>
-                      </td>
-                    </tr>
                     <tr>
                       <td>
                         <p>content</p>
@@ -165,52 +117,93 @@
                         <p>Content</p>
                       </td>
                     </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Array of <a href="global.html#ResolvedPiece">ResolvedPiece</a></code> </p>
+                </dd>
+              </dl>
+              <h3 id="test"><span class="symbol-name">test</span><span class="signature"><span class="signature-params">(text, filters, server, uncensor)</span>&nbsp;&rarr; <span class="signature-returns"> <a href="global.html#FilterResponse">FilterResponse</a></span></span></h3>
+              <p>Test against filter</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                     <tr>
                       <td>
-                        <p>user</p>
+                        <p>text</p>
                       </td>
                       <td>
-                        <p>Object</p>
+                        <p>String</p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>User</p>
+                        <p>Text to test</p>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <p>guild</p>
+                        <p>filters</p>
                       </td>
                       <td>
-                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                        <p><a href="global.html#Languages">Languages</a></p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>Guild</p>
+                        <p>Filters</p>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <p>res</p>
+                        <p>server</p>
                       </td>
                       <td>
-                        <p>Object</p>
+                        <p>Array of String</p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>Filter response</p>
+                        <p>Extra filter</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>uncensor</p>
+                      </td>
+                      <td>
+                        <p>Array of String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Extra bypass</p>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </section>
               <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code><a href="global.html#FilterResponse">FilterResponse</a></code> </p>
+                </dd>
               </dl>
             </section>
           </section>
