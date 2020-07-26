@@ -1,4 +1,6 @@
 module.exports = async function (message) {
+  if (message.author.bot) return
+
   const db = await this.db.config(message.guild_id)
 
   if (this.config.prefix.some(x => x === message.content + ' ')) return this.interface.send(message.channel_id, `Current prefix is: \`${db.prefix || 'none'}\``)
@@ -18,7 +20,6 @@ module.exports = async function (message) {
     !message.member ||
      message.type !== 0 ||
      channel.type !== 0 ||
-     message.author.bot ||
      (inviteCensor ? false : channel.nsfw)
   ) return this.multi.delete(message.channel_id)
 
