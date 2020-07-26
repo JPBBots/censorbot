@@ -4,6 +4,7 @@ exports.run = function (message, args) {
       .title('Credits')
       .field('Head Developer', '[JPBBerry](https://jt3ch.net)', true)
       .field('Icon Art', 'higbead#0871', true)
+      .field('Head Helper', 'Limit', true)
       .field('Translators', 
         'English: Literally everyone\n' +
         'Spanish: JPBBerry#0001\n' +
