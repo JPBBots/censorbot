@@ -2,15 +2,22 @@ exports.run = function (message, args) {
   this.send(
     this.embed
       .title('Credits')
-      .field('Head Developer', '[JPBBerry](https://jt3ch.net)', true)
-      .field('Icon Art', 'higbead#0871', true)
-      .field('Head Helper', 'Baby Spinel#1866', true)
-      .field('Translators', 
-        'English: Literally everyone\n' +
-        'Spanish: JPBBerry#0001\n' +
-        'German: Durotan#5649\n' +
-        'Russian: shivaco#0542', 
-      true)
+      .field('__**Developers**__',
+        '**Head Developer**: [JPBBerry](https://jt3ch.net)\n' +
+        '**Web Developer**: [Bowser](https://dev.jazzmoon.ca)\n' +
+        '**Website Engineer**: Uber\n' +
+        '**Icon Art**: higbead#0871\n' +
+        '**Moral Support**: [Peter2469](https://www.peternokes.co.uk)\n'
+      )
+      .field('__**Support Team**__',
+        'Baby Spinel#1866, Egyptian_Lobster#9080'
+      )
+      .field('__**Translators**__',
+        '**English**: Literally everyone\n' +
+        '**Spanish**: JPBBerry#0001\n' +
+        '**German**: Durotan#5649\n' +
+        '**Russian**: shivaco#0542'
+      )
   )
 }
 exports.info = {
