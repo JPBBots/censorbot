@@ -3,9 +3,13 @@ exports.run = function (message, args) {
     this.embed
       .title('Credits')
       .field('Head Developer', '[JPBBerry](https://jt3ch.net)', true)
-      .field('Dashboard Designer', '[Bowser](https://dev.jazzmoon.ca)', true)
       .field('Icon Art', 'higbead#0871', true)
-      .field('Translators', 'English: Literally everyone\nSpanish: JPBBerry#0742\nPolish: Marcel#0473', true)
+      .field('Translators', 
+        'English: Literally everyone\n' +
+        'Spanish: JPBBerry#0001\n' +
+        'German: Durotan#5649\n' +
+        'Russian: shivaco#0542', 
+      true)
   )
 }
 exports.info = {
