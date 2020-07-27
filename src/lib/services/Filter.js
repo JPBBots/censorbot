@@ -139,20 +139,26 @@ class Filter {
       return true
     }
 
+    let spotted = 0
+    const nextPushes = []
+
     for (let i = 0; i < content.length; i++) { // base index pushing to array
       const split = content[i]
         .replace(replaceSpots.nothing, '')
         .split(replaceSpots.spaces)
 
       for (let spI = 0; spI < split.length; spI++) {
-        res.push({ i: [i, i], t: split[spI], n: true })
+        nextPushes.push({ i: [i, i], t: split[spI], n: true })
         addSpot(
           split[spI],
           i,
-          spI + i
+          spotted
         )
+        spotted++
       }
     }
+
+    res = res.concat(nextPushes)
 
     for (let i = 0; i < res.length; i++) { // combine < 3 character bits together
       const s = res[i]
