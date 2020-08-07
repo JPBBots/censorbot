@@ -39,6 +39,11 @@
                       classes: ['text'],
                       onclick: () => {
                         window.navigator.clipboard.writeText(`${ticket.word}`)
+                      },
+                      oncontextmenu: (e) => {
+                        e.preventDefault()
+
+                        window.open(`https://google.com/search?q=${encodeURIComponent(ticket.word)}`, 'window', 'width=600,height=1000')
                       }
                     }),
                     _.elm('button', {
