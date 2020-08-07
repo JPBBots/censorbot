@@ -82,7 +82,6 @@ class TicketManager {
     )
     this.client.interface.addReaction(this.client.config.channels.ticket, msg.id, this.client.config.emojis.yes)
     this.client.interface.addReaction(this.client.config.channels.ticket, msg.id, this.client.config.emojis.no)
-    this.client.interface.addReaction(this.client.config.channels.ticket, msg.id, this.client.config.emojis.dupe)
 
     this.db.insertOne({
       id,
@@ -121,34 +120,6 @@ class TicketManager {
   }
 
   /**
-   * Dupe a ticket
-   * @param {SmallID} id Ticket ID
-   * @param {Snowflake} admin Admin ID
-   */
-  async dupe (id, admin) {
-    const ticket = await this.db.findOne({ id })
-
-    this.client.interface.send(this.client.config.channels.ticketLog,
-      this.client.embed
-        .title(`Duped (${id})`)
-        .description(`<@${ticket.user}> duped by <@${admin.id}> \`\`\`${ticket.word}\`\`\``)
-        .timestamp()
-    )
-
-    this.client.interface.dm(ticket.user,
-      this.client.embed
-        .title(`Ticket was duplicate (${ticket.id})`)
-        .description(ticket.word)
-        .field('Admin', `<@${admin.id}> (${admin.username}#${admin.discriminator})`)
-        .timestamp()
-    )
-
-    this.client.interface.delete(this.client.config.channels.ticket, ticket.msg)
-
-    this.db.removeOne({ id })
-  }
-
-  /**
    * Approve a ticket
    * @param {SmallID} id Ticket ID
    * @param {Snowflake} admin Admin who approved
@@ -164,16 +135,6 @@ class TicketManager {
     )
 
     const res = this.client.filter.test(ticket.word, this.client.db.Config.constants.allowedFilters)
-
-    const msg = await this.client.interface.send(this.client.config.channels.approved,
-      this.client.embed
-        .title(`Ticket (${id})`)
-        .description(`<@${ticket.user}> accepted by <@${admin.id}> \`\`\`${ticket.word}\`\`\``)
-        .field('Methods', res.places.map(x => x.toString()).join(', '))
-        .timestamp()
-    )
-    this.client.interface.addReaction(this.client.config.channels.approved, msg.id, this.client.config.emojis.yes)
-    this.client.interface.addReaction(this.client.config.channels.approved, msg.id, this.client.config.emojis.no)
 
     this.client.interface.dm(ticket.user,
       this.client.embed
@@ -200,21 +161,16 @@ class TicketManager {
    * @param {Object} reaction Reaction
    */
   async event (reaction) {
-    if (reaction.member.user.bot) return
-    if (reaction.channel_id === this.client.config.channels.ticket) {
-      const { id } = await this.db.findOne({ msg: reaction.message_id })
+    if (reaction.channel_id !== this.client.config.channels.ticket || reaction.member.user.bot) return
+    const { id } = await this.db.findOne({ msg: reaction.message_id })
 
-      switch (reaction.emoji.id) {
-        case this.client.config.emojis.yes:
-          this.approve(id, reaction.member.user)
-          break
-        case this.client.config.emojis.no:
-          this.deny(id, reaction.member.user)
-          break
-        case this.client.config.emojis.dupe:
-          this.dupe(id, reaction.member.user)
-          break
-      }
+    switch (reaction.emoji.id) {
+      case this.client.config.emojis.yes:
+        this.approve(id, reaction.member.user)
+        break
+      case this.client.config.emojis.no:
+        this.deny(id, reaction.member.user)
+        break
     }
   }
 }

@@ -46,8 +46,8 @@ class Reloader {
         this.client.logger = new Logger()
         break
       case 'config':
-        delete require.cache[require.resolve('../config')]
-        this.client.config = require('../config')
+        delete require.cache[require.resolve('../../config')]
+        this.client.config = require('../../config')
         break
       case 'db':
         delete require.cache[require.resolve(resolve(lib, './services/Database'))]
