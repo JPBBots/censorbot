@@ -10,6 +10,9 @@ const Request = require('../../../req')
 const App = require('./App')
 const OAuth2 = require('./OAuth2')
 
+const Interface = require('../../../lib/Interface')
+const RestManager = require('../../../lib/rest/RestManager')
+
 /**
  * Base dashboard class
  */
@@ -68,6 +71,22 @@ class Manager {
      * @type {Request}
      */
     this.capi = Request('https://api.jt3ch.net', {}, { format: 'text' })
+
+    /**
+     * Rest Manager
+     * @type {RestManager}
+     */
+    this.rest = new RestManager(this.config.token)
+
+    /**
+     * Discord interface
+     * @type {Interface}
+     */
+    this.interface = new Interface(this)
+  }
+
+  get api () {
+    return this.rest.builder()
   }
 
   log (..._) { this.logger.log(..._) }

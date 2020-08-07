@@ -38,6 +38,10 @@ app.get('/admin', (req, res) => {
   res.render('admin')
 })
 
+app.get('/tickets', (req, res) => {
+  res.render('tickets')
+})
+
 app.get('/premium', (req, res) => {
   res.render('premium')
 })

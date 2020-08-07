@@ -15,7 +15,10 @@ window._ = {
       attr = {}
     }
 
-    if (typeof props === 'string') props = { innerText: props }
+    if (typeof props === 'string') {
+      props = { innerText: props, ...attr }
+      attr = {}
+    }
 
     elm = document.createElement(elm)
 

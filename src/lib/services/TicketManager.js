@@ -196,44 +196,6 @@ class TicketManager {
   }
 
   /**
-   * Finish a ticket
-   * @param {SmallID} id Ticket ID
-   * @param {Snowflake} msg Message ID
-   */
-  async added (id, msg) {
-    const ticket = await this.db.findOne({ id })
-
-    this.client.interface.dm(ticket.user,
-      this.client.embed
-        .title('Ticket finished')
-        .description(ticket.id)
-    )
-
-    this.db.removeOne({ id })
-
-    this.client.interface.delete(this.client.config.channels.approved, msg)
-  }
-
-  /**
-   * Finish a ticket
-   * @param {SmallID} id Ticket ID
-   * @param {Snowflake} msg Message ID
-   */
-  async furtherDeny (id, msg) {
-    const ticket = await this.db.findOne({ id })
-
-    this.client.interface.dm(ticket.user,
-      this.client.embed
-        .title('After further review, your ticket was denied.')
-        .description(ticket.id)
-    )
-
-    this.db.removeOne({ id })
-
-    this.client.interface.delete(this.client.config.channels.approved, msg)
-  }
-
-  /**
    * Event handler for reactions
    * @param {Object} reaction Reaction
    */
@@ -253,11 +215,6 @@ class TicketManager {
           this.dupe(id, reaction.member.user)
           break
       }
-    } else if (reaction.channel_id === this.client.config.channels.approved) {
-      const { id } = await this.db.findOne({ msg: reaction.message_id })
-
-      if (reaction.emoji.id === this.client.config.emojis.yes) this.added(id, reaction.message_id)
-      if (reaction.emoji.id === this.client.config.emojis.no) this.furtherDeny(id, reaction.message_id)
     }
   }
 }

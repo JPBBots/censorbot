@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      window.onerror = (e) => {
+        _.setRoot('h1', 'a' + e + e.stack)
+      }
+    </script>
+    <title>Censor Bot</title>
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/tickets.css">
+    <script src="/static/js/capi.js"></script>
+    <%- include('header') %>
+  </head>
+  <body>
+    <div id="box">
+      <%- include('base.ejs') %>
+      <div style="text-align: center" id="root">
+      </div>
+      <script>
+        const root = document.getElementById('root')
+        api.register({
+          login: async (user) => {
+            let tickets
+            if (user.admin) tickets = await api.request('GET', '/admin/tickets')
+
+            if (!tickets || tickets.error) return _.setRoot('h1', 'Unauthorized')
+
+            function setTickets (tickets) {
+              _.setRoot('center', [
+                _.elm('h1', 'Tickets'),
+                ...tickets.map(ticket => 
+                  _.elm('div', {
+                    classes: ['ticket']
+                  }, {
+                    ticket: ticket.id
+                  }, [
+                    _.elm('h2', `(${ticket.id}) ;; ${ticket.word}`, { classes: ['text'] }),
+                    _.elm('button', {
+                      innerText: 'DONE',
+                      classes: ['yes'],
+                      onclick: function () {
+                        api.request('POST', `/admin/tickets/${ticket.id}`)
+                          .then(() => {
+                            this.parentElement.parentElement.removeChild(this.parentElement)
+                          })
+                          .catch(error => {
+                            alert(error)
+                          })
+                      }
+                    }),
+                    _.elm('button', {
+                      innerText: 'CANCEL',
+                      classes: ['no'],
+                      onclick: function () {
+                        api.request('DELETE', `/admin/tickets/${ticket.id}`)
+                          .then(() => {
+                            this.parentElement.parentElement.removeChild(this.parentElement)
+                          })
+                          .catch(error => {
+                            alert(error)
+                          })
+                      }
+                    }),
+                    _.elm('button', {
+                      innerText: 'TEST',
+                      classes: ['test'],
+                      onclick: async function () {
+                        api.request('GET', `/admin/tickets/${ticket.id}`)
+                          .then(test => {
+                            if (!test.censored) {
+                              this.innerText = 'Done!'
+                              return
+                            }
+
+                            this.innerText = test.places.join(', ')
+                          })
+                          .catch(error => {
+                            alert(error)
+                          })
+                      }
+                    })
+                  ])
+                )
+              ])
+            }
+
+            setTickets(tickets)
+          },
+          logout: _.preset.login,
+          logging: _.preset.loading
+        })
+      </script>
+    </div>
+  </body>
+</html>

@@ -11,6 +11,8 @@ class JPBExp extends RegExp {
   constructor (regex, uncensor = []) {
     super(regex)
 
+    this._text = regex
+
     this.uncensor = uncensor.map(x => new RegExp(x))
   }
 

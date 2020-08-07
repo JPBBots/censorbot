@@ -1,0 +1,33 @@
+.ticket {
+  display: grid;
+  width: 90%;
+
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(1, 1fr);
+  grid-template-areas:
+    "text text text yes no test";
+
+  border: 1px black solid;
+}
+
+.text {
+  grid-area: text;
+}
+
+.yes {
+  grid-area: yes;
+  border-radius: 0 !important;
+  background-color: green;
+}
+
+.no {
+  grid-area: no;
+  border-radius: 0 !important;
+  background-color: red;
+}
+
+.test {
+  grid-area: test;
+  border-radius: 0 !important;
+  background-color: yellow;
+}
