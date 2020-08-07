@@ -25,12 +25,6 @@ module.exports = function (r) {
     res.json({ success: true })
   })
 
-  r.post('/reload', (req, res) => {
-    this.cluster.internal.reload('filter')
-
-    res.json({ success: true })
-  })
-
   r.get('/tickets', async (req, res) => {
     res.json(await this.db.collection('tickets').find({ accepted: true }).toArray())
   })
