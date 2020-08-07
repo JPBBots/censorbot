@@ -134,8 +134,6 @@ class TicketManager {
         .timestamp()
     )
 
-    const res = this.client.filter.test(ticket.word, this.client.db.Config.constants.allowedFilters)
-
     this.client.interface.dm(ticket.user,
       this.client.embed
         .title(`Ticket was accepted (${ticket.id})`)
@@ -151,7 +149,7 @@ class TicketManager {
     }, {
       $set: {
         accepted: true,
-        msg: msg.id
+        msg: null
       }
     })
   }
