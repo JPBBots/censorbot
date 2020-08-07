@@ -35,7 +35,12 @@
                   }, {
                     ticket: ticket.id
                   }, [
-                    _.elm('h2', `(${ticket.id}) ;; ${ticket.word}`, { classes: ['text'] }),
+                    _.elm('h2', `(${ticket.id}) ;; ${ticket.word}`, { 
+                      classes: ['text'],
+                      onclick: () => {
+                        window.navigator.clipboard.writeText(`${ticket.word}`)
+                      }
+                    }),
                     _.elm('button', {
                       innerText: 'DONE',
                       classes: ['yes'],

@@ -11,7 +11,17 @@
 }
 
 .text {
+  -webkit-user-select: none;
   grid-area: text;
+  cursor: pointer;
+  transition: 0.5s;
+  margin: 0;
+  padding: 20px;
+}
+
+.text:active {
+  transition: 0s;
+  background-color: gray;
 }
 
 .yes {
