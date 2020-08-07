@@ -86,6 +86,17 @@
             }
 
             setTickets(tickets)
+
+            const keys = {
+              82: 'yes', // r
+              84: 'test' // t
+            }
+            window.addEventListener('keyup', (e) => {
+              const key = keys[e.keyCode]
+              if (!key) return
+
+              document.querySelector('.ticket').querySelector(`.${key}`).click()
+            })
           },
           logout: _.preset.login,
           logging: _.preset.loading
