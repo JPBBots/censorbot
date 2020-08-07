@@ -48,6 +48,7 @@
                         api.request('POST', `/admin/tickets/${ticket.id}`)
                           .then(() => {
                             this.parentElement.parentElement.removeChild(this.parentElement)
+                            run('test')
                           })
                           .catch(error => {
                             alert(error)
@@ -61,6 +62,7 @@
                         api.request('DELETE', `/admin/tickets/${ticket.id}`)
                           .then(() => {
                             this.parentElement.parentElement.removeChild(this.parentElement)
+                            run('test')
                           })
                           .catch(error => {
                             alert(error)
@@ -92,6 +94,14 @@
 
             setTickets(tickets)
 
+            function run (action) {
+              const ticket = document.querySelector('.ticket')
+
+              if (!ticket) return
+
+              ticket.querySelector(`.${action}`).click()
+            }
+
             const keys = {
               82: 'yes', // r
               84: 'test' // t
@@ -100,7 +110,7 @@
               const key = keys[e.keyCode]
               if (!key) return
 
-              document.querySelector('.ticket').querySelector(`.${key}`).click()
+              run(key)
             })
           },
           logout: _.preset.login,
