@@ -22,6 +22,10 @@ app.get('/tos', (req, res) => {
   res.render('tos')
 })
 
+app.get('/about', (req, res) => {
+  res.render('about')
+})
+
 app.get('/invite', (req, res) => {
   res.render('invite')
 })
