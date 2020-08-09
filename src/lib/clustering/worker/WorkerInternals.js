@@ -234,6 +234,20 @@ class WorkerInternals {
   }
 
   /**
+   * Evaluate code on the master process
+   * @param {String} ev String to evaluate
+   * @returns {*} Response
+   */
+  masterEval (ev) {
+    return this.api
+      .eval
+      .post({
+        body: { ev }
+      })
+      .then(x => x.result)
+  }
+
+  /**
    * Reloads a part on all clusters
    * @param {String} part Reloadable part
    */
