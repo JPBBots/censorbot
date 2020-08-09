@@ -6,7 +6,7 @@ module.exports = {
   support: 'https://discord.gg/CRAbk4w',
   patreon: 'https://patreon.com/censorbot',
   website: 'https://censor.bot',
-  dashboard: 'https://dash.censor.bot',
+  dashboard: 'https://censor.bot',
   inviteSite: 'https://censor.bot/invite',
   clusters: [
     [0]
