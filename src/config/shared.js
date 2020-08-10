@@ -17,5 +17,6 @@ module.exports = {
   dashOptions: {
     guildCacheWipeTimeout: 15 * 60 * 1000, // 15 minutes
     requiredPermissionBit: 0x00000008 // Administrator
-  }
+  },
+  ignoreServers: ['729371524720754699'] // custom instance servers
 }

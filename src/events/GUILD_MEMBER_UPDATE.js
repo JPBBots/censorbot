@@ -1,4 +1,5 @@
 module.exports = async function (member) {
+  if (this.config.ignoreServers.includes(member.guild_id)) return
   if (
     !member ||
     !member.nick ||

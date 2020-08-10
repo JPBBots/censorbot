@@ -1,4 +1,5 @@
 module.exports = async function (message) {
+  if (!message.guild_id || this.config.ignoreServers.includes(message.guild_id)) return
   if (message.author.bot) return
 
   const db = await this.db.config(message.guild_id)
