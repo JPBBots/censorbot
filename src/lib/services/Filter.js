@@ -14,7 +14,7 @@ const converter = {
     .split(',')
 }
 
-const firstShortWords = ['an']
+const firstShortWords = ['an', 'as', 'us']
 const shortWords = ['it', 'at', 'xd']
 
 const GetFilters = require('../../filter/filters')
@@ -93,7 +93,7 @@ class Filter {
     content = content
       .toLowerCase()
       .replace(/<#?@?!?&?(\d+)>/g, '') // mentions
-      .replace(/<:(\w+):(\d+)>/g, '$1') // emojis
+      .replace(/<a?:(\w+):(\d+)>/g, '$1') // emojis
       .replace(/(.)\1{2,}/g, '$1$1') // multiple characters only come up once
 
     content = content.split(' ')
