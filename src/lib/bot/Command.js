@@ -51,6 +51,22 @@ class Command {
   }
 
   /**
+   * Guild message was sent in
+   * @type {Object}
+   */
+  get guild () {
+    return this.client.guilds.get(this.msg.guild_id)
+  }
+
+  /**
+   * Channel message was sent in
+   * @type {Object}
+   */
+  get channel () {
+    return this.client.channels.get(this.msg.channel_id)
+  }
+
+  /**
    * Sends a message to the channel
    * @param {String|Object|Embed} content Content of message
    * @returns {Promise.<Object>} Message object
