@@ -1,4 +1,7 @@
+const TempSet = require('../../../../../util/TempSet')
+
 module.exports = function (r) {
+  const usedCodes = new TempSet(60000)
   r.get('/', (req, res) => {
     res.redirect(this.oauthLogin(null, req.headers.host))
   })
@@ -33,6 +36,11 @@ module.exports = function (r) {
 
   r.get('/callback', (req, res) => {
     if (req.query.state === 'stop') return res.send('.')
+    if (usedCodes.has(req.query.code)) return res.json({
+      error: 0,
+      message: 'Cannot use the same code twice'
+    })
+    usedCodes.add(req.query.code)
     this.oauth2.callback(req.query.code, req.headers.host)
       .then(token => {
         res.cookie('token', token, {
