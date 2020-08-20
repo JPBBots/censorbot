@@ -1,4 +1,4 @@
-const Request = require('../../../req')
+const RestManager = require('../../../lib/rest/RestManager')
 
 const Cache = require('../../../util/Cache')
 const encodeJSON = require('../../../util/encodeJSON')
@@ -41,16 +41,20 @@ class OAuth2 {
     this.manager = manager
 
     /**
-     * Discord API
-     * @type {Request}
+     * Discord Rest
+     * @type {RestManager}
      */
-    this.api = new Request('https://discord.com/api')
+    this.rest = new RestManager()
 
     /**
      * Guild cache
      * @type {Cache.<Token, Array.<CachedGuild>>}
      */
     this.guildCache = new Cache(this.config.dashOptions.guildCacheWipeTimeout)
+  }
+
+  get api () {
+    return this.rest.builder()
   }
 
   get db () {
