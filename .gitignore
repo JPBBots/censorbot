@@ -1,8 +1,6 @@
-package-lock.json
-
 TODO.txt
 
-src/config/*/private.js
+*.env
 src/filter/filters/*
 
 !src/filter/filters/README.md
