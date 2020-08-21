@@ -1,13 +1,10 @@
 {
   "name": "censorbot",
-  "version": "7.0.0",
+  "version": "10.0.0",
   "description": "Anti-Swear bot for discord",
   "main": "./src/index.js",
   "scripts": {
-    "testguild": "node ./src/lib/dashboard/testGuilds",
-    "test": "node . -b",
     "s": "standard --fix -v",
-    "log": "pm2 logs censorbot",
     "commit": "git add . && echo \"Commit Message:\" && read msg && git commit -m \"$msg\"",
     "push": "git push",
     "jsdoc": "jsdoc ./ -r -c ./jsdoc.json --verbose -d ./docs"
