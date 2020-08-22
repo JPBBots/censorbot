@@ -1,5 +1,4 @@
 module.exports = async function (reaction) {
-  if (this.config.ignoreServers.includes(reaction.guild_id)) return
   this.tickets.event(reaction)
   const channel = this.channels.get(reaction.channel_id)
 

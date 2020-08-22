@@ -1,12 +1,12 @@
 module.exports = async function (message) {
-  if (!message.guild_id || this.config.ignoreServers.includes(message.guild_id)) return
+  if (!message.guild_id) return
   if (message.author.bot) return
 
   const db = await this.db.config(message.guild_id)
 
   if (this.config.prefix.some(x => x === message.content + ' ')) return this.interface.send(message.channel_id, `Current prefix is: \`${db.prefix || 'none'}\``)
 
-  if (this.commands) {
+  if (this.commands && !((global.botIsCustom && process.env.LOCK_COMMANDS === 'true') && message.author.id !== this.config.owner)) {
     const cmd = this.commands.event(message, db.prefix)
 
     if (this.config.deleteCommands.includes(cmd)) return this.interface.delete(message.channel_id, message.id).catch(() => {})

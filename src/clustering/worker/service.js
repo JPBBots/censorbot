@@ -1,6 +1,6 @@
-const { workerData, parentPort } = require('worker_threads')
+require('../../runOnAll')
 
-if (workerData.beta) process.argv.push('-b')
+const { workerData, parentPort } = require('worker_threads')
 
 const Worker = require('./Worker')
 

@@ -1,4 +1,6 @@
-console.log(process.argv.includes('-b') ? 'BETA' : 'PRODUCTION')
+require('./runOnAll')
+
+console.log('Censor Bot')
 
 const Master = require('./clustering/master/Master')
 

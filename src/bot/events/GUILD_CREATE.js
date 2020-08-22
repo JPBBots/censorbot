@@ -1,3 +1,7 @@
+const allowedGuilds = global.botIsCustom
+  ? process.env.ALLOWED_GUILDS.split(',')
+  : false
+
 module.exports = function (guild) {
   const available = this.unavailables.has(guild.id)
   if (available) this.unavailables.delete(guild.id)
@@ -15,6 +19,8 @@ module.exports = function (guild) {
   this.db.config(guild.id)
 
   if (available) return
+
+  if (allowedGuilds && !allowedGuilds.includes(guild.id)) return this.interface.leaveGuild(guild.id)
 
   this.interface.dm(guild.owner_id,
     this.embed

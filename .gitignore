@@ -1,6 +1,7 @@
 TODO.txt
 
 *.env
+!example.env
 src/filter/filters/*
 
 !src/filter/filters/README.md

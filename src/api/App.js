@@ -63,7 +63,7 @@ class App {
     this.app.use(cors())
 
     this.app.use((req, res, next) => {
-      if (!req.url.match(/static|updates\/./gi) && !process.argv.includes('-b')) this.manager.log(`${req.method} ${req.url}`)
+      if (!req.url.match(/static|updates\/./gi)) this.manager.log(`${req.method} ${req.url}`)
 
       req.api = req.originalUrl.split('?')[0].endsWith('.json') || req.method !== 'GET'
 

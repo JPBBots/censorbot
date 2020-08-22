@@ -87,7 +87,6 @@ class WebhookManager {
         })
 
       this.bucket.set(channel + user.id, webhook, () => {
-        console.log('wh deleted')
         this.client.api
           .webhooks[webhook.id][webhook.token]
           .delete()

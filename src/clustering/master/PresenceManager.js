@@ -73,8 +73,13 @@ class PresenceManager {
    * Default
    */
   async d () {
-    const guilds = await this.master.api.sendToAll('GUILD_COUNT', {}, true)
-    this.status('WATCHING', `For Bad Words | ${(guilds.reduce((a, b) => a + b.reduce((c, d) => c + d, 0), 0)).toLocaleString()} Servers`)
+    if (global.botIsCustom && process.env.CUSTOM_STATUS) {
+      const [type, name] = process.env.CUSTOM_STATUS.split(',')
+      this.status(type, name)
+    } else {
+      const guilds = await this.master.api.sendToAll('GUILD_COUNT', {}, true)
+      this.status('WATCHING', `For Bad Words | ${(guilds.reduce((a, b) => a + b.reduce((c, d) => c + d, 0), 0)).toLocaleString()} Servers`)
+    }
   }
 
   /**

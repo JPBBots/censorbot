@@ -65,12 +65,6 @@ class CensorBot extends Client {
     this.helpme = new Collection()
 
     /**
-     * Whether in beta or not
-     * @type {Boolean}
-     */
-    this.beta = process.argv.includes('-b')
-
-    /**
      * Censor Bot API
      * @type {Request}
      */

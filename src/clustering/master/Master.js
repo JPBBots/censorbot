@@ -48,12 +48,6 @@ class Master {
     this.spawned = false
 
     /**
-     * Whether in beta mode
-     * @type {Boolean}
-     */
-    this.beta = process.argv.includes('-b')
-
-    /**
      * Shard Manager
      * @type {ShardManager}
      */

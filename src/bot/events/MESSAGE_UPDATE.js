@@ -1,5 +1,4 @@
 module.exports = async function (message) {
-  if (this.config.ignoreServers.includes(message.guild_id)) return
   const channel = this.channels.get(message.channel_id)
 
   if (
