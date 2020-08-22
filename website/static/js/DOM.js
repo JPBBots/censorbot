@@ -78,12 +78,17 @@ window._ = {
   },
   preset: {
     login (t, r) {
-      _.setRoot(_.elm('button', {
-        innerText: `Login ${t || ''}`,
-        events: {
-          click: () => api.login()
-        }
-      }), r)
+      _.setRoot(_.elm('div', {}, {
+        style: "display:inline;align-items:center;justify-content:center;margin:auto"
+      }, [
+        _.elm('h1', `To ${t || 'make changes'} you must login`),
+        _.elm('button', {
+          innerText: 'Login',
+          events: {
+            click: () => api.login()
+          }
+        })
+      ]), r)
     },
     loading (r) {
       _.setRoot(_.elm('h1', 'Loading...'), r)

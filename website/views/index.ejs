@@ -11,12 +11,17 @@
       <%- include('base.ejs') %>
       <div id="root">
         <center>
-          <h1>The bot that keeps your server clean.</h1>
+          <h1 style="color: #f8f8ff">The bot that keeps your server clean.</h1>
           <h2>So you don't have to</h2>
           <br />
           <button onclick="api.invite()">Invite Bot</button>
-          <button onclick="api.redirect('/premium')">Premium</button>
           <button id="customize" onclick="">Loading...</button>
+          <div></div>
+          <button onclick="api.redirect('/premium')" style="
+            width: 426px;
+            background-color: #45b6fe;
+            color: #f8f8ff;
+          ">Premium</button>
           <script>
             const customize = document.getElementById('customize')
             api.register({
@@ -25,7 +30,7 @@
                 customize.onclick = () => api.redirect('/servers')
               },
               logout: () => {
-                customize.innerText = 'Login and Customize'
+                customize.innerText = 'Customize'
                 customize.onclick = () => api.login('/servers')
               }
             })

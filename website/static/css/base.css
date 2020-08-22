@@ -96,12 +96,13 @@ img {
 
 button:not(#save) {
   font-size: 2rem;
-  padding: 1rem;
+  padding: 1rem 2rem 1rem 2rem;
   border: 1px none;
-  border-radius: 20px;
+  border-radius: 9px;
   outline: none;
   cursor: pointer;
   transition: 0.5s;
+  margin: 5px;
 }
 
 button:not(#save):hover {
