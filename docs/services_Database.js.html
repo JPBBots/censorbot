@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Source: services/Database.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: services/Database.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>const { MongoClient } &#x3D; require(&#x27;mongodb&#x27;)
+delete require.cache[require.resolve(&#x27;../client/Config&#x27;)]
+
+/**
+ * Used for connecting to mongo database and built methods
+ */
+class Database {
+  /**
+   * Database
+   * @param {Dashboard} client Client
+   * @param {String} username Username
+   * @param {String} password Password
+   * @param {?MongoDatabase} db Database if reloading
+   * @param {?MongoClient} mongo Mongo if reloading
+   */
+  constructor (client, username, password, db, mongo) {
+    /**
+     * Client
+     * @type {Client}
+     */
+    this.client &#x3D; client
+
+    this.Config &#x3D; require(&#x27;../client/Config&#x27;)
+
+    if (db) {
+      this.db &#x3D; db
+      this.mongo &#x3D; mongo
+    } else this.mongo &#x3D; new MongoClient(&#x60;mongodb://${username}:${password}@${process.env.DB_HOST}:27017/&#x60;, { useNewUrlParser: true, useUnifiedTopology: true })
+  }
+
+  /**
+   * Default guild config
+   * @type {Object}
+   */
+  get defaultConfig () {
+    return this.Config.config
+  }
+
+  /**
+   * Guild config constants
+   * @type {Object}
+   */
+  get constants () {
+    return this.Config.constants
+  }
+
+  /**
+   * Connect the database
+   */
+  async connect () {
+    await this.mongo.connect()
+
+    /**
+     * Database
+     * @type {MongoDatabase}
+     */
+    this.db &#x3D; await this.mongo.db(&#x27;censorbot&#x27;)
+  }
+
+  /**
+   * Cursors to collection
+   * @param {String} collection Collection to cursor to
+   * @return {MongoCollection}
+   */
+  collection (..._) { return this.db.collection(..._) }
+
+  /**
+   * Gets guild config
+   * @param {Snowflake} id Guild
+   * @param {Boolean} allowRewrite Allows for config to rewrite if not exist
+   * @returns {Promise.&amp;lt;Object&gt;} Config
+   */
+  async config (id, allowRewrite &#x3D; true) {
+    let config &#x3D; await this.collection(&#x27;guild_data&#x27;)
+      .findOne({
+        id: id
+      })
+
+    if (!config &amp;amp;&amp;amp; allowRewrite) {
+      config &#x3D; {
+        id,
+        ...this.defaultConfig
+      }
+      await this.collection(&#x27;guild_data&#x27;)
+        .insertOne(config)
+    }
+
+    delete config._id
+
+    if (config.v !&#x3D;&#x3D; this.constants.currentVersion) config &#x3D; this.outdate(config)
+
+    delete config.v
+
+    return config
+  }
+
+  outdate (obj) {
+    const newObj &#x3D; { ...obj }
+    switch (obj.v) {
+      case 1:
+        newObj.webhook &#x3D; {
+          enabled: obj.webhook,
+          replace: obj.webhook_replace,
+          separate: obj.webhook_separate
+        }
+        newObj.msg &#x3D; {
+          content: obj.msg,
+          deleteAfter: obj.pop_delete
+        }
+        delete newObj.webhook_replace
+        delete newObj.webhook_separate
+        delete newObj.pop_delete
+
+        // falls through
+      case 2:
+        newObj.invites &#x3D; false
+
+        // falls through
+      case 3:
+        if (!obj.base) newObj.filters &#x3D; []
+        else newObj.filters &#x3D; obj.languages
+
+        delete newObj.base
+        delete newObj.languages
+        break
+      default:
+        break
+    }
+
+    newObj.v &#x3D; this.constants.currentVersion
+
+    this.collection(&#x27;guild_data&#x27;).replaceOne({ id: obj.id }, newObj)
+
+    return newObj
+  }
+
+  /**
+   * Sets guild config
+   * @param {Snowflake} id Guild
+   * @param {Object} obj Object to set
+   * @returns {Promise.&amp;lt;Object&gt;} Mongo response
+   */
+  async setConfig (id, obj) {
+    const res &#x3D; await this.collection(&#x27;guild_data&#x27;).replaceOne({ id }, {
+      id,
+      ...obj,
+      v: this.constants.currentVersion
+    }, { upsert: true })
+
+    if (!res || res.n &amp;lt; 1) throw new Error(&#x27;DB Error&#x27;)
+    return true
+  }
+
+  /**
+   * If guild is premium
+   * @param {Snowflake} id Guild
+   * @returns {Boolean}
+   */
+  async guildPremium (id) {
+    const response &#x3D; await this.collection(&#x27;premium_users&#x27;).find({
+      guilds: {
+        $elemMatch: { $eq: id }
+      }
+    }).toArray()
+      .then(x &#x3D;&gt; x.length)
+
+    return response &gt; 0
+  }
+}
+
+module.exports &#x3D; Database
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on August 21, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

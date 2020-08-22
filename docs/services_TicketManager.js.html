@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Source: services/TicketManager.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: services/TicketManager.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>const GenerateID &#x3D; require(&#x27;../util/GenerateID&#x27;)
+
+/**
+ * Representing tickets sent in by users
+ * @typedef {Object} Ticket
+ * @property {SmallID} id ID of ticket
+ * @property {Snowflake} user User who sent ticket
+ * @property {String} word Content of ticket
+ */
+/**
+ * Representing ticket ban objects
+ * @typedef {Object} TicketBan
+ * @property {Snowflake} id ID of user
+ * @property {?String} reason Reason why user was banned
+ * @property {Snowflake} admin Admin who banned them
+ * @property {Date} when When user was banned
+ */
+
+/**
+ * Used for managing and adding censor bot tickets
+ */
+class TicketManager {
+  /**
+   * Ticket Manager
+   * @param {Client} client Client
+   */
+  constructor (client) {
+    /**
+     * Client
+     * @type {Client}
+     */
+    this.client &#x3D; client
+  }
+
+  /**
+   * Database
+   * @type {MongoDB.Collection}
+   */
+  get db () {
+    return this.client.db.collection(&#x27;tickets&#x27;)
+  }
+
+  /**
+   * Ban database
+   * @type {MongoDB.Collection}
+   */
+  get banDB () {
+    return this.client.db.collection(&#x27;ticketban&#x27;)
+  }
+
+  /**
+   * If a user is banned
+   * @param {Snowflake} id User
+   * @returns {TicketBan} Ban object
+   */
+  async isBanned (id) {
+    const res &#x3D; await this.banDB.findOne({ id })
+    if (res) res.banned &#x3D; true
+    return res || { banned: false, reason: null, when: null, admin: null }
+  }
+
+  /**
+   * Add a ticket
+   * @param {String} word Word
+   * @param {Snowflake} user User who added
+   */
+  async add (word, user) {
+    const isBanned &#x3D; await this.isBanned(user)
+    if (isBanned.banned) throw new Error(&#x60;User is banned for \&#x60;${isBanned.reason}\&#x60;&#x60;)
+
+    const res &#x3D; this.client.filter.test(word, this.client.db.Config.constants.allowedFilters)
+    if (!res.censor) throw new Error(&#x27;Phrase is not censored by the base filter&#x27;)
+
+    const tickets &#x3D; await this.db.find({}).toArray()
+    const id &#x3D; GenerateID(tickets.map(x &#x3D;&gt; x.id))
+
+    const msg &#x3D; await this.client.interface.send(this.client.config.channels.ticket,
+      this.client.embed
+        .title(&#x60;Ticket (${id})&#x60;)
+        .description(&#x60;&amp;lt;@${user}&gt; \&#x60;\&#x60;\&#x60;${word}\&#x60;\&#x60;\&#x60;&#x60;)
+        .timestamp()
+    )
+    this.client.interface.addReaction(this.client.config.channels.ticket, msg.id, this.client.config.emojis.yes)
+    this.client.interface.addReaction(this.client.config.channels.ticket, msg.id, this.client.config.emojis.no)
+
+    this.db.insertOne({
+      id,
+      word,
+      user,
+      msg: msg.id
+    })
+  }
+
+  /**
+   * Deny a ticket
+   * @param {SmallID} id Ticket ID
+   * @param {Snowflake} admin Admin who denied
+   */
+  async deny (id, admin) {
+    const ticket &#x3D; await this.db.findOne({ id })
+
+    this.client.interface.send(this.client.config.channels.ticketLog,
+      this.client.embed
+        .title(&#x60;Denied (${id})&#x60;)
+        .description(&#x60;&amp;lt;@${ticket.user}&gt; denied by &amp;lt;@${admin.id}&gt; \&#x60;\&#x60;\&#x60;${ticket.word}\&#x60;\&#x60;\&#x60;&#x60;)
+        .timestamp()
+    )
+
+    this.client.interface.dm(ticket.user,
+      this.client.embed
+        .title(&#x60;Ticket was denied (${ticket.id})&#x60;)
+        .description(ticket.word)
+        .field(&#x27;Admin&#x27;, &#x60;&amp;lt;@${admin.id}&gt; (${admin.username}#${admin.discriminator})&#x60;)
+        .timestamp()
+    )
+
+    this.client.interface.delete(this.client.config.channels.ticket, ticket.msg)
+
+    this.db.removeOne({ id })
+  }
+
+  /**
+   * Approve a ticket
+   * @param {SmallID} id Ticket ID
+   * @param {Snowflake} admin Admin who approved
+   */
+  async approve (id, admin) {
+    const ticket &#x3D; await this.db.findOne({ id })
+
+    this.client.interface.send(this.client.config.channels.ticketLog,
+      this.client.embed
+        .title(&#x60;Accepted (${id})&#x60;)
+        .description(&#x60;&amp;lt;@${ticket.user}&gt; accepted by &amp;lt;@${admin.id}&gt; \&#x60;\&#x60;\&#x60;${ticket.word}\&#x60;\&#x60;\&#x60;&#x60;)
+        .timestamp()
+    )
+
+    this.client.interface.dm(ticket.user,
+      this.client.embed
+        .title(&#x60;Ticket was accepted (${ticket.id})&#x60;)
+        .description(ticket.word)
+        .footer(&#x27;Please wait as we need to add the bypass, you will receive a DM once the word has been added.&#x27;)
+        .timestamp()
+    )
+
+    this.client.interface.delete(this.client.config.channels.ticket, ticket.msg)
+
+    this.db.updateOne({
+      id: ticket.id
+    }, {
+      $set: {
+        accepted: true,
+        msg: null
+      }
+    })
+  }
+
+  /**
+   * Event handler for reactions
+   * @param {Object} reaction Reaction
+   */
+  async event (reaction) {
+    if (reaction.channel_id !&#x3D;&#x3D; this.client.config.channels.ticket || reaction.member.user.bot) return
+    const { id } &#x3D; await this.db.findOne({ msg: reaction.message_id })
+
+    switch (reaction.emoji.id) {
+      case this.client.config.emojis.yes:
+        this.approve(id, reaction.member.user)
+        break
+      case this.client.config.emojis.no:
+        this.deny(id, reaction.member.user)
+        break
+    }
+  }
+}
+
+module.exports &#x3D; TicketManager
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on August 21, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

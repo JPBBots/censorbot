@@ -1,0 +1,1315 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Class: Collection</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
+            <h1><small></small><span class="symbol-name">Collection</span></h1>
+            <p class="source-link">Source: <a href="util_Collection.js.html#source-line-11">util/<wbr>Collection.<wbr>js:11</a></p>
+            <div class="symbol-classdesc">
+              <p>A Map with additional utility methods. This is used throughout discord.js rather than Arrays for anything that has
+                an ID, for significantly improved performance and ease-of-use.</p>
+            </div>
+            <dl class="dl-compact">
+            </dl>
+          </header>
+          <section id="summary">
+            <div class="summary-callout">
+              <h2 class="summary-callout-heading">Methods</h2>
+              <div class="summary-content">
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Collection.html#array">array()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#clone">clone()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#concat">concat(.<wbr>.<wbr>.<wbr>collections)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#deleteAll">deleteAll()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#equals">equals(collection)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#every">every(fn[, thisArg])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#exists">exists(prop, value)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#filter">filter(fn[, thisArg])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#filterArray">filterArray(fn[, thisArg])</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Collection.html#find">find(propOrFn[, value])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#findAll">findAll(prop, value)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#findKey">findKey(propOrFn[, value])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#first">first([count])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#firstKey">firstKey([count])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#keyArray">keyArray()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#last">last([count])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#lastKey">lastKey([count])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#map">map(fn[, thisArg])</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Collection.html#partition">partition(fn[, thisArg])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#random">random([count])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#randomKey">randomKey([count])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#reduce">reduce(fn[, initialValue])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#some">some(fn[, thisArg])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#sort">sort([compareFunction])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#sweep">sweep(fn[, thisArg])</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Collection.html#tap">tap(fn[, thisArg])</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section>
+            <h2 id="Collection">new&nbsp;<span class="symbol-name">Collection</span><span class="signature"><span class="signature-params">()</span></span></h2>
+            <dl class="dl-compact">
+              <dt>Extends</dt>
+              <dd>Map</dd>
+            </dl>
+          </section>
+          <section>
+            <h2>Methods</h2>
+            <section>
+              <h3 id="array"><span class="symbol-name">array</span><span class="signature"><span class="signature-params">()</span>&nbsp;&rarr; <span class="signature-returns"> Array</span></span></h3>
+              <p>Creates an ordered array of the values of this collection, and caches it internally. The array will only be
+                reconstructed if an item is added to or removed from the collection, or if you change the length of the array
+                itself. If you don't want this caching behavior, use <code>[...collection.values()]</code> or
+                <code>Array.from(collection.values())</code> instead.</p>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Array</code> </p>
+                </dd>
+              </dl>
+              <h3 id="clone"><span class="symbol-name">clone</span><span class="signature"><span class="signature-params">()</span>&nbsp;&rarr; <span class="signature-returns"> <a href="Collection.html">Collection</a></span></span></h3>
+              <p>Creates an identical shallow copy of this collection.</p>
+              <section>
+                <h4>
+                  Example
+                </h4>
+                <div>
+                  <pre class="prettyprint"><code>const newColl &#x3D; someColl.clone();</code></pre>
+                </div>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code><a href="Collection.html">Collection</a></code> </p>
+                </dd>
+              </dl>
+              <h3 id="concat"><span class="symbol-name">concat</span><span class="signature"><span class="signature-params">(...collections)</span>&nbsp;&rarr; <span class="signature-returns"> <a href="Collection.html">Collection</a></span></span></h3>
+              <p>Combines this collection with others into a new collection. None of the source collections are modified.</p>
+              <section>
+                <h4>
+                  Example
+                </h4>
+                <div>
+                  <pre class="prettyprint"><code>const newColl &#x3D; someColl.concat(someOtherColl, anotherColl, ohBoyAColl);</code></pre>
+                </div>
+              </section>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>collections</p>
+                      </td>
+                      <td>
+                        <p><a href="Collection.html">Collection</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Collections to merge</p>
+                        <p>Value can be repeated.</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code><a href="Collection.html">Collection</a></code> </p>
+                </dd>
+              </dl>
+              <h3 id="deleteAll"><span class="symbol-name">deleteAll</span><span class="signature"><span class="signature-params">()</span>&nbsp;&rarr; <span class="signature-returns"> Array of Promise</span></span></h3>
+              <p>Calls the <code>delete()</code> method on all items that have it.</p>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Array of Promise</code> </p>
+                </dd>
+              </dl>
+              <h3 id="equals"><span class="symbol-name">equals</span><span class="signature"><span class="signature-params">(collection)</span>&nbsp;&rarr; <span class="signature-returns"> Boolean</span></span></h3>
+              <p>Checks if this collection shares identical key-value pairings with another.
+                This is different to checking for equality using equal-signs, because
+                the collections may be different objects, but contain the same data.</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>collection</p>
+                      </td>
+                      <td>
+                        <p><a href="Collection.html">Collection</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Collection to compare with</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Boolean</code> Whether the collections have identical contents</p>
+                </dd>
+              </dl>
+              <h3 id="every"><span class="symbol-name">every</span><span class="signature"><span class="signature-params">(fn[, thisArg])</span>&nbsp;&rarr; <span class="signature-returns"> Boolean</span></span></h3>
+              <p>Identical to
+                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every">Array.every()</a>.</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>fn</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Function used to test (should return a boolean)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>thisArg</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Value to use as <code>this</code> when executing function</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Boolean</code> </p>
+                </dd>
+              </dl>
+              <h3 id="exists"><span class="symbol-name">exists</span><span class="signature"><span class="signature-params">(prop, value)</span>&nbsp;&rarr; <span class="signature-returns"> Boolean</span></span></h3>
+              <p>Searches for the existence of a single item where its specified property's value is identical to the given value
+                (<code>item[prop] === value</code>).
+                <warn>Do not use this to check for an item by its ID. Instead, use <code>collection.has(id)</code>. See
+                  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has">MDN</a> for details.</warn>
+              </p>
+              <section>
+                <h4>
+                  Example
+                </h4>
+                <div>
+                  <pre class="prettyprint"><code>if (collection.exists(&#x27;username&#x27;, &#x27;Bob&#x27;)) {
+ console.log(&#x27;user here!&#x27;);
+}</code></pre>
+                </div>
+              </section>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>prop</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>The property to test against</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>value</p>
+                      </td>
+                      <td>
+                        <p>any type</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>The expected value</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Deprecated</dt>
+                <dd></dd>
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Boolean</code> </p>
+                </dd>
+              </dl>
+              <h3 id="filter"><span class="symbol-name">filter</span><span class="signature"><span class="signature-params">(fn[, thisArg])</span>&nbsp;&rarr; <span class="signature-returns"> <a href="Collection.html">Collection</a></span></span></h3>
+              <p>Identical to
+                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter">Array.filter()</a>,
+                but returns a Collection instead of an Array.</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>fn</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Function used to test (should return a boolean)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>thisArg</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Value to use as <code>this</code> when executing function</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code><a href="Collection.html">Collection</a></code> </p>
+                </dd>
+              </dl>
+              <h3 id="filterArray"><span class="symbol-name">filterArray</span><span class="signature"><span class="signature-params">(fn[, thisArg])</span>&nbsp;&rarr; <span class="signature-returns"> Array</span></span></h3>
+              <p>Identical to
+                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter">Array.filter()</a>.</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>fn</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Function used to test (should return a boolean)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>thisArg</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Value to use as <code>this</code> when executing function</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Deprecated</dt>
+                <dd></dd>
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Array</code> </p>
+                </dd>
+              </dl>
+              <h3 id="find"><span class="symbol-name">find</span><span class="signature"><span class="signature-params">(propOrFn[, value])</span>&nbsp;&rarr; <span class="signature-returns"> any type</span></span></h3>
+              <p>Searches for a single item where its specified property's value is identical to the given value
+                (<code>item[prop] === value</code>), or the given function returns a truthy value. In the latter case, this is identical to
+                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find">Array.find()</a>.
+                <warn>All collections used in Discord.js are mapped using their <code>id</code> property, and if you want to find by id you
+                  should use the <code>get</code> method. See
+                  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get">MDN</a> for details.</warn>
+              </p>
+              <section>
+                <h4>
+                  Examples
+                </h4>
+                <div>
+                  <pre class="prettyprint"><code>collection.find(&#x27;username&#x27;, &#x27;Bob&#x27;);</code></pre>
+                </div>
+                <div>
+                  <pre class="prettyprint"><code>collection.find(val &#x3D;&gt; val.username &#x3D;&#x3D;&#x3D; &#x27;Bob&#x27;);</code></pre>
+                </div>
+              </section>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>propOrFn</p>
+                      </td>
+                      <td>
+                        <p>(String or function())</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>The property to test against, or the function to test with</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>value</p>
+                      </td>
+                      <td>
+                        <p>any type</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>The expected value - only applicable and required if using a property for the first argument</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>any type</code> </p>
+                </dd>
+              </dl>
+              <h3 id="findAll"><span class="symbol-name">findAll</span><span class="signature"><span class="signature-params">(prop, value)</span>&nbsp;&rarr; <span class="signature-returns"> Array</span></span></h3>
+              <p>Searches for all items where their specified property's value is identical to the given value
+                (<code>item[prop] === value</code>).</p>
+              <section>
+                <h4>
+                  Example
+                </h4>
+                <div>
+                  <pre class="prettyprint"><code>collection.findAll(&#x27;username&#x27;, &#x27;Bob&#x27;);</code></pre>
+                </div>
+              </section>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>prop</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>The property to test against</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>value</p>
+                      </td>
+                      <td>
+                        <p>any type</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>The expected value</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Deprecated</dt>
+                <dd></dd>
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Array</code> </p>
+                </dd>
+              </dl>
+              <h3 id="findKey"><span class="symbol-name">findKey</span><span class="signature"><span class="signature-params">(propOrFn[, value])</span>&nbsp;&rarr; <span class="signature-returns"> any type</span></span></h3>
+              <p>Searches for the key of a single item where its specified property's value is identical to the given value
+                (<code>item[prop] === value</code>), or the given function returns a truthy value. In the latter case, this is identical to
+                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex">Array.findIndex()</a>.</p>
+              <section>
+                <h4>
+                  Examples
+                </h4>
+                <div>
+                  <pre class="prettyprint"><code>collection.findKey(&#x27;username&#x27;, &#x27;Bob&#x27;);</code></pre>
+                </div>
+                <div>
+                  <pre class="prettyprint"><code>collection.findKey(val &#x3D;&gt; val.username &#x3D;&#x3D;&#x3D; &#x27;Bob&#x27;);</code></pre>
+                </div>
+              </section>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>propOrFn</p>
+                      </td>
+                      <td>
+                        <p>(String or function())</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>The property to test against, or the function to test with</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>value</p>
+                      </td>
+                      <td>
+                        <p>any type</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>The expected value - only applicable and required if using a property for the first argument</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>any type</code> </p>
+                </dd>
+              </dl>
+              <h3 id="first"><span class="symbol-name">first</span><span class="signature"><span class="signature-params">([count])</span>&nbsp;&rarr; <span class="signature-returns"> (any type or Array of any type)</span></span></h3>
+              <p>Obtains the first value(s) in this collection.</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>count</p>
+                      </td>
+                      <td>
+                        <p>Number</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Number of values to obtain from the beginning</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>(any type or Array of any type)</code> The single value if <code>count</code> is undefined, or an array of values of <code>count</code> length</p>
+                </dd>
+              </dl>
+              <h3 id="firstKey"><span class="symbol-name">firstKey</span><span class="signature"><span class="signature-params">([count])</span>&nbsp;&rarr; <span class="signature-returns"> (any type or Array of any type)</span></span></h3>
+              <p>Obtains the first key(s) in this collection.</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>count</p>
+                      </td>
+                      <td>
+                        <p>Number</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Number of keys to obtain from the beginning</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>(any type or Array of any type)</code> The single key if <code>count</code> is undefined, or an array of keys of <code>count</code> length</p>
+                </dd>
+              </dl>
+              <h3 id="keyArray"><span class="symbol-name">keyArray</span><span class="signature"><span class="signature-params">()</span>&nbsp;&rarr; <span class="signature-returns"> Array</span></span></h3>
+              <p>Creates an ordered array of the keys of this collection, and caches it internally. The array will only be
+                reconstructed if an item is added to or removed from the collection, or if you change the length of the array
+                itself. If you don't want this caching behavior, use <code>[...collection.keys()]</code> or
+                <code>Array.from(collection.keys())</code> instead.</p>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Array</code> </p>
+                </dd>
+              </dl>
+              <h3 id="last"><span class="symbol-name">last</span><span class="signature"><span class="signature-params">([count])</span>&nbsp;&rarr; <span class="signature-returns"> (any type or Array of any type)</span></span></h3>
+              <p>Obtains the last value(s) in this collection. This relies on <a href="Collection.html#array">Collection#array</a>, and thus the caching
+                mechanism applies here as well.</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>count</p>
+                      </td>
+                      <td>
+                        <p>Number</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Number of values to obtain from the end</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>(any type or Array of any type)</code> The single value if <code>count</code> is undefined, or an array of values of <code>count</code> length</p>
+                </dd>
+              </dl>
+              <h3 id="lastKey"><span class="symbol-name">lastKey</span><span class="signature"><span class="signature-params">([count])</span>&nbsp;&rarr; <span class="signature-returns"> (any type or Array of any type)</span></span></h3>
+              <p>Obtains the last key(s) in this collection. This relies on <a href="Collection.html#keyArray">Collection#keyArray</a>, and thus the caching
+                mechanism applies here as well.</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>count</p>
+                      </td>
+                      <td>
+                        <p>Number</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Number of keys to obtain from the end</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>(any type or Array of any type)</code> The single key if <code>count</code> is undefined, or an array of keys of <code>count</code> length</p>
+                </dd>
+              </dl>
+              <h3 id="map"><span class="symbol-name">map</span><span class="signature"><span class="signature-params">(fn[, thisArg])</span>&nbsp;&rarr; <span class="signature-returns"> Array</span></span></h3>
+              <p>Identical to
+                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map">Array.map()</a>.</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>fn</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Function that produces an element of the new array, taking three arguments</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>thisArg</p>
+                      </td>
+                      <td>
+                        <p>any type</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Value to use as <code>this</code> when executing function</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Array</code> </p>
+                </dd>
+              </dl>
+              <h3 id="partition"><span class="symbol-name">partition</span><span class="signature"><span class="signature-params">(fn[, thisArg])</span>&nbsp;&rarr; <span class="signature-returns"> Array of <a href="Collection.html">Collection</a></span></span></h3>
+              <p>Partitions the collection into two collections where the first collection
+                contains the items that passed and the second contains the items that failed.</p>
+              <section>
+                <h4>
+                  Example
+                </h4>
+                <div>
+                  <pre class="prettyprint"><code>const [big, small] &#x3D; collection.partition(guild &#x3D;&gt; guild.memberCount &gt; 250);</code></pre>
+                </div>
+              </section>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>fn</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Function used to test (should return a boolean)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>thisArg</p>
+                      </td>
+                      <td>
+                        <p>any type</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Value to use as <code>this</code> when executing function</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Array of <a href="Collection.html">Collection</a></code> </p>
+                </dd>
+              </dl>
+              <h3 id="random"><span class="symbol-name">random</span><span class="signature"><span class="signature-params">([count])</span>&nbsp;&rarr; <span class="signature-returns"> (any type or Array of any type)</span></span></h3>
+              <p>Obtains random value(s) from this collection. This relies on <a href="Collection.html#array">Collection#array</a>, and thus the caching
+                mechanism applies here as well.</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>count</p>
+                      </td>
+                      <td>
+                        <p>Number</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Number of values to obtain randomly</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>(any type or Array of any type)</code> The single value if <code>count</code> is undefined, or an array of values of <code>count</code> length</p>
+                </dd>
+              </dl>
+              <h3 id="randomKey"><span class="symbol-name">randomKey</span><span class="signature"><span class="signature-params">([count])</span>&nbsp;&rarr; <span class="signature-returns"> (any type or Array of any type)</span></span></h3>
+              <p>Obtains random key(s) from this collection. This relies on <a href="Collection.html#keyArray">Collection#keyArray</a>, and thus the caching
+                mechanism applies here as well.</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>count</p>
+                      </td>
+                      <td>
+                        <p>Number</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Number of keys to obtain randomly</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>(any type or Array of any type)</code> The single key if <code>count</code> is undefined, or an array of keys of <code>count</code> length</p>
+                </dd>
+              </dl>
+              <h3 id="reduce"><span class="symbol-name">reduce</span><span class="signature"><span class="signature-params">(fn[, initialValue])</span>&nbsp;&rarr; <span class="signature-returns"> any type</span></span></h3>
+              <p>Identical to
+                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce">Array.reduce()</a>.</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>fn</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Function used to reduce, taking four arguments; <code>accumulator</code>, <code>currentValue</code>, <code>currentKey</code>,
+                          and <code>collection</code></p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>initialValue</p>
+                      </td>
+                      <td>
+                        <p>any type</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Starting value for the accumulator</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>any type</code> </p>
+                </dd>
+              </dl>
+              <h3 id="some"><span class="symbol-name">some</span><span class="signature"><span class="signature-params">(fn[, thisArg])</span>&nbsp;&rarr; <span class="signature-returns"> Boolean</span></span></h3>
+              <p>Identical to
+                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some">Array.some()</a>.</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>fn</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Function used to test (should return a boolean)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>thisArg</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Value to use as <code>this</code> when executing function</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Boolean</code> </p>
+                </dd>
+              </dl>
+              <h3 id="sort"><span class="symbol-name">sort</span><span class="signature"><span class="signature-params">([compareFunction])</span>&nbsp;&rarr; <span class="signature-returns"> <a href="Collection.html">Collection</a></span></span></h3>
+              <p>The sort() method sorts the elements of a collection in place and returns the collection.
+                The sort is not necessarily stable. The default sort order is according to string Unicode code points.</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>compareFunction</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Specifies a function that defines the sort order.
+                          if omitted, the collection is sorted according to each character's Unicode code point value,
+                          according to the string conversion of each element.</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code><a href="Collection.html">Collection</a></code> </p>
+                </dd>
+              </dl>
+              <h3 id="sweep"><span class="symbol-name">sweep</span><span class="signature"><span class="signature-params">(fn[, thisArg])</span>&nbsp;&rarr; <span class="signature-returns"> Number</span></span></h3>
+              <p>Removes entries that satisfy the provided filter function.</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>fn</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Function used to test (should return a boolean)</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>thisArg</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Value to use as <code>this</code> when executing function</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Number</code> The number of removed entries</p>
+                </dd>
+              </dl>
+              <h3 id="tap"><span class="symbol-name">tap</span><span class="signature"><span class="signature-params">(fn[, thisArg])</span>&nbsp;&rarr; <span class="signature-returns"> <a href="Collection.html">Collection</a></span></span></h3>
+              <p>Identical to
+                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach">Map.forEach()</a>,
+                but returns the collection instead of undefined.</p>
+              <section>
+                <h4>
+                  Example
+                </h4>
+                <div>
+                  <pre class="prettyprint"><code>collection
+ .tap(user &#x3D;&gt; console.log(user.username))
+ .filter(user &#x3D;&gt; user.bot)
+ .tap(user &#x3D;&gt; console.log(user.username));</code></pre>
+                </div>
+              </section>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>fn</p>
+                      </td>
+                      <td>
+                        <p>function()</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Function to execute for each element</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>thisArg</p>
+                      </td>
+                      <td>
+                        <p>any type</p>
+                      </td>
+                      <td>
+                        <p>Yes</p>
+                      </td>
+                      <td>
+                        <p>Value to use as <code>this</code> when executing function</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code><a href="Collection.html">Collection</a></code> </p>
+                </dd>
+              </dl>
+            </section>
+          </section>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on August 21, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

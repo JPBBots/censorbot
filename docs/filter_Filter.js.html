@@ -1,0 +1,324 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Source: filter/Filter.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: filter/Filter.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>const replaceSpots &#x3D; {
+  spaces: /_|\/|\\|\.|\n|&amp;amp;|-|\+|&#x3D;|:|~|,|\?|\(|\)|\s+/gi,
+  nothing: /&quot;|\*|&#x27;|\||&#x60;|&amp;lt;|&gt;|#|!|\[|\]|\{|\}|;|%|​|‍/gi // eslint-disable-line no-irregular-whitespace
+}
+
+const JPBExp &#x3D; require(&#x27;./JPBExp&#x27;)
+
+const converter &#x3D; {
+  in: (&#x27;\\$,ā,à,á,â,ã,ä,å,ą,ß,β,ò,ó,ô,ő,õ,ö,ø,Ď,ď,D,Ž,d,ž,è,é,ê,ë,ę,ð,Ç,ç,Č,č,Ć,ć,Ð,ì,í,î,ï,ī,ù,ű,ú,û,ü,ľ,ĺ,ł,ň,ñ,ń,Ŕ,ŕ,š,ś,ş,Ť,ť,ÿ,ý,ž,ż,ź,đ,ģ,ğ,µ,§,Ṉ,ṉ,Α,Β,Ν,Η,Ε,Ι,Τ,Ǝ,△,ı,с,к,Р,¡,0,İ,ĩ,į,@,к,ё,а,і,3,1,ů,ķ&#x27; + // accents
+    &#x27;🇦,🇧,🅱,🇨,🇩,🇪,🇫,🇬,🇭,🇮,🇯,🇰,🇱,🇲,🇳,🇴,🇵,🇶,🇷,🇸,🇹,🇺,🇻,🇼,🇽,🇾,🇿,🖕&#x27;) // emojis
+    .split(&#x27;,&#x27;).map(x &#x3D;&gt; new RegExp(x, &#x27;g&#x27;)),
+  out: (&#x27;s,a,a,a,a,a,a,a,a,b,b,o,o,o,o,o,o,o,d,d,d,z,d,z,e,e,e,e,e,e,c,c,c,c,c,c,d,i,i,i,i,i,u,u,u,u,u,l,l,l,n,n,n,r,r,s,s,s,t,t,y,y,z,z,z,d,g,g,u,s,n,n,a,b,n,h,e,i,t,e,a,i,c,k,p,i,o,i,i,i,a,k,e,a,i,e,i,u,k&#x27; + // accents
+    &#x27;a,b,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,fuck&#x27;) // emojis
+    .split(&#x27;,&#x27;)
+}
+
+const firstShortWords &#x3D; [&#x27;an&#x27;, &#x27;as&#x27;, &#x27;us&#x27;]
+const shortWords &#x3D; [&#x27;it&#x27;, &#x27;at&#x27;, &#x27;xd&#x27;]
+
+const GetFilters &#x3D; require(&#x27;./filters&#x27;)
+
+function inRange (x, min, max) {
+  return ((x - min) * (x - max) &amp;lt;&#x3D; 0)
+}
+
+const linkRegex &#x3D; /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/
+
+/**
+ * Filter for testing against words
+ */
+class Filter {
+  /**
+   * Filter
+   */
+  constructor () {
+    /**
+     * Filters
+     * @type {Object.&amp;lt;Languages, Array.&amp;lt;JPBExp&gt;&gt;}
+     */
+    this.filters &#x3D; null
+
+    this.filterMasks &#x3D; {
+      en: &#x27;English&#x27;,
+      es: &#x27;Spanish&#x27;,
+      off: &#x27;Offensive&#x27;,
+      de: &#x27;German&#x27;,
+      ru: &#x27;Russian&#x27;,
+      server: &#x27;Server&#x27;,
+      invites: &#x27;Invites&#x27;
+    }
+
+    this._loadFilters()
+  }
+
+  _loadFilters () {
+    this.filters &#x3D; GetFilters()
+  }
+
+  surround (text, ranges, sur) {
+    const used &#x3D; []
+    function surroundRange (txt, range) {
+      if (used.some(x &#x3D;&gt; inRange(range[0], ...x) &amp;amp;&amp;amp; inRange(range[1], ...x))) return txt
+      txt &#x3D; txt.split(/ +/)
+
+      txt[range[0]] &#x3D; &#x60;${sur}${txt[range[0]]}&#x60;
+      txt[range[1] - (txt[range[1]] ? 0 : 1)] &#x3D; &#x60;${txt[range[1] - (txt[range[1]] ? 0 : 1)] || &#x27;&#x27;}${sur}&#x60;
+
+      used.push(range)
+
+      return txt.join(&#x27; &#x27;)
+    }
+
+    return ranges.reduce((a, b) &#x3D;&gt; surroundRange(a, b), text)
+  }
+
+  /**
+   * Filter resolved piece
+   * @typedef {Object} ResolvedPiece
+   * @property {String} t Resolved text
+   * @property {Array.&amp;lt;Number&gt;} i Index range
+   * @example
+   *   .i[0] // Starting index
+   *   .i[1] // Ending index
+   */
+
+  /**
+   * Resolve content
+   * @param {String} content Content
+   * @returns {Array.&amp;lt;ResolvedPiece&gt;}
+   */
+  resolve (content) {
+    // base stuff
+    content &#x3D; content
+      .toLowerCase()
+      .replace(/&amp;lt;#?@?!?&amp;amp;?(\d+)&gt;/g, &#x27;&#x27;) // mentions
+      .replace(/&amp;lt;a?:(\w+):(\d+)&gt;/g, &#x27;$1&#x27;) // emojis
+      .replace(/(.)\1{2,}/g, &#x27;$1$1&#x27;) // multiple characters only come up once
+
+    content &#x3D; content.split(&#x27; &#x27;)
+
+    for (const i in content) {
+      content[i] &#x3D; content[i].replace(linkRegex, &#x27;$3&#x27;)
+    }
+
+    content &#x3D; content.join(&#x27; &#x27;)
+
+    for (const i in converter.in) { // convert special character like accents and emojis into their readable counterparts
+      content &#x3D; content.replace(converter.in[i], converter.out[i])
+    }
+
+    let res &#x3D; Array(content.split(replaceSpots.spaces).length + 1).fill().map(() &#x3D;&gt; ({ i: [], t: &#x27;&#x27; })) // array of default objects
+
+    content &#x3D; content.split(&#x27; &#x27;)
+
+    function addSpot (text, spot, index) {
+      if (!res[index]) return false
+      res[index].t &#x3D; text
+
+      function checkSpots (s) { // if indexes are outside of the range of the current spot, adjust the range
+        if (s &amp;lt; res[index].i[0]) res[index].i[0] &#x3D; s
+        if (s &gt; res[index].i[1]) res[index].i[1] &#x3D; s
+      }
+
+      if (Array.isArray(spot)) {
+        if (res[index].i.length &amp;lt; 1) {
+          res[index].i &#x3D; spot
+        } else {
+          checkSpots(spot[0])
+          checkSpots(spot[1])
+        }
+      } else {
+        if (res[index].i.length &amp;lt; 1) {
+          res[index].i &#x3D; [spot, spot]
+        } else {
+          checkSpots(spot)
+        }
+      }
+
+      return true
+    }
+
+    let spotted &#x3D; 0
+    const nextPushes &#x3D; []
+
+    for (let i &#x3D; 0; i &amp;lt; content.length; i++) { // base index pushing to array
+      const split &#x3D; content[i]
+        .replace(replaceSpots.nothing, &#x27;&#x27;)
+        .split(replaceSpots.spaces)
+
+      for (let spI &#x3D; 0; spI &amp;lt; split.length; spI++) {
+        nextPushes.push({ i: [i, i], t: split[spI], n: true })
+        addSpot(
+          split[spI],
+          i,
+          spotted
+        )
+        spotted++
+      }
+    }
+
+    res &#x3D; res.concat(nextPushes)
+
+    for (let i &#x3D; 0; i &amp;lt; res.length; i++) { // combine &amp;lt; 3 character bits together
+      const s &#x3D; res[i]
+      if (firstShortWords.includes(s.t)) continue
+
+      if (s.t &amp;amp;&amp;amp; (s.t.length &amp;lt; 3) &amp;amp;&amp;amp; res[i + 1]) {
+        if (s.n || res[i + 1].n) continue
+        if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
+          s.t &#x3D; &#x27;&#x27;
+          s.i &#x3D; []
+        }
+      }
+    }
+
+    for (let i &#x3D; res.length; i &gt; -1; i--) { // combine &amp;lt; 3 character bits together but going backwards
+      const s &#x3D; res[i]
+      if (!s || shortWords.includes(s.t)) continue
+
+      if (s.t &amp;amp;&amp;amp; (s.t.length &amp;lt; 3) &amp;amp;&amp;amp; res[i - 1]) {
+        if (s.n || res[i - 1].n) continue
+        if (addSpot(res[i - 1].t + s.t, s.i, i - 1)) {
+          s.t &#x3D; &#x27;&#x27;
+          s.i &#x3D; []
+        }
+      }
+    }
+
+    res &#x3D; res.filter(x &#x3D;&gt; x.t) // remove any blank spaces
+
+    for (let i &#x3D; 0; i &amp;lt; res.length; i++) { // combine pieces that ends and start with the same character
+      const s &#x3D; res[i]
+
+      if (s.t &amp;amp;&amp;amp; res[i + 1] &amp;amp;&amp;amp; (s.t[s.t.length - 1] &#x3D;&#x3D;&#x3D; res[i + 1].t[0])) {
+        if (s.n || res[i + 1].n) continue
+        if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
+          s.t &#x3D; &#x27;&#x27;
+        }
+      }
+    }
+
+    content &#x3D; res.filter(x &#x3D;&gt; x.t) // remove any blank spaces (again)
+
+    return content
+  }
+
+  /**
+   * Response from filter
+   * @typedef {Object} FilterResponse
+   * @property {Array.&amp;lt;Array.&amp;lt;Number&gt;&gt;} censor Index ranges
+   * @property {Languages} filters Filters that picked up a censor
+   */
+
+  /**
+   * Test against filter
+   * @param {String} text Text to test
+   * @param {Languages} filters Filters
+   * @param {Array.&amp;lt;String&gt;} server Extra filter
+   * @param {Array.&amp;lt;String&gt;} uncensor Extra bypass
+   * @returns {FilterResponse}
+   */
+  test (text, filters &#x3D; [&#x27;en&#x27;, &#x27;es&#x27;, &#x27;off&#x27;], server &#x3D; [], uncensor &#x3D; []) {
+    const content &#x3D; this.resolve(text)
+
+    const res &#x3D; {
+      censor: false,
+      ranges: [],
+      filters: [],
+      places: []
+    }
+
+    const filter &#x3D; { server: server.map(x &#x3D;&gt; new JPBExp(x)) }
+
+    for (const filt in this.filters) {
+      if (filters.includes(filt)) filter[filt] &#x3D; this.filters[filt]
+    }
+
+    content.forEach(piece &#x3D;&gt; {
+      let done &#x3D; false
+      for (const key in filter) {
+        for (const part of filter[key]) {
+          if (!part.test(piece.t, uncensor)) continue
+
+          done &#x3D; true
+
+          res.censor &#x3D; true
+          res.ranges.push(piece.i)
+          if (!res.filters.includes(key)) res.filters.push(key)
+          res.places.push(part)
+
+          break
+        }
+        if (done) break
+      }
+    })
+
+    for (let i &#x3D; 0; i &amp;lt; res.ranges.length; i++) {
+      if (res.ranges[i + 1] &amp;amp;&amp;amp; res.ranges[i][1] &#x3D;&#x3D;&#x3D; res.ranges[i + 1][0]) {
+        res.ranges[i + 1][0] &#x3D; res.ranges[i][0]
+        delete res.ranges[i]
+      }
+    }
+
+    res.ranges &#x3D; res.ranges.filter(x &#x3D;&gt; x)
+
+    return res
+  }
+}
+
+module.exports &#x3D; Filter
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on August 21, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>

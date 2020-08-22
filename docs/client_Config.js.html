@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="generator" content="JSDoc 3.6.3">
+  <meta charset="utf-8">
+  <title>Source: client/Config.js</title>
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
+  <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
+  <link href="css/baseline.css" rel="stylesheet">
+</head>
+
+<body onload="prettyPrint()">
+  <nav id="jsdoc-navbar" role="navigation" class="jsdoc-navbar">
+    <div id="jsdoc-navbar-container">
+      <div id="jsdoc-navbar-content">
+        <a href="index.html" class="jsdoc-navbar-package-name">Home</a>
+      </div>
+    </div>
+  </nav>
+  <div id="jsdoc-body-container">
+    <div id="jsdoc-content">
+      <div id="jsdoc-content-container">
+        <div id="jsdoc-banner" role="banner">
+        </div>
+        <div id="jsdoc-main" role="main">
+          <header class="page-header">
+            <h1>Source: client/Config.js</h1>
+          </header>
+          <article>
+            <pre class="prettyprint linenums"><code>const config &#x3D; {
+  filters: [&#x27;en&#x27;, &#x27;es&#x27;, &#x27;off&#x27;],
+  censor: {
+    msg: true,
+    emsg: true,
+    nick: true,
+    react: true
+  },
+  log: null,
+  role: null,
+  filter: [],
+  uncensor: [],
+  msg: {
+    content: null,
+    deleteAfter: 3000
+  },
+  punishment: {
+    type: 0,
+    amount: 3,
+    role: null
+  },
+  webhook: {
+    enabled: false,
+    replace: 0,
+    separate: true
+  },
+  channels: [],
+  multi: false,
+  prefix: &#x27;+&#x27;,
+  invites: false
+}
+
+const constants &#x3D; {
+  currentVersion: 4,
+  allowedFilters: [&#x27;en&#x27;, &#x27;es&#x27;, &#x27;off&#x27;, &#x27;ru&#x27;, &#x27;de&#x27;],
+  punishmentTypes: [0, 1, 2, 3],
+  webhookReplaces: [0, 1]
+}
+
+function generatePieces (obj) {
+  const pieces &#x3D; {}
+  function generatePiece (toObj, key, working) {
+    var val &#x3D; key ? toObj[key] : toObj
+    if (!val || val.constructor !&#x3D;&#x3D; Object) {
+      pieces[&#x60;${working ? &#x60;${working}.&#x60; : &#x27;&#x27;}${key}&#x60;] &#x3D; val
+    } else {
+      Object.keys(val).forEach(x &#x3D;&gt; generatePiece(val, x, &#x60;${working ? &#x60;${working}.&#x60; : &#x27;&#x27;}${key}&#x60;))
+    }
+  }
+  generatePiece(obj, &#x27;&#x27;)
+
+  return pieces
+}
+
+const defaultPieces &#x3D; generatePieces(config)
+
+const verify &#x3D; (obj, premium, guild) &#x3D;&gt; {
+  const configPieces &#x3D; generatePieces(obj)
+
+  const checker &#x3D; (piece, bool, prem &#x3D; false) &#x3D;&gt;
+    Object.keys(configPieces).includes(piece) &amp;amp;&amp;amp;
+    (prem ? premium : true) &amp;amp;&amp;amp;
+    bool(configPieces[piece])
+      ? configPieces[piece]
+      : defaultPieces[piece]
+
+  return {
+    filters: checker(&#x27;filters&#x27;, (v) &#x3D;&gt;
+      v &amp;amp;&amp;amp;
+      v.constructor &#x3D;&#x3D;&#x3D; Array &amp;amp;&amp;amp;
+      !v.some(a &#x3D;&gt;
+        !constants.allowedFilters.some(b &#x3D;&gt; a &#x3D;&#x3D;&#x3D; b) ||
+        v.filter(x &#x3D;&gt; x &#x3D;&#x3D;&#x3D; a).length &gt; 1
+      )
+    ),
+    censor: {
+      msg: checker(&#x27;censor.msg&#x27;, (v) &#x3D;&gt; typeof v &#x3D;&#x3D;&#x3D; &#x27;boolean&#x27;),
+      emsg: checker(&#x27;censor.emsg&#x27;, (v) &#x3D;&gt; typeof v &#x3D;&#x3D;&#x3D; &#x27;boolean&#x27;),
+      nick: checker(&#x27;censor.nick&#x27;, (v) &#x3D;&gt; typeof v &#x3D;&#x3D;&#x3D; &#x27;boolean&#x27;),
+      react: checker(&#x27;censor.react&#x27;, (v) &#x3D;&gt; typeof v &#x3D;&#x3D;&#x3D; &#x27;boolean&#x27;)
+    },
+    log: checker(&#x27;log&#x27;, (v) &#x3D;&gt; guild.c.some(x &#x3D;&gt; v &#x3D;&#x3D;&#x3D; x.id)),
+    role: checker(&#x27;role&#x27;, (v) &#x3D;&gt; guild.r.some(x &#x3D;&gt; v &#x3D;&#x3D;&#x3D; x.id)),
+    filter: checker(&#x27;filter&#x27;, (v) &#x3D;&gt;
+      v &amp;amp;&amp;amp;
+      v.constructor &#x3D;&#x3D;&#x3D; Array &amp;amp;&amp;amp;
+      !v.some(x &#x3D;&gt;
+        x.length &gt; 20 ||
+        x.match(/[^\w]/gi)
+      ) &amp;amp;&amp;amp;
+      v.length &amp;lt;&#x3D; (!premium ? 150 : 500)
+    ),
+    uncensor: checker(&#x27;uncensor&#x27;, (v) &#x3D;&gt;
+      v &amp;amp;&amp;amp;
+      v.constructor &#x3D;&#x3D;&#x3D; Array &amp;amp;&amp;amp;
+      !v.some(x &#x3D;&gt;
+        x.length &gt; 20 ||
+        x.match(/[^\w]/gi)
+      ) &amp;amp;&amp;amp;
+      v.length &amp;lt;&#x3D; (!premium ? 150 : 500)
+    ),
+    msg: {
+      content: checker(&#x27;msg.content&#x27;, (v) &#x3D;&gt;
+        typeof v &#x3D;&#x3D;&#x3D; &#x27;string&#x27;
+          ? v.length &amp;lt;&#x3D; 100
+          : v &#x3D;&#x3D;&#x3D; null || v &#x3D;&#x3D;&#x3D; false
+      ),
+      deleteAfter: checker(&#x27;msg.deleteAfter&#x27;, (v) &#x3D;&gt;
+        v &#x3D;&#x3D;&#x3D; null
+          ? true
+          : (Number.isInteger(v) &amp;amp;&amp;amp;
+          v &gt; 0 &amp;amp;&amp;amp;
+          v &amp;lt;&#x3D; (!premium ? 120 * 1000 : 600 * 1000))
+      )
+    },
+    punishment: {
+      type: checker(&#x27;punishment.type&#x27;, (v) &#x3D;&gt; !(v &#x3D;&#x3D;&#x3D; 1 &amp;amp;&amp;amp; !guild.r.some(x &#x3D;&gt; obj.punishment.role &#x3D;&#x3D;&#x3D; x.id)) &amp;amp;&amp;amp; constants.punishmentTypes.includes(v)),
+      amount: checker(&#x27;punishment.amount&#x27;, (v) &#x3D;&gt; Number.isInteger(v) &amp;amp;&amp;amp; v &amp;lt;&#x3D; 50 &amp;amp;&amp;amp; v &gt; 0),
+      role: checker(&#x27;punishment.role&#x27;, (v) &#x3D;&gt; obj.punishment.type &#x3D;&#x3D;&#x3D; 1 &amp;amp;&amp;amp; guild.r.some(x &#x3D;&gt; v &#x3D;&#x3D;&#x3D; x.id))
+    },
+    webhook: {
+      enabled: checker(&#x27;webhook.enabled&#x27;, (v) &#x3D;&gt; typeof v &#x3D;&#x3D;&#x3D; &#x27;boolean&#x27;, true),
+      separate: checker(&#x27;webhook.separate&#x27;, (v) &#x3D;&gt; typeof v &#x3D;&#x3D;&#x3D; &#x27;boolean&#x27;, true),
+      replace: checker(&#x27;webhook.replace&#x27;, (v) &#x3D;&gt; constants.webhookReplaces.includes(v), true)
+    },
+    multi: checker(&#x27;multi&#x27;, (v) &#x3D;&gt; typeof v &#x3D;&#x3D;&#x3D; &#x27;boolean&#x27;, true),
+    prefix: checker(&#x27;prefix&#x27;, (v) &#x3D;&gt; v &#x3D;&#x3D;&#x3D; null ? true : typeof v &#x3D;&#x3D;&#x3D; &#x27;string&#x27; &amp;amp;&amp;amp; v.length &amp;lt;&#x3D; 10),
+    channels: checker(&#x27;channels&#x27;, (v) &#x3D;&gt;
+      v &amp;amp;&amp;amp;
+      v.constructor &#x3D;&#x3D;&#x3D; Array &amp;amp;&amp;amp;
+      !v.some(a &#x3D;&gt; !guild.c.some(b &#x3D;&gt; a &#x3D;&#x3D;&#x3D; b.id)), true
+    ),
+    invites: checker(&#x27;invites&#x27;, (v) &#x3D;&gt; typeof v &#x3D;&#x3D;&#x3D; &#x27;boolean&#x27;)
+  }
+}
+
+module.exports &#x3D; { config, constants, verify }
+
+/**
+ * Webhook replace
+ * @typedef {Number} WebhookReplace
+ * @example
+ * 0: ||Spoilers||
+ * 1: h#shtags
+ */
+</code></pre>
+          </article>
+        </div>
+      </div>
+      <nav id="jsdoc-toc-nav" role="navigation"></nav>
+    </div>
+  </div>
+  <footer id="jsdoc-footer" class="jsdoc-footer">
+    <div id="jsdoc-footer-container">
+      <p>
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on August 21, 2020.
+      </p>
+    </div>
+  </footer>
+  <script src="scripts/jquery.min.js"></script>
+  <script src="scripts/tree.jquery.js"></script>
+  <script src="scripts/prettify.js"></script>
+  <script src="scripts/jsdoc-toc.js"></script>
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/scrollanchor.js"></script>
+</body>
+
+</html>
