@@ -35,7 +35,6 @@ module.exports = {
 
   //
 
-  
   token: process.env.BOT_TOKEN,
   dbl: process.env.DBL_TOKEN !== 'none' ? process.env.DBL_TOKEN : null,
   oauth: {
@@ -52,6 +51,6 @@ module.exports = {
     guilds: {
       id: process.env.GUILDS_ID,
       token: process.env.GUILDS_TOKEN
-    },
+    }
   }
 }

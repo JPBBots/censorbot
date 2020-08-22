@@ -43,8 +43,8 @@ class App {
 
       this.app.listen(apiPort, () => {
         resolve()
-        
-      this.manager.log(`Started :${apiPort}`)
+
+        this.manager.log(`Started :${apiPort}`)
       })
     })
   }

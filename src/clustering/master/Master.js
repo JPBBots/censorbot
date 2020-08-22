@@ -13,7 +13,7 @@ const MasterAPI = require('./MasterAPI')
 
 const RestManager = require('../../discord/rest/RestManager')
 
-const { clusters, dbl, token, shardsPerCluster } = require('../../config')
+const { dbl, token, shardsPerCluster } = require('../../config')
 
 /**
  * For controlling and starting clusters

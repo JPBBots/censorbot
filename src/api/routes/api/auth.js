@@ -36,10 +36,12 @@ module.exports = function (r) {
 
   r.get('/callback', (req, res) => {
     if (req.query.state === 'stop') return res.send('.')
-    if (usedCodes.has(req.query.code)) return res.json({
-      error: 0,
-      message: 'Cannot use the same code twice'
-    })
+    if (usedCodes.has(req.query.code)) {
+      return res.json({
+        error: 0,
+        message: 'Cannot use the same code twice'
+      })
+    }
     usedCodes.add(req.query.code)
     this.oauth2.callback(req.query.code, req.headers.host)
       .then(token => {
