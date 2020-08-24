@@ -1,6 +1,4 @@
-const allowedGuilds = global.botIsCustom
-  ? process.env.ALLOWED_GUILDS.split(',')
-  : false
+const { custom: { allowedGuilds } } = require('../../settings')
 
 module.exports = function (guild) {
   const available = this.unavailables.has(guild.id)

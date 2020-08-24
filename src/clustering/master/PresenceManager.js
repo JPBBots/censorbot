@@ -1,3 +1,5 @@
+const { custom: { customStatus } } = require('../../settings')
+
 /**
  * Used for setting and updating bot presences
  */
@@ -73,9 +75,8 @@ class PresenceManager {
    * Default
    */
   async d () {
-    if (global.botIsCustom && process.env.CUSTOM_STATUS) {
-      const [type, name] = process.env.CUSTOM_STATUS.split(',')
-      this.status(type, name)
+    if (customStatus) {
+      this.status(...customStatus)
     } else {
       const guilds = await this.master.api.sendToAll('GUILD_COUNT', {}, true)
       this.status('WATCHING', `For Bad Words | ${(guilds.reduce((a, b) => a + b.reduce((c, d) => c + d, 0), 0)).toLocaleString()} Servers`)

@@ -1,3 +1,5 @@
+const settings = require('../settings')
+
 module.exports = {
   guild: '399688888739692552',
   owner: '142408079177285632',
@@ -25,8 +27,8 @@ module.exports = {
 
   //
 
-  id: process.env.ID,
-  prefix: [`<@${process.env.ID}> `, `<@!${process.env.ID}> `],
+  id: settings.id,
+  prefix: [`<@${settings.id}> `, `<@!${settings.id}> `],
   support: 'https://discord.gg/CRAbk4w',
   patreon: 'https://patreon.com/censorbot',
   website: 'https://censor.bot',
@@ -35,16 +37,12 @@ module.exports = {
 
   //
 
-  token: process.env.BOT_TOKEN,
-  dbl: process.env.DBL_TOKEN !== 'none' ? process.env.DBL_TOKEN : null,
-  oauth: {
-    id: process.env.ID,
-    secret: process.env.OAUTH_TOKEN,
-    mysecret: process.env.OAUTH_MYSECRET
-  },
+  token: settings.token,
+  dbl: settings.dbl,
+  oauth: settings.oauth,
   db: {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD
+    username: settings.db.username,
+    password: settings.db.password
   },
 
   webhooks: { // TEMPORARY, WILL BE REMOVED IN WEBHOOKS/LOGGING REWRITE

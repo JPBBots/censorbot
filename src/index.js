@@ -1,5 +1,3 @@
-require('./runOnAll')
-
 console.log('Censor Bot')
 
 const Master = require('./clustering/master/Master')

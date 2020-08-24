@@ -1,3 +1,5 @@
+const { custom: { lockCommands } } = require('../../settings')
+
 module.exports = async function (message) {
   if (!message.guild_id) return
   if (message.author.bot) return
@@ -6,7 +8,7 @@ module.exports = async function (message) {
 
   if (this.config.prefix.some(x => x === message.content + ' ')) return this.interface.send(message.channel_id, `Current prefix is: \`${db.prefix || 'none'}\``)
 
-  if (this.commands && !((global.botIsCustom && process.env.LOCK_COMMANDS === 'true') && message.author.id !== this.config.owner)) {
+  if (this.commands && !(lockCommands && message.author.id !== this.config.owner)) {
     const cmd = this.commands.event(message, db.prefix)
 
     if (this.config.deleteCommands.includes(cmd)) return this.interface.delete(message.channel_id, message.id).catch(() => {})

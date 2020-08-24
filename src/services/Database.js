@@ -1,6 +1,8 @@
 const { MongoClient } = require('mongodb')
 delete require.cache[require.resolve('../client/Config')]
 
+const { db: { host } } = require('../settings')
+
 /**
  * Used for connecting to mongo database and built methods
  */
@@ -25,7 +27,7 @@ class Database {
     if (db) {
       this.db = db
       this.mongo = mongo
-    } else this.mongo = new MongoClient(`mongodb://${username}:${password}@${process.env.DB_HOST}:27017/`, { useNewUrlParser: true, useUnifiedTopology: true })
+    } else this.mongo = new MongoClient(`mongodb://${username}:${password}@${host}:27017/`, { useNewUrlParser: true, useUnifiedTopology: true })
   }
 
   /**
