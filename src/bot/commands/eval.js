@@ -2,6 +2,8 @@ function clean (text) {
   if (typeof (text) === 'string') { return text.replace(/`/g, '`' + String.fromCharCode(8203)).replace(/@/g, '@' + String.fromCharCode(8203)) } else { return text }
 }
 
+let temp // eslint-disable-line no-unused-vars
+
 exports.run = async function (message, args, prefix) {
   const method = ({
     '-b': 'eval',
