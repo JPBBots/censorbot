@@ -134,9 +134,7 @@ class CensorBot extends Client {
 
     this.log('Loaded. Registering shards')
 
-    this.setup(gateway).then(() => {
-      this.log('All shards on cluster ready')
-    })
+    this.setup(gateway)
   }
 
   /**

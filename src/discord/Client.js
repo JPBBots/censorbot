@@ -155,17 +155,13 @@ class Client extends EventEmitter {
    * Sets up bot
    * @param {String} gateway Discord Gateway URL
    */
-  async setup (gateway) {
+  setup (gateway) {
     this.options.ws.url = gateway
 
     this.setMaxListeners(50)
 
     this.setupEvents()
     this.spawnShards()
-
-    return new Promise(resolve => {
-      this.once('READY', () => resolve())
-    })
   }
 
   /**
