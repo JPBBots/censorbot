@@ -20,7 +20,10 @@ module.exports = function (guild) {
 
   if (available) return
 
-  if (allowedGuilds && !allowedGuilds.includes(guild.id)) return this.interface.leaveGuild(guild.id)
+  if (allowedGuilds && !allowedGuilds.includes(guild.id)) {
+    this.log(`Tried to join ${guild.id}, but not allowed.`)
+    return this.interface.leaveGuild(guild.id)
+  }
 
   this.interface.dm(guild.owner_id,
     this.embed
