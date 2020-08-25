@@ -64,7 +64,7 @@ class Internals {
     }, Array(this.client.shards.size).fill(0))
   }
 
-    /**
+  /**
    * Send as another user
    * @param {Snowflake} channel Channel
    * @param {Object} user User
