@@ -93,9 +93,9 @@ module.exports = async function (message) {
       content = this.filter.surround(content, res.ranges, '||')
 
       if (db.webhook.replace === 1) content = content.split(/\|\|/g).reduce((a, b) => [(a[0] + (a[1] === 1 ? '#'.repeat(b.length) : b)), (a[1] * -1)], ['', -1])[0]
-      this.webhooks.sendAs(message.channel_id, message.author, message.member.nick || message.author.username, `${content}`)
+      this.internals.sendAs(message.channel_id, message.author, message.member.nick || message.author.username, `${content}`)
     } else {
-      this.webhooks.sendAs(message.channel_id, message.author, message.member.nick || message.author.username, `Contains Curse:\n||${content}||`)
+      this.internals.sendAs(message.channel_id, message.author, message.member.nick || message.author.username, `Contains Curse:\n||${content}||`)
     }
   }
 }

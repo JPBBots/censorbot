@@ -15,7 +15,6 @@ const Database = require('../services/Database')
 const Punishments = require('../services/Punishments')
 const TicketManager = require('../services/TicketManager')
 const BucketManager = require('../services/BucketManager')
-const WebhookManager = require('../services/WebhookManager')
 
 const Embed = require('../discord/Embed')
 const Collection = require('../util/Collection')
@@ -125,12 +124,6 @@ class CensorBot extends Client {
      * @type {Reloader}
      */
     this.reloader = new Reloader(this)
-    /**
-     * Webhook Manager
-     * @type {WebhookManager}
-     */
-    this.webhooks = new WebhookManager(this)
-    await this.webhooks.load()
 
     this.log('Loaded. Registering shards')
 

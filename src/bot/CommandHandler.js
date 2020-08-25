@@ -96,7 +96,13 @@ class CommandHandler {
 
     cmd.run.bind(new Command(this, msg, cmd))(msg, args, prefix)
 
-    this.client.log(`${msg.author.username}#${msg.author.discriminator} (${msg.author.id}) ran ${command}`)
+    this.client.cluster.internal.sendWebhook('commands', this.client.embed
+      .title(`Command ran: ${command}`)
+      .description(`${msg.content}`)
+      .field('Guild', msg.guild_id, true)
+      .field('Channel', msg.channel_id, true)
+      .field('User', `<@${msg.author.id}> (${msg.author.username}#${msg.author.discriminator})`)
+    )
   }
 
   /**

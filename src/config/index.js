@@ -43,12 +43,5 @@ module.exports = {
   db: {
     username: settings.db.username,
     password: settings.db.password
-  },
-
-  webhooks: { // TEMPORARY, WILL BE REMOVED IN WEBHOOKS/LOGGING REWRITE
-    guilds: {
-      id: process.env.GUILDS_ID,
-      token: process.env.GUILDS_TOKEN
-    }
   }
 }

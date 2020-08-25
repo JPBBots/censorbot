@@ -19,5 +19,13 @@ module.exports = {
     allowedGuilds: isCustom ? (process.env.ALLOWED_GUILDS ? process.env.ALLOWED_GUILDS.split(',') : false) : false,
     lockCommands: isCustom ? (process.env.LOCK_COMMANDS === 'true') : false,
     customStatus: isCustom ? (process.env.CUSTOM_STATUS ? process.env.CUSTOM_STATUS.split(',') : false) : false
-  }
+  },
+  webhooks: {}
 }
+
+Object.keys(process.env).forEach(env => {
+  if (env.startsWith('WH_')) {
+    const [id, token] = process.env[env].split(',')
+    module.exports.webhooks[env.split('_')[1].toLowerCase()] = { id, token }
+  }
+})

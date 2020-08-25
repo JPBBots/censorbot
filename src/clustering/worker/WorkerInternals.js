@@ -4,6 +4,8 @@ const { master: masterPort } = require('../../ports')
 
 const Collection = require('../../util/Collection')
 
+const ParseMessage = require('../../util/ParseMessage')
+
 /**
  * Worker internal methods for brokering master internals
  */
@@ -248,6 +250,19 @@ class WorkerInternals {
   }
 
   /**
+   * Send to a webhook
+   * @param {String} name Name of webhook
+   * @param {Object | String} message Message
+   */
+  sendWebhook (name, message) {
+    return this.api
+      .webhooks[name]
+      .post({
+        body: ParseMessage(message, true)
+      })
+  }
+
+  /**
    * Reloads a part on all clusters
    * @param {String} part Reloadable part
    */
@@ -295,12 +310,6 @@ class WorkerInternals {
     this.api
       .reload
       .post()
-  }
-
-  restartDashboard () {
-    this.api
-      .dash
-      .delete()
   }
 
   /**
