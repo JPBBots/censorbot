@@ -26,7 +26,7 @@
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
             <h1><small></small><span class="symbol-name">Internals</span></h1>
-            <p class="source-link">Source: <a href="client_Internals.js.html#source-line-9">client/<wbr>Internals.<wbr>js:9</a></p>
+            <p class="source-link">Source: <a href="client_Internals.js.html#source-line-13">client/<wbr>Internals.<wbr>js:13</a></p>
             <div class="symbol-classdesc">
               <p>Used for methods that should be accessible from everywhere throughout censor bot</p>
             </div>
@@ -52,11 +52,16 @@
                   </dl>
                 </div>
                 <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Internals.html#webhookBucket">webhookBucket</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
                 </div>
               </div>
             </div>
             <div class="summary-callout">
-              <h2 class="summary-callout-heading">Method</h2>
+              <h2 class="summary-callout-heading">Methods</h2>
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
@@ -66,6 +71,11 @@
                   </dl>
                 </div>
                 <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="Internals.html#sendAs">sendAs(channel, user, name, content)</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
                 </div>
                 <div class="summary-column">
                 </div>
@@ -120,8 +130,13 @@
               <p>Formatted guild counts</p>
               <dl class="dl-compact">
               </dl>
+              <h3 id="webhookBucket"><span class="symbol-name">webhookBucket</span><small class="property-type">
+                  &nbsp;Object with <a href="global.html#Snowflake">Snowflake</a> keys and Object properties</small></h3>
+              <p>SendAS Webhook Bucket</p>
+              <dl class="dl-compact">
+              </dl>
             </section>
-            <h2>Method</h2>
+            <h2>Methods</h2>
             <section>
               <h3 id="logCensor"><span class="symbol-name">logCensor</span><span class="signature"><span class="signature-params">(type, content, user, guild, res)</span></span></h3>
               <p>Log a censor</p>
@@ -212,6 +227,82 @@
               </section>
               <dl class="dl-compact">
               </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="sendAs"><span class="symbol-name">sendAs</span><span class="signature"><span class="signature-params">(channel, user, name, content)</span></span></h3>
+              <p>Send as another user</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>channel</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Channel</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>user</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>name</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Name</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>content</p>
+                      </td>
+                      <td>
+                        <p>(String, Object, or <a href="Embed.html">Embed</a>)</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Message content</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
             </section>
           </section>
         </div>
@@ -222,7 +313,7 @@
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on August 21, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on August 24, 2020.
       </p>
     </div>
   </footer>
