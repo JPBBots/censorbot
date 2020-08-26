@@ -190,7 +190,7 @@ class Filter {
 
     for (let i = 0; i < res.length; i++) { // combine pieces that ends and start with the same character
       const s = res[i]
-      if (!s || firstShortWords.includes(s.t)) continue
+      if (!s || firstShortWords.some(x => s.t.endsWith(x))) continue
 
       if (s.t && res[i + 1] && (s.t[s.t.length - 1] === res[i + 1].t[0])) {
         if (s.n) continue
