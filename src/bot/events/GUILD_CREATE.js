@@ -4,7 +4,7 @@ module.exports = function (guild) {
   const available = this.unavailables.has(guild.id)
   if (available) this.unavailables.delete(guild.id)
 
-  this.webhooks.send('guilds',
+  this.cluster.internal.sendWebhook('guilds',
     this.embed
       .color(available ? 'YELLOW' : 'GREEN')
       .title(available ? 'Server Available' : 'Joined New Server')
