@@ -30,8 +30,8 @@ class Reloader {
         this.client.events.load()
         break
       case 'filter':
-        delete require.cache[require.resolve(resolve(lib, './services/Filter.js'))]
-        const Filter = require(resolve(lib, './services/Filter.js'))
+        delete require.cache[require.resolve(resolve(lib, './filter/Filter.js'))]
+        const Filter = require(resolve(lib, './filter/Filter.js'))
         this.client.filter = new Filter()
         break
       case 'punish':
