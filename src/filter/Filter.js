@@ -1,15 +1,15 @@
 const replaceSpots = {
-  spaces: /_|\/|\\|\.|\n|&|-|\+|=|:|~|,|\?|\(|\)|\s+/gi,
+  spaces: /_|\/|\\|\.|\n|&|-|\^|\+|=|:|~|,|\?|\(|\)|\s+/gi,
   nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|​|‍/gi // eslint-disable-line no-irregular-whitespace
 }
 
 const JPBExp = require('./JPBExp')
 
 const converter = {
-  in: ('\\$,ā,à,á,â,ã,ä,å,ą,ß,β,ò,ó,ô,ő,õ,ö,ø,Ď,ď,D,Ž,d,ž,è,é,ê,ë,ę,ð,Ç,ç,Č,č,Ć,ć,Ð,ì,í,î,ï,ī,ù,ű,ú,û,ü,ľ,ĺ,ł,ň,ñ,ń,Ŕ,ŕ,š,ś,ş,Ť,ť,ÿ,ý,ž,ż,ź,đ,ģ,ğ,µ,§,Ṉ,ṉ,Α,Β,Ν,Η,Ε,Ι,Τ,Ǝ,△,ı,с,к,Р,¡,0,İ,ĩ,į,@,к,ё,а,і,3,1,ů,ķ' + // accents
+  in: ('\\$,ā,à,á,â,ã,ä,å,ą,ß,β,ò,ó,ô,ő,õ,ö,ø,Ď,ď,D,Ž,d,ž,è,é,ê,ë,ę,ð,Ç,ç,Č,č,Ć,ć,Ð,ì,í,î,ï,ī,ù,ű,ú,û,ü,ľ,ĺ,ł,ň,ñ,ń,Ŕ,ŕ,š,ś,ş,Ť,ť,ÿ,ý,ž,ż,ź,đ,ģ,ğ,µ,§,Ṉ,ṉ,Α,Β,Ν,Η,Ε,Ι,Τ,Ǝ,△,ı,с,к,Р,¡,0,İ,ĩ,į,@,к,ё,а,і,3,1,ů,ķ,₽,¥,' + // accents
     '🇦,🇧,🅱,🇨,🇩,🇪,🇫,🇬,🇭,🇮,🇯,🇰,🇱,🇲,🇳,🇴,🇵,🇶,🇷,🇸,🇹,🇺,🇻,🇼,🇽,🇾,🇿,🖕') // emojis
     .split(',').map(x => new RegExp(x, 'g')),
-  out: ('s,a,a,a,a,a,a,a,a,b,b,o,o,o,o,o,o,o,d,d,d,z,d,z,e,e,e,e,e,e,c,c,c,c,c,c,d,i,i,i,i,i,u,u,u,u,u,l,l,l,n,n,n,r,r,s,s,s,t,t,y,y,z,z,z,d,g,g,u,s,n,n,a,b,n,h,e,i,t,e,a,i,c,k,p,i,o,i,i,i,a,k,e,a,i,e,i,u,k' + // accents
+  out: ('s,a,a,a,a,a,a,a,a,b,b,o,o,o,o,o,o,o,d,d,d,z,d,z,e,e,e,e,e,e,c,c,c,c,c,c,d,i,i,i,i,i,u,u,u,u,u,l,l,l,n,n,n,r,r,s,s,s,t,t,y,y,z,z,z,d,g,g,u,s,n,n,a,b,n,h,e,i,t,e,a,i,c,k,p,i,o,i,i,i,a,k,e,a,i,e,i,u,k,p,y,' + // accents
     'a,b,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,fuck') // emojis
     .split(',')
 }
@@ -190,6 +190,7 @@ class Filter {
 
     for (let i = 0; i < res.length; i++) { // combine pieces that ends and start with the same character
       const s = res[i]
+      if (!s || firstShortWords.includes(s.t)) continue
 
       if (s.t && res[i + 1] && (s.t[s.t.length - 1] === res[i + 1].t[0])) {
         if (s.n || res[i + 1].n) continue
