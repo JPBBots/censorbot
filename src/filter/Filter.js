@@ -6,11 +6,11 @@ const replaceSpots = {
 const JPBExp = require('./JPBExp')
 
 const converter = {
-  in: ('\\$,ā,à,á,â,ã,ä,å,ą,ß,β,ò,ó,ô,ő,õ,ö,ø,Ď,ď,D,Ž,d,ž,è,é,ê,ë,ę,ð,Ç,ç,Č,č,Ć,ć,Ð,ì,í,î,ï,ī,ù,ű,ú,û,ü,ľ,ĺ,ł,ň,ñ,ń,Ŕ,ŕ,š,ś,ş,Ť,ť,ÿ,ý,ž,ż,ź,đ,ģ,ğ,µ,§,Ṉ,ṉ,Α,Β,Ν,Η,Ε,Ι,Τ,Ǝ,△,ı,с,к,Р,¡,0,İ,ĩ,į,@,к,ё,а,і,3,1,ů,ķ,₽,¥,' + // accents
-    '🇦,🇧,🅱,🇨,🇩,🇪,🇫,🇬,🇭,🇮,🇯,🇰,🇱,🇲,🇳,🇴,🇵,🇶,🇷,🇸,🇹,🇺,🇻,🇼,🇽,🇾,🇿,🖕') // emojis
+  in: ('\\$,ā,à,á,â,ã,ä,å,ą,ß,β,ò,ó,ô,ő,õ,ö,ø,Ď,ď,D,Ž,d,ž,è,é,ê,ë,ę,ð,Ç,ç,Č,č,Ć,ć,Ð,ì,í,î,ï,ī,ù,ű,ú,û,ü,ľ,ĺ,ł,ň,ñ,ń,Ŕ,ŕ,š,ś,ş,Ť,ť,ÿ,ý,ž,ż,ź,đ,ģ,ğ,µ,§,Ṉ,ṉ,Α,Β,Ν,Η,Ε,Ι,Τ,Ǝ,△,ı,с,к,Р,¡,0,İ,ĩ,į,@,к,ё,а,і,3,1,ů,ķ,₽,¥,ū' + // accents
+    ',🇦,🇧,🅱,🇨,🇩,🇪,🇫,🇬,🇭,🇮,🇯,🇰,🇱,🇲,🇳,🇴,🇵,🇶,🇷,🇸,🇹,🇺,🇻,🇼,🇽,🇾,🇿,🖕') // emojis
     .split(',').map(x => new RegExp(x, 'g')),
-  out: ('s,a,a,a,a,a,a,a,a,b,b,o,o,o,o,o,o,o,d,d,d,z,d,z,e,e,e,e,e,e,c,c,c,c,c,c,d,i,i,i,i,i,u,u,u,u,u,l,l,l,n,n,n,r,r,s,s,s,t,t,y,y,z,z,z,d,g,g,u,s,n,n,a,b,n,h,e,i,t,e,a,i,c,k,p,i,o,i,i,i,a,k,e,a,i,e,i,u,k,p,y,' + // accents
-    'a,b,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,fuck') // emojis
+  out: ('s,a,a,a,a,a,a,a,a,b,b,o,o,o,o,o,o,o,d,d,d,z,d,z,e,e,e,e,e,e,c,c,c,c,c,c,d,i,i,i,i,i,u,u,u,u,u,l,l,l,n,n,n,r,r,s,s,s,t,t,y,y,z,z,z,d,g,g,u,s,n,n,a,b,n,h,e,i,t,e,a,i,c,k,p,i,o,i,i,i,a,k,e,a,i,e,i,u,k,p,y,u' + // accents
+    ',a,b,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,fuck') // emojis
     .split(',')
 }
 
@@ -158,14 +158,14 @@ class Filter {
       }
     }
 
-    res = res.concat(nextPushes)
+    res = nextPushes.concat(res)
 
     for (let i = 0; i < res.length; i++) { // combine < 3 character bits together
       const s = res[i]
       if (firstShortWords.includes(s.t)) continue
 
       if (s.t && (s.t.length < 3) && res[i + 1]) {
-        if (s.n || res[i + 1].n) continue
+        if (s.n) continue
         if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
           s.t = ''
           s.i = []
@@ -193,7 +193,7 @@ class Filter {
       if (!s || firstShortWords.includes(s.t)) continue
 
       if (s.t && res[i + 1] && (s.t[s.t.length - 1] === res[i + 1].t[0])) {
-        if (s.n || res[i + 1].n) continue
+        if (s.n) continue
         if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
           s.t = ''
         }
@@ -238,6 +238,7 @@ class Filter {
 
     content.forEach(piece => {
       let done = false
+      if (res.ranges.some(x => inRange(x[0], piece.i[0], piece.i[1]) && inRange(x[1], piece.i[0], piece.i[1]))) return
       for (const key in filter) {
         for (const part of filter[key]) {
           if (!part.test(piece.t, uncensor)) continue
@@ -262,7 +263,7 @@ class Filter {
       }
     }
 
-    res.ranges = res.ranges.filter(x => x)
+    res.ranges = res.ranges.filter(x => x).reverse()
 
     return res
   }
