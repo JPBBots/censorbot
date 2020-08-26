@@ -10,6 +10,8 @@ const LoadRoutes = require('../util/LoadRoutes')
 
 const { api: apiPort } = require('../ports')
 
+const Embed = require('../discord/Embed')
+
 /**
  * Express app manager
  */
@@ -63,7 +65,13 @@ class App {
     this.app.use(cors())
 
     this.app.use((req, res, next) => {
-      if (!req.url.match(/static|updates\/./gi)) this.manager.log(`${req.method} ${req.url}`)
+      this.manager.cluster.internal.sendWebhook('api', new Embed()
+        .title(`${req.method} ${req.url}`)
+        .description(`${req.body ? `${Object.keys(req.body).length} keys` : 'No body'}`)
+        .field('Session Info', `Cloudflare: ${req.cookies.__cfduid}`, true)
+        .field('GA', req.cookies._ga, true)
+        .timestamp()
+      )
 
       req.api = req.originalUrl.split('?')[0].endsWith('.json') || req.method !== 'GET'
 
