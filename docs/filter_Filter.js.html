@@ -30,18 +30,20 @@
           </header>
           <article>
             <pre class="prettyprint linenums"><code>const replaceSpots &#x3D; {
-  spaces: /_|\/|\\|\.|\n|&amp;amp;|-|\+|&#x3D;|:|~|,|\?|\(|\)|\s+/gi,
+  spaces: /_|\/|\\|\.|\n|&amp;amp;|-|\^|\+|&#x3D;|:|~|,|\?|\(|\)|\s+/gi,
   nothing: /&quot;|\*|&#x27;|\||&#x60;|&amp;lt;|&gt;|#|!|\[|\]|\{|\}|;|%|​|‍/gi // eslint-disable-line no-irregular-whitespace
 }
+
+const replaceFonts &#x3D; require(&#x27;../util/replace-fonts&#x27;)
 
 const JPBExp &#x3D; require(&#x27;./JPBExp&#x27;)
 
 const converter &#x3D; {
-  in: (&#x27;\\$,ā,à,á,â,ã,ä,å,ą,ß,β,ò,ó,ô,ő,õ,ö,ø,Ď,ď,D,Ž,d,ž,è,é,ê,ë,ę,ð,Ç,ç,Č,č,Ć,ć,Ð,ì,í,î,ï,ī,ù,ű,ú,û,ü,ľ,ĺ,ł,ň,ñ,ń,Ŕ,ŕ,š,ś,ş,Ť,ť,ÿ,ý,ž,ż,ź,đ,ģ,ğ,µ,§,Ṉ,ṉ,Α,Β,Ν,Η,Ε,Ι,Τ,Ǝ,△,ı,с,к,Р,¡,0,İ,ĩ,į,@,к,ё,а,і,3,1,ů,ķ&#x27; + // accents
-    &#x27;🇦,🇧,🅱,🇨,🇩,🇪,🇫,🇬,🇭,🇮,🇯,🇰,🇱,🇲,🇳,🇴,🇵,🇶,🇷,🇸,🇹,🇺,🇻,🇼,🇽,🇾,🇿,🖕&#x27;) // emojis
+  in: (&#x27;\\$,ā,à,á,â,ã,ä,å,ą,ß,β,ò,ó,ô,ő,õ,ö,ø,Ď,ď,D,Ž,d,ž,è,é,ê,ë,ę,ð,Ç,ç,Č,č,Ć,ć,Ð,ì,í,î,ï,ī,ù,ű,ú,û,ü,ľ,ĺ,ł,ň,ñ,ń,Ŕ,ŕ,š,ś,ş,Ť,ť,ÿ,ý,ž,ż,ź,đ,ģ,ğ,µ,§,Ṉ,ṉ,Α,Β,Ν,Η,Ε,Ι,Τ,Ǝ,△,ı,с,к,Р,¡,0,İ,ĩ,į,@,к,ё,а,і,3,1,ů,ķ,₽,¥,ū&#x27; + // accents
+    &#x27;,🇦,🇧,🅱,🇨,🇩,🇪,🇫,🇬,🇭,🇮,🇯,🇰,🇱,🇲,🇳,🇴,🇵,🇶,🇷,🇸,🇹,🇺,🇻,🇼,🇽,🇾,🇿,🖕&#x27;) // emojis
     .split(&#x27;,&#x27;).map(x &#x3D;&gt; new RegExp(x, &#x27;g&#x27;)),
-  out: (&#x27;s,a,a,a,a,a,a,a,a,b,b,o,o,o,o,o,o,o,d,d,d,z,d,z,e,e,e,e,e,e,c,c,c,c,c,c,d,i,i,i,i,i,u,u,u,u,u,l,l,l,n,n,n,r,r,s,s,s,t,t,y,y,z,z,z,d,g,g,u,s,n,n,a,b,n,h,e,i,t,e,a,i,c,k,p,i,o,i,i,i,a,k,e,a,i,e,i,u,k&#x27; + // accents
-    &#x27;a,b,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,fuck&#x27;) // emojis
+  out: (&#x27;s,a,a,a,a,a,a,a,a,b,b,o,o,o,o,o,o,o,d,d,d,z,d,z,e,e,e,e,e,e,c,c,c,c,c,c,d,i,i,i,i,i,u,u,u,u,u,l,l,l,n,n,n,r,r,s,s,s,t,t,y,y,z,z,z,d,g,g,u,s,n,n,a,b,n,h,e,i,t,e,a,i,c,k,p,i,o,i,i,i,a,k,e,a,i,e,i,u,k,p,y,u&#x27; + // accents
+    &#x27;,a,b,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,fuck&#x27;) // emojis
     .split(&#x27;,&#x27;)
 }
 
@@ -117,9 +119,10 @@ class Filter {
   /**
    * Resolve content
    * @param {String} content Content
+   * @param {Boolean} removeFonts Remove fonts
    * @returns {Array.&amp;lt;ResolvedPiece&gt;}
    */
-  resolve (content) {
+  resolve (content, removeFonts) {
     // base stuff
     content &#x3D; content
       .toLowerCase()
@@ -138,6 +141,8 @@ class Filter {
     for (const i in converter.in) { // convert special character like accents and emojis into their readable counterparts
       content &#x3D; content.replace(converter.in[i], converter.out[i])
     }
+
+    if (removeFonts) content &#x3D; replaceFonts(content).toLowerCase()
 
     let res &#x3D; Array(content.split(replaceSpots.spaces).length + 1).fill().map(() &#x3D;&gt; ({ i: [], t: &#x27;&#x27; })) // array of default objects
 
@@ -189,14 +194,14 @@ class Filter {
       }
     }
 
-    res &#x3D; res.concat(nextPushes)
+    res &#x3D; nextPushes.concat(res)
 
     for (let i &#x3D; 0; i &amp;lt; res.length; i++) { // combine &amp;lt; 3 character bits together
       const s &#x3D; res[i]
       if (firstShortWords.includes(s.t)) continue
 
       if (s.t &amp;amp;&amp;amp; (s.t.length &amp;lt; 3) &amp;amp;&amp;amp; res[i + 1]) {
-        if (s.n || res[i + 1].n) continue
+        if (s.n) continue
         if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
           s.t &#x3D; &#x27;&#x27;
           s.i &#x3D; []
@@ -221,9 +226,10 @@ class Filter {
 
     for (let i &#x3D; 0; i &amp;lt; res.length; i++) { // combine pieces that ends and start with the same character
       const s &#x3D; res[i]
+      if (!s || firstShortWords.some(x &#x3D;&gt; s.t.endsWith(x))) continue
 
       if (s.t &amp;amp;&amp;amp; res[i + 1] &amp;amp;&amp;amp; (s.t[s.t.length - 1] &#x3D;&#x3D;&#x3D; res[i + 1].t[0])) {
-        if (s.n || res[i + 1].n) continue
+        if (s.n) continue
         if (addSpot(s.t + res[i + 1].t, s.i, i + 1)) {
           s.t &#x3D; &#x27;&#x27;
         }
@@ -248,10 +254,11 @@ class Filter {
    * @param {Languages} filters Filters
    * @param {Array.&amp;lt;String&gt;} server Extra filter
    * @param {Array.&amp;lt;String&gt;} uncensor Extra bypass
+   * @param {Boolean} removeFonts Remove fonts
    * @returns {FilterResponse}
    */
-  test (text, filters &#x3D; [&#x27;en&#x27;, &#x27;es&#x27;, &#x27;off&#x27;], server &#x3D; [], uncensor &#x3D; []) {
-    const content &#x3D; this.resolve(text)
+  test (text, filters &#x3D; [&#x27;en&#x27;, &#x27;es&#x27;, &#x27;off&#x27;], server &#x3D; [], uncensor &#x3D; [], removeFonts) {
+    const content &#x3D; this.resolve(text, removeFonts)
 
     const res &#x3D; {
       censor: false,
@@ -268,6 +275,7 @@ class Filter {
 
     content.forEach(piece &#x3D;&gt; {
       let done &#x3D; false
+      if (res.ranges.some(x &#x3D;&gt; inRange(x[0], piece.i[0], piece.i[1]) &amp;amp;&amp;amp; inRange(x[1], piece.i[0], piece.i[1]))) return
       for (const key in filter) {
         for (const part of filter[key]) {
           if (!part.test(piece.t, uncensor)) continue
@@ -292,7 +300,7 @@ class Filter {
       }
     }
 
-    res.ranges &#x3D; res.ranges.filter(x &#x3D;&gt; x)
+    res.ranges &#x3D; res.ranges.filter(x &#x3D;&gt; x).reverse()
 
     return res
   }
@@ -309,7 +317,7 @@ module.exports &#x3D; Filter
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on August 24, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on August 28, 2020.
       </p>
     </div>
   </footer>

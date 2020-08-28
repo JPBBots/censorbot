@@ -44,7 +44,7 @@ module.exports = async function (message) {
     content = message.content
   }
 
-  const res = inviteCensor ? ({ censor: true, method: 'invites', word: 'invite', arg: [] }) : this.filter.test(content, db.filters, db.filter, db.uncensor)
+  const res = inviteCensor ? ({ censor: true, method: 'invites', word: 'invite', arg: [] }) : this.filter.test(content, db.filters, db.filter, db.uncensor, db.fonts)
 
   if (!res.censor) return
 
