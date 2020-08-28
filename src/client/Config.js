@@ -27,11 +27,12 @@ const config = {
   channels: [],
   multi: false,
   prefix: '+',
-  invites: false
+  invites: false,
+  fonts: false
 }
 
 const constants = {
-  currentVersion: 4,
+  currentVersion: 5,
   allowedFilters: ['en', 'es', 'off', 'ru', 'de'],
   punishmentTypes: [0, 1, 2, 3],
   webhookReplaces: [0, 1]
@@ -130,7 +131,8 @@ const verify = (obj, premium, guild) => {
       v.constructor === Array &&
       !v.some(a => !guild.c.some(b => a === b.id)), true
     ),
-    invites: checker('invites', (v) => typeof v === 'boolean')
+    invites: checker('invites', (v) => typeof v === 'boolean'),
+    fonts: checker('fonts', (v) => typeof v === 'boolean', true)
   }
 }
 

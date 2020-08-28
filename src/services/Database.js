@@ -124,6 +124,10 @@ class Database {
 
         delete newObj.base
         delete newObj.languages
+
+        // falls through
+      case 4:
+        newObj.fonts = false
         break
       default:
         break
