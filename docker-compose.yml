@@ -4,7 +4,7 @@ services:
     build: .
     volumes:
       - ./src:/app
-      - /app/node_modules
+      - ./node_modules:/node_modules
     env_file:
       - censorbot.env
     restart: unless-stopped
@@ -14,7 +14,7 @@ services:
     build: .
     volumes:
       - ./src:/app
-      - /app/node_modules
+      - ./node_modules:/node_modules
     env_file:
       - censorbottesting.env
     restart: "no"
@@ -24,7 +24,7 @@ services:
     build: .
     volumes:
       - ./src:/app
-      - /app/node_modules
+      - ./node_modules:/node_modules
     env_file:
       - treehouse.env
     restart: unless-stopped
