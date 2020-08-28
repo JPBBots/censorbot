@@ -3,6 +3,8 @@ const replaceSpots = {
   nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|​|‍/gi // eslint-disable-line no-irregular-whitespace
 }
 
+const replaceFonts = require('../util/replace-fonts')
+
 const JPBExp = require('./JPBExp')
 
 const converter = {
@@ -86,9 +88,10 @@ class Filter {
   /**
    * Resolve content
    * @param {String} content Content
+   * @param {Boolean} removeFonts Remove fonts
    * @returns {Array.<ResolvedPiece>}
    */
-  resolve (content) {
+  resolve (content, removeFonts) {
     // base stuff
     content = content
       .toLowerCase()
@@ -107,6 +110,8 @@ class Filter {
     for (const i in converter.in) { // convert special character like accents and emojis into their readable counterparts
       content = content.replace(converter.in[i], converter.out[i])
     }
+
+    if (removeFonts) content = replaceFonts(content).toLowerCase()
 
     let res = Array(content.split(replaceSpots.spaces).length + 1).fill().map(() => ({ i: [], t: '' })) // array of default objects
 
@@ -218,10 +223,11 @@ class Filter {
    * @param {Languages} filters Filters
    * @param {Array.<String>} server Extra filter
    * @param {Array.<String>} uncensor Extra bypass
+   * @param {Boolean} removeFonts Remove fonts
    * @returns {FilterResponse}
    */
-  test (text, filters = ['en', 'es', 'off'], server = [], uncensor = []) {
-    const content = this.resolve(text)
+  test (text, filters = ['en', 'es', 'off'], server = [], uncensor = [], removeFonts) {
+    const content = this.resolve(text, removeFonts)
 
     const res = {
       censor: false,

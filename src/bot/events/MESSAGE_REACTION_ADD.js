@@ -23,7 +23,7 @@ module.exports = async function (reaction) {
 
   content += reaction.emoji.name
 
-  const res = this.filter.test(content, db.filters, db.filter, db.uncensor)
+  const res = this.filter.test(content, db.filters, db.filter, db.uncensor, db.fonts)
 
   if (!res.censor) return
 
