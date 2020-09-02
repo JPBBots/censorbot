@@ -8,18 +8,18 @@
  * 3: Ban
  */
 
-const punishmentType = {
+const punishmentTypes = {
   0: false,
   1: 'mute',
   2: 'kick',
   3: 'ban'
 }
 
-const unpunishmentType = {
+const unpunishmentTypes = {
   0: false,
   1: 'unmute',
   2: null,
   3: 'unban'
 }
 
-module.exports = { punishmentType, unpunishmentType }
+module.exports = { punishmentTypes, unpunishmentTypes }

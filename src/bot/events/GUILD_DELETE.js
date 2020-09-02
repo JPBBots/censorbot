@@ -11,5 +11,6 @@ module.exports = function (guild) {
 
   if (guild.unavailable) return
 
-  this.db.collection('punishments').removeMany({ g: guild.id })
+  this.db.collection('punish').removeMany({ guild: guild.id })
+  this.db.collection('timeouts').removeMany({ guild: guild.id })
 }

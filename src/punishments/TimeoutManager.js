@@ -1,6 +1,6 @@
 const Collection = require('../util/Collection')
 
-const { unpunishmentType } = require('./punishmentTypes')
+const { unpunishmentTypes } = require('./punishmentTypes')
 
 /**
  * @typedef {Object} Timeout Unmute Database Object
@@ -27,7 +27,7 @@ class TimeoutManager {
 
     if (db.punishment.type === 0) return
 
-    await this.manager[unpunishmentType[type]](guild, user, db)
+    await this.manager[unpunishmentTypes[type]](guild, user, db)
 
     await this.db.removeOne({ guild, user })
 
