@@ -3,58 +3,28 @@ const Database = require('../services/Database')
 const config = require('../config')
 
 const PunishmentApp = require('./PunishmentApp')
-<<<<<<< HEAD
 const TimeoutManager = require('./TimeoutManager')
-=======
-const UnmuteManager = require('./UnmuteManager')
->>>>>>> 8e67a731808631b75ca5399904689dd91e77cffc
 
 const RestManager = require('../discord/rest/RestManager')
 const Embed = require('../discord/Embed')
 
 const Logger = require('../util/Logger')
 
-<<<<<<< HEAD
 const { punishmentTypes } = require('./punishmentTypes')
-=======
-/**
- * Used to decide which kind of punishment to execute in a given server
- * @typedef {Number} PunishmentType
- * @example
- * 0: Off
- * 1: Mute
- * 2: Kick
- * 3: Ban
- */
-
-const punishmentTypes = {
-  1: 'mute',
-  2: 'kick',
-  3: 'ban'
-}
->>>>>>> 8e67a731808631b75ca5399904689dd91e77cffc
 
 /**
  * @typedef {Object} Punishment Punishment Database Object
  * @property {Snowflake} guild Guild ID
  * @property {Snowflake} user User ID
-<<<<<<< HEAD
  * @property {Array.<Number>} warnings Array of dates when said warning expires
-=======
- * @property {Number} warnings Warning count
->>>>>>> 8e67a731808631b75ca5399904689dd91e77cffc
  * @example
  * {
  *  guild: '399688888739692552',
  *  user: '142408079177285632',
-<<<<<<< HEAD
  *  warnings: [
  *    1599080523732,
  *    1599080513732
  *  ]
-=======
- *  warnings: 2
->>>>>>> 8e67a731808631b75ca5399904689dd91e77cffc
  * }
  */
 
@@ -68,11 +38,7 @@ class PunishmentManager {
     this.config = config
 
     this.app = new PunishmentApp(this)
-<<<<<<< HEAD
     this.timeouts = new TimeoutManager(this)
-=======
-    this.unmutes = new UnmuteManager(this)
->>>>>>> 8e67a731808631b75ca5399904689dd91e77cffc
 
     this.database = null
 
