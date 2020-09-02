@@ -88,6 +88,11 @@ class Base { // eslint-disable-line no-unused-vars
 
   _typer (set, elm, value, keyed) {
     let res
+    let base
+    let multiply
+    const multiples = []
+    let currentTime
+
     switch (elm.getAttribute('typed')) {
       case 'boolean':
         set ? (elm.checked = value) : (res = elm.checked)
@@ -133,6 +138,17 @@ class Base { // eslint-disable-line no-unused-vars
         set
           ? (elm.value = String(value))
           : (res = Number(elm.value))
+        break
+      case 'multiples':
+        base = elm.querySelector('[base]')
+        multiply = elm.querySelector('[multiply]')
+
+        for (const child of multiply.children) multiples.push(child)
+
+        if (set) currentTime = multiples.slice(1).reduce((a, b) => (Number(a.value) * Number(base.max)) < value ? b : a, multiples[0])
+        set
+          ? ((base.value = value / Number(currentTime.value)) && (multiply.value = currentTime.value))
+          : (res = Number(base.value) * Number(multiply.value))
         break
       case 'none':
         set
