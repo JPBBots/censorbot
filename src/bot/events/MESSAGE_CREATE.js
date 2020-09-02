@@ -85,7 +85,7 @@ module.exports = async function (message) {
     )
   }
 
-  this.punishments.addOne(message.guild_id, message.author.id, db)
+  this.punishments.guilds[message.guild_id].punish(message.author.id).post()
 
   if (!inviteCensor && db.webhook.enabled) {
     content = content.replace(/\|/g, '')

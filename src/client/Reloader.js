@@ -34,11 +34,6 @@ class Reloader {
         const Filter = require(resolve(lib, './filter/Filter.js'))
         this.client.filter = new Filter()
         break
-      case 'punish':
-        delete require.cache[require.resolve(resolve(lib, './services/Punishments.js'))]
-        const PunishmentHandler = require(resolve(lib, './services/Punishments.js'))
-        this.client.punishments = new PunishmentHandler(this.client)
-        break
       case 'log':
         delete require.cache[require.resolve('../../util/Logger.js')]
         const Logger = require('../../util/Logger')

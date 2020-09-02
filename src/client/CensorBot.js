@@ -12,12 +12,13 @@ const UpdatesManager = require('./UpdatesManager')
 
 const Filter = require('../filter/Filter')
 const Database = require('../services/Database')
-const Punishments = require('../services/Punishments')
 const TicketManager = require('../services/TicketManager')
 const BucketManager = require('../services/BucketManager')
 
 const Embed = require('../discord/Embed')
 const Collection = require('../util/Collection')
+
+const { punishments: punishPort } = require('../ports')
 
 /**
  * Base censor bot client. Used as a hub for all other library structures
@@ -69,6 +70,8 @@ class CensorBot extends Client {
      */
     this.capi = Request('https://api.jt3ch.net', {}, { format: 'text' })
 
+    this.punishments = Request(`http://localhost:${punishPort}`)
+
     // this.start()
   }
 
@@ -99,12 +102,7 @@ class CensorBot extends Client {
      * @type {Filter}
      */
     this.filter = new Filter()
-    /**
-     * Punishment manager
-     * @type {Punishments}
-     */
-    this.punishments = new Punishments(this)
-    /**
+    /*
      * Buckets
      * @type {BucketManager}
      */

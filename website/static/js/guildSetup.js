@@ -68,6 +68,11 @@ function setup () {
     if (this.value < 1) this.value = ""
   })
 
+  window.lib._getElm('punishment.time').addEventListener("change", function () {
+    const base = this.querySelector('[base]')
+    if (base.value < 1) base.value = ""
+  })
+
 
   var elm = window.lib._getElm('msg.content')
   elm.onfocus = function () {

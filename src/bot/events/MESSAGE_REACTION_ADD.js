@@ -47,5 +47,5 @@ module.exports = async function (reaction) {
     )
   }
 
-  this.punishments.addOne(reaction.guild_id, reaction.user_id, db)
+  this.punishments.guilds[reaction.guild_id].punish(reaction.user_id).post()
 }
