@@ -3,39 +3,28 @@ const Database = require('../services/Database')
 const config = require('../config')
 
 const PunishmentApp = require('./PunishmentApp')
-const UnmuteManager = require('./UnmuteManager')
+const TimeoutManager = require('./TimeoutManager')
 
 const RestManager = require('../discord/rest/RestManager')
 const Embed = require('../discord/Embed')
 
 const Logger = require('../util/Logger')
 
-/**
- * Used to decide which kind of punishment to execute in a given server
- * @typedef {Number} PunishmentType
- * @example
- * 0: Off
- * 1: Mute
- * 2: Kick
- * 3: Ban
- */
-
-const punishmentTypes = {
-  1: 'mute',
-  2: 'kick',
-  3: 'ban'
-}
+const { punishmentTypes } = require('./punishmentTypes')
 
 /**
  * @typedef {Object} Punishment Punishment Database Object
  * @property {Snowflake} guild Guild ID
  * @property {Snowflake} user User ID
- * @property {Number} warnings Warning count
+ * @property {Array.<Number>} warnings Array of dates when said warning expires
  * @example
  * {
  *  guild: '399688888739692552',
  *  user: '142408079177285632',
- *  warnings: 2
+ *  warnings: [
+ *    1599080523732,
+ *    1599080513732
+ *  ]
  * }
  */
 
@@ -49,7 +38,7 @@ class PunishmentManager {
     this.config = config
 
     this.app = new PunishmentApp(this)
-    this.unmutes = new UnmuteManager(this)
+    this.timeouts = new TimeoutManager(this)
 
     this.database = null
 
@@ -77,10 +66,10 @@ class PunishmentManager {
 
     await this.app.setup()
 
-    this.unmutes.checkUnmutes()
+    this.timeouts.checkTimeouts()
 
     setInterval(() => {
-      this.unmutes.checkUnmutes()
+      this.timeouts.checkTimeouts()
     }, 60000)
 
     this.log('Started')
@@ -109,19 +98,20 @@ class PunishmentManager {
       .members[user]
       .roles[db.punishment.role]
       .put({
-        reason: `Reached max warnings${db.punishment.time ? `. Unmuted in ${db.punishment.time.toLocaleString()} minutes.` : ''}`
+        reason: `Reached max warnings${db.punishment.time ? `. Unmuted in ${(db.punishment.time / 60000).toLocaleString()} minutes.` : ''}`
       })
 
-    await this.sendLog(false, db, user, 'Muted', `Received <@&${db.punishment.role}>${db.punishment.time ? `\nWill be unmuted in ${db.punishment.time.toLocaleString()} minutes` : ''}`)
+    await this.sendLog(false, db, user, 'Muted', `Received <@&${db.punishment.role}>${db.punishment.time ? `\nWill be unmuted in ${(db.punishment.time / 60000).toLocaleString()} minutes` : ''}`)
 
     if (db.punishment.time) {
-      await this.unmutes.db.updateOne({
+      await this.timeouts.db.updateOne({
         guild, user
       }, {
         $set: {
           guild,
           user,
-          at: Date.now() + (db.punishment.time * 1000)
+          type: 1,
+          at: Date.now() + db.punishment.time
         }
       }, {
         upsert: true
@@ -138,7 +128,7 @@ class PunishmentManager {
         reason: 'Auto-unmuted after time.'
       })
 
-    await this.sendLog(true, db, user, 'Unmuted', `After ${db.punishment.time} minutes`)
+    await this.sendLog(true, db, user, 'Unmuted', `After ${db.punishment.time / 60000} minutes`)
   }
 
   async kick (guild, user, db) {
@@ -160,7 +150,33 @@ class PunishmentManager {
         reason: 'Reached max warnings.'
       })
 
-    await this.sendLog(false, db, user, 'Banned')
+    await this.sendLog(false, db, user, 'Banned', db.punishment.time ? `Will be unbanned in ${(db.punishment.time / 60000).toLocaleString()} minutes` : '')
+
+    if (db.punishment.time) {
+      await this.timeouts.db.updateOne({
+        guild, user
+      }, {
+        $set: {
+          guild,
+          user,
+          type: 3,
+          at: Date.now() + db.punishment.time
+        }
+      }, {
+        upsert: true
+      })
+    }
+  }
+
+  async unban (guild, user, db) {
+    await this.api
+      .guilds[guild]
+      .bans[user]
+      .delete({
+        reason: 'Auto-unbanned after time.'
+      })
+
+    await this.sendLog(true, db, user, 'Unbanned', `After ${db.punishment.time / 60000} minutes`)
   }
 
   async punish (guild, user, db) {
@@ -170,13 +186,15 @@ class PunishmentManager {
 
     if (!punish) {
       punish = {
-        guild, user, warnings: 0
+        guild, user, warnings: []
       }
     }
 
-    punish.warnings++
+    punish.warnings.push(db.punishment.expires ? Date.now() + db.punishment.expires : Infinity)
 
-    if (punish.warnings >= db.punishment.amount) {
+    punish.warnings = punish.warnings.filter(x => Date.now() < x)
+
+    if (punish.warnings.length >= db.punishment.amount) {
       await this[punishmentTypes[db.punishment.type]](guild, user, db)
 
       await this.db.removeOne({ guild, user })
