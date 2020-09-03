@@ -18,7 +18,7 @@ module.exports = {
   },
   dashOptions: {
     guildCacheWipeTimeout: 15 * 60 * 1000, // 15 minutes
-    requiredPermissionBit: 0x00000008 // Administrator
+    requiredPermissionBit: 0x00000020 // Manage Guild
   },
 
   //

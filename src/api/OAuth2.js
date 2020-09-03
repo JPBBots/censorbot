@@ -2,6 +2,7 @@ const RestManager = require('../discord/rest/RestManager')
 
 const Cache = require('../util/Cache')
 const encodeJSON = require('../util/encodeJSON')
+const PermissionUtil = require('../util/PermissionUtil')
 
 const Crypto = require('crypto')
 
@@ -156,7 +157,7 @@ class OAuth2 {
     if (!guilds || guilds.constructor !== Array) return false
 
     return guilds
-      .filter(x => (x.permissions & this.config.dashOptions.requiredPermissionBit) !== 0 || x.owner)
+      .filter(x => x.owner || PermissionUtil.hasPerms(x.permissions, this.config.dashOptions.requiredPermissionBit))
       .map(x => ({ n: x.name, i: x.id, a: x.icon }))
   }
 
