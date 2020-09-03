@@ -17,7 +17,9 @@ const config = {
   punishment: {
     type: 0,
     amount: 3,
-    role: null
+    role: null,
+    time: null,
+    expires: null
   },
   webhook: {
     enabled: false,
@@ -35,7 +37,10 @@ const constants = {
   currentVersion: 5,
   allowedFilters: ['en', 'es', 'off', 'ru', 'de'],
   punishmentTypes: [0, 1, 2, 3],
-  webhookReplaces: [0, 1]
+  webhookReplaces: [0, 1],
+  punishmentTimeMax: 5184000000,
+  punishmentExpiresMax: 5184000000,
+  timedPunishments: [1, 3]
 }
 
 function generatePieces (obj) {
@@ -117,7 +122,9 @@ const verify = (obj, premium, guild) => {
     punishment: {
       type: checker('punishment.type', (v) => !(v === 1 && !guild.r.some(x => obj.punishment.role === x.id)) && constants.punishmentTypes.includes(v)),
       amount: checker('punishment.amount', (v) => Number.isInteger(v) && v <= 50 && v > 0),
-      role: checker('punishment.role', (v) => obj.punishment.type === 1 && guild.r.some(x => v === x.id))
+      role: checker('punishment.role', (v) => obj.punishment.type === 1 && guild.r.some(x => v === x.id)),
+      time: checker('punishment.time', (v) => v !== null ? Number.isInteger(v) && constants.timedPunishments.includes(obj.punishment.type) && v > 0 && v < constants.punishmentTimeMax : true),
+      expires: checker('punishment.expires', (v) => v !== null ? Number.isInteger(v) && v > 0 && v < constants.punishmentTimeMax : true)
     },
     webhook: {
       enabled: checker('webhook.enabled', (v) => typeof v === 'boolean', true),

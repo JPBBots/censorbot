@@ -148,7 +148,7 @@ class Base { // eslint-disable-line no-unused-vars
         if (set) currentTime = multiples.slice(1).reduce((a, b) => (Number(a.value) * Number(base.max)) < value ? b : a, multiples[0])
         set
           ? ((base.value = value / Number(currentTime.value)) && (multiply.value = currentTime.value))
-          : (res = Number(base.value) * Number(multiply.value))
+          : (base.value === '' ? res = null : res = Number(base.value) * Number(multiply.value))
         break
       case 'none':
         set
