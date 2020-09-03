@@ -128,6 +128,11 @@ class Database {
         // falls through
       case 4:
         newObj.fonts = false
+
+        // falls through
+      case 5:
+        newObj.punishment.time = null
+        newObj.punishment.expires = null
         break
       default:
         break
