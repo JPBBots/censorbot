@@ -88,7 +88,7 @@
           <option value="null">None</option>
         </select></div>
       <div setting="punishment.time" typed="multiples">
-        <h3>Unpunish After</h3>
+        <h3 title="Amount of time the user will stay muted/banned, after this time, the punishment with be undone.">Unpunish After</h3>
         <input placeholder="Never" type="number" min="0" max="60" base>
         <select multiply>
           <option value="60000">Minutes</option>
@@ -97,7 +97,7 @@
         </select>
       </div>
       <div setting="punishment.expires" typed="multiples">
-        <h3>Warnings Expire After</h3>
+        <h3 title="Amount of time until a warning is removed, to avoid stacking warnings">Warnings Expire After</h3>
         <input placeholder="Never" type="number" min="0" max="60" base>
         <select multiply>
           <option value="60000">Minutes</option>
@@ -116,7 +116,7 @@
         <button onclick="document.getElementById('popMessageInput').value='Default'">Default</button>
         <button onclick="document.getElementById('popMessageInput').value='Off'">Off</button></div>
 
-      <div><h3>Ignore NSFW Channels</h3>
+      <div><h3 title="Whether to ignore NSFW channels, if off, messages with curses will still be deleted.">Ignore NSFW Channels</h3>
         <input type="checkbox" typed="boolean" setting="nsfw"></div>
 
         <div>
