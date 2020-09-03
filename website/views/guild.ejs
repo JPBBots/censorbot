@@ -87,6 +87,24 @@
         <select typed="list" disabled setting="punishment.role" roles>
           <option value="null">None</option>
         </select></div>
+      <div setting="punishment.time" typed="multiples">
+        <h3>Unpunish After</h3>
+        <input placeholder="Never" type="number" min="0" max="60" base>
+        <select multiply>
+          <option value="60000">Minutes</option>
+          <option value="3600000">Hours</option>
+          <option value="86400000">Days</option>
+        </select>
+      </div>
+      <div setting="punishment.expires" typed="multiples">
+        <h3>Warnings Expire After</h3>
+        <input placeholder="Never" type="number" min="0" max="60" base>
+        <select multiply>
+          <option value="60000">Minutes</option>
+          <option value="3600000">Hours</option>
+          <option value="86400000">Days</option>
+        </select>
+      </div>
       </section>
     <section id="other">
       <h1>Other</h1>

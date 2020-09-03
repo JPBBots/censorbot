@@ -8,6 +8,10 @@ module.exports = [
   { // dashboard
     i: 1,
     client: resolve('../api/Manager')
+  },
+  {
+    i: 2,
+    client: resolve('../punishments/PunishmentManager')
   }
 ]
 

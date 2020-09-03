@@ -97,3 +97,8 @@ input[type=checkbox]:checked:after {
 input::placeholder {
   color: var(--text)
 }
+
+*:disabled:not(button) {
+  opacity: 0.2;
+  border-color: rgba(118, 118, 118, 0.3)
+}

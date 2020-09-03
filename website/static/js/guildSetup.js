@@ -68,6 +68,17 @@ function setup () {
     if (this.value < 1) this.value = ""
   })
 
+  window.lib._getElm('punishment.time').addEventListener("change", function () {
+    const base = this.querySelector('[base]')
+    if (base.value > 60) base.value = 60
+    if (base.value < 1) base.value = ""
+  })
+  window.lib._getElm('punishment.expires').addEventListener("change", function () {
+    const base = this.querySelector('[base]')
+    if (base.value > 60) base.value = 60
+    if (base.value < 1) base.value = ""
+  })
+
 
   var elm = window.lib._getElm('msg.content')
   elm.onfocus = function () {
@@ -94,6 +105,17 @@ function setup () {
     else {
       role.disabled = true
       role.value = "null"
+    }
+
+    var base = window.lib._getElm('punishment.time').querySelector('[base]')
+    const multiply = window.lib._getElm('punishment.time').querySelector('[multiply]')
+    if (this.value == '1' || this.value == '3') {
+      base.disabled = false
+      multiply.disabled = false
+    } else {
+      base.disabled = true
+      multiply.disabled = true
+      base.value = ''
     }
   })
 

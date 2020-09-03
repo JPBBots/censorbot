@@ -139,6 +139,7 @@ class Master {
     this.log(`Spawning workers (${botGateway.shards} shards | ${botGateway.session_start_limit.remaining}/${botGateway.session_start_limit.total} identify's)`)
 
     this._createWorker('api', 1)
+    this._createWorker('punishments', 2)
 
     for (let i = 0; i < this.internalClusters.length; i++) {
       this._createWorker(i, 0, this.internalClusters[i])
