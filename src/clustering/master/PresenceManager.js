@@ -105,6 +105,13 @@ class PresenceManager {
   }
 
   /**
+   * Non dev streaming
+   */
+  notdev () {
+    this.status('STREAMING', 'My Creator', 'online', 'https://twitch.tv/jpbberry')
+  }
+
+  /**
    * rose
    */
   rose () {
