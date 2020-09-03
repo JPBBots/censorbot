@@ -44,7 +44,6 @@ function setup () {
   })
 
   var listSettings = {
-    pattern: /^\w+$/i,
     maxTags: window.premium ? 500 : 150,
     delimiters: /,|\s/g,
     callbacks: {

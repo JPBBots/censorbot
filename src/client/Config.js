@@ -1,3 +1,6 @@
+const Filter = require('../filter/Filter')
+const filter = new Filter()
+
 const config = {
   filters: ['en', 'es', 'off'],
   censor: {
@@ -91,20 +94,18 @@ const verify = (obj, premium, guild) => {
       v &&
       v.constructor === Array &&
       !v.some(x =>
-        x.length > 20 ||
-        x.match(/[^\w]/gi)
+        x.length > 20
       ) &&
       v.length <= (!premium ? 150 : 500)
-    ),
+    ).map(x => filter.resolve(x)[0].t),
     uncensor: checker('uncensor', (v) =>
       v &&
       v.constructor === Array &&
       !v.some(x =>
-        x.length > 20 ||
-        x.match(/[^\w]/gi)
+        x.length > 20
       ) &&
       v.length <= (!premium ? 150 : 500)
-    ),
+    ).map(x => filter.resolve(x)[0].t),
     msg: {
       content: checker('msg.content', (v) =>
         typeof v === 'string'
