@@ -133,6 +133,10 @@ class Database {
       case 5:
         newObj.punishment.time = null
         newObj.punishment.expires = null
+
+        // falls through
+      case 6:
+        newObj.nsfw = true
         break
       default:
         break

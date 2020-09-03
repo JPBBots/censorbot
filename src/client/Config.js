@@ -30,6 +30,7 @@ const config = {
     separate: true
   },
   channels: [],
+  nsfw: true,
   multi: false,
   prefix: '+',
   invites: false,
@@ -37,7 +38,7 @@ const config = {
 }
 
 const constants = {
-  currentVersion: 6,
+  currentVersion: 7,
   allowedFilters: ['en', 'es', 'off', 'ru', 'de'],
   punishmentTypes: [0, 1, 2, 3],
   webhookReplaces: [0, 1],
@@ -139,6 +140,7 @@ const verify = (obj, premium, guild) => {
       v.constructor === Array &&
       !v.some(a => !guild.c.some(b => a === b.id)), true
     ),
+    nsfw: checker('nsfw', (v) => typeof v === 'boolean'),
     invites: checker('invites', (v) => typeof v === 'boolean'),
     fonts: checker('fonts', (v) => typeof v === 'boolean', true)
   }

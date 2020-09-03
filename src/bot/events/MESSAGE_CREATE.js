@@ -23,7 +23,7 @@ module.exports = async function (message) {
     !message.member ||
      message.type !== 0 ||
      channel.type !== 0 ||
-     (inviteCensor ? false : channel.nsfw)
+     (inviteCensor || !db.nsfw ? false : channel.nsfw)
   ) return this.multi.delete(message.channel_id)
 
   if (

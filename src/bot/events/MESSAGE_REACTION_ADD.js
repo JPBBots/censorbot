@@ -4,7 +4,6 @@ module.exports = async function (reaction) {
 
   if (
     !channel ||
-     channel.nsfw ||
     !reaction ||
     !reaction.message_id ||
     !reaction.member ||
@@ -16,7 +15,8 @@ module.exports = async function (reaction) {
   if (
     !db.censor.react ||
     reaction.member.roles.includes(db.role) ||
-    db.channels.includes(reaction.channel_id)
+    db.channels.includes(reaction.channel_id) ||
+    (db.nsfw && channel.nsfw)
   ) return
 
   let content = ''

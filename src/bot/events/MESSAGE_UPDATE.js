@@ -13,7 +13,7 @@ module.exports = async function (message) {
 
   const inviteCensor = db.invites && message.content.match(this.utils.inviteRegex)
 
-  if (inviteCensor ? false : channel.nsfw) return
+  if (inviteCensor || !db.nsfw ? false : channel.nsfw) return
 
   if (
     !db.censor.emsg ||
