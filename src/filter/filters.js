@@ -25,9 +25,11 @@ module.exports = () => {
 /**
  * Languages used by the base filter
  * @typedef {Array} Languages
- * @default ['en', 'es', 'off']
+ * @default ['en', 'es', 'off', 'de', 'ru']
  * @example
  * en: English
  * es: Spanish
  * off: Offensive
+ * de: German
+ * ru: Russian
  */
