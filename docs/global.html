@@ -48,14 +48,17 @@
                     <dt><a href="global.html#Job">Job</a></dt>
                     <dd>
                     </dd>
+                    <dt><a href="global.html#jobInt">jobInt</a></dt>
+                    <dd>
+                    </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="global.html#jobInt">jobInt</a></dt>
+                    <dt><a href="global.html#Languages">Languages</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="global.html#Languages">Languages</a></dt>
+                    <dt><a href="global.html#Punishment">Punishment</a></dt>
                     <dd>
                     </dd>
                     <dt><a href="global.html#PunishmentType">PunishmentType</a></dt>
@@ -70,13 +73,13 @@
                     <dt><a href="global.html#ShardStats">ShardStats</a></dt>
                     <dd>
                     </dd>
+                    <dt><a href="global.html#SmallID">SmallID</a></dt>
+                    <dd>
+                    </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="global.html#SmallID">SmallID</a></dt>
-                    <dd>
-                    </dd>
                     <dt><a href="global.html#Snowflake">Snowflake</a></dt>
                     <dd>
                     </dd>
@@ -84,6 +87,9 @@
                     <dd>
                     </dd>
                     <dt><a href="global.html#TicketBan">TicketBan</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="global.html#Timeout">Timeout</a></dt>
                     <dd>
                     </dd>
                     <dt><a href="global.html#UserGuilds">UserGuilds</a></dt>
@@ -641,12 +647,91 @@
                 <div>
                   <pre class="prettyprint"><code>en: English
 es: Spanish
-off: Offensive</code></pre>
+off: Offensive
+de: German
+ru: Russian</code></pre>
                 </div>
               </section>
               <dl class="dl-compact">
                 <dt>Default value</dt>
-                <dd>[&#x27;en&#x27;, &#x27;es&#x27;, &#x27;off&#x27;]</dd>
+                <dd>[&#x27;en&#x27;, &#x27;es&#x27;, &#x27;off&#x27;, &#x27;de&#x27;, &#x27;ru&#x27;]</dd>
+              </dl>
+              <h3 id="Punishment"><span class="symbol-name">Punishment</span><small class="property-type">
+                  &nbsp;Object</small></h3>
+              <p>Punishment Database Object</p>
+              <section>
+                <h4>
+                  Example
+                </h4>
+                <div>
+                  <pre class="prettyprint"><code>{
+ guild: &#x27;399688888739692552&#x27;,
+ user: &#x27;142408079177285632&#x27;,
+ warnings: [
+   1599080523732,
+   1599080513732
+ ]
+}</code></pre>
+                </div>
+              </section>
+              <section>
+                <h4>Properties</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>guild</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>user</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>warnings</p>
+                      </td>
+                      <td>
+                        <p>Array of Number</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Array of dates when said warning expires</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
               </dl>
               <h3 id="PunishmentType"><span class="symbol-name">PunishmentType</span><small class="property-type">
                   &nbsp;Number</small></h3>
@@ -656,9 +741,10 @@ off: Offensive</code></pre>
                   Example
                 </h4>
                 <div>
-                  <pre class="prettyprint"><code>0: Mute
-1: Kick
-2: Ban</code></pre>
+                  <pre class="prettyprint"><code>0: Off
+1: Mute
+2: Kick
+3: Ban</code></pre>
                 </div>
               </section>
               <dl class="dl-compact">
@@ -969,6 +1055,68 @@ api
               </section>
               <dl class="dl-compact">
               </dl>
+              <h3 id="Timeout"><span class="symbol-name">Timeout</span><small class="property-type">
+                  &nbsp;Object</small></h3>
+              <p>Unmute Database Object</p>
+              <section>
+                <h4>Properties</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>user</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>ID of user</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>guild</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>ID of guild</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>at</p>
+                      </td>
+                      <td>
+                        <p>Number</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Millisecond time to remove mute</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
               <h3 id="UserGuilds"><span class="symbol-name">UserGuilds</span><small class="property-type">
                   &nbsp;Object</small></h3>
               <p>Returned from getGuilds</p>
@@ -1041,7 +1189,7 @@ api
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on August 28, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on September 3, 2020.
       </p>
     </div>
   </footer>

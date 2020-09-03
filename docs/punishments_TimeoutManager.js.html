@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Source: client/UpdatesManager.js</title>
+  <title>Source: punishments/TimeoutManager.js</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -26,77 +26,61 @@
         </div>
         <div id="jsdoc-main" role="main">
           <header class="page-header">
-            <h1>Source: client/UpdatesManager.js</h1>
+            <h1>Source: punishments/TimeoutManager.js</h1>
           </header>
           <article>
-            <pre class="prettyprint linenums"><code>/**
- * Used for listing and pushing censor bot updates
+            <pre class="prettyprint linenums"><code>const Collection &#x3D; require(&#x27;../util/Collection&#x27;)
+
+const { unpunishmentTypes } &#x3D; require(&#x27;./punishmentTypes&#x27;)
+
+/**
+ * @typedef {Object} Timeout Unmute Database Object
+ * @property {Snowflake} user ID of user
+ * @property {Snowflake} guild ID of guild
+ * @property {Number} at Millisecond time to remove mute
  */
-class UpdatesManager {
-  /**
-   * Updates Manager
-   * @param {Client} client Client
-   */
-  constructor (client) {
-    /**
-     * Client
-     * @type {Client}
-     */
-    this.client &#x3D; client
 
-    /**
-     * Updates
-     * @type {Array.&amp;lt;Object&gt;}
-     */
-    this.updates &#x3D; []
+class TimeoutManager {
+  constructor (manager) {
+    this.manager &#x3D; manager
 
-    this.load()
+    this.intervals &#x3D; new Collection()
   }
 
-  /**
-   * (Re)load updates
-   */
-  load () {
-    delete require.cache[require.resolve(&#x27;./Updates.json&#x27;)]
-
-    this.updates &#x3D; require(&#x27;./Updates.json&#x27;)
+  get db () {
+    return this.manager.database.collection(&#x27;timeouts&#x27;)
   }
 
-  /**
-   * List updates
-   */
-  list () {
-    return this.updates.map(x &#x3D;&gt; {
-      return {
-        v: x.v,
-        desc: x.desc,
-        date: new Date(x.date)
-      }
-    })
+  async execTimeout (guild, user, type) {
+    this.intervals.set(&#x60;${user};${guild}&#x60;, true)
+
+    const db &#x3D; await this.manager.database.config(guild)
+
+    if (db.punishment.type &#x3D;&#x3D;&#x3D; 0) return
+
+    await this.manager[unpunishmentTypes[type]](guild, user, db)
+
+    await this.db.removeOne({ guild, user })
+
+    this.intervals.delete(&#x60;${user};${guild}&#x60;)
   }
 
-  /**
-   * Get specific update
-   * @param {String} v Version
-   * @param {Boolean} browser Whether requested from browser
-   */
-  getUpdate (v, browser) {
-    const update &#x3D; this.updates.find(x &#x3D;&gt; x.v &#x3D;&#x3D;&#x3D; v)
-    if (!update) return null
+  async checkTimeouts () {
+    const timeouts &#x3D; await this.db.find({ at: { $lt: Date.now() + 300000 } }).toArray()
 
-    if (browser) {
-      update.points &#x3D; update.points.map(x &#x3D;&gt; {
-        return x.replace(/{t:(.+):(.+)}/g, &#x27;&amp;lt;a href&#x3D;&quot;https://trello.com/c/$1&quot;&gt;$2&amp;lt;/a&gt;&#x27;)
+    timeouts
+      .filter(x &#x3D;&gt; !this.intervals.has(&#x60;${x.user};${x.guild}&#x60;))
+      .forEach(timeout &#x3D;&gt; {
+        this.intervals.set(&#x60;${timeout.user};${timeout.guild}&#x60;,
+          setTimeout(() &#x3D;&gt; {
+            this.execTimeout(timeout.guild, timeout.user, timeout.type)
+          }, timeout.at - Date.now())
+        )
       })
-    }
-
-    update.date &#x3D; new Date(update.date)
-
-    return update
   }
 }
 
-module.exports &#x3D; UpdatesManager
+module.exports &#x3D; TimeoutManager
 </code></pre>
           </article>
         </div>

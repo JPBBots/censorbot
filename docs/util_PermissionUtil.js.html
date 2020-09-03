@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Source: client/UpdatesManager.js</title>
+  <title>Source: util/PermissionUtil.js</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -26,77 +26,21 @@
         </div>
         <div id="jsdoc-main" role="main">
           <header class="page-header">
-            <h1>Source: client/UpdatesManager.js</h1>
+            <h1>Source: util/PermissionUtil.js</h1>
           </header>
           <article>
-            <pre class="prettyprint linenums"><code>/**
- * Used for listing and pushing censor bot updates
- */
-class UpdatesManager {
+            <pre class="prettyprint linenums"><code>module.exports &#x3D; {
   /**
-   * Updates Manager
-   * @param {Client} client Client
+   * Calculate if user has perms
+   * @param {Number} perms User perms
+   * @param {Number} has Required perms
+   * @returns {Boolean}
    */
-  constructor (client) {
-    /**
-     * Client
-     * @type {Client}
-     */
-    this.client &#x3D; client
-
-    /**
-     * Updates
-     * @type {Array.&amp;lt;Object&gt;}
-     */
-    this.updates &#x3D; []
-
-    this.load()
-  }
-
-  /**
-   * (Re)load updates
-   */
-  load () {
-    delete require.cache[require.resolve(&#x27;./Updates.json&#x27;)]
-
-    this.updates &#x3D; require(&#x27;./Updates.json&#x27;)
-  }
-
-  /**
-   * List updates
-   */
-  list () {
-    return this.updates.map(x &#x3D;&gt; {
-      return {
-        v: x.v,
-        desc: x.desc,
-        date: new Date(x.date)
-      }
-    })
-  }
-
-  /**
-   * Get specific update
-   * @param {String} v Version
-   * @param {Boolean} browser Whether requested from browser
-   */
-  getUpdate (v, browser) {
-    const update &#x3D; this.updates.find(x &#x3D;&gt; x.v &#x3D;&#x3D;&#x3D; v)
-    if (!update) return null
-
-    if (browser) {
-      update.points &#x3D; update.points.map(x &#x3D;&gt; {
-        return x.replace(/{t:(.+):(.+)}/g, &#x27;&amp;lt;a href&#x3D;&quot;https://trello.com/c/$1&quot;&gt;$2&amp;lt;/a&gt;&#x27;)
-      })
-    }
-
-    update.date &#x3D; new Date(update.date)
-
-    return update
+  hasPerms (perms, has) {
+    if ((perms &amp;amp; 0x000008) !&#x3D;&#x3D; 0) return true // admin
+    if ((perms &amp;amp; has) !&#x3D;&#x3D; 0) return true // has perms
   }
 }
-
-module.exports &#x3D; UpdatesManager
 </code></pre>
           </article>
         </div>
