@@ -111,6 +111,7 @@ class TicketManager {
         .title(`Ticket was denied (${ticket.id})`)
         .description(ticket.word)
         .field('Admin', `<@${admin.id}> (${admin.username}#${admin.discriminator})`)
+        .footer('Reminder that you can always add words to your uncensor list to stop it in your server specifically.')
         .timestamp()
     )
 

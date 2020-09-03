@@ -74,6 +74,7 @@ module.exports = function (r) {
       new Embed()
         .title('After further review, your ticket was denied.')
         .description(req.ticket.id)
+        .footer('Reminder that you can always add words to your uncensor list to stop it in your server specifically.')
     )
 
     await this.db.collection('tickets').removeOne({ id: req.ticket.id })
