@@ -41,7 +41,7 @@ const constants = {
   currentVersion: 7,
   allowedFilters: ['en', 'es', 'off', 'ru', 'de'],
   punishmentTypes: [0, 1, 2, 3],
-  webhookReplaces: [0, 1],
+  webhookReplaces: [0, 1, 2],
   punishmentTimeMax: 5184000000,
   punishmentExpiresMax: 5184000000,
   timedPunishments: [1, 3]

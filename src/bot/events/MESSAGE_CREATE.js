@@ -1,5 +1,10 @@
 const { custom: { lockCommands } } = require('../../settings')
 
+const webhookReplaces = {
+  1: '#',
+  2: '\\*'
+}
+
 module.exports = async function (message) {
   if (!message.guild_id) return
   if (message.author.bot) return
@@ -92,7 +97,7 @@ module.exports = async function (message) {
     if (db.webhook.separate) {
       content = this.filter.surround(content, res.ranges, '||')
 
-      if (db.webhook.replace === 1) content = content.split(/\|\|/g).reduce((a, b) => [(a[0] + (a[1] === 1 ? '#'.repeat(b.length) : b)), (a[1] * -1)], ['', -1])[0]
+      if (db.webhook.replace !== 0) content = content.split(/\|\|/g).reduce((a, b) => [(a[0] + (a[1] === 1 ? webhookReplaces[db.webhook.replace].repeat(b.length) : b)), (a[1] * -1)], ['', -1])[0]
       this.internals.sendAs(message.channel_id, message.author, message.member.nick || message.author.username, `${content}`)
     } else {
       this.internals.sendAs(message.channel_id, message.author, message.member.nick || message.author.username, `Contains Curse:\n||${content}||`)
