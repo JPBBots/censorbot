@@ -39,7 +39,7 @@ const config = {
 }
 
 const constants = {
-  currentVersion: 7,
+  currentVersion: 8,
   allowedFilters: ['en', 'es', 'off', 'ru', 'de'],
   punishmentTypes: [0, 1, 2, 3],
   webhookReplaces: [0, 1, 2],

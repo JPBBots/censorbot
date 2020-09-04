@@ -137,6 +137,10 @@ class Database {
         // falls through
       case 6:
         newObj.nsfw = true
+
+        // falls through
+      case 7:
+        newObj.dm = false
         break
       default:
         break
