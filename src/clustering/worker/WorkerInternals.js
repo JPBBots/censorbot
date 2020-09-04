@@ -37,6 +37,8 @@ class WorkerInternals {
   async event (event, data, resolve) {
     let guild
     let shard
+    let info
+
     switch (event) {
       case 'GUILD_FETCH':
         guild = this.worker.client.guilds.get(data.id)
@@ -136,10 +138,23 @@ class WorkerInternals {
         })
         break
       case 'INFO':
-        resolve({
+        info = {
           id: this.worker.id,
-          usage: process.memoryUsage().heapUsed
-        })
+          usage: process.memoryUsage().heapUsed,
+          stat: ''
+        }
+        switch (this.worker.job.i) {
+          case 0:
+            info.stat = `${this.worker.client.guilds.size.toLocaleString()} servers`
+            break
+          case 1:
+            info.stat = `${await this.worker.client.oauth2.db.find({}).toArray().then(x => x.length.toLocaleString())} users`
+            break
+          case 2:
+            info.stat = `${await this.worker.client.db.find({}).toArray().then(x => x.length.toLocaleString())} punishments`
+            break
+        }
+        resolve(info)
         break
       default:
         break

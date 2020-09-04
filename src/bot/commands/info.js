@@ -6,7 +6,7 @@ exports.run = async function (message, args) {
     .description(`Total: ${(info.reduce((a, b) => a + b.usage, 0) / 1024 / 1024).toFixed(0)}MB`)
 
   info.forEach(x => {
-    embed.field(typeof x.id === 'number' ? `Cluster ${x.id}` : x.id, `${(x.usage / 1024 / 1024).toFixed(0)}MB`, true)
+    embed.field(typeof x.id === 'number' ? `Cluster ${x.id}` : x.id, `${(x.usage / 1024 / 1024).toFixed(0)}MB\n${x.stat}`)
   })
 
   this.invokeCooldown()

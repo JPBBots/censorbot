@@ -6,7 +6,7 @@ module.exports = function (r) {
   })
 
   r.get('/info', async (req, res) => {
-    res.json([{ id: 'master', usage: process.memoryUsage().heapUsed }, ...await this.sendToAll('INFO', {}, true, false)])
+    res.json([{ id: 'master', usage: process.memoryUsage().heapUsed, stat: `${this.master.clusters.size} workers` }, ...await this.sendToAll('INFO', {}, true, false)])
   })
 
   r.post('/eval', async (req, res) => {
