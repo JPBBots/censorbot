@@ -34,7 +34,8 @@ const config = {
   multi: false,
   prefix: '+',
   invites: false,
-  fonts: false
+  fonts: false,
+  dm: false
 }
 
 const constants = {
@@ -142,7 +143,8 @@ const verify = (obj, premium, guild) => {
     ),
     nsfw: checker('nsfw', (v) => typeof v === 'boolean'),
     invites: checker('invites', (v) => typeof v === 'boolean'),
-    fonts: checker('fonts', (v) => typeof v === 'boolean', true)
+    fonts: checker('fonts', (v) => typeof v === 'boolean', true),
+    dm: checker('dm', (v) => typeof v === 'boolean', true)
   }
 }
 
