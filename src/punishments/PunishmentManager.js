@@ -32,33 +32,81 @@ const { punishmentTypes } = require('./punishmentTypes')
  * Punishment Manager
  */
 class PunishmentManager {
+  /**
+   * Punishment Manager
+   * @param {Worker} cluster Cluster Worker
+   */
   constructor (cluster) {
+    /**
+     * Cluster Worker
+     * @type {Worker}
+     */
     this.cluster = cluster
 
+    /**
+     * Config
+     * @type {Object}
+     */
     this.config = config
 
+    /**
+     * HTTP App
+     * @type {PunishmentApp}
+     */
     this.app = new PunishmentApp(this)
+    /**
+     * Timeout Manager
+     * @type {TimeoutManager}
+     */
     this.timeouts = new TimeoutManager(this)
 
+    /**
+     * Database
+     * @type {Database}
+     */
     this.database = null
 
+    /**
+     * Discord Rest
+     * @type {RestManager}
+     */
     this.rest = new RestManager(config.token)
 
+    /**
+     * Logging
+     * @type {Logger}
+     */
     this.logger = new Logger('PUNISH')
   }
 
+  /**
+   * Log
+   * @param  {...any} _ Log Data
+   */
   log (..._) {
     this.logger.log(..._)
   }
 
+  /**
+   * API route
+   * @type {Router}
+   */
   get api () {
     return this.rest.builder()
   }
 
+  /**
+   * Punishment database
+   * @type {MongoCollection}
+   */
   get db () {
     return this.database.collection('punish')
   }
 
+  /**
+   * Start punishment manager
+   * @async
+   */
   async start () {
     this.database = new Database(null, config.db.username, config.db.password)
 
@@ -75,6 +123,14 @@ class PunishmentManager {
     this.log('Started')
   }
 
+  /**
+   * Send a log to the guilds log channel about a punishment
+   * @param {Boolean} positive Whether or not the punishment is positive
+   * @param {Object} db Guild database objecy
+   * @param {Snowflake} user User ID
+   * @param {String} type Type of punishment
+   * @param {?String} description Extra description
+   */
   async sendLog (positive, db, user, type, description) {
     if (!db.log) return
     await this.api
@@ -92,6 +148,12 @@ class PunishmentManager {
       })
   }
 
+  /**
+   * Mute a user
+   * @param {Snowflake} guild Guild ID
+   * @param {Snowflake} user User ID
+   * @param {Object} db Guild DB
+   */
   async mute (guild, user, db) {
     await this.api
       .guilds[guild]
@@ -119,6 +181,12 @@ class PunishmentManager {
     }
   }
 
+  /**
+   * Unmute a user
+   * @param {Snowflake} guild Guild ID
+   * @param {Snowflake} user User ID
+   * @param {Object} db Guild DB
+   */
   async unmute (guild, user, db) {
     await this.api
       .guilds[guild]
@@ -131,6 +199,12 @@ class PunishmentManager {
     await this.sendLog(true, db, user, 'Unmuted', `After ${db.punishment.time / 60000} minutes`)
   }
 
+  /**
+   * Kick a user
+   * @param {Snowflake} guild Guild ID
+   * @param {Snowflake} user User ID
+   * @param {Object} db Guild DB
+   */
   async kick (guild, user, db) {
     await this.api
       .guilds[guild]
@@ -142,6 +216,12 @@ class PunishmentManager {
     await this.sendLog(false, db, user, 'Kicked')
   }
 
+  /**
+   * Ban a user
+   * @param {Snowflake} guild Guild ID
+   * @param {Snowflake} user User ID
+   * @param {Object} db Guild DB
+   */
   async ban (guild, user, db) {
     await this.api
       .guilds[guild]
@@ -168,6 +248,12 @@ class PunishmentManager {
     }
   }
 
+  /**
+   * Unban a user
+   * @param {Snowflake} guild Guild ID
+   * @param {Snowflake} user User ID
+   * @param {Object} db Guild DB
+   */
   async unban (guild, user, db) {
     await this.api
       .guilds[guild]
@@ -179,6 +265,12 @@ class PunishmentManager {
     await this.sendLog(true, db, user, 'Unbanned', `After ${db.punishment.time / 60000} minutes`)
   }
 
+  /**
+   * Punish a user in-stack
+   * @param {Snowflake} guild Guild ID
+   * @param {Snowflake} user User ID
+   * @param {Object} db Guild DB
+   */
   async punish (guild, user, db) {
     if (db.punishment.type === 0) return
 

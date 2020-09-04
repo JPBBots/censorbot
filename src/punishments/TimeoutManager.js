@@ -9,17 +9,43 @@ const { unpunishmentTypes } = require('./punishmentTypes')
  * @property {Number} at Millisecond time to remove mute
  */
 
+/**
+ * Manage unmutes/unbans on timers
+ */
 class TimeoutManager {
+  /**
+   * Timeout Manager
+   * @param {PunishmentManager} manager Manager
+   */
   constructor (manager) {
+    /**
+     * Manager
+     * @type {PunishmentManager}
+     */
     this.manager = manager
 
+    /**
+     * Intervals til unpunish
+     * @type {Collection.<Snowflake, Timeout>}
+     */
     this.intervals = new Collection()
   }
 
+  /**
+   * Timeout Database
+   * @type {MongoCollection}
+   */
   get db () {
     return this.manager.database.collection('timeouts')
   }
 
+  /**
+   * Execute on a timeout to unpunish someone
+   * @param {Snowflake} guild Guild ID
+   * @param {Snowflake} user User ID
+   * @param {PunishmentType} type Type of punishment
+   * @async
+   */
   async execTimeout (guild, user, type) {
     this.intervals.set(`${user};${guild}`, true)
 
@@ -34,6 +60,10 @@ class TimeoutManager {
     this.intervals.delete(`${user};${guild}`)
   }
 
+  /**
+   * Check timeouts in the database and load them into intervals
+   * @async
+   */
   async checkTimeouts () {
     const timeouts = await this.db.find({ at: { $lt: Date.now() + 300000 } }).toArray()
 
