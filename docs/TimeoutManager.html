@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Class: CommandHandler</title>
+  <title>Class: TimeoutManager</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -25,10 +25,10 @@
         <div id="jsdoc-main" role="main">
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
-            <h1><small></small><span class="symbol-name">CommandHandler</span></h1>
-            <p class="source-link">Source: <a href="bot_CommandHandler.js.html#source-line-19">bot/<wbr>CommandHandler.<wbr>js:19</a></p>
+            <h1><small></small><span class="symbol-name">TimeoutManager</span></h1>
+            <p class="source-link">Source: <a href="punishments_TimeoutManager.js.html#source-line-20">punishments/<wbr>TimeoutManager.<wbr>js:20</a></p>
             <div class="symbol-classdesc">
-              <p>Used for taking in message events and running commands</p>
+              <p>Manage unmutes/unbans on timers</p>
             </div>
             <dl class="dl-compact">
             </dl>
@@ -39,21 +39,21 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="CommandHandler.html#client">client</a></dt>
+                    <dt><a href="TimeoutManager.html#db">db</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="CommandHandler.html#commands">commands</a></dt>
+                    <dt><a href="TimeoutManager.html#intervals">intervals</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="CommandHandler.html#cooldowns">cooldowns</a></dt>
+                    <dt><a href="TimeoutManager.html#manager">manager</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -65,20 +65,14 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="CommandHandler.html#event">event(msg)</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="CommandHandler.html#list">list(admin)</a></dt>
+                    <dt><a href="TimeoutManager.html#checkTimeouts">checkTimeouts()</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="CommandHandler.html#load">load()</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="CommandHandler.html#run">run(command, msg, args, prefix)</a></dt>
+                    <dt><a href="TimeoutManager.html#execTimeout">execTimeout(guild, user, type)</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -89,8 +83,8 @@
             </div>
           </section>
           <section>
-            <h2 id="CommandHandler">new&nbsp;<span class="symbol-name">CommandHandler</span><span class="signature"><span class="signature-params">(client)</span></span></h2>
-            <p>Command Handler</p>
+            <h2 id="TimeoutManager">new&nbsp;<span class="symbol-name">TimeoutManager</span><span class="signature"><span class="signature-params">(manager)</span></span></h2>
+            <p>Timeout Manager</p>
             <section>
               <h3>Parameter</h3>
               <table class="jsdoc-details-table">
@@ -105,7 +99,7 @@
                 <tbody>
                   <tr>
                     <td>
-                      <p>client</p>
+                      <p>manager</p>
                     </td>
                     <td>
                       <p>&nbsp;</p>
@@ -114,7 +108,7 @@
                       <p>&nbsp;</p>
                     </td>
                     <td>
-                      <p>Client</p>
+                      <p>Manager</p>
                     </td>
                   </tr>
                 </tbody>
@@ -126,101 +120,32 @@
           <section>
             <h2>Properties</h2>
             <section>
-              <h3 id="client"><span class="symbol-name">client</span><small class="property-type">
-                  &nbsp;<a href="Client.html">Client</a></small></h3>
-              <p>Client</p>
+              <h3 id="db"><span class="symbol-name">db</span><small class="property-type">
+                  &nbsp;MongoCollection</small></h3>
+              <p>Timeout Database</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="commands"><span class="symbol-name">commands</span><small class="property-type">
-                  &nbsp;Object with <a href="Command.html">Command</a> properties</small></h3>
-              <p>Commands</p>
+              <h3 id="intervals"><span class="symbol-name">intervals</span><small class="property-type">
+                  &nbsp;Object with <a href="global.html#Snowflake">Snowflake</a> keys and <a href="global.html#Timeout">Timeout</a> properties</small></h3>
+              <p>Intervals til unpunish</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="cooldowns"><span class="symbol-name">cooldowns</span><small class="property-type">
-                  &nbsp;Object with Number properties</small></h3>
-              <p>Cooldown list</p>
+              <h3 id="manager"><span class="symbol-name">manager</span><small class="property-type">
+                  &nbsp;<a href="PunishmentManager.html">PunishmentManager</a></small></h3>
+              <p>Manager</p>
               <dl class="dl-compact">
               </dl>
             </section>
             <h2>Methods</h2>
             <section>
-              <h3 id="event"><span class="symbol-name">event</span><span class="signature"><span class="signature-params">(msg)</span></span></h3>
-              <p>Handles message event</p>
-              <section>
-                <h4>Parameter</h4>
-                <table class="jsdoc-details-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Optional</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <p>msg</p>
-                      </td>
-                      <td>
-                        <p>Object</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Message</p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </section>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="list"><span class="symbol-name">list</span><span class="signature"><span class="signature-params">(admin)</span>&nbsp;&rarr; <span class="signature-returns"> Array of Object</span></span></h3>
-              <p>List commands</p>
-              <section>
-                <h4>Parameter</h4>
-                <table class="jsdoc-details-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Optional</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <p>admin</p>
-                      </td>
-                      <td>
-                        <p>Boolean</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Whether to show admin commands</p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </section>
-              <dl class="dl-compact">
-                <dt>Returns</dt>
-                <dd>
-                  <p><code>Array of Object</code> Command info's</p>
-                </dd>
-              </dl>
-              <h3 id="load"><span class="symbol-name">load</span><span class="signature"><span class="signature-params">()</span></span></h3>
-              <p>(Re)Loads commands</p>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="checkTimeouts"><span class="symbol-name">checkTimeouts</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Check timeouts in the database and load them into intervals</p>
               <dl class="dl-compact">
               </dl>
               <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
-              <h3 id="run"><span class="symbol-name">run</span><span class="signature"><span class="signature-params">(command, msg, args, prefix)</span></span></h3>
-              <p>Run command</p>
+              <h3 id="execTimeout"><span class="symbol-name">execTimeout</span><span class="signature"><span class="signature-params">(guild, user, type)</span></span></h3>
+              <p>Execute on a timeout to unpunish someone</p>
               <section>
                 <h4>Parameters</h4>
                 <table class="jsdoc-details-table">
@@ -235,58 +160,44 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>command</p>
+                        <p>guild</p>
                       </td>
                       <td>
-                        <p>String</p>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>Command name</p>
+                        <p>Guild ID</p>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <p>msg</p>
+                        <p>user</p>
                       </td>
                       <td>
-                        <p>Object</p>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>Message</p>
+                        <p>User ID</p>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <p>args</p>
+                        <p>type</p>
                       </td>
                       <td>
-                        <p>Array of String</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Command arguments</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>prefix</p>
-                      </td>
-                      <td>
-                        <p>String</p>
+                        <p><a href="global.html#PunishmentType">PunishmentType</a></p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>Prefix used to run</p>
+                        <p>Type of punishment</p>
                       </td>
                     </tr>
                   </tbody>

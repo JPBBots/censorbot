@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Class: ShardManager</title>
+  <title>Class: PunishmentApp</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -25,10 +25,10 @@
         <div id="jsdoc-main" role="main">
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
-            <h1><small></small><span class="symbol-name">ShardManager</span></h1>
-            <p class="source-link">Source: <a href="clustering_master_ShardManager.js.html#source-line-14">clustering/<wbr>master/<wbr>ShardManager.<wbr>js:14</a></p>
+            <h1><small></small><span class="symbol-name">PunishmentApp</span></h1>
+            <p class="source-link">Source: <a href="punishments_PunishmentApp.js.html#source-line-14">punishments/<wbr>PunishmentApp.<wbr>js:14</a></p>
             <div class="symbol-classdesc">
-              <p>Shard manager for taking spawning requests and starting them</p>
+              <p>Punishments express app</p>
             </div>
             <dl class="dl-compact">
             </dl>
@@ -39,24 +39,19 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="ShardManager.html#looping">looping</a></dt>
+                    <dt><a href="PunishmentApp.html#app">app</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="ShardManager.html#master">master</a></dt>
+                    <dt><a href="PunishmentApp.html#manager">manager</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
-                  <dl class="dl-summary-callout">
-                    <dt><a href="ShardManager.html#queue">queue</a></dt>
-                    <dd>
-                    </dd>
-                  </dl>
                 </div>
               </div>
             </div>
@@ -65,7 +60,7 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="ShardManager.html#addShard">addShard(shard)</a></dt>
+                    <dt><a href="PunishmentApp.html#setup">setup()</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -78,8 +73,8 @@
             </div>
           </section>
           <section>
-            <h2 id="ShardManager">new&nbsp;<span class="symbol-name">ShardManager</span><span class="signature"><span class="signature-params">(master)</span></span></h2>
-            <p>Shard Master</p>
+            <h2 id="PunishmentApp">new&nbsp;<span class="symbol-name">PunishmentApp</span><span class="signature"><span class="signature-params">(manager)</span></span></h2>
+            <p>Punishment App</p>
             <section>
               <h3>Parameter</h3>
               <table class="jsdoc-details-table">
@@ -94,7 +89,7 @@
                 <tbody>
                   <tr>
                     <td>
-                      <p>master</p>
+                      <p>manager</p>
                     </td>
                     <td>
                       <p>&nbsp;</p>
@@ -103,7 +98,7 @@
                       <p>&nbsp;</p>
                     </td>
                     <td>
-                      <p>Master</p>
+                      <p>Managet</p>
                     </td>
                   </tr>
                 </tbody>
@@ -115,56 +110,26 @@
           <section>
             <h2>Properties</h2>
             <section>
-              <h3 id="looping"><span class="symbol-name">looping</span><small class="property-type">
-                  &nbsp;Boolean</small></h3>
-              <p>Whether or not sharder is in the process of looping</p>
+              <h3 id="app"><span class="symbol-name">app</span><small class="property-type">
+                  &nbsp;ExpressApp</small></h3>
+              <p>Express App</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="master"><span class="symbol-name">master</span><small class="property-type">
-                  &nbsp;<a href="Master.html">Master</a></small></h3>
-              <p>Master</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="queue"><span class="symbol-name">queue</span><small class="property-type">
-                  &nbsp;Object with Number keys and Number properties</small></h3>
-              <p>Shard queue</p>
+              <h3 id="manager"><span class="symbol-name">manager</span><small class="property-type">
+                  &nbsp;<a href="Manager.html">Manager</a></small></h3>
+              <p>Manager</p>
               <dl class="dl-compact">
               </dl>
             </section>
             <h2>Method</h2>
             <section>
-              <h3 id="addShard"><span class="symbol-name">addShard</span><span class="signature"><span class="signature-params">(shard)</span></span></h3>
-              <p>Add shard spawn to queue</p>
-              <section>
-                <h4>Parameter</h4>
-                <table class="jsdoc-details-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Optional</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <p>shard</p>
-                      </td>
-                      <td>
-                        <p>Number</p>
-                      </td>
-                      <td>
-                        <p>&nbsp;</p>
-                      </td>
-                      <td>
-                        <p>Shard to spawn</p>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </section>
+              <h3 id="setup"><span class="symbol-name">setup</span><span class="signature"><span class="signature-params">()</span>&nbsp;&rarr; <span class="signature-returns"> Promise containing undefined</span></span></h3>
+              <p>Setup app</p>
               <dl class="dl-compact">
+                <dt>Returns</dt>
+                <dd>
+                  <p><code>Promise containing undefined</code> Resolved when app is listening</p>
+                </dd>
               </dl>
             </section>
           </section>

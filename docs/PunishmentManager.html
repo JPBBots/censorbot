@@ -26,7 +26,7 @@
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
             <h1><small></small><span class="symbol-name">PunishmentManager</span></h1>
-            <p class="source-link">Source: <a href="punishments_PunishmentManager.js.html#source-line-35">punishments/<wbr>PunishmentManager.<wbr>js:35</a></p>
+            <p class="source-link">Source: <a href="punishments_PunishmentManager.js.html#source-line-39">punishments/<wbr>PunishmentManager.<wbr>js:39</a></p>
             <div class="symbol-classdesc">
               <p>Punishment Manager</p>
             </div>
@@ -34,13 +34,684 @@
             </dl>
           </header>
           <section id="summary">
+            <div class="summary-callout">
+              <h2 class="summary-callout-heading">Properties</h2>
+              <div class="summary-content">
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="PunishmentManager.html#api">api</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="PunishmentManager.html#app">app</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="PunishmentManager.html#cluster">cluster</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="PunishmentManager.html#config">config</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="PunishmentManager.html#database">database</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="PunishmentManager.html#db">db</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="PunishmentManager.html#logger">logger</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="PunishmentManager.html#rest">rest</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="PunishmentManager.html#timeouts">timeouts</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+            <div class="summary-callout">
+              <h2 class="summary-callout-heading">Methods</h2>
+              <div class="summary-content">
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="PunishmentManager.html#ban">ban(guild, user, db)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="PunishmentManager.html#kick">kick(guild, user, db)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="PunishmentManager.html#log">log(.<wbr>.<wbr>.<wbr>_)</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="PunishmentManager.html#mute">mute(guild, user, db)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="PunishmentManager.html#punish">punish(guild, user, db)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="PunishmentManager.html#sendLog">sendLog(positive, db, user, type, description)</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="summary-column">
+                  <dl class="dl-summary-callout">
+                    <dt><a href="PunishmentManager.html#start">start()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="PunishmentManager.html#unban">unban(guild, user, db)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="PunishmentManager.html#unmute">unmute(guild, user, db)</a></dt>
+                    <dd>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
           </section>
           <section>
-            <h2 id="PunishmentManager">new&nbsp;<span class="symbol-name">PunishmentManager</span><span class="signature"><span class="signature-params">()</span></span></h2>
+            <h2 id="PunishmentManager">new&nbsp;<span class="symbol-name">PunishmentManager</span><span class="signature"><span class="signature-params">(cluster)</span></span></h2>
+            <p>Punishment Manager</p>
+            <section>
+              <h3>Parameter</h3>
+              <table class="jsdoc-details-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Optional</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <p>cluster</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Cluster Worker</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
             <dl class="dl-compact">
             </dl>
           </section>
           <section>
+            <h2>Properties</h2>
+            <section>
+              <h3 id="api"><span class="symbol-name">api</span><small class="property-type">
+                  &nbsp;Router</small></h3>
+              <p>API route</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="app"><span class="symbol-name">app</span><small class="property-type">
+                  &nbsp;<a href="PunishmentApp.html">PunishmentApp</a></small></h3>
+              <p>HTTP App</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="cluster"><span class="symbol-name">cluster</span><small class="property-type">
+                  &nbsp;<a href="Worker.html">Worker</a></small></h3>
+              <p>Cluster Worker</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="config"><span class="symbol-name">config</span><small class="property-type">
+                  &nbsp;Object</small></h3>
+              <p>Config</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="database"><span class="symbol-name">database</span><small class="property-type">
+                  &nbsp;<a href="Database.html">Database</a></small></h3>
+              <p>Database</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="db"><span class="symbol-name">db</span><small class="property-type">
+                  &nbsp;MongoCollection</small></h3>
+              <p>Punishment database</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="logger"><span class="symbol-name">logger</span><small class="property-type">
+                  &nbsp;<a href="Logger.html">Logger</a></small></h3>
+              <p>Logging</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="rest"><span class="symbol-name">rest</span><small class="property-type">
+                  &nbsp;RestManager</small></h3>
+              <p>Discord Rest</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="timeouts"><span class="symbol-name">timeouts</span><small class="property-type">
+                  &nbsp;<a href="TimeoutManager.html">TimeoutManager</a></small></h3>
+              <p>Timeout Manager</p>
+              <dl class="dl-compact">
+              </dl>
+            </section>
+            <h2>Methods</h2>
+            <section>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="ban"><span class="symbol-name">ban</span><span class="signature"><span class="signature-params">(guild, user, db)</span></span></h3>
+              <p>Ban a user</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>guild</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>user</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>db</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild DB</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="kick"><span class="symbol-name">kick</span><span class="signature"><span class="signature-params">(guild, user, db)</span></span></h3>
+              <p>Kick a user</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>guild</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>user</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>db</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild DB</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="log"><span class="symbol-name">log</span><span class="signature"><span class="signature-params">(..._)</span></span></h3>
+              <p>Log</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>_</p>
+                      </td>
+                      <td>
+                        <p>any</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Log Data</p>
+                        <p>Value can be repeated.</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="mute"><span class="symbol-name">mute</span><span class="signature"><span class="signature-params">(guild, user, db)</span></span></h3>
+              <p>Mute a user</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>guild</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>user</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>db</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild DB</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="punish"><span class="symbol-name">punish</span><span class="signature"><span class="signature-params">(guild, user, db)</span></span></h3>
+              <p>Punish a user in-stack</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>guild</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>user</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>db</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild DB</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="sendLog"><span class="symbol-name">sendLog</span><span class="signature"><span class="signature-params">(positive, db, user, type, description)</span></span></h3>
+              <p>Send a log to the guilds log channel about a punishment</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>positive</p>
+                      </td>
+                      <td>
+                        <p>Boolean</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Whether or not the punishment is positive</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>db</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild database objecy</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>user</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>type</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Type of punishment</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>description</p>
+                      </td>
+                      <td>
+                        <p>String</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Extra description</p>
+                        <p>Value can be null.</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="start"><span class="symbol-name">start</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Start punishment manager</p>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="unban"><span class="symbol-name">unban</span><span class="signature"><span class="signature-params">(guild, user, db)</span></span></h3>
+              <p>Unban a user</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>guild</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>user</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>db</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild DB</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="unmute"><span class="symbol-name">unmute</span><span class="signature"><span class="signature-params">(guild, user, db)</span></span></h3>
+              <p>Unmute a user</p>
+              <section>
+                <h4>Parameters</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>guild</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>user</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>User ID</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p>db</p>
+                      </td>
+                      <td>
+                        <p>Object</p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>Guild DB</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
+            </section>
           </section>
         </div>
       </div>
@@ -50,7 +721,7 @@
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on September 3, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on September 4, 2020.
       </p>
     </div>
   </footer>

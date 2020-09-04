@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.3">
   <meta charset="utf-8">
-  <title>Source: filter/JPBExp.js</title>
+  <title>Source: punishments/PunishmentApp.js</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -26,49 +26,54 @@
         </div>
         <div id="jsdoc-main" role="main">
           <header class="page-header">
-            <h1>Source: filter/JPBExp.js</h1>
+            <h1>Source: punishments/PunishmentApp.js</h1>
           </header>
           <article>
-            <pre class="prettyprint linenums"><code>/**
- * RegExp which takes an array of uncensored parts to use in .test
- * @extends RegExp
+            <pre class="prettyprint linenums"><code>const Express &#x3D; require(&#x27;express&#x27;)
+const { punishments: punishPort } &#x3D; require(&#x27;../ports&#x27;)
+
+const LoadRoutes &#x3D; require(&#x27;../util/LoadRoutes&#x27;)
+
+/**
+ * Punishments express app
  */
-class JPBExp extends RegExp {
+class PunishmentApp {
   /**
-   * JPBExp
-   * @param {String} regex RegEx Statement
-   * @param {Array.&amp;lt;String&gt;} uncensor Bits to uncensor
+   * Punishment App
+   * @param {PunishmentManager} manager Managet
    */
-  constructor (regex, uncensor &#x3D; []) {
-    super(regex)
+  constructor (manager) {
+    /**
+     * Manager
+     * @type {Manager}
+     */
+    this.manager &#x3D; manager
 
-    this._text &#x3D; regex
-
-    this.uncensor &#x3D; uncensor.map(x &#x3D;&gt; new RegExp(x))
+    /**
+     * Express App
+     * @type {ExpressApp}
+     */
+    this.app &#x3D; null
   }
 
   /**
-   * Test
-   * @param {String} str String to test against
-   * @param {?Array.&amp;lt;String&gt;} uncensor Extra uncensors
-   * @returns {Boolean} Whether it matches or not
+   * Setup app
+   * @returns {Promise.&amp;lt;undefined&gt;} Resolved when app is listening
    */
-  test (str, uncensor &#x3D; []) {
-    if (!str.match(this)) return false
+  setup () {
+    return new Promise(resolve &#x3D;&gt; {
+      this.app &#x3D; Express()
 
-    if ([...this.uncensor,
-      ...uncensor.filter(x &#x3D;&gt; x.match(this)).map(x &#x3D;&gt; new RegExp(x))]
-      .some(x &#x3D;&gt; str.match(x))) return false
+      LoadRoutes(this.manager, this.app, __dirname, &#x27;./routes&#x27;)
 
-    return true
-  }
-
-  toJSON () {
-    return this.toString()
+      this.app.listen(punishPort, () &#x3D;&gt; {
+        resolve()
+      })
+    })
   }
 }
 
-module.exports &#x3D; JPBExp
+module.exports &#x3D; PunishmentApp
 </code></pre>
           </article>
         </div>
