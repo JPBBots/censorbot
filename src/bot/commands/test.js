@@ -1,5 +1,5 @@
 exports.run = async function (message, args) {
-  const db = await this.client.db.config(message.guild_id)
+  const db = await this.db
 
   const res = this.client.filter.test(args.join(' '), db.filters, db.filter, db.uncensor)
   this.send(

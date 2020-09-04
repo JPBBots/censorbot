@@ -1,5 +1,4 @@
 exports.run = function (message, args) {
-  this.delete()
   let helpstring = ''
   const cmds = this.client.commands.list()
   for (var i = 0; i < cmds.length; i++) {

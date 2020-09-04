@@ -14,7 +14,7 @@ module.exports = async function (message) {
   if (this.config.prefix.some(x => x === message.content + ' ')) return this.interface.send(message.channel_id, `Current prefix is: \`${db.prefix || 'none'}\``)
 
   if (this.commands && !(lockCommands && message.author.id !== this.config.owner)) {
-    const cmd = this.commands.event(message, db.prefix)
+    const cmd = this.commands.event(message, db)
 
     if (this.config.deleteCommands.includes(cmd)) return this.interface.delete(message.channel_id, message.id).catch(() => {})
   }

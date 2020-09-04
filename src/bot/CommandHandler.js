@@ -58,19 +58,20 @@ class CommandHandler {
   /**
    * Handles message event
    * @param {Object} msg Message
+   * @param {Object} db Guild DB
    */
-  event (msg, pre) {
+  event (msg, db) {
     const channel = this.client.channels.get(msg.channel_id)
     if (!channel || msg.type !== 0 || channel.type !== 0 || msg.author.bot) return
 
-    const prefix = [...this.client.config.prefix, ...(pre ? [pre] : [])].find(x => msg.content.startsWith(x))
+    const prefix = [...this.client.config.prefix, ...(db.prefix ? [db.prefix] : [])].find(x => msg.content.startsWith(x))
     if (!prefix) return
 
     const args = msg.content.slice(prefix.length).split(/\s/)
     const command = args.shift()
 
     try {
-      this.run(command, msg, args, prefix)
+      this.run(command, msg, args, prefix, db)
     } catch (err) {
       console.error(err)
     }
@@ -84,8 +85,9 @@ class CommandHandler {
    * @param {Object} msg Message
    * @param {Array.<String>} args Command arguments
    * @param {String} prefix Prefix used to run
+   * @param {Object} db Database object
    */
-  async run (command, msg, args, prefix) {
+  async run (command, msg, args, prefix, db) {
     const cmd = this.commands.find(x => [x.info.name, ...(x.info.aliases || [])].includes(command.toLowerCase()))
     if (!cmd) return
 
@@ -94,7 +96,7 @@ class CommandHandler {
     const cooldown = this.cooldowns.get(`${msg.author.id}${cmd.info.name}`)
     if (cooldown) return this.client.interface.send(msg.channel_id, `Please wait **${moment.duration(cooldown - Date.now()).format('m[m] s[s]')}** before running this command again.`)
 
-    cmd.run.bind(new Command(this, msg, cmd))(msg, args, prefix)
+    cmd.run.bind(new Command(this, msg, cmd, db))(msg, args, prefix)
 
     this.client.cluster.internal.sendWebhook('commands', this.client.embed
       .title(`Command ran: ${command}`)

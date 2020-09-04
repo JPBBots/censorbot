@@ -7,8 +7,9 @@ class Command {
    * @param {CommandHandler} CommandHanlder Command Handler
    * @param {Object} message Message object
    * @param {Cmd} cmd Command object
+   * @param {Object} db Database object2
    */
-  constructor (CommandHandler, message, cmd) {
+  constructor (CommandHandler, message, cmd, db) {
     /**
      * Client
      * @type {Client}
@@ -32,6 +33,12 @@ class Command {
      * @type {Object}
      */
     this.msg = message
+
+    /**
+     * Database object
+     * @type {Object}
+     */
+    this.db = db
   }
 
   /**
@@ -72,6 +79,13 @@ class Command {
    * @returns {Promise.<Object>} Message object
    */
   send (content) {
+    if (this.db.dm) {
+      return this.client.interface.dm(this.msg.author.id, content)
+        .then((x) => {
+          this.client.interface.addReaction(this.msg.channel_id, this.msg.id, x.code === 50007 ? '❌' : '📬')
+          return x
+        })
+    }
     return this.client.interface.send(this.msg.channel_id, content)
   }
 
