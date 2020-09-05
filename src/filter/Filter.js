@@ -26,6 +26,7 @@ function inRange (x, min, max) {
 }
 
 const linkRegex = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/
+const emailRegex = /^([a-zA-Z0-9_\-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/g
 
 /**
  * Filter for testing against words
@@ -102,7 +103,7 @@ class Filter {
     content = content.split(' ')
 
     for (const i in content) {
-      content[i] = content[i].replace(linkRegex, '$3')
+      content[i] = content[i].replace(emailRegex, '$1 $2 $6').replace(linkRegex, '$3')
     }
 
     content = content.join(' ')
