@@ -157,7 +157,7 @@ class OAuth2 {
     if (!guilds || guilds.constructor !== Array) return false
 
     return guilds
-      .filter(x => x.owner || PermissionUtil.hasPerms(x.permissions, this.config.dashOptions.requiredPermissionBit))
+      .filter(x => x.owner || PermissionUtil.has(x.permissions, this.config.dashOptions.requiredPermission))
       .map(x => ({ n: x.name, i: x.id, a: x.icon }))
   }
 
