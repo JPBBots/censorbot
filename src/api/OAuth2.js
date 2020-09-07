@@ -4,6 +4,8 @@ const Cache = require('../util/Cache')
 const encodeJSON = require('../util/encodeJSON')
 const PermissionUtil = require('../util/PermissionUtil')
 
+const { custom: { allowedGuilds } } = require('../settings')
+
 const Crypto = require('crypto')
 
 /**
@@ -145,7 +147,7 @@ class OAuth2 {
    * @returns {Array.<CachedGuild>} Array of fetched guilds
    */
   async _guilds (bearer) {
-    const guilds = await this.api
+    let guilds = await this.api
       .users['@me']
       .guilds
       .get({
@@ -156,9 +158,13 @@ class OAuth2 {
 
     if (!guilds || guilds.constructor !== Array) return false
 
-    return guilds
+    guilds = guilds
       .filter(x => x.owner || PermissionUtil.has(x.permissions, this.config.dashOptions.requiredPermission))
       .map(x => ({ n: x.name, i: x.id, a: x.icon }))
+
+    if (allowedGuilds) guilds = guilds.filter(x => allowedGuilds.includes(x.i))
+
+    return guilds
   }
 
   /**
