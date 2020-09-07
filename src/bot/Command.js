@@ -1,3 +1,5 @@
+const PermissionUtil = require('../util/PermissionUtil')
+
 /**
  * Used for each instance of ran commands for easier interaction and customizable actions
  */
@@ -71,6 +73,10 @@ class Command {
    */
   get channel () {
     return this.client.channels.get(this.msg.channel_id)
+  }
+
+  hasPerms (permissions) {
+    return PermissionUtil.memberHas(this.msg.author.id, this.msg.member, this.guild, permissions)
   }
 
   /**
