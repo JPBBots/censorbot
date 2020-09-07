@@ -21,6 +21,8 @@
 
           if (!guilds) return
 
+          if (guilds.length < 1) return _.setRoot('h1', 'You don\'t have owner or manage server permissions on any servers.')
+
           _.setRoot(guilds.map(guild => 
             _.elm('div', {
               id: guild.i,
