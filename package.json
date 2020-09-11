@@ -7,7 +7,8 @@
     "s": "standard --fix -v",
     "commit": "git add . && echo \"Commit Message:\" && read msg && git commit -m \"$msg\"",
     "push": "git push",
-    "jsdoc": "jsdoc ./ -r -c ./jsdoc.json --verbose -d ./docs"
+    "jsdoc": "jsdoc ./ -r -c ./jsdoc.json --verbose -d ./docs",
+    "log": "docker logs --tail=50 censorbot_prod_1 --follow"
   },
   "repository": {
     "type": "git",
