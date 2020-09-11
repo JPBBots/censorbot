@@ -272,7 +272,7 @@ class PunishmentManager {
    * @param {Object} db Guild DB
    */
   async punish (guild, user, db) {
-    if (db.punishment.type === 0) return
+    if (!db.punishment.type) return
 
     let punish = await this.db.findOne({ guild, user })
 
