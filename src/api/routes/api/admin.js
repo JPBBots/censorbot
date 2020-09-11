@@ -77,6 +77,10 @@ module.exports = function (r) {
         .footer('Reminder that you can always add words to your uncensor list to stop it in your server specifically.')
     )
 
+    await this.interface.send(this.config.channels.ticketDenied,
+      `<@${req.ticket.admin}> ticket of \`\`\`${req.ticket.word}\`\`\` was denied after you approved it.`
+    )
+
     await this.db.collection('tickets').removeOne({ id: req.ticket.id })
 
     res.json({ success: true })

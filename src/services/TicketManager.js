@@ -123,7 +123,7 @@ class TicketManager {
   /**
    * Approve a ticket
    * @param {SmallID} id Ticket ID
-   * @param {Snowflake} admin Admin who approved
+   * @param {Object} admin Admin who approved
    */
   async approve (id, admin) {
     const ticket = await this.db.findOne({ id })
@@ -150,6 +150,7 @@ class TicketManager {
     }, {
       $set: {
         accepted: true,
+        admin: admin.id,
         msg: null
       }
     })
