@@ -55,7 +55,7 @@ module.exports = async function (message) {
     }
     this.multi.set(message.channel_id, multi)
 
-    content = multi.msg.map(x => x.content).join(' ')
+    content = multi.msg.map(x => x.content).join('\n')
   } else {
     content = message.content
   }
