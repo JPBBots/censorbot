@@ -34,7 +34,7 @@
     "moment": "2.24.0",
     "moment-duration-format": "2.3.2",
     "mongodb": "3.5.5",
-    "node-fetch": "2.6.0",
+    "node-fetch": "2.6.1",
     "os-utils": "0.0.14",
     "ws": "7.2.3"
   },
