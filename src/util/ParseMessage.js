@@ -1,7 +1,7 @@
 const Embed = require('../discord/Embed')
 
 module.exports = (content, webhook = false) => {
-  return typeof content === 'string' ? { content: content }
+  const bit = typeof content === 'string' ? { content: content }
     : content instanceof Embed
       ? webhook ? {
         embeds: [content.render()]
@@ -9,4 +9,7 @@ module.exports = (content, webhook = false) => {
         embed: content.render()
       }
       : content
+
+  if (!bit.content) bit.content = ''
+  return bit
 }
