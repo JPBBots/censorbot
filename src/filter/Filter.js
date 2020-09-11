@@ -16,7 +16,7 @@ const converter = {
     .split(',')
 }
 
-const firstShortWords = ['an', 'as', 'us']
+const firstShortWords = ['an', 'as', 'us', 'be']
 const shortWords = ['it', 'at', 'xd']
 
 const GetFilters = require('./filters')
