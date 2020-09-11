@@ -24,6 +24,8 @@ module.exports = function (r) {
     req.guild = await this.cluster.internal.fetchGuild(req.params.guildid)
     if (!req.guild) return res.status(404).json({ error: 'Not In Guild' })
 
+    req.guild.r = req.guild.r.filter(x => x.id !== req.guild.i)
+
     next()
   })
 
