@@ -112,6 +112,15 @@
               84: 'test' // t
             }
             window.addEventListener('keyup', (e) => {
+              if (e.keyCode === 72) {
+                const ticket = document.querySelector('.ticket')
+                if (!ticket) return
+
+                const place = ticket.querySelector('.test').innerText
+
+                navigator.clipboard.writeText(place)
+              }
+
               const key = keys[e.keyCode]
               if (!key) return
 
