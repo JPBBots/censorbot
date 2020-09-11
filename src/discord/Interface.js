@@ -1,6 +1,8 @@
 const ParseMessage = require('../util/ParseMessage')
 const Cache = require('../util/Cache')
 
+const Embed = require('./Embed')
+
 /**
  * Used for interaction with Discord Rest API
  */
@@ -273,6 +275,13 @@ class Interface {
         body: {},
         reason: 'Forcefully Left Guild'
       })
+  }
+
+  get embed () {
+    return new Embed((emb, id) => {
+      console.log(emb)
+      return this.send(id, emb)
+    })
   }
 }
 

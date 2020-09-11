@@ -61,8 +61,8 @@ class Reloader {
         this.client.buckets = new BucketManager(this.client)
         break
       case 'interface':
-        delete require.cache[require.resolve(resolve(__dirname, '../../../lib/Interface'))]
-        const Interface = require(resolve(__dirname, '../../../lib/Interface'))
+        delete require.cache[require.resolve(resolve(__dirname, '../discord/Interface'))]
+        const Interface = require(resolve(__dirname, '../discord/Interface'))
         this.client.interface = new Interface(this.client)
         break
       case 'ch':

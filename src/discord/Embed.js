@@ -38,8 +38,9 @@ const Colors = {
 class Embed {
   /**
    * Creates Embed instance
+   * @param {?Function} sendback Function if send() is used
    */
-  constructor () {
+  constructor (sendback) {
     /**
      * Embed object
      */
@@ -56,6 +57,8 @@ class Embed {
       image: null,
       author: null
     }
+
+    this.sendback = sendback
   }
 
   /**
@@ -186,6 +189,14 @@ class Embed {
    */
   render () {
     return this.obj
+  }
+
+  /**
+   * Sends back
+   * @param {Snowflake} id ID to sendback
+   */
+  send (id) {
+    return this.sendback(this, id)
   }
 }
 
