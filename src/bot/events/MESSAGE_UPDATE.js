@@ -63,11 +63,10 @@ module.exports = async function (message) {
   this.multi.delete(message.channel_id)
 
   if (db.msg.content !== false) {
-    const popMsg = await this.interface.send(message.channel_id,
-      this.embed
-        .color('RED')
-        .description(`<@${message.author.id}> ${db.msg.content || this.config.defaultMsg}`)
-    )
+    const popMsg = await this.interface.embed
+      .description(`<@${message.author.id}> ${db.msg.content || this.config.defaultMsg}`)
+      .send(message.channel_id)
+
     if (popMsg.id) {
       if (db.msg.deleteAfter) {
         setTimeout(() => {
@@ -79,15 +78,14 @@ module.exports = async function (message) {
   }
 
   if (db.log) {
-    this.interface.send(db.log,
-      this.embed
-        .title('Deleted Edited Message')
-        .description(`From <@${message.author.id}> in <#${message.channel_id}>${errMsg ? `\n\nError: ${errMsg}` : ''}`)
-        .field('Message', this.filter.surround(content, res.ranges, '__'), true)
-        .field('Filter(s)', res.filters.map(x => this.filter.filterMasks[x]).join(', '), true)
-        .timestamp()
-        .footer('https://patreon.com/censorbot')
-    )
+    this.interface.embed
+      .title('Deleted Edited Message')
+      .description(`From <@${message.author.id}> in <#${message.channel_id}>${errMsg ? `\n\nError: ${errMsg}` : ''}`)
+      .field('Message', this.filter.surround(content, res.ranges, '__'), true)
+      .field('Filter(s)', res.filters.map(x => this.filter.filterMasks[x]).join(', '), true)
+      .timestamp()
+      .footer('https://patreon.com/censorbot')
+      .send(db.log)
   }
 
   this.punishments.guilds[message.guild_id].punish(message.author.id).post()

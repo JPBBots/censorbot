@@ -53,6 +53,7 @@ class Interface {
    * @returns {Promise.<Object>} Message object
    */
   async send (channel, content) {
+    if (this.client && this.client.config) channel = this.client.config.channels[channel] || channel
     return this.api
       .channels[channel]
       .messages
@@ -277,11 +278,13 @@ class Interface {
       })
   }
 
+  /**
+   * Sendable Embed
+   */
   get embed () {
-    return new Embed((emb, id) => {
-      console.log(emb)
-      return this.send(id, emb)
-    })
+    return new Embed((emb, id, dm) => {
+      return this[dm ? 'dm' : 'send'](id, emb)
+    }).color('RED')
   }
 }
 

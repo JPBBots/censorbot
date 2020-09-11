@@ -34,17 +34,16 @@ module.exports = async function (reaction) {
     .catch(err => err.message)
 
   if (db.log) {
-    this.interface.send(db.log,
-      this.embed
-        .title('Removed Reaction')
-        .description(`User <@${reaction.user_id}> in <#${reaction.channel_id}> on [message](${
-          `https://discord.com/channels/${reaction.guild_id}/${reaction.channel_id}/${reaction.message_id}`
-        }) ${errMsg ? `\n\nError: ${errMsg}` : ''}`)
-        .field('Reaction', content, true)
-        .field('Filter(s)', res.filters.map(x => this.filter.filterMasks[x]).join(', '), true)
-        .timestamp()
-        .footer('https://patreon.com/censorbot')
-    )
+    this.interface.embed
+      .title('Removed Reaction')
+      .description(`User <@${reaction.user_id}> in <#${reaction.channel_id}> on [message](${
+        `https://discord.com/channels/${reaction.guild_id}/${reaction.channel_id}/${reaction.message_id}`
+      }) ${errMsg ? `\n\nError: ${errMsg}` : ''}`)
+      .field('Reaction', content, true)
+      .field('Filter(s)', res.filters.map(x => this.filter.filterMasks[x]).join(', '), true)
+      .timestamp()
+      .footer('https://patreon.com/censorbot')
+      .send(db.log)
   }
 
   this.punishments.guilds[reaction.guild_id].punish(reaction.user_id).post()

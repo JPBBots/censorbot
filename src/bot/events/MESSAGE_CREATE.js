@@ -79,15 +79,14 @@ module.exports = async function (message) {
   }
 
   if (db.log) {
-    this.interface.send(db.log,
-      this.embed
-        .title('Deleted Message')
-        .description(`From <@${message.author.id}> in <#${message.channel_id}>${errMsg ? `\n\nError: ${errMsg}` : ''}`)
-        .field('Message', this.filter.surround(content, res.ranges, '__'), true)
-        .field('Filter(s)', res.filters.map(x => this.filter.filterMasks[x]).join(', '), true)
-        .timestamp()
-        .footer('Mistake? Do +ticket (underlined part)')
-    )
+    this.interface.embed
+      .title('Deleted Message')
+      .description(`From <@${message.author.id}> in <#${message.channel_id}>${errMsg ? `\n\nError: ${errMsg}` : ''}`)
+      .field('Message', this.filter.surround(content, res.ranges, '__'), true)
+      .field('Filter(s)', res.filters.map(x => this.filter.filterMasks[x]).join(', '), true)
+      .timestamp()
+      .footer('Mistake? Do +ticket (underlined part)')
+      .send(db.log)
   }
 
   this.punishments.guilds[message.guild_id].punish(message.author.id).post()

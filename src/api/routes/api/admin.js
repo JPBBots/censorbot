@@ -1,8 +1,6 @@
 const Filter = require('../../../filter/Filter')
 const filter = new Filter()
 
-const Embed = require('../../../discord/Embed')
-
 module.exports = function (r) {
   r.use(async (req, res, next) => {
     let user
@@ -58,11 +56,10 @@ module.exports = function (r) {
 
     this.cluster.internal.reload('filter')
 
-    await this.interface.dm(req.ticket.user,
-      new Embed()
-        .title('Ticket finished')
-        .description(req.ticket.id)
-    )
+    this.interface.embed
+      .title('Ticket finished')
+      .description(req.ticket.id)
+      .dm(req.ticket.user)
 
     await this.db.collection('tickets').removeOne({ id: req.ticket.id })
 
@@ -70,12 +67,11 @@ module.exports = function (r) {
   })
 
   r.delete('/tickets/:id', async (req, res) => {
-    await this.interface.dm(req.ticket.user,
-      new Embed()
-        .title('After further review, your ticket was denied.')
-        .description(req.ticket.id)
-        .footer('Reminder that you can always add words to your uncensor list to stop it in your server specifically.')
-    )
+    await this.interface.embed
+      .title('After further review, your ticket was denied.')
+      .description(req.ticket.id)
+      .footer('Reminder that you can always add words to your uncensor list to stop it in your server specifically.')
+      .dm(req.ticket.user)
 
     await this.interface.send(this.config.channels.ticketDenied,
       `<@${req.ticket.admin}> ticket of \`\`\`${req.ticket.word}\`\`\` was denied after you approved it.`

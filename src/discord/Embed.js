@@ -196,7 +196,15 @@ class Embed {
    * @param {Snowflake} id ID to sendback
    */
   send (id) {
-    return this.sendback(this, id)
+    return this.sendback(this, id, false)
+  }
+
+  /**
+   * DMs Send back
+   * @param {Snowflake} id ID to sendback
+   */
+  dm (id) {
+    return this.sendback(this, id, true)
   }
 }
 

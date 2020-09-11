@@ -27,15 +27,14 @@ module.exports = async function (member) {
     .catch(err => err.message)
 
   if (db.log) {
-    this.interface.send(db.log,
-      this.embed
-        .title('Removed Nickname')
-        .description(`User <@${member.user.id}>${errMsg ? `\n\nError: ${errMsg}` : ''}`)
-        .field('Nickname', this.filter.surround(content, res.ranges, '__'), true)
-        .field('Filter(s)', res.filters.map(x => this.filter.filterMasks[x]).join(', '), true)
-        .timestamp()
-        .footer('https://patreon.com/censorbot')
-    )
+    this.interface.embed
+      .title('Removed Nickname')
+      .description(`User <@${member.user.id}>${errMsg ? `\n\nError: ${errMsg}` : ''}`)
+      .field('Nickname', this.filter.surround(content, res.ranges, '__'), true)
+      .field('Filter(s)', res.filters.map(x => this.filter.filterMasks[x]).join(', '), true)
+      .timestamp()
+      .footer('https://patreon.com/censorbot')
+      .send(db.log)
   }
 
   this.punishments.guilds[member.guild_id].punish(member.user.id).post()

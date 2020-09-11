@@ -74,12 +74,12 @@ class TicketManager {
     const tickets = await this.db.find({}).toArray()
     const id = GenerateID(tickets.map(x => x.id))
 
-    const msg = await this.client.interface.send(this.client.config.channels.ticket,
-      this.client.embed
-        .title(`Ticket (${id})`)
-        .description(`<@${user}> \`\`\`${word}\`\`\``)
-        .timestamp()
-    )
+    const msg = await this.client.interface.embed
+      .title(`Ticket (${id})`)
+      .description(`<@${user}> \`\`\`${word}\`\`\``)
+      .timestamp()
+      .send('ticket')
+
     this.client.interface.addReaction(this.client.config.channels.ticket, msg.id, this.client.config.emojis.yes)
     this.client.interface.addReaction(this.client.config.channels.ticket, msg.id, this.client.config.emojis.no)
 
@@ -99,21 +99,19 @@ class TicketManager {
   async deny (id, admin) {
     const ticket = await this.db.findOne({ id })
 
-    this.client.interface.send(this.client.config.channels.ticketLog,
-      this.client.embed
-        .title(`Denied (${id})`)
-        .description(`<@${ticket.user}> denied by <@${admin.id}> \`\`\`${ticket.word}\`\`\``)
-        .timestamp()
-    )
+    this.client.interface.embed
+      .title(`Denied (${id})`)
+      .description(`<@${ticket.user}> denied by <@${admin.id}> \`\`\`${ticket.word}\`\`\``)
+      .timestamp()
+      .send('ticketLog')
 
-    this.client.interface.dm(ticket.user,
-      this.client.embed
-        .title(`Ticket was denied (${ticket.id})`)
-        .description(ticket.word)
-        .field('Admin', `<@${admin.id}> (${admin.username}#${admin.discriminator})`)
-        .footer('Reminder that you can always add words to your uncensor list to stop it in your server specifically.')
-        .timestamp()
-    )
+    this.client.interface.embed
+      .title(`Ticket was denied (${ticket.id})`)
+      .description(ticket.word)
+      .field('Admin', `<@${admin.id}> (${admin.username}#${admin.discriminator})`)
+      .footer('Reminder that you can always add words to your uncensor list to stop it in your server specifically.')
+      .timestamp()
+      .dm(ticket.user)
 
     this.client.interface.delete(this.client.config.channels.ticket, ticket.msg)
 
@@ -128,20 +126,18 @@ class TicketManager {
   async approve (id, admin) {
     const ticket = await this.db.findOne({ id })
 
-    this.client.interface.send(this.client.config.channels.ticketLog,
-      this.client.embed
-        .title(`Accepted (${id})`)
-        .description(`<@${ticket.user}> accepted by <@${admin.id}> \`\`\`${ticket.word}\`\`\``)
-        .timestamp()
-    )
+    this.client.interface.embed
+      .title(`Accepted (${id})`)
+      .description(`<@${ticket.user}> accepted by <@${admin.id}> \`\`\`${ticket.word}\`\`\``)
+      .timestamp()
+      .send('ticketLog')
 
-    this.client.interface.dm(ticket.user,
-      this.client.embed
-        .title(`Ticket was accepted (${ticket.id})`)
-        .description(ticket.word)
-        .footer('Please wait as we need to add the bypass, you will receive a DM once the word has been added.')
-        .timestamp()
-    )
+    this.client.interface.embed
+      .title(`Ticket was accepted (${ticket.id})`)
+      .description(ticket.word)
+      .footer('Please wait as we need to add the bypass, you will receive a DM once the word has been added.')
+      .timestamp()
+      .dm(ticket.user)
 
     this.client.interface.delete(this.client.config.channels.ticket, ticket.msg)
 

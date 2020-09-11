@@ -102,11 +102,10 @@ class BucketManager {
 
     this.buckets.set(channel + user, true)
 
-    const popMsg = await this.client.interface.send(channel,
-      this.client.embed
-        .color('RED')
-        .description(`<@${user}> ${db.msg.content || this.client.config.defaultMsg}`)
-    )
+    const popMsg = await this.client.interface.embed
+      .description(`<@${user}> ${db.msg.content || this.client.config.defaultMsg}`)
+      .send(channel)
+
     if (popMsg.id && db.msg.deleteAfter) {
       setTimeout(() => {
         this.client.interface.delete(channel, popMsg.id)
