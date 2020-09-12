@@ -2,9 +2,9 @@ const scripts = {
   membercount: {
     desc: 'Get total member count',
     run: async (client, message, args) => {
-      return client.cluster.internal
+      return `${await client.cluster.internal
         .eval('client.guilds.reduce((a,b) => a+b.member_count, 0)')
-        .then(x => x.reduce((a, b) => a + b, 0)).then(x => x.toLocaleString())
+        .then(x => x.reduce((a, b) => a + b, 0)).then(x => x.toLocaleString())} users`
     }
   },
   cleanuncensor: {
