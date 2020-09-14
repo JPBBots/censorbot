@@ -54,7 +54,18 @@ class Filter {
       invites: 'Invites'
     }
 
+    this.avgNumber = 0
+    this.avgCounter = 0
+
     this._loadFilters()
+  }
+
+  /**
+   * Average Filter Response Time
+   * @type {Number}
+   */
+  get avg () {
+    return this.avgNumber / this.avgCounter
   }
 
   _loadFilters () {
@@ -230,6 +241,8 @@ class Filter {
    * @returns {FilterResponse}
    */
   test (text, filters = ['en', 'es', 'off'], server = [], uncensor = [], removeFonts) {
+    const startTime = process.hrtime()
+
     const content = this.resolve(text, removeFonts)
 
     const res = {
@@ -273,6 +286,11 @@ class Filter {
     }
 
     res.ranges = res.ranges.filter(x => x).reverse()
+
+    res.time = process.hrtime(startTime)[1] / 1000000
+
+    this.avgCounter++
+    this.avgNumber += res.time
 
     return res
   }
