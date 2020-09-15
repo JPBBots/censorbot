@@ -1,4 +1,12 @@
 const scripts = {
+  filtertime: {
+    desc: 'Get average filter time',
+    run: async (client) => {
+      const data = await client.cluster.internal.eval('[client.filter.avg, client.filter.avgCounter]')
+      const avgs = data.map(x => x[0])
+      return `${(avgs.reduce((a, b) => a + b, 0) / avgs.length).toFixed(3)}ms average time over the last ${data.map(x => x[1]).reduce((a, b) => a + b, 0).toLocaleString()} messages`
+    }
+  },
   membercount: {
     desc: 'Get total member count',
     run: async (client, message, args) => {
