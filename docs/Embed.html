@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <meta name="generator" content="JSDoc 3.6.3">
+  <meta name="generator" content="JSDoc 3.6.6">
   <meta charset="utf-8">
   <title>Class: Embed</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
@@ -26,7 +26,7 @@
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
             <h1><small></small><span class="symbol-name">Embed</span></h1>
-            <p class="source-link">Source: <a href="discord_Embed.js.html#source-line-42">discord/<wbr>Embed.<wbr>js:42</a></p>
+            <p class="source-link">Source: <a href="discord_Embed.js.html#source-line-38">discord/<wbr>Embed.<wbr>js:38</a></p>
             <div class="symbol-classdesc">
               <p>Embed object</p>
             </div>
@@ -64,13 +64,16 @@
                     <dt><a href="Embed.html#description">description(desc)</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="Embed.html#field">field(name, value, inline)</a></dt>
+                    <dt><a href="Embed.html#dm">dm(id)</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
+                    <dt><a href="Embed.html#field">field(name, value, inline)</a></dt>
+                    <dd>
+                    </dd>
                     <dt><a href="Embed.html#footer">footer(text, icon)</a></dt>
                     <dd>
                     </dd>
@@ -80,13 +83,16 @@
                     <dt><a href="Embed.html#render">render()</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="Embed.html#thumbnail">thumbnail(url, width, height)</a></dt>
-                    <dd>
-                    </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
+                    <dt><a href="Embed.html#send">send(id)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="Embed.html#thumbnail">thumbnail(url, width, height)</a></dt>
+                    <dd>
+                    </dd>
                     <dt><a href="Embed.html#timestamp">timestamp(date)</a></dt>
                     <dd>
                     </dd>
@@ -99,8 +105,38 @@
             </div>
           </section>
           <section>
-            <h2 id="Embed">new&nbsp;<span class="symbol-name">Embed</span><span class="signature"><span class="signature-params">()</span></span></h2>
+            <h2 id="Embed">new&nbsp;<span class="symbol-name">Embed</span><span class="signature"><span class="signature-params">(sendback)</span></span></h2>
             <p>Creates Embed instance</p>
+            <section>
+              <h3>Parameter</h3>
+              <table class="jsdoc-details-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Optional</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <p>sendback</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>&nbsp;</p>
+                    </td>
+                    <td>
+                      <p>Function if send() is used</p>
+                      <p>Value can be null.</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
             <dl class="dl-compact">
             </dl>
           </section>
@@ -251,6 +287,39 @@
                 <dd>
                   <p><code><a href="Embed.html">Embed</a></code> This embed instance</p>
                 </dd>
+              </dl>
+              <h3 id="dm"><span class="symbol-name">dm</span><span class="signature"><span class="signature-params">(id)</span></span></h3>
+              <p>DMs Send back</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>ID to sendback</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
               </dl>
               <h3 id="field"><span class="symbol-name">field</span><span class="signature"><span class="signature-params">(name, value, inline)</span>&nbsp;&rarr; <span class="signature-returns"> <a href="Embed.html">Embed</a></span></span></h3>
               <p>Adds a field</p>
@@ -441,6 +510,39 @@
                   <p><code>Object</code> </p>
                 </dd>
               </dl>
+              <h3 id="send"><span class="symbol-name">send</span><span class="signature"><span class="signature-params">(id)</span></span></h3>
+              <p>Sends back</p>
+              <section>
+                <h4>Parameter</h4>
+                <table class="jsdoc-details-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Optional</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p>id</p>
+                      </td>
+                      <td>
+                        <p><a href="global.html#Snowflake">Snowflake</a></p>
+                      </td>
+                      <td>
+                        <p>&nbsp;</p>
+                      </td>
+                      <td>
+                        <p>ID to sendback</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+              <dl class="dl-compact">
+              </dl>
               <h3 id="thumbnail"><span class="symbol-name">thumbnail</span><span class="signature"><span class="signature-params">(url, width, height)</span>&nbsp;&rarr; <span class="signature-returns"> <a href="Embed.html">Embed</a></span></span></h3>
               <p>Sets thumbnail</p>
               <section>
@@ -604,7 +706,7 @@
   <footer id="jsdoc-footer" class="jsdoc-footer">
     <div id="jsdoc-footer-container">
       <p>
-        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.3 on September 11, 2020.
+        Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc</a> 3.6.6 on September 22, 2020.
       </p>
     </div>
   </footer>
