@@ -1,3 +1,4 @@
+/* eslint-disable */
 require('./u.js')
 
 function uniToDec(string) {

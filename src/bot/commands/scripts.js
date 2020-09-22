@@ -12,7 +12,7 @@ const scripts = {
             return a
           }, {})
         })
-      
+
       return `${Object.keys(statuses).map(x => `${x}: ${statuses[x].toLocaleString()}`).join('\n')}`
     }
   },

@@ -1,3 +1,4 @@
+/* eslint-disable */
 U = new Array();
 U[0]="0000;[control];Cc;0;BN;;;;;N;NULL;;;;;;m;0;1.1";
 U[1]="0001;[control];Cc;0;BN;;;;;N;START OF HEADING;;;;;;m;0;1.1";

@@ -44,8 +44,7 @@
       "website/views/*",
       "website/static/*",
       "docs/*",
-      "node_modules/*",
-      "src/util/replace-fonts/u.js"
+      "node_modules/*"
     ],
     "globals": [
       "BigInt"
