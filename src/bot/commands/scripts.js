@@ -1,4 +1,21 @@
 const scripts = {
+  statuses: {
+    desc: 'Get http response codes',
+    run: async (client) => {
+      const statuses = await client.cluster.internal.eval('client.rest.statuses')
+        .then(x => {
+          return x.reduce((a, b) => {
+            Object.keys(b).forEach(key => {
+              if (!a[key]) a[key] = 0
+              a[key] += b[key]
+            })
+            return a
+          }, {})
+        })
+      
+      return `${Object.keys(statuses).map(x => `${x}: ${statuses[x].toLocaleString()}`).join('\n')}`
+    }
+  },
   filtertime: {
     desc: 'Get average filter time',
     run: async (client) => {
@@ -9,7 +26,7 @@ const scripts = {
   },
   membercount: {
     desc: 'Get total member count',
-    run: async (client, message, args) => {
+    run: async (client) => {
       return `${await client.cluster.internal
         .eval('client.guilds.reduce((a,b) => a+b.member_count, 0)')
         .then(x => x.reduce((a, b) => a + b, 0)).then(x => x.toLocaleString())} users`
