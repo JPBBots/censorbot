@@ -120,6 +120,8 @@ class DiscordWebsocket extends EventEmitter {
    * @param {String} data Raw event data
    */
   message (data) {
+    this.shard.eventTrack++
+
     const msg = JSON.parse(data)
     if (msg.s) this.s = msg.s
 

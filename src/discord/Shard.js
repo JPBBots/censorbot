@@ -30,6 +30,15 @@ class Shard {
     this.promise.then(_ => {
       this.client.log(`Shard ${this.id} cache settled and ready`)
     })
+
+    this.eventAvg = 0
+    this.eventTrack = 0
+
+    this.eventTracker = setInterval(() => {
+      this.eventAvg = this.eventTrack
+
+      this.eventTrack = 0
+    }, 60000)
   }
 
   /**
@@ -110,6 +119,8 @@ class Shard {
   destroy () {
     this.dying = true
     this.ws.kill()
+
+    clearInterval(this.eventTracker)
   }
 }
 
