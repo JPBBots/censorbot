@@ -108,7 +108,7 @@ class PunishmentManager {
    * @async
    */
   async start () {
-    this.database = new Database(null, config.db.username, config.db.password)
+    this.database = new Database(this, config.db.username, config.db.password)
 
     await this.database.connect()
 

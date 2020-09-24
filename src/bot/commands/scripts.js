@@ -41,13 +41,7 @@ const scripts = {
 
       const uncensor = db.uncensor.filter(x => client.filter.test(x, db.filters, db.filter).censor)
 
-      await client.db.collection('guild_data').updateOne({
-        id: guild
-      }, {
-        $set: {
-          uncensor
-        }
-      })
+      await client.db.setConfig(guild, { uncensor })
 
       return `${db.uncensor.length - uncensor.length} removed`
     }
@@ -61,13 +55,7 @@ const scripts = {
 
       const filter = db.filter.filter(x => !client.filter.test(x, db.filters).censor)
 
-      await client.db.collection('guild_data').updateOne({
-        id: guild
-      }, {
-        $set: {
-          filter
-        }
-      })
+      await client.db.setConfig(guild, { filter })
 
       return `${db.filter.length - filter.length} removed`
     }

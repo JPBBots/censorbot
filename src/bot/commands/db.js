@@ -22,11 +22,7 @@ exports.run = async function (message, args) {
         val = args[3]
       }
       obj[args[2]] = val
-      await this.client.db.collection('guild_data').updateOne({
-        id: args[1]
-      }, {
-        $set: obj
-      })
+      await this.client.db.setConfig(args[1], obj)
       this.send(':ok_hand:')
       break
     default:

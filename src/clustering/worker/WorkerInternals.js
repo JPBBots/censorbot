@@ -340,6 +340,16 @@ class WorkerInternals {
   }
 
   /**
+   * Dump a guilds config cache
+   * @param {Snowflake} id Guild ID
+   */
+  dumpGuild (id) {
+    this.api
+      .guilds[id]
+      .delete()
+  }
+
+  /**
    * Creates a HelpME package
    * @param {Snowflake} id Guild ID
    * @param {String} name Guild Name

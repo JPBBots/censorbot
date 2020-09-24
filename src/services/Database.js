@@ -3,6 +3,8 @@ delete require.cache[require.resolve('../client/Config')]
 
 const { db: { host } } = require('../settings')
 
+const Cache = require('../util/Cache')
+
 /**
  * Used for connecting to mongo database and built methods
  */
@@ -28,6 +30,14 @@ class Database {
       this.db = db
       this.mongo = mongo
     } else this.mongo = new MongoClient(`mongodb://${username}:${password}@${host}:27017/`, { useNewUrlParser: true, useUnifiedTopology: true })
+
+    this.configCache = new Cache(300000)
+
+    if (this.client) {
+      this.client.cluster.on('GUILD_DUMP', (data) => {
+        this.configCache.delete(data.id)
+      })
+    }
   }
 
   /**
@@ -73,6 +83,9 @@ class Database {
    * @returns {Promise.<Object>} Config
    */
   async config (id, allowRewrite = true) {
+    const cached = this.configCache.get(id)
+    if (cached) return cached
+
     let config = await this.collection('guild_data')
       .findOne({
         id: id
@@ -92,6 +105,8 @@ class Database {
     if (config.v !== this.constants.currentVersion) config = this.outdate(config)
 
     delete config.v
+
+    this.configCache.set(id, config)
 
     return config
   }
@@ -148,7 +163,7 @@ class Database {
 
     newObj.v = this.constants.currentVersion
 
-    this.collection('guild_data').replaceOne({ id: obj.id }, newObj)
+    this.setConfig(obj.id, newObj, true)
 
     return newObj
   }
@@ -157,14 +172,23 @@ class Database {
    * Sets guild config
    * @param {Snowflake} id Guild
    * @param {Object} obj Object to set
+   * @param {Boolean} [replace=false] Whether to replace
    * @returns {Promise.<Object>} Mongo response
    */
-  async setConfig (id, obj) {
-    const res = await this.collection('guild_data').replaceOne({ id }, {
-      id,
-      ...obj,
-      v: this.constants.currentVersion
-    }, { upsert: true })
+  async setConfig (id, obj, replace = false) {
+    this.client.cluster.internal.dumpGuild(id)
+    const filled = {
+      $set: {
+        id,
+        ...obj,
+        v: this.constants.currentVersion
+      }
+    }
+
+    let res
+
+    if (replace) res = await this.collection('guild_data').replaceOne({ id }, filled, { upsert: true })
+    else res = await this.collection('guild_data').updateOne({ id }, filled, { upsert: true })
 
     if (!res || res.n < 1) throw new Error('DB Error')
     return true

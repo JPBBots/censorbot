@@ -12,4 +12,10 @@ module.exports = function (r) {
     if (!cluster) return res.json({})
     res.json(await cluster.send('GUILD_FETCH', { id: req.params.guildid }, true))
   })
+
+  r.delete('/:guildid', async (req, res) => {
+    this.sendToAll('GUILD_DUMP', { id: req.params.guildid }, false, false)
+
+    res.json({ success: true })
+  })
 }
