@@ -1,28 +1,30 @@
-const { table } = require('table')
-
 exports.run = async function (message, args) {
   const clusters = await this.client.cluster.internal.shardStats()
 
-  let msg = ''
+  const embed = this.embed
+    .title('Shard Stats')
+    .timestamp()
 
   for (let i = 0; i < clusters.length; i++) {
-    msg += `Cluster ${i} | RAM: ${((clusters[i].cluster.memory) / 1024 / 1024).toFixed(0) + ' MB'}\n`
-
-    const arr = [['Shard', 'State', 'Ping', 'Guilds']]
-    clusters[i].shards.forEach(shard => {
-      arr.push([shard.id, shard.connected ? 'Connected' : 'Disconnected', shard.ping + 'ms', shard.guilds])
-    })
-
-    arr.push(['Total', '', (clusters[i].shards.map(x => x.ping).reduce((a, b) => a + b, 0) / clusters[i].shards.length).toFixed(0) + 'ms', clusters[i].shards.map(x => x.guilds).reduce((a, b) => a + b, 0)])
-
-    msg += table(arr)
+    embed.field(
+      `Cluster ${i} | RAM: ${((clusters[i].cluster.memory) / 1024 / 1024).toFixed(0) + ' MB'} | ${(clusters[i].shards.reduce((a, b) => a + b.ping, 0) / clusters[i].shards.length).toFixed(0)}ms`,
+      clusters[i].shards.map(x =>
+        `${x.connected ? ':white_check_mark:' : ':x:'} Shard ${x.id} | ${x.guilds} servers.`
+      ).join('\n') + `\n\n${clusters[i].shards.reduce((a, b) => a + b.events, 0)} events/minute\n` +
+      `${clusters[i].shards.reduce((a, b) => a + b.guilds, 0)} servers`
+    )
   }
+
+  embed.field('Total',
+    `RAM Usage: ${(process.memoryUsage().rss / 1024 / 1024).toFixed(0)}MB\n` +
+    `Events: ${clusters.reduce((a, b) => a + b.shards.reduce((c, d) => c + d.events, 0), 0).toLocaleString()} events/minute\n` +
+    `Ping: ${(clusters.reduce((a, b) => a + b.shards.reduce((c, d) => c + d.ping, 0), 0) / clusters.reduce((a, b) => a + b.shards.length, 0)).toFixed(0)}ms\n` +
+    `Servers: ${clusters.reduce((a, b) => a + b.shards.reduce((c, d) => c + d.guilds, 0), 0).toLocaleString()}`
+  )
 
   this.invokeCooldown()
 
-  this.send('```\n' +
-    `${msg}\nCurrent: Cluster ${this.client.cluster.id} | Shard ${this.client.guildShard(message.guild_id)}` +
-  '```')
+  this.send(embed)
 }
 exports.info = {
   name: 'shards',

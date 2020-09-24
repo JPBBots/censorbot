@@ -92,6 +92,7 @@ class WorkerInternals {
           },
           shards: this.worker.client.shards.map(shard => {
             return {
+              events: shard.eventAvg,
               id: shard.id,
               ping: shard.ping,
               state: shard.registering ? 1 : shard.connected ? 2 : !shard.ws.connected && shard.ws.opened ? 1 : 0,
