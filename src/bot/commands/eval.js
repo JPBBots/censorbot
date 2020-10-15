@@ -3,19 +3,23 @@ function clean (text) {
 }
 
 let temp // eslint-disable-line no-unused-vars
+let last // eslint-disable-line no-unused-vars
 
 exports.run = async function (message, args, prefix) {
   const method = ({
     '-b': 'eval',
-    '-c': 'masterEval'
+    '-c': 'masterEval',
+    '-l': 'last'
   })[args[0]]
 
   if (message.author.id !== this.config.owner) return this.send('no')
   const client = this.client // eslint-disable-line no-unused-vars
   try {
     const code = message.content.slice(prefix.length + 5 + (method ? 3 : 0)).replace(/(‘|’)/g, "'").replace(/(“|”)/g, '"')
-    let evaled = method ? this.client.cluster.internal[method](code) : eval(code) // eslint-disable-line no-eval
+    let evaled = method && this.client.cluster.internal[method] ? this.client.cluster.internal[method](code) : eval(code) // eslint-disable-line no-eval
     if (evaled && evaled.then) evaled = await evaled
+
+    if (method === 'last') last = evaled
 
     if (evaled instanceof Array && evaled[0] instanceof String) {
       if (evaled.some(x => x.startsWith('Error: '))) throw new Error(`${evaled[0].slice('Error: '.length)}`)
