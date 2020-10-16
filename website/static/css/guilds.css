@@ -1,21 +1,25 @@
 #root {
-  display: inline !important;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-rows: repeat(100, 1fr);
 }
 
 .guild {
   cursor: pointer;
-  float: left;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(1, 1fr);
   grid-template-areas:
     "icon name";
-
-  width: 20%;
   background-color: var(--bar);
-  border-radius: 15%;
+  border-radius: 3%;
   margin: 1rem;
   padding: 1rem;
+  height: fit-content;
+  min-height: 6rem;
+  align-items: center;
+  box-shadow: 4px 6px rgb(20 22 23);
+  transition: 0.1s;
 }
 
 .guild:hover {
@@ -26,17 +30,17 @@
 .icon {
   grid-area: icon;
   border-radius: 50%;
+  width: 5rem;
 }
 
 .name {
   grid-area: name;
   text-align: center;
-  top: 25%;
   position: relative;
-
+  font-size: 1.25rem;
 }
 
-@media (min-width: 981px) and (max-width: 1480px) {
+/* @media (min-width: 981px) and (max-width: 1480px) {
   .guild {
     width: 26%;
   }
@@ -57,4 +61,4 @@
     min-width: 80%;
     width: fit-content;
   }
-}
+} */

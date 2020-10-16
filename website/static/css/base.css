@@ -53,6 +53,7 @@ img {
   z-index: 10;
   width: 100%;
   height: fit-content;
+  align-items: center;
 }
 
 #logo {
@@ -65,11 +66,12 @@ img {
 #title {
   grid-area: title;
   text-align: center;
-  font-size: 3rem;
+  font-size: 1.5rem;
 }
 
 #logo, #user {
   padding: 20px;
+  padding: 10px 15px 10px 15px;
 }
 
 #user {
@@ -87,7 +89,7 @@ img {
 }
 
 #avatar, #logo > a > img {
-  width: 5vw
+  width: 60px;
 }
 
 #login {
