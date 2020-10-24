@@ -1,6 +1,6 @@
 const replaceSpots = {
   spaces: /_|\/|\\|\.|\n|&|-|\^|\+|=|:|~|,|\?|\(|\)|\s+/gi,
-  nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|​|‍/gi // eslint-disable-line no-irregular-whitespace
+  nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|​|‍|‏|‎/gi // eslint-disable-line no-irregular-whitespace
 }
 
 const replaceFonts = require('../util/replace-fonts')
