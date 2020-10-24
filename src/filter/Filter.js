@@ -1,19 +1,35 @@
+const alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+
 const replaceSpots = {
   spaces: /_|\/|\\|\.|\n|&|-|\^|\+|=|:|~|,|\?|\(|\)|\s+/gi,
   nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|​|‍|‏|‎/gi // eslint-disable-line no-irregular-whitespace
 }
 
-const replaceFonts = require('../util/replace-fonts')
+const _fontPacks = require('./fontpacks.json')
+
+const fontPacks = []
+
+let ind = 0
+
+_fontPacks.forEach(font => {
+  font.split(' ').forEach((x, i) => {
+    fontPacks[ind] = {
+      in: new RegExp(x, 'gi'),
+      out: alphabet[i]
+    }
+    ind++
+  })
+})
 
 const JPBExp = require('./JPBExp')
 
 const converter = {
   in: ('\\$,ā,à,á,â,ã,ä,å,ą,ß,β,ò,ó,ô,ő,õ,ö,ø,Ď,ď,D,Ž,d,ž,è,é,ê,ë,ę,ð,Ç,ç,Č,č,Ć,ć,Ð,ì,í,î,ï,ī,ù,ű,ú,û,ü,ľ,ĺ,ł,ň,ñ,ń,Ŕ,ŕ,š,ś,ş,Ť,ť,ÿ,ý,ž,ż,ź,đ,ģ,ğ,µ,§,Ṉ,ṉ,Α,Β,Ν,Η,Ε,Ι,Τ,Ǝ,△,ı,с,к,Р,¡,0,İ,ĩ,į,@,к,ё,а,і,3,1,ů,ķ,₽,¥,ū' + // accents
-    ',🇦,🇧,🅱,🇨,🇩,🇪,🇫,🇬,🇭,🇮,🇯,🇰,🇱,🇲,🇳,🇴,🇵,🇶,🇷,🇸,🇹,🇺,🇻,🇼,🇽,🇾,🇿,🖕' + // emojis
+    ',🖕' + // emojis
     ',’') // extras
     .split(',').map(x => new RegExp(x, 'g')),
   out: ('s,a,a,a,a,a,a,a,a,b,b,o,o,o,o,o,o,o,d,d,d,z,d,z,e,e,e,e,e,e,c,c,c,c,c,c,d,i,i,i,i,i,u,u,u,u,u,l,l,l,n,n,n,r,r,s,s,s,t,t,y,y,z,z,z,d,g,g,u,s,n,n,a,b,n,h,e,i,t,e,a,i,c,k,p,i,o,i,i,i,a,k,e,a,i,e,i,u,k,p,y,u' + // accents
-    ',a,b,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,fuck' + // emojis
+    ',fuck' + // emojis
     ',\'') // extras
     .split(',')
 }
@@ -125,7 +141,11 @@ class Filter {
       content = content.replace(converter.in[i], converter.out[i])
     }
 
-    if (removeFonts) content = replaceFonts(content).toLowerCase()
+    if (removeFonts) {
+      for (const convert of fontPacks) {
+        content = content.replace(convert.in, convert.out)
+      }
+    }
 
     let res = Array(content.split(replaceSpots.spaces).length + 1).fill().map(() => ({ i: [], t: '' })) // array of default objects
 
