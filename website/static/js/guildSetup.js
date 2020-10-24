@@ -46,10 +46,11 @@ function setup () {
   var listSettings = {
     maxTags: window.premium ? 500 : 150,
     delimiters: /,|\s/g,
+    pattern: /^.{1,20}$/,
     callbacks: {
       invalid: (e) => {
         console.log(`Error whilst adding tag: ${e.detail.message}`)
-        if (e.detail.message == "pattern mismatch") window.lib.tell('Illegal Character')
+        if (e.detail.message == "pattern mismatch") window.lib.tell('Word cannot be over 20 characters long.')
         if (e.detail.message == "number of tags exceeded") window.lib.tell("Reached max words. Get premium to get up to 500!")
       } // TODO: make it so that this pops up above the input instead of an alert
     }
