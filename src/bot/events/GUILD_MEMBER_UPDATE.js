@@ -1,13 +1,25 @@
 module.exports = async function (member) {
   if (
     !member ||
-    !member.nick ||
      member.user.bot
   ) return
 
   const db = await this.db.config(member.guild_id)
 
+  if (db.punishment.type === 1 && db.punishment.role) {
+    const timeout = await this.db.collection('timeouts').findOne({
+      guild: member.guild_id,
+      user: member.user.id,
+      type: 1
+    })
+
+    if (timeout && !member.roles.includes(db.punishment.role)) {
+      this.punishments.guilds[member.guild_id].unmute(member.user.id).post({ query: { extra: '1' } })
+    }
+  }
+
   if (
+    !member.nick ||
     !db.censor.nick ||
     member.roles.includes(db.role)
   ) return

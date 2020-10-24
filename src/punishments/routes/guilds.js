@@ -9,7 +9,7 @@ module.exports = function (r) {
     next()
   })
   r.post('/:guild_id/:type/:user_id', async (req, res) => {
-    await this[req.params.type](req.db.id, req.params.user_id, req.db)
+    await this[req.params.type](req.db.id, req.params.user_id, req.db, req.query.extra)
 
     res.status(204).end()
   })

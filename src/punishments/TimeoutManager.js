@@ -54,8 +54,13 @@ class TimeoutManager {
     if (db.punishment.type === 0) return
 
     await this.manager[unpunishmentTypes[type]](guild, user, db)
+  }
 
+  async _clearTimeout (guild, user) {
     await this.db.removeOne({ guild, user })
+    const interval = this.intervals.get(`${user};${guild}`)
+
+    if (interval !== true) clearInterval(interval)
 
     this.intervals.delete(`${user};${guild}`)
   }

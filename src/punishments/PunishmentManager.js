@@ -186,17 +186,20 @@ class PunishmentManager {
    * @param {Snowflake} guild Guild ID
    * @param {Snowflake} user User ID
    * @param {Object} db Guild DB
+   * @param {String} extra Extra info
    */
-  async unmute (guild, user, db) {
+  async unmute (guild, user, db, extra) {
     await this.api
       .guilds[guild]
       .members[user]
       .roles[db.punishment.role]
       .delete({
-        reason: 'Auto-unmuted after time.'
+        reason: extra ? 'Manually unmuted.' : 'Auto-unmuted after time.'
       })
 
-    await this.sendLog(true, db, user, 'Unmuted', `After ${db.punishment.time / 60000} minutes`)
+    await this.timeouts._clearTimeout(guild, user)
+
+    await this.sendLog(true, db, user, 'Unmuted', extra ? 'Manually unmuted.' : `After ${db.punishment.time / 60000} minutes`)
   }
 
   /**
@@ -261,6 +264,8 @@ class PunishmentManager {
       .delete({
         reason: 'Auto-unbanned after time.'
       })
+
+    await this.timeouts._clearTimeout(guild, user)
 
     await this.sendLog(true, db, user, 'Unbanned', `After ${db.punishment.time / 60000} minutes`)
   }
