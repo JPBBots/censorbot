@@ -33,7 +33,7 @@ class Database {
 
     this.configCache = new Cache(300000)
 
-    if (this.client) {
+    if (this.client && this.client.cluster) {
       this.client.cluster.on('GUILD_DUMP', (data) => {
         this.configCache.delete(data.id)
       })
