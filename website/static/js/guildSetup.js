@@ -99,6 +99,12 @@ function setup () {
     if (this.value < 1) this.value = 1
   })
 
+  window.lib._getElm('punishment.role').addEventListener('change', function () {
+    var type = window.lib._getElm('punishment.type')
+
+    window.lib.needed('punishment.role', type.value == '1' && this.value === 'null')
+  })
+
   window.lib._getElm('punishment.type').addEventListener("change", function () {
     var role = window.lib._getElm('punishment.role')
     if (this.value == '1') role.disabled = false
@@ -106,6 +112,8 @@ function setup () {
       role.disabled = true
       role.value = "null"
     }
+
+    window.lib.needed('punishment.role', this.value == '1' && role.value === 'null')
 
     var base = window.lib._getElm('punishment.time').querySelector('[base]')
     const multiply = window.lib._getElm('punishment.time').querySelector('[multiply]')

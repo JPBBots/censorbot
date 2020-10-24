@@ -64,6 +64,14 @@ class Base { // eslint-disable-line no-unused-vars
     this.tags.set(tagName, tag)
   }
 
+  needed (setting, bool) {
+    if (bool) {
+      this._getElm(setting).classList.add('needed')
+    } else {
+      this._getElm(setting).classList.remove('needed')
+    }
+  }
+
   clearTags (tag) {
     this.tags.get(tag).removeAllTags()
     this.update()
