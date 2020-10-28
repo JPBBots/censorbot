@@ -9,7 +9,7 @@ exports.run = async function (message, args) {
     embed.field(
       `Cluster ${i} | RAM: ${((clusters[i].cluster.memory) / 1024 / 1024).toFixed(0) + ' MB'} | ${(clusters[i].shards.reduce((a, b) => a + b.ping, 0) / clusters[i].shards.length).toFixed(0)}ms`,
       clusters[i].shards.map(x =>
-        `${x.connected ? ':white_check_mark:' : ':x:'} Shard ${x.id} | ${x.guilds} servers.`
+        `${x.connected ? ':white_check_mark:' : ':x:'} Shard ${x.id} | ${x.guilds} servers. ${x.id === this.client.guildShard(this.guild.id) ? ':arrow_backward:' : ''}`
       ).join('\n') + `\n\n${clusters[i].shards.reduce((a, b) => a + b.events, 0)} events/minute\n` +
       `${clusters[i].shards.reduce((a, b) => a + b.guilds, 0)} servers`
     )
