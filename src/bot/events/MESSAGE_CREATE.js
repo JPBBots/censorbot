@@ -92,7 +92,7 @@ module.exports = async function (message) {
   this.punishments.guilds[message.guild_id].punish(message.author.id).post()
 
   if (!inviteCensor && db.webhook.enabled) {
-    content = content.replace(/\|/g, '')
+    content = content.replace(/\|/g, '\\|')
     if (db.webhook.separate) {
       content = this.filter.surround(content, res.ranges, '||')
 
