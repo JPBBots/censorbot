@@ -159,7 +159,7 @@ class OAuth2 {
     if (!guilds || guilds.constructor !== Array) return false
 
     guilds = guilds
-      .filter(x => x.owner || PermissionUtil.has(x.permissions, this.config.dashOptions.requiredPermission))
+      .filter(x => x.owner || PermissionUtil.has(x.permissions, this.config.dashOptions.requirePermission))
       .map(x => ({ n: x.name, i: x.id, a: x.icon }))
 
     if (allowedGuilds) guilds = guilds.filter(x => allowedGuilds.includes(x.i))
