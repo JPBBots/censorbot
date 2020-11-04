@@ -131,7 +131,11 @@ function setup () {
     whitelist: window.guild.c.map(x => ({ value: `#${x.name}`, id: x.id })),
     enforceWhitelist: true,
     maxTags: window.premium ? Infinity : 0,
-    callbacks: {},
+    callbacks: {
+      invalid: (e) => {
+        if (e.detail.message === 'number of tags exceeded') window.lib.tell('You need premium to use this feature.')
+      }
+    },
     dropdown: {
       enabled: 0,
       maxItems: window.guild.c.length
