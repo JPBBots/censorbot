@@ -157,7 +157,7 @@ class Master {
 
     this._createWorker('stats', 3)
 
-    this.sendToAll('DONE')
+    this.api.sendToAll('DONE')
 
     this.log('All shards spawned')
   }
