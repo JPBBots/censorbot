@@ -20,13 +20,3 @@ services:
     restart: "no"
     ports:
       - "1235:1234"
-  treehouse: # custom bot
-    build: .
-    volumes:
-      - ./src:/app
-      - ./node_modules:/node_modules
-    env_file:
-      - treehouse.env
-    restart: unless-stopped
-    ports:
-      - "1236:1234"
