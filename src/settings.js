@@ -20,7 +20,10 @@ module.exports = {
     lockCommands: isCustom ? (process.env.LOCK_COMMANDS === 'true') : false,
     customStatus: isCustom ? (process.env.CUSTOM_STATUS ? process.env.CUSTOM_STATUS.split(',') : false) : false
   },
-  webhooks: {}
+  webhooks: {},
+  datadog: {
+    key: process.env.DD_KEY
+  }
 }
 
 Object.keys(process.env).forEach(env => {

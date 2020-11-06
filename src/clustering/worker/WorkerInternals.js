@@ -157,6 +157,13 @@ class WorkerInternals {
         }
         resolve(info)
         break
+      case 'REGIONS':
+        resolve(this.worker.client.guilds.reduce((a, b) => {
+          if (!a[b.region]) a[b.region] = 0
+          a[b.region]++
+          return a
+        }, {}))
+        break
       default:
         break
     }
@@ -347,6 +354,12 @@ class WorkerInternals {
     this.api
       .guilds[id]
       .delete()
+  }
+
+  getRegions () {
+    return this.api
+      .regions
+      .get()
   }
 
   /**

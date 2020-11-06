@@ -28,6 +28,7 @@
     "body-parser": "1.19.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "datadog-metrics": "^0.8.1",
     "ejs": "3.0.1",
     "emoji-unicode-map": "1.1.10",
     "express": "4.17.1",

@@ -9,9 +9,13 @@ module.exports = [
     i: 1,
     client: resolve('../api/Manager')
   },
-  {
+  { // punishments
     i: 2,
     client: resolve('../punishments/PunishmentManager')
+  },
+  { // stats
+    i: 3,
+    client: resolve('../stats/StatsManager')
   }
 ]
 
@@ -20,6 +24,8 @@ module.exports = [
  * @example
  *  0 = Bot cluster
  *  1 = api
+ *  2 = punishments
+ *  3 = stats
  */
 
 /**

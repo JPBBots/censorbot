@@ -155,6 +155,8 @@ class Master {
 
     this.spawned = true
 
+    this._createWorker('stats', 3)
+
     this.log('All shards spawned')
   }
 
