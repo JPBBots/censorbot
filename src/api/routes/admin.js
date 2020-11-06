@@ -64,6 +64,8 @@ module.exports = function (r) {
     await this.db.collection('tickets').removeOne({ id: req.ticket.id })
 
     res.json({ succes: true })
+
+    this.stats.tickets.accepted.delete()
   })
 
   r.delete('/tickets/:id', async (req, res) => {
@@ -80,5 +82,7 @@ module.exports = function (r) {
     await this.db.collection('tickets').removeOne({ id: req.ticket.id })
 
     res.json({ success: true })
+
+    this.stats.tickets.accepted.delete()
   })
 }

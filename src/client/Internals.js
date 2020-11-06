@@ -40,6 +40,13 @@ class Internals {
         amount: 1
       }
     })
+    this.client.stats.filter.censored.post({
+      query: {
+        word: res.places.join(','),
+        time: res.time,
+        filter: res.filters.map(x => `${this.client.filter.filterMasks[x]} (${x})`).join(',')
+      }
+    })
     this.client.cluster.internal.sendWebhook('swears', {
       content: `\`\`\`${content.replace(/`/g, '\'')}\`\`\``,
       embeds: [

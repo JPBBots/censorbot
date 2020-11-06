@@ -13,4 +13,6 @@ module.exports = function (guild) {
 
   this.db.collection('punish').removeMany({ guild: guild.id })
   this.db.collection('timeouts').removeMany({ guild: guild.id })
+
+  this.stats.guilds.count.delete()
 }

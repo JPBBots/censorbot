@@ -28,4 +28,6 @@ module.exports = function (guild) {
     .description(`We hope you enjoy your time, and hope we can make your server a cleaner place!\n\nHere are some useful resources:\nDashboard: ${this.config.dashboard}\n[Support Server](${this.config.support})\n[Premium](https://censor.bot/premium)\n\nThanks again!`)
     .footer(guild.id)
     .dm(guild.owner_id)
+
+  this.stats.guilds.count.put()
 }

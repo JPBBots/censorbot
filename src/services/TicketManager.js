@@ -89,6 +89,8 @@ class TicketManager {
       user,
       msg: msg.id
     })
+
+    this.client.stats.tickets.waiting.put()
   }
 
   /**
@@ -116,6 +118,8 @@ class TicketManager {
     this.client.interface.delete(this.client.config.channels.ticket, ticket.msg)
 
     this.db.removeOne({ id })
+
+    this.client.stats.tickets.waiting.delete({ user: admin })
   }
 
   /**
@@ -150,6 +154,8 @@ class TicketManager {
         msg: null
       }
     })
+
+    this.client.stats.accepted.put({ user: admin })
   }
 
   /**

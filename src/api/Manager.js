@@ -13,6 +13,8 @@ const OAuth2 = require('./OAuth2')
 const Interface = require('../discord/Interface')
 const RestManager = require('../discord/rest/RestManager')
 
+const { stats: statsPort } = require('../ports')
+
 /**
  * Base dashboard class
  */
@@ -83,6 +85,8 @@ class Manager {
      * @type {Interface}
      */
     this.interface = new Interface(this)
+
+    this.stats = Request(`http://localhost:${statsPort}`)
   }
 
   get api () {
