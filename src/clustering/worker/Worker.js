@@ -47,6 +47,12 @@ class Worker extends EventEmitter {
      */
     this.internal = new WorkerInternals(this)
 
+    /**
+     * Whether or not cluster master is done
+     * @type {Boolean}
+     */
+    this.done = false
+
     this.setup()
   }
 
@@ -64,6 +70,7 @@ class Worker extends EventEmitter {
 
     this.on('SPAWN', ({ spawned, inactive, gateway }) => this.spawn(spawned, inactive, gateway))
     this.on('KILL', () => process.exit(1))
+    this.on('DONE', () => { this.done = true })
   }
 
   /**

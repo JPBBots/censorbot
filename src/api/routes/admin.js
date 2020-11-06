@@ -65,7 +65,7 @@ module.exports = function (r) {
 
     res.json({ succes: true })
 
-    this.stats.tickets.accepted.delete()
+    if (this.cluster.done) this.stats.tickets.accepted.delete()
   })
 
   r.delete('/tickets/:id', async (req, res) => {
@@ -83,6 +83,6 @@ module.exports = function (r) {
 
     res.json({ success: true })
 
-    this.stats.tickets.accepted.delete()
+    if (this.cluster.done) this.stats.tickets.accepted.delete()
   })
 }

@@ -29,5 +29,5 @@ module.exports = function (guild) {
     .footer(guild.id)
     .dm(guild.owner_id)
 
-  this.stats.guilds.count.put()
+  if (this.cluster.done) this.stats.guilds.count.put()
 }
