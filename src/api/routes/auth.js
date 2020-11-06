@@ -1,4 +1,4 @@
-const TempSet = require('../../../util/TempSet')
+const TempSet = require('../../util/TempSet')
 
 module.exports = function (r) {
   const usedCodes = new TempSet(60000)

@@ -1,16 +1,33 @@
 const { resolve } = require('path')
 const { Router } = require('express')
-const { readdirSync, lstatSync } = require('fs')
+const { readdirSync, lstatSync, existsSync } = require('fs')
 
-module.exports = function (bind, app, dirName, dir) {
-  const loadFolder = (path, current) => {
+function createRouter () {
+  const router = Router({ mergeParams: true })
+
+  return router
+}
+
+module.exports = function (bind, app, dirName, dir, defaultLocation = '') {
+  const loadFolder = (path, parent) => {
     let routes = readdirSync(resolve(dirName, path))
     if (routes.includes('index.js')) {
       routes = routes.filter(x => x !== 'index.js')
       routes.push('index.js')
     }
     routes.forEach(route => {
-      if (lstatSync(resolve(dirName, path, route)).isDirectory()) return loadFolder(path + '/' + route, current + (route + '/'))
+      if (route === 'middleware.js') return
+      if (lstatSync(resolve(dirName, path, route)).isDirectory()) {
+        const router = createRouter()
+
+        if (existsSync(resolve(dirName, path, route, './middleware.js'))) {
+          require(resolve(dirName, path, route, './middleware.js')).bind(bind)(router)
+        }
+
+        loadFolder(path + '/' + route, router)
+
+        return parent.use(`/${route}`, router)
+      }
 
       if (!route.endsWith('.js')) return
 
@@ -21,11 +38,16 @@ module.exports = function (bind, app, dirName, dir) {
 
       const routeName = route.replace(/index/gi, '').split('.')[0]
 
-      const router = Router()
+      const router = createRouter()
+
       routeFile.bind(bind)(router)
 
-      app.use(`/${current}${routeName}`, router)
+      parent.use(`/${routeName}`, router)
     })
   }
-  loadFolder(resolve(dirName, dir), '')
+  const baseRouter = createRouter()
+
+  loadFolder(resolve(dirName, dir), baseRouter)
+
+  app.use(`/${defaultLocation}`, baseRouter)
 }

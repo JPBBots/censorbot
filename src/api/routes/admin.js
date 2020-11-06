@@ -1,4 +1,4 @@
-const Filter = require('../../../filter/Filter')
+const Filter = require('../../filter/Filter')
 const filter = new Filter()
 
 module.exports = function (r) {

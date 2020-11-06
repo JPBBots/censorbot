@@ -80,7 +80,7 @@ class App {
 
     this.app.use('/static', Express.static(Path.resolve(__dirname, './static')))
 
-    LoadRoutes(this.manager, this.app, __dirname, './routes')
+    LoadRoutes(this.manager, this.app, __dirname, './routes', 'api')
   }
 }
 

@@ -1,4 +1,4 @@
-const encodeJSON = require('../../../util/encodeJSON')
+const encodeJSON = require('../../util/encodeJSON')
 
 module.exports = function (r) {
   r.get('/', (req, res) => {
