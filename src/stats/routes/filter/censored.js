@@ -4,10 +4,12 @@ module.exports = function (r) {
     this.gauge('filter.amount', this.currents.CURSE_COUNT, [], Date.now())
 
     req.query.word.split(',').forEach(word => {
+      if (!word) return
       this.increment('filter.mostused.words', 1, [`word:${word}`])
     })
-    req.query.filter.split(',').forEach(word => {
-      this.increment('filter.mostused.filters', 1, [`filter:${word}`])
+    req.query.filter.split(',').forEach(filter => {
+      if (!filter) return
+      this.increment('filter.mostused.filters', 1, [`filter:${filter}`])
     })
 
     this.gauge('filter.timing', Number(req.query.time))
