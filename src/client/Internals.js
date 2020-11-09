@@ -40,7 +40,7 @@ class Internals {
         amount: 1
       }
     })
-    if (this.client.cluster.done && !res.filters.includes('server')) {
+    if (this.client.cluster.done) {
       this.client.stats.filter.censored.post({
         query: {
           word: res.filters.includes('server') ? '' : res.places.join(','),
