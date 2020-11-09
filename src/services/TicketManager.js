@@ -119,7 +119,7 @@ class TicketManager {
 
     this.db.removeOne({ id })
 
-    if (this.client.cluster.done) this.client.stats.tickets.waiting.delete({ user: admin })
+    if (this.client.cluster.done) this.client.stats.tickets.waiting.delete({ query: { user: admin.id } })
   }
 
   /**
@@ -155,7 +155,7 @@ class TicketManager {
       }
     })
 
-    if (this.client.cluster.done) this.client.stats.accepted.put({ user: admin })
+    if (this.client.cluster.done) this.client.stats.tickets.accepted.put({ query: { user: admin.id } })
   }
 
   /**
