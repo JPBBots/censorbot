@@ -18,7 +18,7 @@
   height: fit-content;
   min-height: 6rem;
   align-items: center;
-  box-shadow: 4px 6px rgb(20 22 23);
+  box-shadow: 0px 2px 4px rgba(20, 22, 23, 0.5);
   transition: 0.1s;
 }
 
