@@ -1,25 +1,11 @@
-const alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-
 const replaceSpots = {
   spaces: /_|\/|\\|\.|\n|&|-|\^|\+|=|:|~|,|\?|\(|\)|\s+/gi,
   nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|​|‍|‏|‎/gi // eslint-disable-line no-irregular-whitespace
 }
 
-const _fontPacks = require('./fontpacks.json')
+const FilterLoader = require('./data/Loader.js')
 
-const fontPacks = []
-
-let ind = 0
-
-_fontPacks.forEach(font => {
-  font.split(' ').forEach((x, i) => {
-    fontPacks[ind] = {
-      in: new RegExp(x, 'gi'),
-      out: alphabet[i]
-    }
-    ind++
-  })
-})
+const loader = new FilterLoader()
 
 const JPBExp = require('./JPBExp')
 
@@ -36,8 +22,6 @@ const converter = {
 
 const firstShortWords = ['an', 'as', 'us', 'be']
 const shortWords = ['it', 'at', 'xd']
-
-const GetFilters = require('./filters')
 
 function inRange (x, min, max) {
   return ((x - min) * (x - max) <= 0)
@@ -72,8 +56,6 @@ class Filter {
 
     this.avgNumber = 0
     this.avgCounter = 0
-
-    this._loadFilters()
   }
 
   /**
@@ -84,8 +66,8 @@ class Filter {
     return this.avgNumber / this.avgCounter
   }
 
-  _loadFilters () {
-    this.filters = GetFilters()
+  reload () {
+    loader.reload()
   }
 
   surround (text, ranges, sur) {
@@ -142,7 +124,7 @@ class Filter {
     }
 
     if (removeFonts) {
-      for (const convert of fontPacks) {
+      for (const convert of loader.fonts) {
         content = content.replace(convert.in, convert.out)
       }
     }
@@ -274,8 +256,8 @@ class Filter {
 
     const filter = { server: server.map(x => new JPBExp(x)) }
 
-    for (const filt in this.filters) {
-      if (filters.includes(filt)) filter[filt] = this.filters[filt]
+    for (const filt in loader.filters) {
+      if (filters.includes(filt)) filter[filt] = loader.filters[filt]
     }
 
     content.forEach(piece => {

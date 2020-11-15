@@ -2,9 +2,8 @@ TODO.txt
 
 *.env
 !example.env
-src/filter/filters/*
-
-!src/filter/filters/README.md
+src/filter/data/fontpacks.json
+src/filter/data/filters/*.json
 
 # Logs
 logs
