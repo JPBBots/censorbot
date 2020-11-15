@@ -3,7 +3,7 @@ TODO.txt
 *.env
 !example.env
 src/filter/data/fontpacks.json
-src/filter/data/filters/*.json
+src/filter/data/filters/*
 
 # Logs
 logs

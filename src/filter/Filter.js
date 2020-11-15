@@ -3,7 +3,7 @@ const replaceSpots = {
   nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|​|‍|‏|‎/gi // eslint-disable-line no-irregular-whitespace
 }
 
-const FilterLoader = require('./data/Loader.js')
+const FilterLoader = require('./Loader.js')
 
 const loader = new FilterLoader()
 
