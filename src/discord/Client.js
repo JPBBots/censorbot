@@ -222,7 +222,7 @@ class Client extends EventEmitter {
    * @param {String} status Status
    * @param {?String} stream Stream URL
    */
-  setStatus (type, name, status = 'online', stream) {
+  setStatus (type, name, status = 'online', stream = null) {
     this.shards.forEach(shard => {
       shard.setStatus({
         afk: false,

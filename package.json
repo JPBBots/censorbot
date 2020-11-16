@@ -53,7 +53,8 @@
   },
   "eslintConfig": {
     "rules": {
-      "func-call-spacing": "off"
+      "func-call-spacing": "off",
+      "multiline-ternary": "off"
     }
   }
 }

@@ -25,6 +25,9 @@ class FilterLoader {
     this.reload()
   }
 
+  /**
+   * Reload all data components
+   */
   reload () {
     this._loadFilters()
     this._loadFontPacks()

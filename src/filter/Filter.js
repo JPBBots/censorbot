@@ -242,7 +242,7 @@ class Filter {
    * @param {Boolean} removeFonts Remove fonts
    * @returns {FilterResponse}
    */
-  test (text, filters = ['en', 'es', 'off'], server = [], uncensor = [], removeFonts) {
+  test (text, filters = ['en', 'es', 'off'], server = [], uncensor = [], removeFonts = false) {
     const startTime = process.hrtime()
 
     const content = this.resolve(text, removeFonts)

@@ -1,7 +1,7 @@
 exports.run = function (message, args) {
   let helpstring = ''
   const cmds = this.client.commands.list()
-  for (var i = 0; i < cmds.length; i++) {
+  for (let i = 0; i < cmds.length; i++) {
     helpstring += `__${this.client.db.defaultConfig.prefix}${cmds[i].name}__: ${cmds[i].description.replace('{name}', this.client.user.username).replace('{prefix}', this.client.db.defaultConfig.prefix)}\n`
   }
   this.send(this.embed

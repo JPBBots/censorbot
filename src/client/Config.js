@@ -51,7 +51,7 @@ const constants = {
 function generatePieces (obj) {
   const pieces = {}
   function generatePiece (toObj, key, working) {
-    var val = key ? toObj[key] : toObj
+    const val = key ? toObj[key] : toObj
     if (!val || val.constructor !== Object) {
       pieces[`${working ? `${working}.` : ''}${key}`] = val
     } else {

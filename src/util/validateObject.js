@@ -6,7 +6,7 @@ function valid (ref, obj) {
 
   if (objKeys.some(x => !refKeys.includes(x))) return false
 
-  for (var i = 0; i < refKeys.length; i++) {
+  for (let i = 0; i < refKeys.length; i++) {
     const key = refKeys[i]
     if (!Object.prototype.hasOwnProperty.call(obj, key)) {
       res = false

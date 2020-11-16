@@ -19,7 +19,7 @@ exports.run = async function (message, args, prefix) {
     let evaled = method && this.client.cluster.internal[method] ? this.client.cluster.internal[method](code) : eval(code) // eslint-disable-line no-eval
     if (evaled && evaled.then) evaled = await evaled
 
-    if (method === 'last') last = evaled
+    if (method === 'last') last = evaled // eslint-disable-line no-unused-vars
 
     if (evaled instanceof Array && evaled[0] instanceof String) {
       if (evaled.some(x => x.startsWith('Error: '))) throw new Error(`${evaled[0].slice('Error: '.length)}`)
