@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.6">
   <meta charset="utf-8">
-  <title>Class: DBL</title>
+  <title>Class: FilterLoader</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -25,10 +25,10 @@
         <div id="jsdoc-main" role="main">
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
-            <h1><small></small><span class="symbol-name">DBL</span></h1>
-            <p class="source-link">Source: <a href="clustering_master_DBL.js.html#source-line-6">clustering/<wbr>master/<wbr>DBL.<wbr>js:6</a></p>
+            <h1><small></small><span class="symbol-name">FilterLoader</span></h1>
+            <p class="source-link">Source: <a href="filter_Loader.js.html#source-line-9">filter/<wbr>Loader.<wbr>js:9</a></p>
             <div class="symbol-classdesc">
-              <p>Used for interacting with the DBL (top.gg) api</p>
+              <p>Class responsible for loading data files for the filter</p>
             </div>
             <dl class="dl-compact">
             </dl>
@@ -39,14 +39,14 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="DBL.html#api">api</a></dt>
+                    <dt><a href="FilterLoader.html#filters">filters</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="DBL.html#master">master</a></dt>
+                    <dt><a href="FilterLoader.html#fonts">fonts</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -60,7 +60,7 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="DBL.html#post">post()</a></dt>
+                    <dt><a href="FilterLoader.html#reload">reload()</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -73,78 +73,30 @@
             </div>
           </section>
           <section>
-            <h2 id="DBL">new&nbsp;<span class="symbol-name">DBL</span><span class="signature"><span class="signature-params">(master, dbl)</span></span></h2>
-            <p>DBL interface</p>
-            <section>
-              <h3>Parameters</h3>
-              <table class="jsdoc-details-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Optional</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <p>master</p>
-                    </td>
-                    <td>
-                      <p>&nbsp;</p>
-                    </td>
-                    <td>
-                      <p>&nbsp;</p>
-                    </td>
-                    <td>
-                      <p>Master</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>dbl</p>
-                    </td>
-                    <td>
-                      <p>&nbsp;</p>
-                    </td>
-                    <td>
-                      <p>&nbsp;</p>
-                    </td>
-                    <td>
-                      <p>DBL token</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
+            <h2 id="FilterLoader">new&nbsp;<span class="symbol-name">FilterLoader</span><span class="signature"><span class="signature-params">()</span></span></h2>
+            <p>Filter loader</p>
             <dl class="dl-compact">
             </dl>
           </section>
           <section>
             <h2>Properties</h2>
             <section>
-              <h3 id="api"><span class="symbol-name">api</span><small class="property-type">
-                  &nbsp;<a href="global.html#Request">Request</a></small></h3>
-              <p>DBL API</p>
+              <h3 id="filters"><span class="symbol-name">filters</span><small class="property-type">
+                  &nbsp;Object with Object with Array properties properties</small></h3>
+              <p>Filters</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="master"><span class="symbol-name">master</span><small class="property-type">
-                  &nbsp;<a href="Master.html">Master</a></small></h3>
-              <p>Master</p>
+              <h3 id="fonts"><span class="symbol-name">fonts</span><small class="property-type">
+                  &nbsp;Object with String properties</small></h3>
+              <p>Font recog</p>
               <dl class="dl-compact">
               </dl>
             </section>
             <h2>Method</h2>
             <section>
-              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
-              <h3 id="post"><span class="symbol-name">post</span><span class="signature"><span class="signature-params">()</span>&nbsp;&rarr; <span class="signature-returns"> Promise containing Object</span></span></h3>
-              <p>Post stats</p>
+              <h3 id="reload"><span class="symbol-name">reload</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Reload all data components</p>
               <dl class="dl-compact">
-                <dt>Returns</dt>
-                <dd>
-                  <p><code>Promise containing Object</code> Response</p>
-                </dd>
               </dl>
             </section>
           </section>

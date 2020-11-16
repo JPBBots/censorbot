@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="JSDoc 3.6.6">
   <meta charset="utf-8">
-  <title>Class: Command</title>
+  <title>Class: StatsManager</title>
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Karla:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Noto+Serif:400,400i,700,700i" type="text/css">
   <link rel="stylesheet" href="https://brick.a.ssl.fastly.net/Inconsolata:500" type="text/css">
@@ -25,10 +25,10 @@
         <div id="jsdoc-main" role="main">
           <header class="page-header">
             <div class="symbol-detail-labels"><span class="label label-kind">class</span></div>
-            <h1><small></small><span class="symbol-name">Command</span></h1>
-            <p class="source-link">Source: <a href="bot_Command.js.html#source-line-6">bot/<wbr>Command.<wbr>js:6</a></p>
+            <h1><small></small><span class="symbol-name">StatsManager</span></h1>
+            <p class="source-link">Source: <a href="stats_StatsManager.js.html#source-line-17">stats/<wbr>StatsManager.<wbr>js:17</a></p>
             <div class="symbol-classdesc">
-              <p>Used for each instance of ran commands for easier interaction and customizable actions</p>
+              <p>Manager for stats API &amp; DataDog requests</p>
             </div>
             <dl class="dl-compact">
             </dl>
@@ -39,39 +39,27 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Command.html#channel">channel</a></dt>
+                    <dt><a href="StatsManager.html#app">app</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="Command.html#client">client</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="Command.html#cmd">cmd</a></dt>
+                    <dt><a href="StatsManager.html#cluster">cluster</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Command.html#config">config</a></dt>
+                    <dt><a href="StatsManager.html#currents">currents</a></dt>
                     <dd>
                     </dd>
-                    <dt><a href="Command.html#db">db</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="Command.html#embed">embed</a></dt>
+                    <dt><a href="StatsManager.html#db">db</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Command.html#guild">guild</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="Command.html#handler">handler</a></dt>
-                    <dd>
-                    </dd>
-                    <dt><a href="Command.html#msg">msg</a></dt>
+                    <dt><a href="StatsManager.html#logger">logger</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -83,14 +71,20 @@
               <div class="summary-content">
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Command.html#delete">delete()</a></dt>
+                    <dt><a href="StatsManager.html#_createApp">_createApp()</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="StatsManager.html#_updateCurrents">_updateCurrents()</a></dt>
                     <dd>
                     </dd>
                   </dl>
                 </div>
                 <div class="summary-column">
                   <dl class="dl-summary-callout">
-                    <dt><a href="Command.html#send">send(content)</a></dt>
+                    <dt><a href="StatsManager.html#log">log(.<wbr>.<wbr>.<wbr>_)</a></dt>
+                    <dd>
+                    </dd>
+                    <dt><a href="StatsManager.html#start">start()</a></dt>
                     <dd>
                     </dd>
                   </dl>
@@ -101,10 +95,10 @@
             </div>
           </section>
           <section>
-            <h2 id="Command">new&nbsp;<span class="symbol-name">Command</span><span class="signature"><span class="signature-params">(CommandHanlder, message, cmd, db)</span></span></h2>
-            <p>For handling messages to a command site</p>
+            <h2 id="StatsManager">new&nbsp;<span class="symbol-name">StatsManager</span><span class="signature"><span class="signature-params">(cluster)</span></span></h2>
+            <p>Stats Manager</p>
             <section>
-              <h3>Parameters</h3>
+              <h3>Parameter</h3>
               <table class="jsdoc-details-table">
                 <thead>
                   <tr>
@@ -117,7 +111,7 @@
                 <tbody>
                   <tr>
                     <td>
-                      <p>CommandHanlder</p>
+                      <p>cluster</p>
                     </td>
                     <td>
                       <p>&nbsp;</p>
@@ -126,49 +120,7 @@
                       <p>&nbsp;</p>
                     </td>
                     <td>
-                      <p>Command Handler</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>message</p>
-                    </td>
-                    <td>
-                      <p>&nbsp;</p>
-                    </td>
-                    <td>
-                      <p>&nbsp;</p>
-                    </td>
-                    <td>
-                      <p>Message object</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>cmd</p>
-                    </td>
-                    <td>
-                      <p>&nbsp;</p>
-                    </td>
-                    <td>
-                      <p>&nbsp;</p>
-                    </td>
-                    <td>
-                      <p>Command object</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>db</p>
-                    </td>
-                    <td>
-                      <p>&nbsp;</p>
-                    </td>
-                    <td>
-                      <p>&nbsp;</p>
-                    </td>
-                    <td>
-                      <p>Database object2</p>
+                      <p>Cluster worker</p>
                     </td>
                   </tr>
                 </tbody>
@@ -180,60 +132,45 @@
           <section>
             <h2>Properties</h2>
             <section>
-              <h3 id="channel"><span class="symbol-name">channel</span><small class="property-type">
-                  &nbsp;Object</small></h3>
-              <p>Channel message was sent in</p>
+              <h3 id="app"><span class="symbol-name">app</span><small class="property-type">
+                  &nbsp;ExpressApp</small></h3>
+              <p>Express app</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="client"><span class="symbol-name">client</span><small class="property-type">
-                  &nbsp;<a href="Client.html">Client</a></small></h3>
-              <p>Client</p>
+              <h3 id="cluster"><span class="symbol-name">cluster</span><small class="property-type">
+                  &nbsp;<a href="Worker.html">Worker</a></small></h3>
+              <p>Cluster worker</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="cmd"><span class="symbol-name">cmd</span><small class="property-type">
+              <h3 id="currents"><span class="symbol-name">currents</span><small class="property-type">
                   &nbsp;Object</small></h3>
-              <p>Command object</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="config"><span class="symbol-name">config</span><small class="property-type">
-                  &nbsp;Object</small></h3>
-              <p>Client config</p>
+              <p>Current Object</p>
               <dl class="dl-compact">
               </dl>
               <h3 id="db"><span class="symbol-name">db</span><small class="property-type">
-                  &nbsp;Object</small></h3>
-              <p>Database object</p>
+                  &nbsp;<a href="Database.html">Database</a></small></h3>
+              <p>Database</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="embed"><span class="symbol-name">embed</span><small class="property-type">
-                  &nbsp;<a href="Embed.html">Embed</a></small></h3>
-              <p>New embed</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="guild"><span class="symbol-name">guild</span><small class="property-type">
-                  &nbsp;Object</small></h3>
-              <p>Guild message was sent in</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="handler"><span class="symbol-name">handler</span><small class="property-type">
-                  &nbsp;<a href="CommandHandler.html">CommandHandler</a></small></h3>
-              <p>Command Handler</p>
-              <dl class="dl-compact">
-              </dl>
-              <h3 id="msg"><span class="symbol-name">msg</span><small class="property-type">
-                  &nbsp;Object</small></h3>
-              <p>Message Object</p>
+              <h3 id="logger"><span class="symbol-name">logger</span><small class="property-type">
+                  &nbsp;<a href="Logger.html">Logger</a></small></h3>
+              <p>Logger</p>
               <dl class="dl-compact">
               </dl>
             </section>
             <h2>Methods</h2>
             <section>
-              <h3 id="delete"><span class="symbol-name">delete</span><span class="signature"><span class="signature-params">()</span></span></h3>
-              <p>Deletes instantiating message</p>
+              <h3 id="_createApp"><span class="symbol-name">_createApp</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Create HTTP API and bind to StatsEvents</p>
               <dl class="dl-compact">
               </dl>
-              <h3 id="send"><span class="symbol-name">send</span><span class="signature"><span class="signature-params">(content)</span>&nbsp;&rarr; <span class="signature-returns"> Promise containing Object</span></span></h3>
-              <p>Sends a message to the channel</p>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="_updateCurrents"><span class="symbol-name">_updateCurrents</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Update current numbers</p>
+              <dl class="dl-compact">
+              </dl>
+              <h3 id="log"><span class="symbol-name">log</span><span class="signature"><span class="signature-params">(..._)</span></span></h3>
+              <p>Log</p>
               <section>
                 <h4>Parameter</h4>
                 <table class="jsdoc-details-table">
@@ -248,26 +185,28 @@
                   <tbody>
                     <tr>
                       <td>
-                        <p>content</p>
+                        <p>_</p>
                       </td>
                       <td>
-                        <p>(String, Object, or <a href="Embed.html">Embed</a>)</p>
+                        <p>any</p>
                       </td>
                       <td>
                         <p>&nbsp;</p>
                       </td>
                       <td>
-                        <p>Content of message</p>
+                        <p>Log Data</p>
+                        <p>Value can be repeated.</p>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </section>
               <dl class="dl-compact">
-                <dt>Returns</dt>
-                <dd>
-                  <p><code>Promise containing Object</code> Message object</p>
-                </dd>
+              </dl>
+              <div class="symbol-detail-labels"><span class="label label-async">async</span></div>
+              <h3 id="start"><span class="symbol-name">start</span><span class="signature"><span class="signature-params">()</span></span></h3>
+              <p>Start</p>
+              <dl class="dl-compact">
               </dl>
             </section>
           </section>
