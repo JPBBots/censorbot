@@ -26,16 +26,20 @@ app.get('/about', (req, res) => {
   res.render('about')
 })
 
-app.get('/invite', (req, res) => {
-  res.render('invite')
-})
-
 app.get('/login', (req, res) => {
   res.render('login')
 })
 
+app.get('/invite', (req, res) => {
+  res.render('redirect', { url: '/api/invite' })
+})
+
 app.get('/support', (req, res) => {
-  res.redirect('https://discord.gg/mx6Gcdb')
+  res.render('redirect', { url: 'https://discord.gg/mx6Gcdb' })
+})
+
+app.get('/review', (req, res) => {
+  res.render('redirect', { url: 'https://top.gg/bot/394019914157129728#reviews' })
 })
 
 app.get('/admin', (req, res) => {
