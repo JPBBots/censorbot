@@ -34,12 +34,12 @@ module.exports = function (r) {
 
     if (req.method !== 'DELETE') {
       try {
-        filter._loadFilters()
+        filter.reload()
       } catch (err) {
         return res.json({ error: err.message })
       }
 
-      req.test = filter.test(req.ticket.word, Object.keys(filter.filters), [], [])
+      req.test = filter.test(req.ticket.word, { includes: () => true }, [], [])
     }
 
     next()
