@@ -1,5 +1,5 @@
 const replaceSpots = {
-  spaces: /_|\/|\\|\.|\n|&|-|\^|\+|=|:|~|,|\?|\(|\)|\s+/gi,
+  spaces: /\s|_|\/|\\|\.|\n|&|-|\^|\+|=|:|~|,|\?|\(|\)/gi,
   nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|​|‍|‏|‎/gi // eslint-disable-line no-irregular-whitespace
 }
 
@@ -110,6 +110,7 @@ class Filter {
       .replace(/<#?@?!?&?(\d+)>/g, '') // mentions
       .replace(/<a?:(\w+):(\d+)>/g, '$1') // emojis
       .replace(/(.)\1{2,}/g, '$1$1') // multiple characters only come up once
+      .replace(/\s+/, ' ')
 
     content = content.split(' ')
 
