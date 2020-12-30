@@ -1,0 +1,151 @@
+:root {
+  --main: #e5e5e5;
+  --mainalt: #bab3b3;
+  --secondary: #ea5455;
+  --different: #decdc3;
+  --topbar: #242e3b;
+  --topbaralt: #1a212b;
+  --background: #2d4059;
+}
+
+h1.important {
+  color: var(--secondary);
+}
+
+[hidden] {
+  display: none;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  margin: 0px;
+  color: var(--different);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+#root {
+  position: relative;
+  top: 50px;
+  z-index: 1;
+}
+
+nav {
+  top: 0px;
+  height: 50px;
+  width: 100%;
+  background-color: var(--topbar);
+  position: fixed;
+  z-index: 3;
+  border-bottom: 2px solid var(--background);
+}
+
+nav > h3 {
+  width: fit-content;
+  display: inline-block;
+  cursor: pointer;
+}
+
+nav > span {
+  float: right;
+}
+
+nav > span > a {
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+}
+nav > span > a > div {
+  padding: 12px 10px 12px 10px;
+  color: var(--different);
+  text-align: center;
+}
+#login[loggedin] {
+  background-size: 100% 200%;
+  background-image: linear-gradient(to bottom, var(--topbar) 50%, var(--secondary) 50%);
+  transition: background-position 1s;
+}
+
+nav > span > a:hover {
+  transition: 0.2s;
+  background-color: var(--topbaralt);
+}
+
+#login[loggedin]:hover {
+  background-position: 0 -100%;
+}
+
+nav > * {
+  margin: 4px 20px 25px 10px;
+}
+nav > h3 {
+  margin-top: 15px
+}
+
+.button {
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+  background-color: var(--topbar);
+  color: var(--main);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button:hover {
+  transition: 0.2s;
+  background-color: var(--topbaralt);
+}
+
+.button.special {
+  background-color: var(--main);
+  color: var(--background);
+}
+.button.special:hover {
+  transition: 0.2s;
+  background-color: var(--mainalt);
+}
+
+#root {
+  transition: 1s
+}
+
+#root.loading {
+  transition: 1s;
+  opacity: 0
+}
+
+@keyframes spin {
+  1% {
+    transform:rotate(0deg);
+  }
+  100% {
+    transform:rotate(360deg);
+  }
+}
+
+#loader {
+  position: fixed;
+  backdrop-filter: blur(20px);
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
+  z-index: 10;
+  margin: 0;
+  top: 0;
+}
+
+#loader > center {
+  position: relative;
+  top: 20%;
+}
+
+#loader > center > img {
+  width: 200px;
+  animation-name: spin;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}

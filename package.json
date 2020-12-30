@@ -8,7 +8,9 @@
     "commit": "git add . && echo \"Commit Message:\" && read msg && git commit -m \"$msg\"",
     "push": "git push",
     "jsdoc": "jsdoc ./ -r -c ./jsdoc.json --verbose -d ./docs",
-    "log": "docker logs --tail=50 censorbot_prod_1 --follow"
+    "log": "docker logs --tail=50 censorbot_prod_1 --follow",
+    "buildsite": "cd website && rm -rf ./build && node ./src/PreBuild.js && tsc && webpack && cd ..",
+    "site": "npm run buildsite && node ./website/server.js"
   },
   "repository": {
     "type": "git",
@@ -22,7 +24,10 @@
   "homepage": "https://github.com/jpbberry/censorbot#readme",
   "devDependencies": {
     "standard": "*",
-    "jsdoc-baseline": "*"
+    "jsdoc-baseline": "*",
+    "typescript": "*",
+    "webpack-cli": "*",
+    "minify": "*"
   },
   "dependencies": {
     "body-parser": "1.19.0",

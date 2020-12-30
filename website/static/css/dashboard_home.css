@@ -1,0 +1,42 @@
+#guilds {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-rows: repeat(auto-fill, minmax(170px, 1fr));
+}
+
+#guilds > a {
+  background-color: var(--topbar);
+  width: 90%;
+  height: 90%;
+  padding: 10px 5px 0 5px;
+  margin: auto;
+  text-align: center;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--different);
+}
+
+#guilds > a:hover {
+  background-color: var(--topbaralt);
+  transition: 0.5s;
+}
+
+#guilds > a:active {
+  opacity: 0.6;
+}
+
+#guilds > a > img, #guilds > a > h2 {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+#guilds > a > h2 {
+  background-color: #36393f;
+  margin: auto;
+  font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-size: 2rem;
+  color: white;
+  padding-top: 16%;
+  height: 67px;
+  font-weight: 100;
+}

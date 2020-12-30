@@ -1,0 +1,173 @@
+#title {
+  margin: 100px 0px 0px 80px;
+}
+
+#logo {
+  right: -3vw;
+  top: 8vh;
+  position: fixed;
+  width: 40vw;
+  z-index: -1;
+  transform: rotate(-60deg);
+  user-select: none;
+}
+
+#logo.rollon {
+  animation-name: rollon;
+  animation-fill-mode: forwards;
+  animation-duration: 1.5s;
+}
+
+#logo.rolloff {
+  animation-duration: 2s;
+  animation-name: rolloff;
+  animation-fill-mode: forwards;
+}
+
+#logo.slowdown {
+  transition: 0.5s;
+}
+
+#info {
+  margin-top: 27vh;
+  width: 100%;
+  height: -webkit-fill-available;
+  background-color: var(--topbar);
+  z-index: 2;
+}
+
+#scroll {
+  position: fixed;
+  bottom: 5px;
+  left: 46vw;
+}
+
+#buttons > a {
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+section {
+  width: 80%;
+  margin: auto;
+  padding: 40px;
+  display: inline-block;
+  border-bottom: 3px solid var(--background);
+  background-color: var(--topbar);
+}
+
+section > h1 {
+  font-size: 50px;
+  margin: 0px;
+  margin-bottom: 2.5vh;
+  margin-top: 2.5vh;
+}
+
+section > article {
+  font-size: 22px;
+  margin-top: 2.5vh;
+  margin-bottom: 2.5vh;
+}
+
+
+
+@media (min-width: 900px) {
+  section > h1 {
+    width: 35%;
+  }
+  section:nth-child(odd) > h1 {
+    float: left;
+  }
+  section:nth-child(even) > h1 {
+    float: right;
+  }
+}
+
+@media (max-width: 650px) {
+  #logo {
+    display: none;
+  }
+  #title {
+    text-align: center!important;
+    width: 70%!important;
+    margin-left: 15%;
+  }
+  #scroll {
+    display: none!important;
+  }
+  #info {
+    margin-top: 17vh;
+  }
+}
+
+@media (min-width: 649px) {
+  #title {
+    text-align: left;
+    width: 30%;
+  }
+  #buttons > a {
+    font-size: 2vw;
+  }
+  #title > h1 {
+    font-size: 4vw;
+  }
+  
+  #title > h4 {
+    font-size: 2vw;
+  }
+}
+
+@media (max-height: 430px) {
+  #scroll {
+    display: none!important;
+  }
+}
+
+@keyframes rolloff {
+  0% {
+    right: -3vw;
+  }
+  1% {
+    transform: rotate(-60deg);
+  }
+  99% {
+    transform: rotate(-500deg);
+  }
+  100% {
+    right: 120vw;
+  }
+}
+
+@keyframes rollon {
+  0% {
+    right: 120vw;
+  }
+  1% {
+    transform: rotate(-500deg);
+  }
+  99% {
+    transform: rotate(-60deg);
+  }
+  100% {
+    right: -3vw;
+  }
+}
+
+@keyframes loadroll {
+  0% {
+    right: -3vw;
+  }
+  1% {
+    transform: rotate(-60deg);
+  }
+  50% {
+    transform: rotate(-500deg);
+    right: 90vw;
+  }
+  99% {
+    transform: rotate(-60deg);
+  }
+  100% {
+    right: -3vw;
+  }
+}
