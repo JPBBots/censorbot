@@ -41,6 +41,7 @@ export class Utils {
   static registerButtons (elm?: HTMLElement) {
     if (elm) {
       elm.onclick = (e) => {
+        if (elm.hasAttribute('disabled')) return e.preventDefault()
         if (e.ctrlKey || elm.getAttribute('href') === "#") return
 
         e.preventDefault()

@@ -52,6 +52,8 @@ nav > h3 {
 
 nav > span {
   float: right;
+  position: absolute;
+  right: 0;
 }
 
 nav > span > a {
@@ -95,7 +97,16 @@ nav > h3 {
   cursor: pointer;
 }
 
-.button:hover {
+.button[disabled] {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.button[selected] {
+  cursor: default
+}
+
+.button:not([disabled]):not([selected]):hover {
   transition: 0.2s;
   background-color: var(--topbaralt);
 }

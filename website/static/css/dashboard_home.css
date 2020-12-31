@@ -1,4 +1,5 @@
 #guilds {
+  margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   grid-template-rows: repeat(auto-fill, minmax(170px, 1fr));
@@ -39,4 +40,17 @@
   padding-top: 16%;
   height: 67px;
   font-weight: 100;
+  margin-bottom: 27px;
+}
+
+#discord {
+  background-color: #7289DA;
+}
+
+#twitch {
+  background-color: #6441A4;
+}
+
+#premium {
+  background-color: #FF424D;
 }

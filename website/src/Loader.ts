@@ -8,6 +8,7 @@ import { Landing } from "./pages/Landing";
 import { e404 } from "./pages/404"
 import { Test } from './pages/Test'
 import { DashboardHome } from './pages/DashboardHome'
+import { GuildSettings } from './pages/GuildSettings'
 
 export class Loader {
   private pages: Collection<string, PageInterface>
@@ -69,7 +70,7 @@ export class Loader {
   }
 
   load () {
-    [Landing, e404, Test, DashboardHome]
+    [Landing, e404, Test, DashboardHome, GuildSettings]
       .forEach(Page => {
         const page = new Page(this)
         this.pages.set(page.name, page)

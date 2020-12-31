@@ -71,7 +71,7 @@ export class CensorBotApi {
     return CensorBotApi.url + url
   }
 
-  private async request (message: false|string, method: string, url: string, body?: object): Promise<any|false> {
+  private async request (message: false|string, method: string, url: string, body?: object, returnErrors?: number): Promise<any|false> {
     if (message) Utils.presentLoad(message)
 
     const headers = new Headers()
@@ -89,7 +89,7 @@ export class CensorBotApi {
 
     if (message) Utils.stopLoad()
 
-    if (!req.ok) {
+    if (!req.ok && returnErrors && returnErrors !== req.status) {
       Logger.tell('Error: ' + response.message)
       Logger.log('API', `Error from ${url}: ${req.status} / ${req.statusText} = ${response.message}`)
       return false
@@ -103,7 +103,7 @@ export class CensorBotApi {
 
     this.guilds = null
 
-    Utils.reloadPage()
+    Utils.setPath()
 
     this.fetch()
   }
@@ -144,11 +144,44 @@ export class CensorBotApi {
 
     if (this.guilds) return this.guilds
 
-    const result = await this.request('Fetching guilds', 'GET', '/guilds')
+    const result = await this.request('Fetching servers', 'GET', '/guilds')
     if (!result) return false
 
     this.guilds = result
 
     return result
+  }
+
+  public async getGuild (id: Snowflake): Promise<GuildData|false> {
+    if (!this.token && !await this.auth(true)) return false
+
+    const guild = await this.request('Fetching server', 'GET', `/guilds/${id}`, null, 404)
+
+    if (guild.error === 'Not In Guild') {
+      const back = document.createElement('a')
+            back.innerText = 'Back'
+            back.style.marginRight = '7px'
+            back.classList.add('button')
+            back.onclick = () => {
+              Utils.stopLoad()
+              Utils.setPath('/dashboard')
+            }
+      const invite = document.createElement('a')
+            invite.innerText = 'Invite'
+            invite.classList.add('button')
+            invite.onclick = async () => {
+              await Utils.openWindow(this._formUrl('/invite?id=' + id), 'Invite')
+              Utils.reloadPage()
+            }
+      const div = document.createElement('div')
+            div.appendChild(document.createTextNode('Not in server.'))
+            div.appendChild(document.createElement('br'))
+            div.appendChild(document.createElement('br'))
+            div.appendChild(back)
+            div.appendChild(invite)
+      Utils.presentLoad(div)
+      return false
+    }
+    return guild
   }
 }

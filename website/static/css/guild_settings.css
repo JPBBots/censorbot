@@ -1,0 +1,68 @@
+#settings {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas:
+    "general general filter filter"
+    "punishments punishments filter filter"
+    ". other other ."
+}
+
+#settings > section {
+  background-color: var(--topbar);
+  text-align: center;
+  margin: 10px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(33%, 1fr));
+  grid-template-areas: "name name name";
+}
+
+#settings > section > h1 {
+  text-decoration: underline;
+  margin: 0px 100px 20px 100px;
+  grid-area: name;
+}
+
+input, select {
+  background-color: var(--topbaralt);
+  border: 2px black solid;
+  outline: unset;
+  color: var(--mainalt);
+  padding: 5px;
+}
+
+#general {
+  grid-area: general;
+}
+
+#filter {
+  grid-area: filter;
+}
+
+#punishments {
+  grid-area: punishments;
+}
+
+#other {
+  grid-area: other;
+}
+
+@media (max-width: 750px) {
+  #settings {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-areas:
+      "general"
+      "filter"
+      "punishments"
+      "other";
+  }
+}
+
+@media (max-width: 1050px) {
+  #settings > section {
+    grid-template-columns: repeat(auto-fill, minmax(50%, 1fr));
+    grid-template-areas: "name name";
+  }
+}

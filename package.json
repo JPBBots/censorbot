@@ -10,7 +10,8 @@
     "jsdoc": "jsdoc ./ -r -c ./jsdoc.json --verbose -d ./docs",
     "log": "docker logs --tail=50 censorbot_prod_1 --follow",
     "buildsite": "cd website && rm -rf ./build && node ./src/PreBuild.js && tsc && webpack && cd ..",
-    "site": "npm run buildsite && node ./website/server.js"
+    "site": "npm run buildsite && node ./website/server.js",
+    "quicksite": "cd website && node ./src/PreBuild.js && cd .. && node ./website/server.js"
   },
   "repository": {
     "type": "git",

@@ -71,17 +71,19 @@ class StatsManager extends BufferedMetricsLogger {
       }
     ]
 
-    this.clocks = [
-      setInterval(() => { // 30 seconds
-        this.runs[0]()
-      }, 30000),
-      setInterval(() => { // 2 minutes
-        this.runs[1]()
-      }, 120000),
-      setInterval(() => { // 5 minutes
-        this.runs[2]()
-      }, 300000)
-    ]
+    if (datadog.key !== 'none') {
+      this.clocks = [
+        setInterval(() => { // 30 seconds
+          this.runs[0]()
+        }, 30000),
+        setInterval(() => { // 2 minutes
+          this.runs[1]()
+        }, 120000),
+        setInterval(() => { // 5 minutes
+          this.runs[2]()
+        }, 300000)
+      ]
+    }
 
     /**
      * Current Object
@@ -107,12 +109,13 @@ class StatsManager extends BufferedMetricsLogger {
    * Start
    */
   async start () {
+    await this._createApp()
+
+    if (datadog.key === 'none') return
     this.db = new Database(this, config.db.username, config.db.password)
     await this.db.connect()
 
     await this._updateCurrents()
-
-    await this._createApp()
 
     await Promise.all(this.runs.map(x => x()))
 
@@ -126,7 +129,8 @@ class StatsManager extends BufferedMetricsLogger {
     return new Promise(resolve => {
       this.app = Express()
 
-      LoadRoutes(this, this.app, __dirname, './routes')
+      if (datadog.key === 'none') this.app.use((req, res) => res.json({ success: true }))
+      else LoadRoutes(this, this.app, __dirname, './routes')
 
       this.app.listen(statsPort, () => {
         resolve()
