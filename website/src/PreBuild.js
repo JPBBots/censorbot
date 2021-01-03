@@ -15,8 +15,27 @@ fs.readdirSync(pathTo.html()).forEach(file => {
   if (ext !== 'html') return
   console.log(`Compiling HTML file ${file}`)
 
-  const contents = fs.readFileSync(pathTo.html(file), 'utf-8')
+  let contents = fs.readFileSync(pathTo.html(file), 'utf-8')
   if (!result[name]) result[name] = {}
+
+  // custom elements
+  contents = contents
+    .replace(/<Setting:(.+?) (.+?)>(.+?)<\/Setting>/gs, `
+    <div id="$1">
+      <h3>$2</h3>
+      $3
+    </div>
+    `)
+    .replace(/<Switch(.*)>.*<\/Switch>/g, `
+    <label class="checker">
+      <input$1 class="checkbox" type="checkbox" />
+      <div class="checkmark">
+        <svg viewBox="0 0 100 100">
+          <path d="M20,55 L40,75 L77,27" fill="none" stroke="#FFF" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+    </label>
+    `)
 
   result[name].html = minify.html(contents)
 })

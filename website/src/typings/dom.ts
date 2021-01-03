@@ -4,9 +4,9 @@ declare global {
   interface History { 
     onurlchange: () => void
   }
-  interface Window { 
-    api: string
-    __LOADER: Loader 
+  interface Window {
+    __LOADER: Loader
+    dev: boolean
   }
   
   interface WebData {

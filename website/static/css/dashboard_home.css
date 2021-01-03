@@ -37,20 +37,8 @@
   font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
   font-size: 2rem;
   color: white;
-  padding-top: 16%;
+  padding-top: 19%;
   height: 67px;
   font-weight: 100;
-  margin-bottom: 27px;
-}
-
-#discord {
-  background-color: #7289DA;
-}
-
-#twitch {
-  background-color: #6441A4;
-}
-
-#premium {
-  background-color: #FF424D;
+  margin-bottom: 23px;
 }

@@ -28,7 +28,7 @@ export class DashboardHome extends Page implements PageInterface {
         icon.src = guild.a ? `https://cdn.discordapp.com/icons/${guild.i}/${guild.a}.png` : 'https://cdn.discordapp.com/embed/avatars/1.png'
       } else {
         icon = document.createElement('h2')
-        icon.innerText = guild.n.split(' ').slice(0, 3).reduce((a, b) => a + b[0].toUpperCase(), '')
+        icon.innerText = guild.n.split(' ').slice(0, 3).reduce((a, b) => a + b[0], '')
       }
       a.appendChild(icon)
       a.appendChild(name)

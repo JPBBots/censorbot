@@ -24,7 +24,7 @@ class PageClass {
   /**
    * Page registry for caching data, cleared when unrendered
    */
-  public registry: object = {}
+  public registry: any = {}
 
   public loader: Loader
   public api: CensorBotApi
@@ -73,7 +73,14 @@ class PageClass {
   
   async render () {
     document.getElementById('root').innerHTML = ''
-    document.getElementById('css').innerText = this.data.css || ''
+    if (window.dev) {
+      const styleDoc = document.getElementById('style')
+      if (styleDoc) document.head.removeChild(styleDoc)
+
+      Utils.addStyleSheet(`/static/css/${this.name}.css`, 'style')
+    } else {
+      document.getElementById('css').innerText = this.data.css || ''
+    }
     document.getElementById('root').innerHTML = this.data.html
     this.fetchElements.forEach(elm => {
       this.elements[elm] = document.getElementById(elm)
@@ -86,6 +93,7 @@ class PageClass {
     // 
     this.log('Unrendered')
     this.elements = {}
+    this.registry = {}
     events.removeEventListener(this.name)
   }
 }

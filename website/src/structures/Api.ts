@@ -89,27 +89,35 @@ export class CensorBotApi {
 
     if (message) Utils.stopLoad()
 
-    if (!req.ok && returnErrors && returnErrors !== req.status) {
-      Logger.tell('Error: ' + response.message)
+    if (!req.ok && !(returnErrors && returnErrors === req.status)) {
+      if (response.message) Logger.tell('Error: ' + response.message)
       Logger.log('API', `Error from ${url}: ${req.status} / ${req.statusText} = ${response.message}`)
+      if (req.status === 401) {
+        const auth = await this.auth(true)
+        if (!auth) return false
+        return this.request(message, method, url, body, returnErrors)
+      }
       return false
     }
 
     return response
   }
 
-  private logout () {
+  private async logout (redir: boolean = true) {
+    await this.request(null, 'DELETE', '/auth')
+
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
     this.guilds = null
 
-    Utils.setPath()
+    if (redir) Utils.setPath()
 
     this.fetch()
   }
 
   private async auth (required?: boolean): Promise<boolean> {
     Utils.presentLoad('Waiting for you to authorize...')
+    await this.logout(false)
 
     await Utils.openWindow(this._formUrl('/auth'), 'Login')
 

@@ -24,14 +24,6 @@
   grid-area: name;
 }
 
-input, select {
-  background-color: var(--topbaralt);
-  border: 2px black solid;
-  outline: unset;
-  color: var(--mainalt);
-  padding: 5px;
-}
-
 #general {
   grid-area: general;
 }
@@ -46,6 +38,10 @@ input, select {
 
 #other {
   grid-area: other;
+}
+
+#channels, #filters {
+  grid-column: span 3;
 }
 
 @media (max-width: 750px) {

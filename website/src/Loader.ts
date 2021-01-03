@@ -9,6 +9,7 @@ import { e404 } from "./pages/404"
 import { Test } from './pages/Test'
 import { DashboardHome } from './pages/DashboardHome'
 import { GuildSettings } from './pages/GuildSettings'
+import { PremiumSettings } from './pages/PremiumSettings'
 
 export class Loader {
   private pages: Collection<string, PageInterface>
@@ -41,7 +42,13 @@ export class Loader {
 
   async run () {
     if (!this.pageData) this.pageData = await import('./web.json').then(x => x.default)
-    
+
+    if (window.dev) {
+      Utils.addStyleSheet('/static/css/index.css')
+    } else {
+      document.getElementById('indcss').innerText = this.pageData.index.css
+    }
+
     this.load()
     const firstPage = this.pathPage()
 
@@ -70,7 +77,7 @@ export class Loader {
   }
 
   load () {
-    [Landing, e404, Test, DashboardHome, GuildSettings]
+    [Landing, e404, Test, DashboardHome, GuildSettings, PremiumSettings]
       .forEach(Page => {
         const page = new Page(this)
         this.pages.set(page.name, page)
@@ -94,7 +101,7 @@ export class Loader {
       else this.currentPage.unrender()
     }
     this.root.classList.add('loading')
-    await this.util.wait(800)
+    await this.util.wait(200)
     await pg.render()
     if (loader) await loader
     await pg.go()

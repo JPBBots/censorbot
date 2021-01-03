@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.1.0/dist/tagify.css" />
+
 <center>
   <h1 id="name">Loading...</h1>
   <a href="/dashboard" class="button">Back</a>
@@ -8,29 +10,47 @@
   <section id="general">
     <h1>General</h1>
 
-    <div>
-      <h3>Prefix</h3>
-      <input maxlength="10" placeholder="None" type="text" id="prefix">
-    </div>
-    <div>
-      <h3>Log Channel</h3>
-      <select id="log">
+    <Setting:prefix Prefix>
+      <input autocomplete="off" maxlength="10" placeholder="None">
+    </Setting>
+    <Setting:log Log Channel>
+      <select>
         <option>None</option>
       </select>
-    </div>
-    <div>
-      <h3>Ignored Role</h3>
-      <select id="role">
+    </Setting>
+    <Setting:role Ignored Role>
+      <select>
         <option>None</option>
       </select>
-    </div>
+    </Setting>
+    <Setting:channels Ignore Channels>
+      <input placeholder="Add Channels" hidden>
+    </Setting>
+    <Setting:dm DM Command Responses>
+      <Switch></Switch>
+    </Setting>
   </section>
+
   <section id="filter">
     <h1>Filter</h1>
+    <Setting:invites Censor Invites>
+      <Switch></Switch>
+    </Setting>
+    <Setting:multi Multi-Line>
+      <Switch premium></Switch>
+    </Setting>
+    <Setting:fonts Font Recognition>
+      <Switch premium></Switch>
+    </Setting>
+    <Setting:filters Filters>
+      <input placeholder="Add Filters" hidden>
+    </Setting>
   </section>
+
   <section id="punishments">
     <h1>Punishments</h1>
   </section>
+
   <section id="other">
     <h1>Other</h1>
   </section>

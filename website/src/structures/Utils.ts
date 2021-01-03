@@ -99,4 +99,13 @@ export class Utils {
     document.getElementById('loadtext').innerText = 'Loading...'
     document.getElementById('loader').setAttribute('hidden', '')
   }
+
+  static addStyleSheet (url: string, id?: string) {
+    const style = document.createElement('link')
+          style.rel = 'stylesheet'
+          style.href = url
+    if (id) style.id = id
+
+    document.head.appendChild(style)
+  }
 }
