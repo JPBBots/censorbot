@@ -7,12 +7,13 @@
 
 #guilds > a {
   background-color: var(--topbar);
-  width: 90%;
-  height: 90%;
-  padding: 10px 5px 0 5px;
+  width: 75%;
+  height: 81%;
+  padding: 20px 10px 2px 10px;
   margin: auto;
   text-align: center;
-  border-radius: 8px;
+  border-radius: 4px;
+  border: 2px var(--topbaralt) solid;
   text-decoration: none;
   color: var(--different);
 }

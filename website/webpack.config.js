@@ -15,9 +15,11 @@ module.exports = {
           ecma: 5,
           sourceMap: true,
           mangle: {
+            module: true,
             toplevel: true
           },
           compress: {
+            defaults: true,
             arguments: true,
             hoist_props: true,
             keep_fargs: false,

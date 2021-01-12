@@ -5,7 +5,6 @@ module.exports = function (guild) {
   currentGuild.name = guild.name
   currentGuild.region = guild.region
   currentGuild.owner_id = guild.owner_id
-  currentGuild.member_count = guild.member_count
 
   this.guilds.set(guild.id, currentGuild)
 }

@@ -90,8 +90,8 @@ export class CensorBotApi {
     if (message) Utils.stopLoad()
 
     if (!req.ok && !(returnErrors && returnErrors === req.status)) {
-      if (response.message) Logger.tell('Error: ' + response.message)
-      Logger.log('API', `Error from ${url}: ${req.status} / ${req.statusText} = ${response.message}`)
+      if (response.message) Logger.tell('Error: ' + response.error)
+      Logger.log('API', `Error from ${url}: ${req.status} / ${req.statusText} = ${response.error}`)
       if (req.status === 401) {
         const auth = await this.auth(true)
         if (!auth) return false
@@ -110,7 +110,7 @@ export class CensorBotApi {
 
     this.guilds = null
 
-    if (redir) Utils.setPath()
+    if (redir && window.location.pathname !== '/') Utils.setPath()
 
     this.fetch()
   }
@@ -191,5 +191,20 @@ export class CensorBotApi {
       return false
     }
     return guild
+  }
+
+  public async postSettings (id: Snowflake, data: GuildDB): Promise<GuildDB|false> {
+    if (!this.token && !await this.auth(true)) return false
+
+    return this.request('Saving...', 'POST', `/guilds/${id}`, data)
+  }
+
+  public async postPremium (guilds: Snowflake[]): Promise<Snowflake[]|false> {
+    if (!this.token && !await this.auth(true)) return false
+
+    const response = await this.request('Setting premium servers', 'POST', '/users/@me/premium', { guilds })
+
+    if (response) this.user.premium.guilds = response
+    return response
   }
 }

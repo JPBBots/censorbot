@@ -2,6 +2,7 @@ website/build
 website/static/build.js
 website/static/build.js.map
 website/src/web.json
+website/src/config.json
 
 TODO.txt
 

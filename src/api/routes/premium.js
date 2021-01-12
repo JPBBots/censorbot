@@ -26,12 +26,6 @@ module.exports = function (r) {
     next()
   })
 
-  r.get('/', (req, res) => {
-    if (req.premium.count < 1) return res.status(403).json({ error: 'Not Premium' })
-
-    res.json({ premium: req.premium, guilds: req.guilds })
-  })
-
   r.post('/', async (req, res) => {
     if (req.premium.count < 1) return res.status(403).json({ error: 'Not Premium' })
 
@@ -41,7 +35,7 @@ module.exports = function (r) {
 
     if (guilds.length > req.premium.count) return res.status(403).json({ error: 'Not enough available premium slots' })
 
-    if (guilds.some(x => !x.match(/[0-9]{15,17}/))) return res.status(400).json({ error: 'Strange guild ID' })
+    if (!guilds.every(x => x.match(/^[0-9]{15,17}$/))) return res.status(400).json({ error: 'Strange guild ID' })
 
     await this.db.collection('premium_users').updateOne({ id: req.user.id }, {
       $set: {

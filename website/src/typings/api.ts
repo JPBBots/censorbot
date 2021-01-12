@@ -14,6 +14,19 @@ interface User {
    */
   avatar: string
   /**
+   * Premium data
+   */
+  premium: {
+    /**
+     * Amount of premium servers this user has
+     */
+    count: number
+    /**
+     * Guilds that are premium for this users
+     */
+    guilds: Snowflake[]
+  }
+  /**
    * Whether or not user is admin
    */
   admin: boolean
@@ -37,7 +50,7 @@ interface ShortGuild {
 type filterType = 'en' | 'es' | 'off' | 'de' | 'ru'
 
 interface GuildDB {
-  id: Snowflake
+  id?: Snowflake
   filters: filterType[]
   censor: {
     msg: boolean

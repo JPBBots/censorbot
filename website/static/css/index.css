@@ -117,13 +117,21 @@ nav > h3 {
   background-color: var(--topbaralt);
 }
 
-.button.special {
+.button[special] {
   background-color: var(--main);
   color: var(--background);
 }
-.button.special:hover {
+.button[special]:hover {
   transition: 0.2s;
   background-color: var(--mainalt) !important;
+}
+
+.button[unselected] {
+  opacity: 1;
+}
+
+.button[selected] {
+  opacity: 0.6 !important;
 }
 
 #root {
@@ -133,6 +141,10 @@ nav > h3 {
 #root.loading {
   transition: 0.5s;
   opacity: 0
+}
+
+small {
+  font-size: 0.6em
 }
 
 @keyframes spin {
@@ -147,8 +159,9 @@ nav > h3 {
 #loader {
   position: fixed;
   backdrop-filter: blur(20px);
-  height: -webkit-fill-available;
-  width: -webkit-fill-available;
+  -webkit-backdrop-filter: blur(20px);
+  height: 100%;
+  width: 100%;
   z-index: 10;
   margin: 0;
   top: 0;
@@ -167,18 +180,6 @@ nav > h3 {
   animation-timing-function: ease-in-out;
 }
 
-#discord {
-  background-color: #7289DA;
-}
-
-#twitch {
-  background-color: #6441A4;
-}
-
-#premium {
-  background-color: #FF424D;
-}
-
 /** inputs **/
 
 input, select {
@@ -186,27 +187,33 @@ input, select {
   border: 2px var(--topbar) solid;
   outline: unset;
   color: var(--mainalt);
-  padding: 5px;
+  padding: 10px;
   -webkit-appearance: none;
+}
+
+input[type="number"] {
+  width: fit-content;
 }
 
 .tagify {
   color: var(--mainalt);
+  background-color: var(--topbaralt);
   text-align: left;
   border: 2px var(--topbaralt) solid !important;
 
-  --tag-bg: var(--topbaralt) !important;
+  --tag-bg: var(--topbar) !important;
   --tag-hover: var(--topbaralt) !important;
   --tag-text-color: var(--mainalt) !important;
 }
 
 .tagify__input::before {
-  color: var(--maintalt) !important;
+  color: var(--main) !important;
 }
 
 .tagify__dropdown__wrapper {
   background: var(--topbar) !important;
   border: 1px solid var(--topbaralt) !important;
+  overflow-y: scroll !important;
 }
 
 .tagify__dropdown__item--active {

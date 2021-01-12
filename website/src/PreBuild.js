@@ -3,6 +3,8 @@ const path = require('path')
 
 const minify = require('minify')
 
+const defaultConfig = require('../../src/client/Config').config
+
 const pathTo = {
   html: path.resolve.bind(undefined, __dirname, '../static/html'),
   css: path.resolve.bind(undefined, __dirname, '../static/css')
@@ -26,7 +28,23 @@ fs.readdirSync(pathTo.html()).forEach(file => {
       $3
     </div>
     `)
-    .replace(/<Switch(.*)>.*<\/Switch>/g, `
+    .replace(/<Duration (.+)>/g, `
+      <Number min="1" max="60">
+      <select onchange="this.parentElement.querySelector('input')[this.value == '' ? 'setAttribute' : 'removeAttribute']('hidden', '')">
+        <option value="60000">Minutes</option>
+        <option value="3600000">Hours</option>
+        <option value="86400000">Days</option>
+        <option value>$1</option>
+      </select>
+    `)
+    .replace(/<Number(.*)>/g, `
+      <input$1 type="number" pattern="\\d*" inputmode="numeric"
+      onchange="this.value==='0'?(this.value=''):this.value>Number(this.max)?(this.value=this.max):this.value<Number(this.min)?(this.value=this.min):null">
+    `)
+    .replace(/<Button(=.+)? ?(.*)>(.*)<\/Button>/g, `
+    <a $2 href$1 class="button">$3</a>
+    `)
+    .replace(/<Switch(.*)>/g, `
     <label class="checker">
       <input$1 class="checkbox" type="checkbox" />
       <div class="checkmark">
@@ -36,6 +54,7 @@ fs.readdirSync(pathTo.html()).forEach(file => {
       </div>
     </label>
     `)
+    .replace(/href(?!=)/g, '')
 
   result[name].html = minify.html(contents)
 })
@@ -52,5 +71,6 @@ fs.readdirSync(pathTo.css()).forEach(file => {
 })
 
 fs.writeFileSync(path.resolve(__dirname, 'web.json'), JSON.stringify(result, null, 4))
+fs.writeFileSync(path.resolve(__dirname, 'config.json'), JSON.stringify(defaultConfig, null, 2))
 
 console.log('Finished compiling web')

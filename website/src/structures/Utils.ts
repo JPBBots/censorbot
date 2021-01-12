@@ -1,12 +1,10 @@
-import { Logger } from "./Logger"
-
 export class Utils {
   /**
    * Scroll to element on page
-   * @param id ID of element
+   * @param query Query for element
    */
-  static scroll (id: string): void {
-    const doc = document.getElementById(id)
+  static scroll (query: string): void {
+    const doc = document.querySelector(query)
     if (!doc) return
     window.scrollTo(0, doc.getBoundingClientRect().top - 50)
   }
@@ -40,9 +38,10 @@ export class Utils {
    */
   static registerButtons (elm?: HTMLElement) {
     if (elm) {
+      if(['#', ''].includes(elm.getAttribute('href'))) return
       elm.onclick = (e) => {
         if (elm.hasAttribute('disabled')) return e.preventDefault()
-        if (e.ctrlKey || elm.getAttribute('href') === "#") return
+        if (e.ctrlKey) return
 
         e.preventDefault()
 
@@ -100,6 +99,11 @@ export class Utils {
     document.getElementById('loader').setAttribute('hidden', '')
   }
 
+  /**
+   * Adds a stylesheet to DOM
+   * @param url URL for stylesheet
+   * @param id Optional id for style element
+   */
   static addStyleSheet (url: string, id?: string) {
     const style = document.createElement('link')
           style.rel = 'stylesheet'
@@ -107,5 +111,69 @@ export class Utils {
     if (id) style.id = id
 
     document.head.appendChild(style)
+  }
+
+  /**
+   * Gets tagify data
+   * @param elm Element
+   */
+  static getTagify (elm: HTMLInputElement): Array<any> {
+    if (!elm.value) return []
+    return JSON.parse(elm.value).map(x => x.id ?? x.value)
+  }
+
+  /**
+   * Sets tagify data
+   * @param array Array of ID's
+   * @param tag Tag class
+   */
+  static setTagify (array: string[], tag: any) {
+    tag.removeAllTags()
+    if (tag.settings.whitelist.length > 0) {
+      tag.settings.whitelist.filter(x => array.includes(x.id)).forEach(x => tag.addTags(x.value))
+    } else {
+      array.forEach(x => tag.addTags(x))
+    }
+  }
+
+  /**
+   * Gets the duration for a <Duration> element
+   * @param inp Input element
+   */
+  static getDuration (inp: HTMLInputElement): number {
+    const select = inp.parentElement.querySelector('select')
+    if (select.value === '') return null
+    return Number(inp.value) * Number(select.value)
+  }
+
+  /**
+   * Sets the duration for a <Duration> element
+   * @param inp Input element
+   */
+  static setDuration (inp: HTMLInputElement, value?: number): void {
+    const select = inp.parentElement.querySelector('select')
+    if (value === null) {
+      inp.setAttribute('hidden', '')
+      select.value = ''
+    } else {
+      const multiples: HTMLOptionElement[] = []
+      for (let i = 0; i < select.children.length - 1; i++) multiples.push(select.children[i] as HTMLOptionElement)
+      const currentTime = multiples.slice(1).reduce((a, b) => (Number((a as HTMLOptionElement).value) * Number(inp.max)) < value ? b : a, multiples[0]) as HTMLOptionElement
+      select.value = currentTime.value
+      inp.value = String(value / Number(currentTime.value))
+    }
+  }
+
+  /**
+   * Compare two values and see if they're equal
+   * @param val1 Value 1 to compare against
+   * @param val2 Value 2 to compare for
+   */
+  static isEqual (val1: any, val2: any): boolean {
+    if (val1 === val2) return true
+    if (Array.isArray(val1)) return val1.sort().join('!') === val2.sort().join('!')
+    if (val1 && val2 && typeof val1 === 'object') return Object.keys(val1).every(key => this.isEqual(val1[key], val2[key]))
+    if (val1 !== val2) return false
+    return true
   }
 }

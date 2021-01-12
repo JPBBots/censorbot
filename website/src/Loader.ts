@@ -10,6 +10,7 @@ import { Test } from './pages/Test'
 import { DashboardHome } from './pages/DashboardHome'
 import { GuildSettings } from './pages/GuildSettings'
 import { PremiumSettings } from './pages/PremiumSettings'
+import { DashboardTwitch } from './pages/DashboardTwitch'
 
 export class Loader {
   private pages: Collection<string, PageInterface>
@@ -77,7 +78,7 @@ export class Loader {
   }
 
   load () {
-    [Landing, e404, Test, DashboardHome, GuildSettings, PremiumSettings]
+    [Landing, e404, Test, DashboardHome, GuildSettings, PremiumSettings, DashboardTwitch]
       .forEach(Page => {
         const page = new Page(this)
         this.pages.set(page.name, page)
@@ -102,6 +103,7 @@ export class Loader {
     }
     this.root.classList.add('loading')
     await this.util.wait(200)
+    Utils.scroll('nav')
     await pg.render()
     if (loader) await loader
     await pg.go()

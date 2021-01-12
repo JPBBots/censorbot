@@ -44,6 +44,7 @@
 
 #buttons > a {
   display: inline-block;
+  margin-right: 9px;
   margin-bottom: 10px;
 }
 
@@ -81,6 +82,12 @@ section > article {
   section:nth-child(even) > h1 {
     float: right;
   }
+  section:nth-child(odd) > article {
+    text-align: right;
+  }
+  section:nth-child(even) > article {
+    text-align: left;
+  }
 }
 
 @media (max-width: 650px) {
@@ -103,7 +110,7 @@ section > article {
 @media (min-width: 649px) {
   #title {
     text-align: left;
-    width: 30%;
+    width: 34%;
   }
   #buttons > a {
     font-size: 2vw;

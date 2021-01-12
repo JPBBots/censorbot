@@ -31,7 +31,7 @@ export class Landing extends Page implements PageInterface {
       this.e('logo').classList.remove('slowdown')
     }
 
-    this.e('scroll').onclick = () => this.util.scroll('info')
+    this.e('scroll').onclick = () => this.util.scroll('#info')
   }
 
   async remove () {

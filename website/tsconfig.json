@@ -1,7 +1,7 @@
 {
   "files": ["./src/index.ts"],
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2017",
     "outDir": "./build/tsc",
     "module": "commonjs",
     "lib": ["DOM"],

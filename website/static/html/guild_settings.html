@@ -2,12 +2,11 @@
 
 <center>
   <h1 id="name">Loading...</h1>
-  <a href="/dashboard" class="button">Back</a>
+  <Button=/dashboard>Back</Button>
 </center>
 <br />
 <div id="settings">
-
-  <section id="general">
+  <section class="general">
     <h1>General</h1>
 
     <Setting:prefix Prefix>
@@ -15,43 +14,119 @@
     </Setting>
     <Setting:log Log Channel>
       <select>
-        <option>None</option>
+        <option value>None</option>
       </select>
     </Setting>
     <Setting:role Ignored Role>
       <select>
-        <option>None</option>
+        <option value>None</option>
       </select>
+    </Setting>
+    <Setting:dm DM Command Responses>
+      <Switch premium>
     </Setting>
     <Setting:channels Ignore Channels>
       <input placeholder="Add Channels" hidden>
     </Setting>
-    <Setting:dm DM Command Responses>
-      <Switch></Switch>
-    </Setting>
   </section>
 
-  <section id="filter">
+  <section class="filter">
     <h1>Filter</h1>
     <Setting:invites Censor Invites>
-      <Switch></Switch>
+      <Switch>
     </Setting>
     <Setting:multi Multi-Line>
-      <Switch premium></Switch>
+      <Switch premium>
     </Setting>
     <Setting:fonts Font Recognition>
-      <Switch premium></Switch>
+      <Switch premium>
     </Setting>
-    <Setting:filters Filters>
+    <Setting:nsfw Ignore NSFW Channels>
+      <Switch>
+    </Setting>
+    <h2>Censor Methods</h2>
+    <Setting:censor.msg Messages>
+      <Switch>
+    </Setting>
+    <Setting:censor.emsg Edited Messages>
+      <Switch>
+    </Setting>
+    <Setting:censor.nick Nicknames>
+      <Switch>
+    </Setting>
+    <Setting:censor.react Reactions>
+      <Switch>
+    </Setting>
+    <Setting:filters Pre-Built Filters>
       <input placeholder="Add Filters" hidden>
     </Setting>
+    <Setting:filter Server Filter>
+      <input placeholder="Add Words" hidden>
+    </Setting>
+    <Setting:uncensor Uncensor Words>
+      <input placeholder="Add Words" hidden>
+    </Setting>
   </section>
 
-  <section id="punishments">
-    <h1>Punishments</h1>
-  </section>
-
-  <section id="other">
+  <section class="other">
     <h1>Other</h1>
+    <h2>Popup Message<br /><small>The message that comes up after someone curses</small></h2>
+    <ul>
+      <li id="msg.content">
+        Says <input maxlength="1000" onblur="this.value === '' ? this.value = 'Default' : ''" onfocus="['Default', 'Off'].includes(this.value) ? this.value = '' : null">
+        <Button onclick="this.parentElement.querySelector('input').value = 'Default'">Default</Button>
+        <Button onclick="this.parentElement.querySelector('input').value = 'Off'">Off</Button>
+      </li>
+      <li id="msg.deleteAfter">
+        Deletes after <Number placeholder="Never" min="0" max="600"> seconds
+      </li>
+    </ul>
+    <h2>Resend</h2>
+    <Setting:webhook.enabled Enabled>
+      <Switch premium>
+    </Setting>
+    <Setting:webhook.separate Replace>
+      <Switch premium>
+    </Setting>
+    <Setting:webhook.replace Replace With>
+      <select premium>
+        <option value="0">Spoilers</option>
+        <option value="1">Hashtags (#)</option>
+        <option value="2">Stars (*)</option>
+      </select>
+    </Setting>
+  </section>
+
+  <section class="punishments">
+    <h1>Punishments</h1>
+    <ul>
+      <li id="punishment.amount">
+        If a user curses <Number min="1" max="50"> times
+      </li>
+      <li id="punishment.expires">
+        Within <Duration Forever>
+      </li>
+      <li id="punishment.type">
+        Then
+        <select onchange="
+          const role = document.getElementById('punishment.role'); 
+          const time = document.getElementById('punishment.time'); 
+          (this.value == 1 ? role.removeAttribute('hidden') : role.setAttribute('hidden', ''));
+          (['1', '3'].includes(this.value) ? time.removeAttribute('hidden') : time.setAttribute('hidden', ''))
+        ">
+          <option value="0">Do nothing</option>
+          <option value="1">Give them a role</option>
+          <option value="2">Kick them</option>
+          <option value="3">Ban them</option>
+        </select>
+      </li>
+      <li id="punishment.role" hidden>
+        Role: <select></select>
+      </li>
+      <li id="punishment.time" hidden>
+        And undo it after <Duration Never>
+      </li>
+    </ul>
   </section>
 </div>
+<Button id="save" hidden>Save</Button>
