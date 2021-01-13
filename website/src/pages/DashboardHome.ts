@@ -9,17 +9,19 @@ export class DashboardHome extends Page implements PageInterface {
 
   async loading () {
     await this.api.getGuilds()
+    await this.api.waitForUser()
   }
 
   async go () {
     const guilds = this.api.guilds
-    if (!guilds) return
+    if (!guilds || !this.api.user) return
 
     this.log('Rendering guilds')
 
     guilds.forEach(guild => {
       const a = document.createElement('a')
             a.href = `/dashboard/${guild.i}`
+            if (this.api.user.premium.guilds.includes(guild.i)) a.appendChild(this.util.createPremiumStar())
       const name = document.createElement('p')
             name.innerText = guild.n
       let icon

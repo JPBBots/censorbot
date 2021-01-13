@@ -2,9 +2,12 @@ import { Utils } from './Utils'
 import { Logger } from './Logger'
 
 export class CensorBotApi {
-  user: User
-  guilds: ShortGuild[]
+  public user: User
+  public guilds: ShortGuild[]
+  private waitingForUser: Function[]
   constructor () {
+    this.waitingForUser = []
+
     this.loginButton.onmouseover = () => {
       if (this.user) this.loginButton.innerText = 'Logout'
     }
@@ -39,6 +42,7 @@ export class CensorBotApi {
       this.loginButton.innerText = `${this.user.tag}`
       this.loginButton.setAttribute('loggedin', '')
       this.loginButton.style.setProperty('min-width', this.loginButton.offsetWidth + 'px')
+      if (this.waitingForUser) this.waitingForUser.forEach(x => x())
       return true
     }
   }
@@ -119,7 +123,7 @@ export class CensorBotApi {
     Utils.presentLoad('Waiting for you to authorize...')
     await this.logout(false)
 
-    await Utils.openWindow(this._formUrl('/auth'), 'Login')
+    await Utils.openWindow(this._formUrl('/auth' + (window.discordOAuthExtra || '')), 'Login')
 
     if (!this.token) {
       if (required) {
@@ -141,6 +145,13 @@ export class CensorBotApi {
     Utils.stopLoad()
 
     return fet
+  }
+
+  async waitForUser (): Promise<void> {
+    return new Promise(resolve => {
+      if (this.user || !this.waitingForUser) resolve()
+      this.waitingForUser.push(() => resolve())
+    })
   }
 
   public async getSelf (): Promise<User> {

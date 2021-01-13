@@ -1,4 +1,7 @@
 #settings {
+  padding: 0px 10vw;
+}
+#settings {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(3, 1fr);
@@ -82,9 +85,9 @@ h1 {
 #save {
   position: fixed;
   bottom: 20px;
-  left: 20px;
+  right: 20px;
   z-index: 10;
-  font-size: 50px;
+  font-size: 23px;
   background-color: var(--secondary);
   transition: bottom 0.3s ease-out;
   display: block;
@@ -109,6 +112,14 @@ h1 {
       "filter"
       "punishments"
       "other";
+  }
+
+  #root {
+    padding: 0px;
+  }
+
+  #settings {
+    padding: 0px;
   }
 }
 

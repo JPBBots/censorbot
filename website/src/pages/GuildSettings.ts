@@ -7,14 +7,20 @@ import Config from '../config.json'
 const defaultConfig = JSON.stringify(Config)
 
 import Tagify from '@yaireo/tagify'
+import { Utils } from "../structures/Utils";
 
 export class GuildSettings extends Page implements PageInterface {
   name = 'guild_settings'
   url = /^\/dashboard\/[0-9]+$/
 
   fetchElements = [
+    'settings',
     'name',
     'save',
+    // premium
+    'pused',
+    'ptotal',
+    'premium',
     // settings
     'prefix',
     'log',
@@ -142,7 +148,7 @@ export class GuildSettings extends Page implements PageInterface {
     this.inp('webhook.separate').checked = obj.webhook.separate
     this.elm('webhook.replace').value = String(obj.webhook.replace)
 
-    document.querySelectorAll('input, select').forEach((x: HTMLElement) => x.onchange ? x.onchange(null): null)
+    this.elm('settings').querySelectorAll('input, select').forEach((x: HTMLElement) => x.onchange ? x.onchange(null): null)
 
     this.updateButton()
   }
@@ -158,6 +164,7 @@ export class GuildSettings extends Page implements PageInterface {
   async loading () {
     const guild = await this.api.getGuild(this.id)
     if (guild) this.registry.guild = guild
+    await this.api.waitForUser()
   }
 
   private get changed (): boolean {
@@ -175,12 +182,58 @@ export class GuildSettings extends Page implements PageInterface {
     this.pushSettings(res)
   }
 
+  private setPremium () {
+    (this.e('premium') as HTMLInputElement).checked = true
+    this.e('name').appendChild(this.util.createPremiumStar())
+  }
+
+  private updatePremium () {
+    this.e('pused').innerText = this.api.user.premium.guilds.length.toLocaleString()
+  }
+
   async go () {
-    if (!this.guild) return
+    if (!this.registry.guild || !this.api.user) return
 
     this.util.presentLoad('Getting your settings')
 
     this.e('name').innerHTML = this.guild.n
+
+    this.e('ptotal').innerText = this.api.user.premium.count.toLocaleString()
+    this.updatePremium()
+
+    const premium = this.e('premium') as HTMLInputElement
+    const premUser = this.api.user.premium
+    premium.addEventListener('click', async (event) => {
+      event.preventDefault()
+      if (premium.checked) {
+        if (premUser.count < 1) {
+          Utils.setPath('/premium')
+        } else if (premUser.guilds.length + 1 > premUser.count) {
+          Logger.tell('Out of premium server slots!')
+        } else if (premUser.guilds.includes(this.id)) {
+          Logger.tell('This server is already premium.')
+        } else {
+          this.log('Adding premium server')
+          const newGuilds = premUser.guilds.concat([this.id])
+          const guilds = await this.api.postPremium(newGuilds)
+          if (guilds && guilds.includes(this.id)) premium.checked = true
+        }
+      } else {
+        if (!premUser.guilds.includes(this.id)) {
+          Logger.tell('You did not give this server premium, therefore you cannot take it away.')
+        } else {
+          if (!confirm('Press OK to continue, doing this will disable all enabled premium features on this server.')) return
+          this.log('Removing premium server')
+          const newGuilds = premUser.guilds.filter(x => x !== this.id)
+          const guilds = await this.api.postPremium(newGuilds)
+          if (guilds && !guilds.includes(this.id)) {
+            premium.checked = false
+            this.save()
+          }
+        }
+      }
+      this.updatePremium()
+    })
 
     this.registry.tags = new Map()
 
@@ -247,6 +300,8 @@ export class GuildSettings extends Page implements PageInterface {
         elm.appendChild(option)
       })
     })
+
+    if (this.premium) this.setPremium()
 
     this.pushSettings(this.registry.guild.db)
     this.e('save').onclick = () => this.save()

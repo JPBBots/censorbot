@@ -7,6 +7,7 @@ declare global {
   interface Window {
     __LOADER: Loader
     dev: boolean
+    discordOAuthExtra?: string
   }
   
   interface WebData {

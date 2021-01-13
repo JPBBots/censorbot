@@ -1,0 +1,31 @@
+#premium > div {
+  background-color: var(--topbar);
+  min-width: 180px;
+  margin: 1vw;
+  height: 170px;
+  border-radius: 8px;
+  padding: 30px;
+}
+
+#premium > div > ul {
+  height: 50%;
+}
+
+#premium {
+  display: grid;
+  padding-top: 20px;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  grid-template-rows: repeat(1, 1fr);
+  margin: auto;
+  width: fit-content;
+}
+#premium > div > ul {
+  text-align: left;
+}
+
+@media (max-width: 750px) {
+  #premium {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+  }
+}

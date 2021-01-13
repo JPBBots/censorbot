@@ -1,4 +1,8 @@
 #guilds {
+  padding: 0px 10vw;
+}
+
+#guilds {
   margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -16,6 +20,17 @@
   border: 2px var(--topbaralt) solid;
   text-decoration: none;
   color: var(--different);
+  position: relative;
+}
+
+#guilds > a > svg {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  display: block;
+  background: var(--background);
+  padding: 5px;
+  border-radius: 50%;
 }
 
 #guilds > a:hover {
@@ -42,4 +57,9 @@
   height: 67px;
   font-weight: 100;
   margin-bottom: 23px;
+}
+@media (max-width: 750px) {
+  #guilds {
+    padding: 0px;
+  }
 }

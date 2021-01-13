@@ -6,6 +6,7 @@
   --topbar: #242e3b;
   --topbaralt: #1a212b;
   --background: #2d4059;
+  --gold: #c2973a;
 
   --duration: 0.4s
 }
@@ -135,7 +136,7 @@ nav > h3 {
 }
 
 #root {
-  transition: 0.5s
+  transition: 0.5s;
 }
 
 #root.loading {
@@ -221,7 +222,7 @@ input[type="number"] {
 }
 
 .checker {
-  display: block;
+  display: inline-block;
   font-size: 2em;
   height: 34px;
   width: 73.75px;
@@ -232,6 +233,7 @@ input[type="number"] {
   cursor: pointer;
   margin: auto;
   background-color: var(--topbaralt);
+  text-align: left !important;
 }
 
 .checkmark {
@@ -241,6 +243,7 @@ input[type="number"] {
   transform: translateX(-0.4em);
   z-index: 5;
 }
+
 .checkmark svg {
   display: block;
   background: var(--background);
@@ -253,6 +256,8 @@ input[type="number"] {
   stroke-dashoffset: 90;
   transition: stroke-dashoffset calc(var(--duration) / 3) linear calc(var(--duration) / 3);
 }
+
+
 
 .checkbox {
   position: absolute;
@@ -268,6 +273,11 @@ input[type="number"] {
   background: #77c44c;
   transform: translate(-0.4em);
 }
+
+.checkbox.premium:checked ~ .checkmark svg {
+  background: var(--gold) !important;
+}
+
 .checkbox:checked ~ .checkmark svg path {
   stroke-dashoffset: 0;
 }
