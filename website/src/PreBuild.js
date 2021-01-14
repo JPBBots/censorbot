@@ -25,6 +25,12 @@ fs.readdirSync(pathTo.html()).forEach(file => {
     .replace(/<center>(.+?)<\/center>/gs, `
       <div style="display:block;text-align: -webkit-center">$1</div>
     `)
+    .replace(/<PremiumSetting:(.+?) (.+?)>(.+?)<\/PremiumSetting>/gs, `
+    <div id="$1" premium>
+      <h3>$2 <Star></h3>
+      $3
+    </div>
+    `)
     .replace(/<Setting:(.+?) (.+?)>(.+?)<\/Setting>/gs, `
     <div id="$1">
       <h3>$2</h3>

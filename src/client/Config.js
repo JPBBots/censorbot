@@ -111,7 +111,7 @@ const verify = (obj, premium, guild) => {
     msg: {
       content: checker('msg.content', (v) =>
         typeof v === 'string'
-          ? v.length <= 1000
+          ? v.length <= (premium ? 1000 : 200)
           : v === null || v === false
       ),
       deleteAfter: checker('msg.deleteAfter', (v) =>

@@ -95,6 +95,14 @@ nav > h3 {
   margin-top: 15px
 }
 
+a:visited {
+  color: inherit;  
+}
+
+a:active {
+  opacity: 0.8;
+}
+
 .button {
   padding: 10px 20px 10px 20px;
   text-decoration: none;
@@ -142,6 +150,15 @@ nav > h3 {
 #root.loading {
   transition: 0.5s;
   opacity: 0
+}
+
+div.sep {
+  width: 80%;
+  margin: auto;
+  padding: 2px;
+  margin-top: 15px;
+  border-bottom: 3px solid var(--background);
+  background-color: var(--topbar);
 }
 
 small {
@@ -256,8 +273,6 @@ input[type="number"] {
   stroke-dashoffset: 90;
   transition: stroke-dashoffset calc(var(--duration) / 3) linear calc(var(--duration) / 3);
 }
-
-
 
 .checkbox {
   position: absolute;

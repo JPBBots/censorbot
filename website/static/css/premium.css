@@ -23,9 +23,51 @@
   text-align: left;
 }
 
+#perks {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(auto-fill, minmax(180px, 1fr));
+  padding: 0px 10vw;
+}
+
+#perks > div, #howto > ul {
+  background-color: var(--topbar);
+  border-radius: 5px;
+  margin: 5px;
+  padding: 0px 10px;
+  text-align: center;
+}
+
+#perks > div > h3 {
+  color: var(--secondary);
+}
+
+#perks > div ul {
+  text-align: left;
+}
+
+#premium > div:hover, #perks > div:hover {
+  transition: 0.5s;
+  background-color: var(--topbaralt);
+  cursor: default;
+}
+
+#howto {
+  padding: 0px 10vw;
+}
+
+#howto > ul {
+  text-align: left;
+  padding: 10px 30px;
+}
+
 @media (max-width: 750px) {
   #premium {
     grid-template-columns: repeat(1, 1fr);
     grid-template-rows: repeat(1, 1fr);
+  }
+
+  #perks {
+    grid-template-columns: repeat(1, 1fr);
   }
 }

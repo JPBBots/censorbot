@@ -48,7 +48,7 @@ export class Utils {
         Utils.setPath(elm.getAttribute('href'))
       }
     } else {
-      document.querySelectorAll('[href], [clicky]').forEach((elm: HTMLElement) => {
+      document.querySelectorAll('[href]:not([target]), [clicky]').forEach((elm: HTMLElement) => {
         this.registerButtons(elm)
       })
     }

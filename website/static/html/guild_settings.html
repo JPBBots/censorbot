@@ -26,9 +26,9 @@
         <option value>None</option>
       </select>
     </Setting>
-    <Setting:dm DM Command Responses>
-      <Switch premium>
-    </Setting>
+    <PremiumSetting:dm DM Command Responses>
+      <Switch>
+    </PremiumSetting>
     <Setting:channels Ignore Channels>
       <input placeholder="Add Channels" hidden>
     </Setting>
@@ -39,12 +39,12 @@
     <Setting:invites Censor Invites>
       <Switch>
     </Setting>
-    <Setting:multi Multi-Line>
-      <Switch premium>
-    </Setting>
-    <Setting:fonts Font Recognition>
-      <Switch premium>
-    </Setting>
+    <PremiumSetting:multi Multi-Line>
+      <Switch>
+    </PremiumSetting>
+    <PremiumSetting:fonts Font Recognition>
+      <Switch>
+    </PremiumSetting>
     <Setting:nsfw Ignore NSFW Channels>
       <Switch>
     </Setting>
@@ -85,20 +85,20 @@
         Deletes after <Number placeholder="Never" min="0" max="600"> seconds
       </li>
     </ul>
-    <h2>Resend</h2>
-    <Setting:webhook.enabled Enabled>
-      <Switch premium>
-    </Setting>
-    <Setting:webhook.separate Replace>
-      <Switch premium>
-    </Setting>
-    <Setting:webhook.replace Replace With>
-      <select premium>
+    <h2>Resend <Star></h2>
+    <PremiumSetting:webhook.enabled Enabled>
+      <Switch>
+    </PremiumSetting>
+    <PremiumSetting:webhook.separate Replace>
+      <Switch>
+    </PremiumSetting>
+    <PremiumSetting:webhook.replace Replace With>
+      <select>
         <option value="0">Spoilers</option>
         <option value="1">Hashtags (#)</option>
         <option value="2">Stars (*)</option>
       </select>
-    </Setting>
+    </PremiumSetting>
   </section>
 
   <section class="punishments">

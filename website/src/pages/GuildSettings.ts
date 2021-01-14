@@ -172,8 +172,10 @@ export class GuildSettings extends Page implements PageInterface {
   }
 
   private updateButton () {
-    if (this.changed) this.e('save').removeAttribute('hidden')
-    else this.e('save').setAttribute('hidden', '')
+    setTimeout(() => {
+      if (this.changed) this.e('save').removeAttribute('hidden')
+      else this.e('save').setAttribute('hidden', '')
+    }, 100)
   }
 
   private async save () {
@@ -184,6 +186,8 @@ export class GuildSettings extends Page implements PageInterface {
 
   private setPremium () {
     (this.e('premium') as HTMLInputElement).checked = true
+
+    this.e('name').innerText += ' '
     this.e('name').appendChild(this.util.createPremiumStar())
   }
 
@@ -216,7 +220,11 @@ export class GuildSettings extends Page implements PageInterface {
           this.log('Adding premium server')
           const newGuilds = premUser.guilds.concat([this.id])
           const guilds = await this.api.postPremium(newGuilds)
-          if (guilds && guilds.includes(this.id)) premium.checked = true
+          if (guilds && guilds.includes(this.id)) {
+            premium.checked = true
+            this.registry.guild.premium = true
+            this.setPremium()
+          }
         }
       } else {
         if (!premUser.guilds.includes(this.id)) {
@@ -228,6 +236,7 @@ export class GuildSettings extends Page implements PageInterface {
           const guilds = await this.api.postPremium(newGuilds)
           if (guilds && !guilds.includes(this.id)) {
             premium.checked = false
+            this.registry.guild.premium = false
             this.save()
           }
         }
@@ -302,6 +311,18 @@ export class GuildSettings extends Page implements PageInterface {
     })
 
     if (this.premium) this.setPremium()
+
+    document.querySelectorAll('[premium]').forEach(setting => {
+      setting.querySelectorAll('input, select').forEach(elm => {
+        elm.addEventListener('click', (event) => {
+          if (!this.premium) {
+            event.preventDefault()
+            Logger.tell('You need premium to use this feature.')
+            this.updateButton()
+          }
+        })
+      })
+    })
 
     this.pushSettings(this.registry.guild.db)
     this.e('save').onclick = () => this.save()
