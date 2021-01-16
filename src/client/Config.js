@@ -97,17 +97,19 @@ const verify = (obj, premium, guild) => {
       v.constructor === Array &&
       !v.some(x =>
         x.length > 20
-      ) &&
-      v.length <= (!premium ? 150 : 1500)
-    ).map(x => filter.resolve(x)[0].t),
+      )
+    ).slice(0, premium ? 1500 : 150)
+     .map(x => (filter.resolve(x)[0] || {}).t)
+     .filter(x => x),
     uncensor: checker('uncensor', (v) =>
       v &&
       v.constructor === Array &&
       !v.some(x =>
         x.length > 20
-      ) &&
-      v.length <= (!premium ? 150 : 1500)
-    ).map(x => filter.resolve(x)[0].t),
+      )
+    ).slice(0, premium ? 1500 : 150)
+     .map(x => (filter.resolve(x)[0] || {}).t)
+     .filter(x => x),
     msg: {
       content: checker('msg.content', (v) =>
         typeof v === 'string'

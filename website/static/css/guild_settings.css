@@ -34,6 +34,7 @@
 
 #settings > section > div > h3 {
   user-select: none;
+  max-height: 22%;
 }
 
 .general {
@@ -103,6 +104,17 @@ h1 {
   transition: bottom 0.5s ease-out;
 }
 
+#prem {
+  grid-area: premium;
+}
+
+#top {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(1, 1fr);
+  grid-template-areas: '. name premium'
+}
+
 @media (max-width: 750px) {
   #settings {
     grid-template-columns: repeat(1, 1fr);
@@ -112,6 +124,14 @@ h1 {
       "filter"
       "punishments"
       "other";
+  }
+
+  #top {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas:
+      'name'
+      'premium'
   }
 
   #root {

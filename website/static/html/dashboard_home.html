@@ -2,7 +2,10 @@
   <h1>Dashboard</h1>
   <Button=/dashboard disabled selected id="discord">Discord</Button>
   <Button=/dashboard/twitch unselected title="Coming soon!" id="twitch">Twitch</Button>
-  <Button=/dashboard/premium unselected id="premium">Premium</Button>
   <div />
+  <div id="ispremium" hidden>
+    <h3>Premium servers used: <span id="pused">Loading...</span> / <span id="ptotal">Loading...</span></h3>
+    <Button id="reset">Remove All</Button>
+  </div>
 </center>
 <div id="guilds"></div>

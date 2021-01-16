@@ -152,6 +152,30 @@ a:active {
   opacity: 0
 }
 
+#toast {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  min-height: 2vh;
+  min-width: 11vw;
+  z-index: 10;
+  background-color: var(--different);
+  color: var(--topbaralt);
+  border-radius: 12px;
+  text-align: center;
+  padding: 16px;
+  cursor: pointer;
+}
+
+#toast[gone] {
+  transition: 500ms;
+  transform: translateY(130%);
+}
+
+#toast:not([gone]) {
+  transition: 200ms;
+}
+
 div.sep {
   width: 80%;
   margin: auto;

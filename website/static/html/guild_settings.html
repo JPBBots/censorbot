@@ -1,12 +1,16 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.1.0/dist/tagify.css" />
 
-<center>
-  <h1 id="name">Loading...</h1>
-  <Button=/dashboard>Back</Button>
-  <br />
-  <br />
-  <h4>Premium <br />(Using <span id="pused">Loading...</span> / <span id="ptotal">Loading...</span> servers):</h4>
-  <Switch.premium id="premium">
+<center id="top">
+  <div style="grid-area: name">
+    <h1 id="name">Loading...</h1>
+    <Button=/dashboard>Back</Button>
+  </div>
+  <div id="prem">
+    <h4>Premium</h4>
+    <Switch.premium id="premium">
+    <br />
+    <small><span id="pused">Loading...</span> / <span id="ptotal">Loading...</span></small>
+  </div>
 </center>
 <br />
 <div id="settings">
@@ -29,9 +33,9 @@
     <PremiumSetting:dm DM Command Responses>
       <Switch>
     </PremiumSetting>
-    <Setting:channels Ignore Channels>
+    <PremiumSetting:channels Ignore Channels>
       <input placeholder="Add Channels" hidden>
-    </Setting>
+    </PremiumSetting>
   </section>
 
   <section class="filter">
@@ -77,12 +81,12 @@
     <h2>Popup Message<br /><small>The message that comes up after someone curses</small></h2>
     <ul>
       <li id="msg.content">
-        Says <input maxlength="1000" onblur="this.value === '' ? this.value = 'Default' : ''" onfocus="['Default', 'Off'].includes(this.value) ? this.value = '' : null">
+        Says <input maxlength="200" onblur="this.value === '' ? this.value = 'Default' : ''" onfocus="['Default', 'Off'].includes(this.value) ? this.value = '' : null">
         <Button onclick="this.parentElement.querySelector('input').value = 'Default'">Default</Button>
         <Button onclick="this.parentElement.querySelector('input').value = 'Off'">Off</Button>
       </li>
       <li id="msg.deleteAfter">
-        Deletes after <Number placeholder="Never" min="0" max="600"> seconds
+        Deletes after <Number placeholder="Never" min="0" max="120"> seconds
       </li>
     </ul>
     <h2>Resend <Star></h2>

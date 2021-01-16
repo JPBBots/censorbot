@@ -1,10 +1,12 @@
 import { Page, PageInterface } from "../structures/Page";
+import { Utils } from "../structures/Utils";
 
 export class DashboardHome extends Page implements PageInterface {
   name = 'dashboard_home'
   url = /^\/dashboard$/
   fetchElements = [
-    'guilds'
+    'guilds', 'ispremium', 'reset',
+    'ptotal', 'pused'
   ]
 
   async loading () {
@@ -15,6 +17,18 @@ export class DashboardHome extends Page implements PageInterface {
   async go () {
     const guilds = this.api.guilds
     if (!guilds || !this.api.user) return
+
+    if (this.api.user.premium.count > 0) {
+      this.e('ispremium').removeAttribute('hidden')
+      this.e('reset').onclick = async () => {
+        if (!confirm('Are you sure? Doing this will remove all premium servers. Press OK to continue.')) return
+        this.api.user.premium.guilds = []
+        await this.api.postPremium([])
+        Utils.reloadPage()
+      }
+    }
+    this.e('ptotal').innerText = this.api.user.premium.count.toLocaleString()
+    this.e('pused').innerText = this.api.user.premium.guilds.length.toLocaleString()
 
     this.log('Rendering guilds')
 

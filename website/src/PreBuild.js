@@ -22,8 +22,8 @@ fs.readdirSync(pathTo.html()).forEach(file => {
 
   // custom elements
   contents = contents
-    .replace(/<center>(.+?)<\/center>/gs, `
-      <div style="display:block;text-align: -webkit-center">$1</div>
+    .replace(/<center(.+?)>(.+?)<\/center>/gs, `
+      <div style="display:block;text-align: -webkit-center"$1>$2</div>
     `)
     .replace(/<PremiumSetting:(.+?) (.+?)>(.+?)<\/PremiumSetting>/gs, `
     <div id="$1" premium>

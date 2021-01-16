@@ -2,7 +2,7 @@
   background-color: var(--topbar);
   min-width: 180px;
   margin: 1vw;
-  height: 170px;
+  height: 255px;
   border-radius: 8px;
   padding: 30px;
 }
@@ -65,6 +65,10 @@
   #premium {
     grid-template-columns: repeat(1, 1fr);
     grid-template-rows: repeat(1, 1fr);
+  }
+
+  #premium > div {
+    height: fit-content;
   }
 
   #perks {

@@ -8,6 +8,7 @@ const defaultConfig = JSON.stringify(Config)
 
 import Tagify from '@yaireo/tagify'
 import { Utils } from "../structures/Utils";
+import { relativeTimeThreshold } from "moment";
 
 export class GuildSettings extends Page implements PageInterface {
   name = 'guild_settings'
@@ -189,6 +190,26 @@ export class GuildSettings extends Page implements PageInterface {
 
     this.e('name').innerText += ' '
     this.e('name').appendChild(this.util.createPremiumStar())
+
+    this.registry.tags.get('channels').settings.maxTags = Infinity
+    this.registry.tags.get('filter').settings.maxTags = 1500
+    this.registry.tags.get('uncensor').settings.maxTags = 1500
+
+    this.elm('msg.content').setAttribute('maxlength', '1000')
+    this.elm('msg.deleteAfter').setAttribute('max', '600')
+  }
+
+  private clearPremium () {
+    (this.e('premium') as HTMLInputElement).checked = false
+
+    this.e('name').innerText = this.guild.n
+
+    this.registry.tags.get('channels').settings.maxTags = 0
+    this.registry.tags.get('filter').settings.maxTags = 150
+    this.registry.tags.get('uncensor').settings.maxTags = 150
+
+    this.elm('msg.content').setAttribute('maxlength', '200')
+    this.elm('msg.deleteAfter').setAttribute('max', '120')
   }
 
   private updatePremium () {
@@ -237,6 +258,7 @@ export class GuildSettings extends Page implements PageInterface {
           if (guilds && !guilds.includes(this.id)) {
             premium.checked = false
             this.registry.guild.premium = false
+            this.clearPremium()
             this.save()
           }
         }
@@ -244,10 +266,17 @@ export class GuildSettings extends Page implements PageInterface {
       this.updatePremium()
     })
 
+    this.on('keydown', (event: KeyboardEvent) => {
+      if (event.key === 's' && event.ctrlKey) {
+        event.preventDefault()
+        if (!this.changed) return Logger.tell('No changes found, not saving.')
+        this.save()
+      }
+    })
+
     this.registry.tags = new Map()
 
     const listSettings = {
-      maxTags: this.premium ? 1500 : 150,
       delimiters: /,|\s/g,
       pattern: /^.{1,20}$/,
       callbacks: {
@@ -264,7 +293,6 @@ export class GuildSettings extends Page implements PageInterface {
       .set('channels', new Tagify(this.elm('channels'), {
         whitelist: this.guild.c.map(x => ({ value: `#${x.name}`, id: x.id })),
         enforceWhitelist: true,
-        maxTags: this.premium ? Infinity : 0,
         callbacks: {
           invalid: (e) => {
             if (e.detail.message === 'number of tags exceeded') Logger.tell('You need premium to use this feature.')
@@ -311,6 +339,7 @@ export class GuildSettings extends Page implements PageInterface {
     })
 
     if (this.premium) this.setPremium()
+    else this.clearPremium()
 
     document.querySelectorAll('[premium]').forEach(setting => {
       setting.querySelectorAll('input, select').forEach(elm => {

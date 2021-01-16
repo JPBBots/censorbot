@@ -1,4 +1,5 @@
 import { Loader } from "../Loader";
+import { Logger } from "../structures/Logger";
 
 declare global {
   interface History { 
@@ -6,6 +7,7 @@ declare global {
   }
   interface Window {
     __LOADER: Loader
+    LOGGER: Logger
     dev: boolean
     discordOAuthExtra?: string
   }
