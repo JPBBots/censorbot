@@ -48,7 +48,7 @@ export class Utils {
         Utils.setPath(elm.getAttribute('href'))
       }
     } else {
-      document.querySelectorAll('[href]:not([target]), [clicky]').forEach((elm: HTMLElement) => {
+      document.querySelectorAll('[href]:not([target]):not([function]), [clicky]').forEach((elm: HTMLElement) => {
         this.registerButtons(elm)
       })
     }
@@ -80,7 +80,7 @@ export class Utils {
 
   /**
    * Present a loading screen
-   * @param msg Loading texth
+   * @param msg Loading text
    */
   static presentLoad (msg: string | HTMLElement): void {
     if (typeof msg === 'string') document.getElementById('loadtext').innerText = msg

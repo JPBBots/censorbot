@@ -12,7 +12,6 @@ import { GuildSettings } from './pages/GuildSettings'
 import { Premium } from './pages/Premium'
 import { DashboardTwitch } from './pages/DashboardTwitch'
 
-
 export class Loader {
   private pages: Collection<string, PageInterface>
   private _currentPage: string
@@ -60,13 +59,12 @@ export class Loader {
   }
 
   log (message: string) {
-    Logger.log('LOGGER', message)
+    Logger.log('LOADER', message)
   }
 
   _loadPage (page: string, loadAfter?: boolean): void {
     const pg = this.pages.get(page)
     pg.register(this.pageData[pg.pageName])
-    this.log(`Fetched HTML for ${pg.name}`)
     if (loadAfter) this.switchTo(pg.name)
   }
 

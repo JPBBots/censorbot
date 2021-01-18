@@ -112,3 +112,22 @@ interface GuildData {
    */
   db: GuildDB
 }
+
+interface Cluster {
+  memory: number
+  uptime: number
+  id: number
+}
+interface Shard {
+  events: number
+  id: number
+  ping: number
+  state: 0 | 1 | 2
+  connected: boolean
+  guilds: number
+}
+
+type AdminResponse = {
+  cluster: Cluster
+  shards: Shard[]
+}[]

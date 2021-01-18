@@ -13,4 +13,18 @@ window.onload = async () => {
   }
 
   window.__LOADER = new Loader(devData)
+
+  if (window.dev) {
+    const script = document.createElement('script')
+          script.src = '/static/dev.js'
+    document.head.appendChild(script)
+  } else {
+    (document.querySelector('nav > h3') as HTMLElement).oncontextmenu = (event) => {
+      if (event.ctrlKey) {
+        event.preventDefault()
+        if (!confirm('This will enable development mode, are you sure? Press OK to continue.')) return
+        window.location.search = '?dev=true'
+      }
+    }
+  }
 }

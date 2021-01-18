@@ -149,7 +149,7 @@ export class GuildSettings extends Page implements PageInterface {
     this.inp('webhook.separate').checked = obj.webhook.separate
     this.elm('webhook.replace').value = String(obj.webhook.replace)
 
-    this.elm('settings').querySelectorAll('input, select').forEach((x: HTMLElement) => x.onchange ? x.onchange(null): null)
+    this.e('settings').querySelectorAll('input, select').forEach((x: HTMLElement) => x.onchange ? x.onchange(null): null)
 
     this.updateButton()
   }

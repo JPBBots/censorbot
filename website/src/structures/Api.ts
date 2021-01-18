@@ -8,16 +8,17 @@ export class CensorBotApi {
   constructor () {
     this.waitingForUser = []
 
-    this.loginButton.onmouseover = () => {
-      if (this.user) this.loginButton.innerText = 'Logout'
-    }
-    this.loginButton.onmouseleave = () => {
-      if (this.user) this.loginButton.innerText = `${this.user.tag}`
+    this.loginButton.onclick = () => {
+      if (this.user) document.getElementById('menu').toggleAttribute('hidden')
+      else this.auth()
     }
 
-    this.loginButton.onclick = () => {
-      if (this.user) this.logout()
-      else this.auth()
+    window.addEventListener('click', (event) => {
+      if (!(event.target as HTMLElement).matches('#login')) document.getElementById('menu').setAttribute('hidden', '')
+    })
+
+    document.getElementById('logout').onclick = () => {
+      this.logout()
     }
 
     this.fetch()
@@ -175,6 +176,7 @@ export class CensorBotApi {
     if (!this.token && !await this.auth(true)) return false
 
     const guild = await this.request('Fetching server', 'GET', `/guilds/${id}`, null, 404)
+    if (!guild) return false
 
     if (guild.error === 'Not In Guild') {
       const back = document.createElement('a')
@@ -216,6 +218,24 @@ export class CensorBotApi {
     const response = await this.request('Setting premium servers', 'POST', '/users/@me/premium', { guilds })
 
     if (response) this.user.premium.guilds = response
+    return response
+  }
+
+  public async getStats (): Promise<AdminResponse|false> {
+    if (!this.token && !await this.auth(true)) return false
+
+    let response
+    if (this.user.admin) {
+      response = await this.request('Fetching statuses', 'GET', '/admin', null, 401)
+      if (!response) return false
+    }
+
+    if (!this.user.admin || response.error === 'Unauthorized') {
+      Logger.tell('You are not authorized to access this location.')
+      Utils.setPath()
+      return false
+    }
+
     return response
   }
 }

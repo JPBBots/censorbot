@@ -63,29 +63,54 @@ nav > span {
   right: 0;
 }
 
-nav > span > a {
+nav > span > div {
   cursor: pointer;
   display: inline-block;
   text-decoration: none;
 }
-nav > span > a > div {
+#login {
   padding: 12px 10px 12px 10px;
   color: var(--different);
   text-align: center;
 }
-#login[loggedin] {
-  background-size: 100% 200%;
-  background-image: linear-gradient(to bottom, var(--topbar) 50%, var(--secondary) 50%);
-  transition: background-position 1s;
-}
 
-nav > span > a:hover {
+#login:hover {
   transition: 0.2s;
   background-color: var(--topbaralt);
 }
 
-#login[loggedin]:hover {
-  background-position: 0 -100%;
+#menu {
+  position: absolute;
+  background-color: var(--topbar);
+  border-radius: 5px;
+  min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+#menu > a {
+  color: var(--mainalt);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  user-select: none;
+  border-radius: 5px;
+}
+
+#menu > a:hover {
+  transition: 0.2s;
+  background-color: var(--topbaralt);
+}
+
+#logout {
+  color: var(--secondary) !important;
+}
+
+#logout:hover {
+  transition: 0.2s;
+  color: var(--main) !important;
+  background-color: var(--secondary) !important;
 }
 
 nav > * {
@@ -197,6 +222,11 @@ small {
     transform:rotate(360deg);
   }
 }
+
+#login {
+  user-select: none
+}
+
 
 #loader {
   position: fixed;

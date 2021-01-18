@@ -63,7 +63,7 @@ class PageClass {
    * Register HTML text
    */
   register (data: PageData) {
-    this.data = data
+    this.data = data || { html: '', css: null }
   }
   
   matches (): boolean {

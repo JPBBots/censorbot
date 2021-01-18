@@ -35,6 +35,7 @@ export class DashboardHome extends Page implements PageInterface {
     guilds.forEach(guild => {
       const a = document.createElement('a')
             a.href = `/dashboard/${guild.i}`
+            a.title = guild.n
             if (this.api.user.premium.guilds.includes(guild.i)) a.appendChild(this.util.createPremiumStar())
       const name = document.createElement('p')
             name.innerText = guild.n

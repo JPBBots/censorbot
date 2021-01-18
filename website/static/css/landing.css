@@ -10,6 +10,7 @@
   z-index: -1;
   transform: rotate(-60deg);
   user-select: none;
+  -webkit-user-drag: none;
 }
 
 #logo.rollon {
