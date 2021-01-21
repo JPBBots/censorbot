@@ -50,8 +50,6 @@
   },
   "standard": {
     "ignore": [
-      "website/views/*",
-      "website/static/*",
       "docs/*",
       "node_modules/*"
     ],

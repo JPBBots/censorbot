@@ -5,10 +5,14 @@
   --different: #decdc3;
   --topbar: #242e3b;
   --topbaralt: #1a212b;
-  --background: #2d4059;
+  --background: #333b52;
   --gold: #c2973a;
 
   --duration: 0.4s
+}
+
+a:-webkit-any-link {
+  color: inherit;
 }
 
 ::placeholder {
@@ -87,6 +91,19 @@ nav > span > div {
   overflow: auto;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
+  overflow: hidden;
+  right: -10px;
+}
+
+#menu[hidden] {
+  display: block !important;
+  transition: 0.5s;
+  max-height: 0px;
+}
+
+#menu:not([hidden]) {
+  transition: 1s;
+  max-height: 740px;
 }
 
 #menu > a {
@@ -135,6 +152,7 @@ a:active {
   color: var(--main);
   border-radius: 5px;
   cursor: pointer;
+  box-shadow: 0 0 10px rgba(0,0,0,.125);
 }
 
 .button[disabled] {
@@ -237,6 +255,7 @@ small {
   z-index: 10;
   margin: 0;
   top: 0;
+  transition: 0.3s;
 }
 
 #loader > center {
@@ -261,6 +280,9 @@ input, select {
   color: var(--mainalt);
   padding: 10px;
   -webkit-appearance: none;
+  border: 1px transparent solid;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.225);
 }
 
 input[type="number"] {
@@ -276,6 +298,8 @@ input[type="number"] {
   --tag-bg: var(--topbar) !important;
   --tag-hover: var(--topbaralt) !important;
   --tag-text-color: var(--mainalt) !important;
+
+  box-shadow: 0 0 10px rgba(0,0,0,0.325);
 }
 
 .tagify__input::before {
@@ -305,6 +329,7 @@ input[type="number"] {
   margin: auto;
   background-color: var(--topbaralt);
   text-align: left !important;
+  box-shadow: 0 0 10px rgba(0,0,0,0.325);
 }
 
 .checkmark {

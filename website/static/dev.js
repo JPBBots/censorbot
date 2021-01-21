@@ -3,7 +3,7 @@ console.log('DEV MODE ON')
 function addButton (name, fn) {
   const a = document.createElement('a')
         a.innerText = name
-        a.onclick = fn
+        a.onclick = typeof fn === 'string' ? () => __LOADER.util.setPath(fn) : fn
 
   document.getElementById('menu').appendChild(a)
 }
@@ -28,6 +28,8 @@ const differentLogin = (type) => {
     __LOADER.api.logout().then(() => __LOADER.api.auth())
   }
 }
+addButton('Admin Page', '/admin')
+
 addButton('Normal Login', differentLogin(null))
 addButton('Login With Canary', differentLogin('/canary'))
 addButton('Login With PTB', differentLogin('/ptb'))

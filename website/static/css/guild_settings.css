@@ -18,11 +18,17 @@
   padding: 20px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(33%, 1fr));
+  box-shadow: 0 0 24px rgba(0,0,0,0.425);
+  border-radius: 8px;
+  border: 1px #bab3b326 solid;
 }
 
 #settings > section > h1, #settings > section > h2 {
-  text-decoration: underline;
   margin: 0px 100px 20px 100px;
+}
+
+#settings > section > ul > li {
+  margin: 9px;
 }
 
 #settings > section > h1, #settings > section > h2,
@@ -122,8 +128,8 @@ h1 {
     grid-template-areas:
       "general"
       "filter"
-      "punishments"
-      "other";
+      "other"
+      "punishments";
   }
 
   #top {
@@ -154,5 +160,10 @@ h1 {
   } 
   #settings > section > ul {
     grid-column: span 2;
+  }
+
+  .other > h2, .punishments > h1 {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
   }
 }

@@ -16,7 +16,7 @@ module.exports = function (r) {
   })
 
   r.use('/:guildid', async (req, res, next) => {
-    if (!req.params.guildid.match(/[0-9]{15,17}/)) return next()
+    if (!req.params.guildid.match(/[0-9]+/)) return next()
 
     const guild = req.guilds.find(x => x.i === req.params.guildid)
     if (!guild && !req.user.admin) return res.status(403).json({ error: 'Not allowed to edit guild' })
@@ -30,7 +30,7 @@ module.exports = function (r) {
   })
 
   r.get('/:guildid', async (req, res, next) => {
-    if (!req.params.guildid.match(/[0-9]{15,17}/)) return next()
+    if (!req.params.guildid.match(/[0-9]+/)) return next()
 
     const db = await this.db.config(req.guild.i)
     const premium = await this.db.guildPremium(req.guild.i)
@@ -39,7 +39,7 @@ module.exports = function (r) {
   })
 
   r.post('/(:guildid)(.json)?', async (req, res, next) => {
-    if (!req.params.guildid.match(/[0-9]{15,17}/)) return next()
+    if (!req.params.guildid.match(/[0-9]+/)) return next()
 
     const premium = await this.db.guildPremium(req.guild.i)
 

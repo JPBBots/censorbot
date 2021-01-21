@@ -17,10 +17,11 @@
   margin: auto;
   text-align: center;
   border-radius: 4px;
-  border: 2px var(--topbaralt) solid;
+  box-shadow: 0 0 10px rgba(0,0,0,0.325);
   text-decoration: none;
   color: var(--different);
   position: relative;
+  transition: 0.2s;
 }
 
 #guilds > a > svg {
@@ -35,6 +36,7 @@
 
 #guilds > a:hover {
   background-color: var(--topbaralt);
+  transform: scale(1.05);
   transition: 0.5s;
 }
 

@@ -1,20 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
 #premium > div {
   background-color: var(--topbar);
-  min-width: 180px;
   margin: 1vw;
-  height: 255px;
+  height: 265px;
   border-radius: 8px;
   padding: 30px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.325);
+  transition: 0.3s;
+  font-family: 'Roboto', sans-serif;
+  border: 1px #bab3b326 solid;
+}
+
+#premium > div:hover {
+  transform: translateY(-10px);
 }
 
 #premium > div > ul {
-  height: 50%;
+  height: 55%;
+  width: 50%;
+  margin: auto;
 }
 
 #premium {
   display: grid;
   padding-top: 20px;
-  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  grid-template-columns: repeat(3, minmax(100px, 1fr));
   grid-template-rows: repeat(1, 1fr);
   margin: auto;
   width: fit-content;
@@ -36,6 +47,9 @@
   margin: 5px;
   padding: 0px 10px;
   text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.325);
+  transition: 0.1s;
+  border: 1px #ea545526 solid;
 }
 
 #perks > div > h3 {
@@ -73,5 +87,10 @@
 
   #perks {
     grid-template-columns: repeat(1, 1fr);
+  }
+
+  #premium > div a {
+    display: inline-block;
+    margin-top: 12px;
   }
 }

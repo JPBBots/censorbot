@@ -8,7 +8,6 @@ const defaultConfig = JSON.stringify(Config)
 
 import Tagify from '@yaireo/tagify'
 import { Utils } from "../structures/Utils";
-import { relativeTimeThreshold } from "moment";
 
 export class GuildSettings extends Page implements PageInterface {
   name = 'guild_settings'
@@ -113,7 +112,7 @@ export class GuildSettings extends Page implements PageInterface {
     return res
   }
 
-  private pushSettings(obj: GuildDB): void {
+  private pushSettings (obj: GuildDB): void {
     delete obj.id
     this.registry.db = obj
     this.elm('prefix').value = obj.prefix

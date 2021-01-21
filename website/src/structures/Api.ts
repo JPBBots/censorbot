@@ -221,18 +221,20 @@ export class CensorBotApi {
     return response
   }
 
-  public async getStats (): Promise<AdminResponse|false> {
+  public async getStats (show?: boolean): Promise<AdminResponse|false> {
     if (!this.token && !await this.auth(true)) return false
 
     let response
     if (this.user.admin) {
-      response = await this.request('Fetching statuses', 'GET', '/admin', null, 401)
+      response = await this.request(show ? 'Fetching statuses' : null, 'GET', '/admin', null, 401)
       if (!response) return false
     }
 
     if (!this.user.admin || response.error === 'Unauthorized') {
       Logger.tell('You are not authorized to access this location.')
-      Utils.setPath()
+      setTimeout(() => {
+        Utils.setPath()
+      }, 100)
       return false
     }
 
