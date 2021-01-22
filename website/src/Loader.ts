@@ -12,6 +12,7 @@ import { GuildSettings } from './pages/GuildSettings'
 import { Premium } from './pages/Premium'
 import { DashboardTwitch } from './pages/DashboardTwitch'
 import { Admin } from './pages/Admin'
+import { Terms } from './pages/Terms'
 
 export class Loader {
   private pages: Collection<string, PageInterface>
@@ -78,7 +79,7 @@ export class Loader {
   }
 
   load () {
-    [Landing, e404, Test, DashboardHome, GuildSettings, Premium, DashboardTwitch, Admin]
+    [Landing, e404, Test, DashboardHome, GuildSettings, Premium, DashboardTwitch, Admin, Terms]
       .forEach(Page => {
         const page = new Page(this)
         this.pages.set(page.name, page)

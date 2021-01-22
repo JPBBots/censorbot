@@ -18,8 +18,7 @@
 
 #premium > div > ul {
   height: 55%;
-  width: 50%;
-  margin: auto;
+  margin: 0px 2vw;
 }
 
 #premium {
@@ -27,8 +26,7 @@
   padding-top: 20px;
   grid-template-columns: repeat(3, minmax(100px, 1fr));
   grid-template-rows: repeat(1, 1fr);
-  margin: auto;
-  width: fit-content;
+  margin: 0px 15vw;
 }
 #premium > div > ul {
   text-align: left;
@@ -62,7 +60,6 @@
 
 #premium > div:hover, #perks > div:hover {
   transition: 0.5s;
-  background-color: var(--topbaralt);
   cursor: default;
 }
 
@@ -93,4 +90,8 @@
     display: inline-block;
     margin-top: 12px;
   }
+}
+
+#root {
+  padding-bottom: 50px;
 }

@@ -37,12 +37,12 @@ export class CensorBotApi {
     if (!user) {
       this.loginButton.innerText = 'Login'
       this.loginButton.removeAttribute('loggedin')
-      this.loginButton.style.removeProperty('min-width')
       return false
     } else {
       this.loginButton.innerText = `${this.user.tag}`
       this.loginButton.setAttribute('loggedin', '')
-      this.loginButton.style.setProperty('min-width', this.loginButton.offsetWidth + 'px')
+      if (this.user.admin) document.querySelectorAll('.adminshow').forEach(e => e.removeAttribute('hidden'))
+      else document.querySelectorAll('.adminshow').forEach(e => e.setAttribute('hidden', ''))
       if (this.waitingForUser) this.waitingForUser.forEach(x => x())
       return true
     }
@@ -87,7 +87,7 @@ export class CensorBotApi {
     const req = await fetch(this._formUrl(url), {
       method,
       headers,
-      body: method !== 'GET' ? JSON.stringify(body) : null
+      body: method !== 'GET' && body ? JSON.stringify(body) : null
     })
 
     const response = await req.json()
@@ -152,6 +152,7 @@ export class CensorBotApi {
     return new Promise(resolve => {
       if (this.user || !this.waitingForUser) resolve()
       this.waitingForUser.push(() => resolve())
+      if (!this.token) this.auth(true)
     })
   }
 
@@ -234,10 +235,21 @@ export class CensorBotApi {
       Logger.tell('You are not authorized to access this location.')
       setTimeout(() => {
         Utils.setPath()
-      }, 100)
+      }, 1000)
       return false
     }
 
     return response
+  }
+
+  public async restartShard(id: number): Promise<any> {
+    if (!this.token && !await this.auth(true)) return false
+
+    let response
+    if (this.user.admin) {
+      response = await this.request(null, 'DELETE', '/admin/shards/' + id, null, 401)
+    }
+
+    if (!response) return false
   }
 }

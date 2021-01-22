@@ -24,7 +24,7 @@ h1.important {
 }
 
 [hidden] {
-  display: none;
+  display: none !important;
 }
 
 html {

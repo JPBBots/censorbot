@@ -1,9 +1,14 @@
 console.log('DEV MODE ON')
 
-function addButton (name, fn) {
+function addButton (name, fn, admin) {
   const a = document.createElement('a')
         a.innerText = name
         a.onclick = typeof fn === 'string' ? () => __LOADER.util.setPath(fn) : fn
+
+  if (admin) {
+    a.setAttribute('hidden', '')
+    a.classList.add('adminshow')
+  }
 
   document.getElementById('menu').appendChild(a)
 }
@@ -28,10 +33,14 @@ const differentLogin = (type) => {
     __LOADER.api.logout().then(() => __LOADER.api.auth())
   }
 }
-addButton('Admin Page', '/admin')
 
 addButton('Normal Login', differentLogin(null))
 addButton('Login With Canary', differentLogin('/canary'))
 addButton('Login With PTB', differentLogin('/ptb'))
+
+addButton('Rebuild Site', () => {
+  window.__LOADER.util.presentLoad('Rebuilding site')
+  fetch('/', { method: 'DELETE' }).then(() => location.reload())
+}, true)
 
 addButton('Disable DEV mode', () => window.location.search = '')
