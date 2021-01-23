@@ -11,8 +11,19 @@
   --duration: 0.4s
 }
 
-a:-webkit-any-link {
-  color: inherit;
+a {
+  &:-webkit-any-link {
+    color: inherit;
+  }
+  &:link {
+    color: inherit;
+  }
+  &:visited {
+    color: inherit;  
+  }
+  &:active {
+    opacity: 0.8;
+  }
 }
 
 ::placeholder {
@@ -53,34 +64,39 @@ nav {
   position: fixed;
   z-index: 3;
   border-bottom: 2px solid var(--background);
-}
 
-nav > h3 {
-  width: fit-content;
-  display: inline-block;
-  cursor: pointer;
-}
+  > h3 {
+    margin-top: 15px;
+    width: fit-content;
+    display: inline-block;
+    cursor: pointer;
+  }
 
-nav > span {
-  float: right;
-  position: absolute;
-  right: 0;
-}
+  > span {
+    float: right;
+    position: absolute;
+    right: 0;
 
-nav > span > div {
-  cursor: pointer;
-  display: inline-block;
-  text-decoration: none;
+    > div {
+      cursor: pointer;
+      display: inline-block;
+      text-decoration: none;
+    }
+  }
+
+  > * {
+    margin: 4px 20px 25px 10px;
+  }
 }
 #login {
   padding: 12px 10px 12px 10px;
   color: var(--different);
   text-align: center;
-}
 
-#login:hover {
-  transition: 0.2s;
-  background-color: var(--topbaralt);
+  &:hover {
+    transition: 0.2s;
+    background-color: var(--topbaralt);
+  }
 }
 
 #menu {
@@ -93,56 +109,38 @@ nav > span > div {
   z-index: 1;
   overflow: hidden;
   right: -10px;
-}
 
-#menu[hidden] {
-  display: block !important;
-  transition: 0.5s;
-  max-height: 0px;
-}
+  &[hidden] {
+    display: block !important;
+    transition: 0.5s;
+    max-height: 0px;
+  }
+  &:not([hidden]) {
+    transition: 1s;
+    max-height: 740px;
+  }
 
-#menu:not([hidden]) {
-  transition: 1s;
-  max-height: 740px;
-}
+  > a {
+    color: var(--mainalt);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    user-select: none;
+    border-radius: 5px;
 
-#menu > a {
-  color: var(--mainalt);
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  user-select: none;
-  border-radius: 5px;
+    &:hover {
+      transition: 0.2s;
+      background-color: var(--topbaralt);
+    }
+  }
 }
-
-#menu > a:hover {
-  transition: 0.2s;
-  background-color: var(--topbaralt);
-}
-
 #logout {
   color: var(--secondary) !important;
-}
-
-#logout:hover {
-  transition: 0.2s;
-  color: var(--main) !important;
-  background-color: var(--secondary) !important;
-}
-
-nav > * {
-  margin: 4px 20px 25px 10px;
-}
-nav > h3 {
-  margin-top: 15px
-}
-
-a:visited {
-  color: inherit;  
-}
-
-a:active {
-  opacity: 0.8;
+  &:hover {
+    transition: 0.2s;
+    color: var(--main) !important;
+    background-color: var(--secondary) !important;
+  }
 }
 
 .button {
@@ -153,46 +151,44 @@ a:active {
   border-radius: 5px;
   cursor: pointer;
   box-shadow: 0 0 10px rgba(0,0,0,.125);
-}
 
-.button[disabled] {
-  opacity: 0.6;
-  cursor: default;
-}
-
-.button:active {
-  opacity: 0.5;
-}
-
-.button:not([disabled]):not([selected]):hover {
-  transition: 0.2s;
-  background-color: var(--topbaralt);
-}
-
-.button[special] {
-  background-color: var(--main);
-  color: var(--background);
-}
-.button[special]:hover {
-  transition: 0.2s;
-  background-color: var(--mainalt) !important;
-}
-
-.button[unselected] {
-  opacity: 1;
-}
-
-.button[selected] {
-  opacity: 0.6 !important;
+  &[disabled] {
+    opacity: 0.6;
+    cursor: default;
+  }
+  &:active {
+    opacity: 0.5;
+  }
+  &:not([disabled]):not([selected]):hover {
+    transition: 0.2s;
+    background-color: var(--topbaralt);
+    &[special] {
+      transition: 0.2s;
+      background-color: var(--mainalt) !important;
+    }
+  }
+  &[special] {
+    background-color: var(--main);
+    color: var(--background);
+  }
+  &[unselected] {
+    opacity: 1;
+  }
+  &[selected] {
+    opacity: 0.6 !important;
+  }
 }
 
 #root {
   transition: 0.5s;
-}
-
-#root.loading {
-  transition: 0.5s;
-  opacity: 0
+  &.loading {
+    transition: 0.5s;
+    opacity: 0;
+  }
+  &.loader {
+    filter: url("data:image/svg+xml;utf9,<svg%20version='1.1'%20xmlns='http://www.w3.org/2000/svg'><filter%20id='blur'><feGaussianBlur%20stdDeviation='10'%20/></filter></svg>#blur");
+    -webkit-filter: blur(20px);
+  }
 }
 
 #toast {
@@ -208,15 +204,14 @@ a:active {
   text-align: center;
   padding: 16px;
   cursor: pointer;
-}
 
-#toast[gone] {
-  transition: 500ms;
-  transform: translateY(130%);
-}
-
-#toast:not([gone]) {
-  transition: 200ms;
+  &[gone] {
+    transition: 500ms;
+    transform: translateY(130%);
+  }
+  &:not([gone]) {
+    transition: 200ms;
+  }
 }
 
 div.sep {
@@ -248,27 +243,24 @@ small {
 
 #loader {
   position: fixed;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   height: 100%;
   width: 100%;
   z-index: 10;
   margin: 0;
   top: 0;
   transition: 0.3s;
-}
+  > center {
+    position: relative;
+    top: 20%;
 
-#loader > center {
-  position: relative;
-  top: 20%;
-}
-
-#loader > center > img {
-  width: 200px;
-  animation-name: spin;
-  animation-duration: 1.5s;
-  animation-iteration-count: infinite;
-  animation-timing-function: ease-in-out;
+    > img {
+      width: 200px;
+      animation-name: spin;
+      animation-duration: 1.5s;
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+    }
+  }
 }
 
 /** inputs **/
@@ -283,10 +275,10 @@ input, select {
   border: 1px transparent solid;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0,0,0,0.225);
-}
 
-input[type="number"] {
-  width: fit-content;
+  &[type="number"] {
+    width: fit-content;
+  }
 }
 
 .tagify {
@@ -330,6 +322,15 @@ input[type="number"] {
   background-color: var(--topbaralt);
   text-align: left !important;
   box-shadow: 0 0 10px rgba(0,0,0,0.325);
+
+  &:active {
+    transition-duration: calc(var(--duration) / 2);
+
+    .check-bg::before {
+      transform: translateY(0) scale(0.8);
+      opacity: 0.2;
+    }
+  }
 }
 
 .checkmark {
@@ -338,19 +339,19 @@ input[type="number"] {
   transition: transform var(--duration) ease;
   transform: translateX(-0.4em);
   z-index: 5;
-}
 
-.checkmark svg {
-  display: block;
-  background: var(--background);
-  transform: translateX(0.4em);
-  border-radius: 0.15em;
-  transition: background-color var(--duration) ease, transform calc(var(--duration) * 1.5) ease;
-}
-.checkmark svg path {
-  stroke-dasharray: 90 90;
-  stroke-dashoffset: 90;
-  transition: stroke-dashoffset calc(var(--duration) / 3) linear calc(var(--duration) / 3);
+  > svg {
+    display: block;
+    background: var(--background);
+    transform: translateX(0.4em);
+    border-radius: 0.15em;
+    transition: background-color var(--duration) ease, transform calc(var(--duration) * 1.5) ease;
+    > path {
+      stroke-dasharray: 90 90;
+      stroke-dashoffset: 90;
+      transition: stroke-dashoffset calc(var(--duration) / 3) linear calc(var(--duration) / 3);
+    }
+  }
 }
 
 .checkbox {
@@ -359,27 +360,19 @@ input[type="number"] {
   left: 0;
   opacity: 0.4;
   visibility: hidden;
-}
-.checkbox:checked ~ .checkmark {
-  transform: translate(52px);
-}
-.checkbox:checked ~ .checkmark svg {
-  background: #77c44c;
-  transform: translate(-0.4em);
-}
+  &:checked ~ .checkmark {
+    transform: translate(52px);
 
-.checkbox.premium:checked ~ .checkmark svg {
-  background: var(--gold) !important;
-}
+    > svg {
+      background: #77c44c;
+      transform: translate(-0.4em);
 
-.checkbox:checked ~ .checkmark svg path {
-  stroke-dashoffset: 0;
-}
-
-.checker.checker:active {
-  transition-duration: calc(var(--duration) / 2);
-}
-.checker.checker:active .check-bg::before {
-  transform: translateY(0) scale(0.8);
-  opacity: 0.2;
+      > path {
+        stroke-dashoffset: 0;
+      }
+    }
+  }
+  &.premium:checked ~ .checkmark > svg {
+    background: var(--gold) !important;
+  }
 }

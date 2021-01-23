@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 
 const minify = require('minify')
+const sass = require('sass')
 
 const defaultConfig = require('../../src/client/Config').config
 
@@ -14,7 +15,7 @@ const result = {}
 
 fs.readdirSync(pathTo.html()).forEach(file => {
   const [name, ext] = file.split('.')
-  if (ext !== 'html') return
+  if (ext !== 'html' || name === 'index') return
   console.log(`Compiling HTML file ${file}`)
 
   let contents = fs.readFileSync(pathTo.html(file), 'utf-8')
@@ -23,7 +24,7 @@ fs.readdirSync(pathTo.html()).forEach(file => {
   // custom elements
   contents = contents
     .replace(/<center(.+?)>(.+?)<\/center>/gs, `
-      <div style="display:block;text-align: -webkit-center"$1>$2</div>
+      <div style="display:block;text-align: -webkit-center;text-align: center"$1>$2</div>
     `)
     .replace(/<PremiumSetting:(.+?) (.+?)>(.+?)<\/PremiumSetting>/gs, `
     <div id="$1" premium>
@@ -75,13 +76,15 @@ fs.readdirSync(pathTo.html()).forEach(file => {
 
 fs.readdirSync(pathTo.css()).forEach(file => {
   const [name, ext] = file.split('.')
-  if (ext !== 'css') return
-  console.log(`Compiling CSS file ${file}`)
+  if (ext !== 'scss' || name === 'index') return
+  console.log(`Compiling SCSS file ${file}`)
 
-  const contents = fs.readFileSync(pathTo.css(file), 'utf-8')
   if (!result[name]) result[name] = {}
+  const contents = fs.readFileSync(pathTo.css(file), 'utf-8')
 
-  result[name].css = minify.css(contents)
+  result[name].css = minify.css(sass.renderSync({
+    file: pathTo.css(file)
+  }).css.toString('utf-8'))
 })
 
 fs.writeFileSync(path.resolve(__dirname, 'web.json'), JSON.stringify(result, null, 4))

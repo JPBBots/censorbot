@@ -6,13 +6,9 @@ import './typings/dom'
 import './typings/api'
 
 window.onload = async () => {
-  let devData
-  if (new URLSearchParams(window.location.search).get('dev') === 'true') {
-    window.dev = true
-    devData = await fetch('/web.json').then(x => x.json())
-  }
+  if (new URLSearchParams(window.location.search).get('dev') === 'true') window.dev = true
 
-  window.__LOADER = new Loader(devData)
+  window.__LOADER = new Loader()
 
   if (window.dev) {
     const script = document.createElement('script')

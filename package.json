@@ -9,7 +9,7 @@
     "push": "git push",
     "jsdoc": "jsdoc ./ -r -c ./jsdoc.json --verbose -d ./docs",
     "log": "docker logs --tail=50 censorbot_prod_1 --follow",
-    "buildsite": "cd website && rm -rf ./build && node ./src/PreBuild.js && tsc && webpack && cd ..",
+    "buildsite": "cd website && rm -rf ./build && node ./src/PreBuild.js && tsc && webpack && node ./src/PostBuild.js && cd ..",
     "site": "npm run buildsite && node ./website/server.js",
     "quicksite": "cd website && node ./src/PreBuild.js && cd .. && node ./website/server.js"
   },
@@ -46,6 +46,7 @@
     "mongodb": "3.5.5",
     "node-fetch": "2.6.1",
     "os-utils": "0.0.14",
+    "sass": "^1.32.5",
     "ws": "7.2.3"
   },
   "standard": {

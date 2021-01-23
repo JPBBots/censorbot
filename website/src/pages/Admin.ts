@@ -1,4 +1,5 @@
 import { Page, PageInterface } from "../structures/Page";
+import { E } from '../structures/Elements'
 
 export class Admin extends Page implements PageInterface {
   name = 'admin'
@@ -8,11 +9,11 @@ export class Admin extends Page implements PageInterface {
     'servers'
   ]
 
-  async loading () {
+  async loading() {
     await this.api.waitForUser()
   }
-  
-  update (stats: AdminResponse) {
+
+  update(stats: AdminResponse) {
     this.e('servers').innerText = stats.reduce((a, b) => a + b.shards.reduce((c, d) => c + d.guilds, 0), 0).toLocaleString()
     document.querySelectorAll('[id^=cluster-]').forEach(cluster => {
       const id = Number(cluster.id.split('-')[1])
@@ -22,62 +23,62 @@ export class Admin extends Page implements PageInterface {
       Array().slice.call(cluster.querySelector('div').children).forEach((shard: HTMLElement) => {
         const shardStat = stat.shards.find(x => x.id === Number(shard.id))
         shard.setAttribute('state', `${shardStat.state}`)
-        const info = shard.querySelector('div')
-        info.innerHTML = ''
-        info.appendChild(document.createTextNode(`${shardStat.guilds} servers`))
-        info.appendChild(document.createElement('br'))
-        info.appendChild(document.createTextNode(`${shardStat.ping || 0}ms`))
-        info.appendChild(document.createElement('br'))
-        info.appendChild(document.createTextNode(`${shardStat.events}ev/m`))
+        E.set(shard.querySelector('div'), [
+          { elm: 'text', text: `${shardStat.guilds} servers` },
+          { elm: 'br' },
+          { elm: 'text', text: `${shardStat.ping || 0}ms` },
+          { elm: 'br' },
+          { elm: 'text', text: `${shardStat.events}ev/m` },
+        ])
       })
     })
   }
 
-  async go () {
+  async go() {
     const stats = await this.api.getStats(true)
     if (!stats) return
-    
-    stats.forEach(stat => {
-      const cluster = document.createElement('div')
-      cluster.id = `cluster-${stat.cluster.id}`
 
-      const h3 = document.createElement('h3')
-            h3.innerText = `Cluster ${stat.cluster.id}`
-            h3.appendChild(document.createElement('br'))
-            h3.appendChild(document.createTextNode('Loading...'))
-      cluster.appendChild(h3)
-
-      const inner = document.createElement('div')
-
-      stat.shards.forEach(shard => {
-        const shardDiv = document.createElement('div')
-              shardDiv.id = `${shard.id}`
-        
-        const p = document.createElement('p')
-              p.innerText = `Shard ${shard.id}`
-        shardDiv.appendChild(p)
-
-        const info = document.createElement('div')
-        shardDiv.appendChild(info)
-
-        const button = document.createElement('a')
-              button.onclick = () => {
-                this.log('Restarting shard ' + shard.id)
-                this.api.restartShard(shard.id)
-                shardDiv.setAttribute('state', '0')
+    E.set(this.e('admin'), stats.map(stat => ({
+      elm: 'div',
+      id: `cluster-${stat.cluster.id}`,
+      children: [
+        {
+          elm: 'h3',
+          text: `Cluster ${stat.cluster.id}`,
+          children: [
+            { elm: 'br' },
+            { elm: 'text', text: 'Loading...' }
+          ]
+        },
+        {
+          elm: 'div',
+          children: stat.shards.map(shard => ({
+            elm: 'div',
+            id: `${shard.id}`,
+            children: [
+              {
+                elm: 'p',
+                text: `Shard ${shard.id}`
+              },
+              { elm: 'div' },
+              {
+                elm: 'a',
+                classes: ['button'],
+                attr: { special: '' },
+                text: 'Restart',
+                events: {
+                  click: (event) => {
+                    (event.target as HTMLButtonElement).parentElement.setAttribute('state', '0')
+                    this.log(`Restarting shard ${shard.id}`)
+                    this.api.restartShard(shard.id)
+                  }
+                }
               }
-              button.classList.add('button')
-              button.setAttribute('special', '')
-              button.innerText = 'Restart'
-        shardDiv.appendChild(button)
-
-        inner.appendChild(shardDiv)
-      })
-
-      cluster.appendChild(inner)
-
-      this.e('admin').appendChild(cluster)
-    })
+            ]
+          }))
+        }
+      ]
+    })))
 
     this.update(stats)
 
@@ -89,7 +90,7 @@ export class Admin extends Page implements PageInterface {
     }, 5000)
   }
 
-  async remove () {
+  async remove() {
     clearInterval(this.registry.interval)
     return true
   }

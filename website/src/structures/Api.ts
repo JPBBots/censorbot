@@ -1,6 +1,8 @@
 import { Utils } from './Utils'
 import { Logger } from './Logger'
 
+import { E } from './Elements'
+
 export class CensorBotApi {
   public user: User
   public guilds: ShortGuild[]
@@ -180,28 +182,41 @@ export class CensorBotApi {
     if (!guild) return false
 
     if (guild.error === 'Not In Guild') {
-      const back = document.createElement('a')
-            back.innerText = 'Back'
-            back.style.marginRight = '7px'
-            back.classList.add('button')
-            back.onclick = () => {
-              Utils.stopLoad()
-              Utils.setPath('/dashboard')
+      Utils.presentLoad(E.create({
+        elm: 'div',
+        children: [
+          { elm: 'text', text: 'Not in server.' },
+          { elm: 'br' },
+          { elm: 'br' },
+          {
+            elm: 'a',
+            text: 'Back',
+            classes: ['button'],
+            events: {
+              click: () => {
+                Utils.stopLoad(),
+                Utils.setPath('/dashboard')
+              }
             }
-      const invite = document.createElement('a')
-            invite.innerText = 'Invite'
-            invite.classList.add('button')
-            invite.onclick = async () => {
-              await Utils.openWindow(this._formUrl('/invite?id=' + id), 'Invite')
-              Utils.reloadPage()
+          },
+          { elm: 'br' },
+          { elm: 'br' },
+          {
+            elm: 'a',
+            text: 'Invite',
+            classes: ['button'],
+            attr: {
+              special: ''
+            },
+            events: {
+              click: async () => {
+                await Utils.openWindow(this._formUrl('/invite?id=' + id), 'Invite')
+                Utils.reloadPage()
+              }
             }
-      const div = document.createElement('div')
-            div.appendChild(document.createTextNode('Not in server.'))
-            div.appendChild(document.createElement('br'))
-            div.appendChild(document.createElement('br'))
-            div.appendChild(back)
-            div.appendChild(invite)
-      Utils.presentLoad(div)
+          }
+        ]
+      }) as HTMLElement)
       return false
     }
     return guild

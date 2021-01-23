@@ -1,6 +1,7 @@
 website/build
 website/static/build.js
 website/static/build.js.map
+website/static/site.html
 website/src/web.json
 website/src/config.json
 

@@ -1,3 +1,5 @@
+import { E } from './Elements'
+
 export class Utils {
   /**
    * Scroll to element on page
@@ -62,11 +64,14 @@ export class Utils {
     return new Promise(resolve => {
       const win = window.open(url, 'window', 'width=600,height=1000')
       if (!win) {
-        const button = document.createElement('a')
-              button.classList.add('button')
-              button.onclick = () => this.openWindow(url, text).then(x => resolve())
-              button.innerText = text || 'Open'
-        this.presentLoad(button)
+        this.presentLoad(E.create({
+          elm: 'a',
+          classes: ['button'],
+          text: text || 'Open',
+          events: {
+            click: () => this.openWindow(url, text).then(x => resolve())
+          }
+        }) as HTMLElement)
         return
       }
       const interval = setInterval(() => {
@@ -88,6 +93,7 @@ export class Utils {
       document.getElementById('loadtext').innerHTML = ''
       document.getElementById('loadtext').appendChild(msg)
     }
+    document.getElementById('root').classList.add('loader')
     document.getElementById('loader').removeAttribute('hidden')
   }
 
@@ -97,6 +103,7 @@ export class Utils {
   static stopLoad (): void {
     document.getElementById('loadtext').innerText = 'Loading...'
     document.getElementById('loader').setAttribute('hidden', '')
+    document.getElementById('root').classList.remove('loader')
   }
 
   /**
@@ -180,11 +187,11 @@ export class Utils {
   /**
    * Creates a premium star element
    */
-  static createPremiumStar (): Node {
+  static createPremiumStar (): HTMLElement {
     return document.createRange().createContextualFragment(`
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#c2973a" viewBox="0 0 16 16">
       <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
     </svg>
-    `).children[0]
+    `).children[0] as HTMLElement
   }
 }

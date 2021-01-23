@@ -1,34 +1,55 @@
 #settings {
   padding: 0px 6vw;
-}
-#settings {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(3, 1fr);
   grid-template-areas:
     "general general filter filter"
     "other other filter filter"
-    ". punishments punishments ."
-}
+    ". punishments punishments .";
 
-#settings > section {
-  background-color: var(--topbar);
-  text-align: center;
-  margin: 10px;
-  padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(33%, 1fr));
-  box-shadow: 0 0 24px rgba(0,0,0,0.425);
-  border-radius: 8px;
-  border: 1px #bab3b326 solid;
-}
+  > section {
+    background-color: var(--topbar);
+    text-align: center;
+    margin: 10px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(33%, 1fr));
+    box-shadow: 0 0 24px rgba(0,0,0,0.425);
+    border-radius: 8px;
+    border: 1px #bab3b326 solid;
+     
+    > h1, > h2 {
+      margin: 0px 100px 20px 100px;
+    }
 
-#settings > section > h1, #settings > section > h2 {
-  margin: 0px 100px 20px 100px;
-}
+    ul {
+      text-align: left;
+      grid-column: span 3;
+      margin: auto;
 
-#settings > section > ul > li {
-  margin: 9px;
+      li {
+        margin: 9px;
+      }
+    }
+
+    > div > h3 {
+      user-select: none;
+      max-height: 22%;
+    }
+  }
+
+  .button {
+    background-color: var(--topbaralt);
+
+    &:hover {
+      opacity: 0.5;
+    }
+
+    &:active {
+      opacity: 0.3;
+    }
+  }
 }
 
 #settings > section > h1, #settings > section > h2,
@@ -36,11 +57,6 @@
   grid-column: span 3;
   margin-top: 20px;
   user-select: none;
-} 
-
-#settings > section > div > h3 {
-  user-select: none;
-  max-height: 22%;
 }
 
 .general {
@@ -51,34 +67,19 @@
   grid-area: filter;
 }
 
-.punishments {
-  grid-area: punishments;
-  grid-template-rows: repeat(2, 0fr) !important;
-  height: fit-content;
-}
-
-.punishments > ul {
-  font-size: 1.7em;
-}
-
-#settings > section > ul {
-  text-align: left;
-  grid-column: span 3;
-  margin: auto;
-}
-
 .other {
   grid-area: other;
 }
 
-#settings .button {
-  background-color: var(--topbaralt);
-}
-#settings .button:hover {
-  opacity: 0.5;
-}
-#settings .button:active {
-  opacity: 0.3;
+.punishments {
+  grid-area: punishments;
+  grid-template-rows: repeat(2, 0fr) !important;
+  height: fit-content;
+  height: -moz-fit-content;
+
+  ul {
+    font-size: 1.7em;
+  }
 }
 
 #prefix > input {
@@ -98,16 +99,16 @@ h1 {
   background-color: var(--secondary);
   transition: bottom 0.3s ease-out;
   display: block;
-}
 
-#save:hover {
-  opacity: 0.8;
-  transition: 0.3s;
-}
+  &:hover {
+    opacity: 0.8;
+    transition: 0.3s;
+  }
 
-#save[hidden] {
-  bottom: -100px;
-  transition: bottom 0.5s ease-out;
+  &[hidden] {
+    bottom: -100px;
+    transition: bottom 0.5s ease-out;
+  }
 }
 
 #prem {
@@ -152,13 +153,14 @@ h1 {
 @media (max-width: 1050px) {
   #settings > section {
     grid-template-columns: repeat(auto-fill, minmax(50%, 1fr));
+
+    > ul {
+      grid-column: span 2;
+    }
   }
 
   #settings > section > h1, #settings > section > h2,
   #channels, #filters, #filter, #uncensor {
-    grid-column: span 2;
-  } 
-  #settings > section > ul {
     grid-column: span 2;
   }
 

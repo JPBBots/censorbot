@@ -25,9 +25,8 @@ export class Loader {
   util = Utils
   api = new CensorBotApi()
 
-  constructor (data?: WebData) {
+  constructor () {
     this.log('Loading...')
-    if (data) this.pageData = data
 
     //
 
@@ -44,13 +43,7 @@ export class Loader {
   }
 
   async run () {
-    if (!this.pageData) this.pageData = await import('./web.json').then(x => x.default)
-
-    if (window.dev) {
-      Utils.addStyleSheet('/static/css/index.css')
-    } else {
-      document.getElementById('indcss').innerText = this.pageData.index.css
-    }
+    this.pageData = await import('./web.json').then(x => x.default)
 
     this.load()
     const firstPage = this.pathPage()

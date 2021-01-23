@@ -30,9 +30,6 @@ app.get('/web.json', (req, res) => {
 })
 
 app.delete('/', (req, res) => {
-  let isAdmin = false
-  if (req.cookies.token) {
-  }
   sh('npm run buildsite').then(() => res.send('e'))
 })
 
@@ -45,7 +42,7 @@ app.get('/invite', (req, res) => {
 })
 
 app.use((req, res) => {
-  res.sendFile(Path.resolve(__dirname, './static/html', 'index.html'))
+  res.sendFile(Path.resolve(__dirname, './static', 'site.html'))
 })
 
 app.listen(8534, () => {

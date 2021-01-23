@@ -1,6 +1,7 @@
 import { Page, PageInterface } from "../structures/Page";
 
 import { Logger } from '../structures/Logger'
+import { E } from '../structures/Elements'
 
 import Config from '../config.json'
 
@@ -320,22 +321,21 @@ export class GuildSettings extends Page implements PageInterface {
       .set('uncensor', new Tagify(this.elm('uncensor'), listSettings))
 
     // fills 
-    this.guild.c.forEach(channel => {
-      const option = document.createElement('option')
-            option.value = channel.id
-            option.innerText = `#${channel.name}`
-      
-      this.elm('log').appendChild(option)
-    })
+    E.set(this.elm('log'), this.guild.c.map(c => ({
+      elm: 'option',
+      text: `#${c.name}`,
+      attr: {
+        value: c.id
+      }
+    })), true)
 
-    this.guild.r.forEach(role => {
-      [this.elm('role'), this.elm('punishment.role')].forEach(elm => {
-        const option = document.createElement('option')
-              option.value = role.id
-              option.innerText = `@${role.name}`
-        elm.appendChild(option)
-      })
-    })
+    E.set([this.elm('role'), this.elm('punishment.role')], this.guild.r.map(r => ({
+      elm: 'option',
+      text: `@${r.name}`,
+      attr: {
+        value: r.id
+      }
+    })), true)
 
     if (this.premium) this.setPremium()
     else this.clearPremium()

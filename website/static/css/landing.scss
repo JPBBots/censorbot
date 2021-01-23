@@ -11,22 +11,20 @@
   transform: rotate(-60deg);
   user-select: none;
   -webkit-user-drag: none;
-}
 
-#logo.rollon {
-  animation-name: rollon;
-  animation-fill-mode: forwards;
-  animation-duration: 1.5s;
-}
-
-#logo.rolloff {
-  animation-duration: 2s;
-  animation-name: rolloff;
-  animation-fill-mode: forwards;
-}
-
-#logo.slowdown {
-  transition: 0.5s;
+  &.rollon {
+    animation-name: rollon;
+    animation-fill-mode: forwards;
+    animation-duration: 1.5s;
+  }
+  &.rolloff {
+    animation-duration: 2s;
+    animation-name: rolloff;
+    animation-fill-mode: forwards;
+  }
+  &.slowdown {
+    transition: 0.5s;
+  }
 }
 
 #info {
@@ -41,6 +39,10 @@
   position: fixed;
   bottom: 5px;
   left: 46vw;
+
+  @media (max-height: 430px) {
+    display: none!important;
+  }
 }
 
 #buttons > a {
@@ -56,38 +58,42 @@ section {
   display: inline-block;
   border-bottom: 3px solid var(--background);
   background-color: var(--topbar);
+
+  > h1 {
+    font-size: 50px;
+    margin: 0px;
+    margin-bottom: 2.5vh;
+    margin-top: 2.5vh;
+  }
+
+  > article {
+    font-size: 22px;
+    margin-top: 2.5vh;
+    margin-bottom: 2.5vh;
+  }
 }
-
-section > h1 {
-  font-size: 50px;
-  margin: 0px;
-  margin-bottom: 2.5vh;
-  margin-top: 2.5vh;
-}
-
-section > article {
-  font-size: 22px;
-  margin-top: 2.5vh;
-  margin-bottom: 2.5vh;
-}
-
-
 
 @media (min-width: 900px) {
-  section > h1 {
-    width: 35%;
-  }
-  section:nth-child(odd) > h1 {
-    float: left;
-  }
-  section:nth-child(even) > h1 {
-    float: right;
-  }
-  section:nth-child(odd) > article {
-    text-align: right;
-  }
-  section:nth-child(even) > article {
-    text-align: left;
+  section {
+    > h1 {
+      width: 35%;
+    }
+    &:nth-child(odd) {
+      > h1 {
+        float: left;
+      }
+      > article {
+        text-align: right;
+      }
+    }
+    &:nth-child(even) {
+      > h1 {
+        float: right;
+      }
+      > article {
+        text-align: left;
+      }
+    }
   }
 }
 
@@ -119,17 +125,11 @@ section > article {
   #title > h1 {
     font-size: 4vw;
   }
-  
   #title > h4 {
     font-size: 2vw;
   }
 }
 
-@media (max-height: 430px) {
-  #scroll {
-    display: none!important;
-  }
-}
 
 @keyframes rolloff {
   0% {
