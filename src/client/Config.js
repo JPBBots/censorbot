@@ -99,8 +99,8 @@ const verify = (obj, premium, guild) => {
         x.length > 20
       )
     ).slice(0, premium ? 1500 : 150)
-     .map(x => (filter.resolve(x)[0] || {}).t)
-     .filter(x => x),
+      .map(x => (filter.resolve(x)[0] || {}).t)
+      .filter(x => x),
     uncensor: checker('uncensor', (v) =>
       v &&
       v.constructor === Array &&
@@ -108,8 +108,8 @@ const verify = (obj, premium, guild) => {
         x.length > 20
       )
     ).slice(0, premium ? 1500 : 150)
-     .map(x => (filter.resolve(x)[0] || {}).t)
-     .filter(x => x),
+      .map(x => (filter.resolve(x)[0] || {}).t)
+      .filter(x => x),
     msg: {
       content: checker('msg.content', (v) =>
         typeof v === 'string'

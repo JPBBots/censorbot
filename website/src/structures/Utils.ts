@@ -194,4 +194,20 @@ export class Utils {
     </svg>
     `).children[0] as HTMLElement
   }
+
+  /**
+   * Adds a button to the menu
+   */
+  static addButton (name: string, fn: () => any|string, admin?: boolean): void {
+    const a = document.createElement('a')
+    a.innerText = name
+    a.onclick = typeof fn === 'string' ? () => this.setPath(fn) : fn
+  
+    if (admin) {
+      a.setAttribute('hidden', '')
+      a.classList.add('adminshow')
+    }
+  
+    document.getElementById('menu').appendChild(a)
+  }
 }

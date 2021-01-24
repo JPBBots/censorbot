@@ -6,7 +6,7 @@ module.exports = {
   dbl: process.env.DBL_TOKEN === 'none' ? null : process.env.DBL_TOKEN,
   shards: {
     perCluster: process.env.SHARDS_PER_CLUSTER ? Number(process.env.SHARDS_PER_CLUSTER) : null,
-    total: process.env.SHARDS_TOTAL ? Number(process.env.SHARDS_TOTAL) : null,
+    total: process.env.SHARDS_TOTAL ? Number(process.env.SHARDS_TOTAL) : null
   },
   oauth: {
     id: process.env.ID,

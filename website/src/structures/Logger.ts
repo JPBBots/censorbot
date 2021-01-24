@@ -1,4 +1,4 @@
-let currentTimeout: NodeJS.Timeout
+let currentTimeout: number
 import { Utils } from './Utils'
 
 export class Logger {
@@ -18,7 +18,7 @@ export class Logger {
     currentTimeout = setTimeout(() => {
       toast.setAttribute('gone', '')
       currentTimeout = null
-    }, 5000)
+    }, 5000) as unknown as number
   }
 }
 

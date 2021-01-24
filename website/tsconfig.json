@@ -2,7 +2,7 @@
   "files": ["./src/index.ts"],
   "compilerOptions": {
     "target": "ES2017",
-    "outDir": "./build/tsc",
+    "outDir": "./build",
     "module": "commonjs",
     "lib": ["DOM"],
     "resolveJsonModule": true,

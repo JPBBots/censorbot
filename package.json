@@ -9,7 +9,7 @@
     "push": "git push",
     "jsdoc": "jsdoc ./ -r -c ./jsdoc.json --verbose -d ./docs",
     "log": "docker logs --tail=50 censorbot_prod_1 --follow",
-    "buildsite": "cd website && rm -rf ./build && node ./src/PreBuild.js && tsc && webpack && node ./src/PostBuild.js && cd ..",
+    "buildsite": "node ./website/build.js",
     "site": "npm run buildsite && node ./website/server.js",
     "quicksite": "cd website && node ./src/PreBuild.js && cd .. && node ./website/server.js"
   },
@@ -24,11 +24,17 @@
   },
   "homepage": "https://github.com/jpbberry/censorbot#readme",
   "devDependencies": {
-    "standard": "*",
+    "autoprefixer": "10.2.3",
+    "eslint-plugin-typescript": "^0.14.0",
     "jsdoc-baseline": "*",
+    "json-loader": "^0.5.7",
+    "memory-fs": "^0.5.0",
+    "minify": "*",
+    "postcss": "*",
+    "standard": "*",
+    "ts-loader": "^8.0.14",
     "typescript": "*",
-    "webpack-cli": "*",
-    "minify": "*"
+    "webpack-cli": "*"
   },
   "dependencies": {
     "@yaireo/tagify": "^3.22.0",
@@ -56,6 +62,9 @@
     ],
     "globals": [
       "BigInt"
+    ],
+    "plugins": [
+      "typescript"
     ]
   },
   "eslintConfig": {

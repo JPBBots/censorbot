@@ -122,7 +122,7 @@ export class CensorBotApi {
     this.fetch()
   }
 
-  private async auth (required?: boolean): Promise<boolean> {
+  public async auth (required?: boolean): Promise<boolean> {
     Utils.presentLoad('Waiting for you to authorize...')
     await this.logout(false)
 

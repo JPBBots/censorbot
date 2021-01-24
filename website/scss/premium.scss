@@ -5,14 +5,14 @@
   padding-top: 20px;
   grid-template-columns: repeat(3, minmax(100px, 1fr));
   grid-template-rows: repeat(1, 1fr);
-  margin: 0px 15vw;
+  margin: 0px 20vw;
 
   > div {
     background-color: var(--topbar);
     margin: 1vw;
     height: 265px;
     border-radius: 8px;
-    padding: 30px;
+    padding: 30px 0px;
     box-shadow: 0 0 10px rgba(0,0,0,0.325);
     transition: 0.3s;
     font-family: 'Roboto', sans-serif;
@@ -39,7 +39,7 @@
     > h3 {
       grid-area: name;
       height: fit-content;
-      margin: 15px 0px 0px 0px;
+      margin: 20px 0px 0px 0px;
     }
 
     > h4 {
@@ -47,13 +47,14 @@
       height: fit-content;
       margin: 0px;
       margin-bottom: 2vh;
+      color: var(--secondary);
     }
 
     > ul {
       grid-area: list;
       height: 4vw;
       text-align: left;
-      margin: 0px 2vw 12vh 2vw;
+      margin: 0px 1vw 7vh 2vw;
     }
 
     > a {
