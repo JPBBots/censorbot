@@ -5,5 +5,5 @@ exports.info = {
   name: 'dashboard',
   description: 'Gives link to the online settings dashboard',
   format: '{prefix}dashboard',
-  aliases: ['dash', 'settings', 'config']
+  aliases: ['dash', 'settings', 'config', 'website']
 }

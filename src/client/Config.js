@@ -97,21 +97,23 @@ const verify = (obj, premium, guild) => {
       v.constructor === Array &&
       !v.some(x =>
         x.length > 20
-      ) &&
-      v.length <= (!premium ? 150 : 500)
-    ).map(x => filter.resolve(x)[0].t),
+      )
+    ).slice(0, premium ? 1500 : 150)
+      .map(x => (filter.resolve(x)[0] || {}).t)
+      .filter(x => x),
     uncensor: checker('uncensor', (v) =>
       v &&
       v.constructor === Array &&
       !v.some(x =>
         x.length > 20
-      ) &&
-      v.length <= (!premium ? 150 : 500)
-    ).map(x => filter.resolve(x)[0].t),
+      )
+    ).slice(0, premium ? 1500 : 150)
+      .map(x => (filter.resolve(x)[0] || {}).t)
+      .filter(x => x),
     msg: {
       content: checker('msg.content', (v) =>
         typeof v === 'string'
-          ? v.length <= 100
+          ? v.length <= (premium ? 1000 : 200)
           : v === null || v === false
       ),
       deleteAfter: checker('msg.deleteAfter', (v) =>
@@ -126,8 +128,8 @@ const verify = (obj, premium, guild) => {
       type: checker('punishment.type', (v) => !(v === 1 && !guild.r.some(x => obj.punishment.role === x.id)) && constants.punishmentTypes.includes(v)),
       amount: checker('punishment.amount', (v) => Number.isInteger(v) && v <= 50 && v > 0),
       role: checker('punishment.role', (v) => obj.punishment.type === 1 && guild.r.some(x => v === x.id)),
-      time: checker('punishment.time', (v) => v !== null ? Number.isInteger(v) && constants.timedPunishments.includes(obj.punishment.type) && v > 0 && v < constants.punishmentTimeMax : true),
-      expires: checker('punishment.expires', (v) => v !== null ? Number.isInteger(v) && v > 0 && v < constants.punishmentTimeMax : true)
+      time: checker('punishment.time', (v) => v !== null ? Number.isInteger(v) && constants.timedPunishments.includes(obj.punishment.type) && v > 0 && v <= constants.punishmentTimeMax : true),
+      expires: checker('punishment.expires', (v) => v !== null ? Number.isInteger(v) && v > 0 && v <= constants.punishmentExpiresMax : true)
     },
     webhook: {
       enabled: checker('webhook.enabled', (v) => typeof v === 'boolean', true),

@@ -10,7 +10,6 @@ services:
     restart: unless-stopped
     ports:
       - "1234:1234"
-      - "1002:1000"
   testing:
     build: .
     volumes:

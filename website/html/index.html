@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html style="background-color: #333b52" lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0">
+    <title>Censor Bot</title>
+    {INDCSS}
+    <style id="css"></style>
+    <style id="css2"></style>
+
+    <meta property="og:image" content="https://branding.jt3ch.net/censorbot.png">
+    <meta name="theme-color" content="#ff3d00">
+    <meta property="og:title" content="Censor Bot">
+    <meta property="og:description" content="Easy to use advanced content filtering for your Discord server(s)!">
+    <meta name="description" content="Advanced Anti-Swear Bot that comes with a pre-built filters, no work needed! anti swear bot">
+
+    <link rel="icon" href="https://branding.jt3ch.net/censorbot.png">
+
+    <script>{JS}</script>
+  </head>
+  <body>
+    <noscript>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <h1>Please enable JavaScript.</h1>
+    </noscript>
+    <div id="loader" hidden>
+      <center>
+        <img src="https://branding.jt3ch.net/censorbotalt.png">
+        <h2 id="loadtext">Loading...</h2>
+      </center>
+    </div>
+    <nav>
+      <h3 href="/">
+      Censor Bot
+      </h3>
+      <span>
+        <div style="position: relative">
+          <div id="login">Loading...</div>
+          <div id="menu" hidden>
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/support" target="_blank">Support</a>
+            <a href="/premium">Premium</a>
+            <a href="/admin" class="adminshow" hidden>Admin</a>
+            <a id="logout" function>Logout</a>
+          </div>
+        </div>
+      </span>
+    </nav>
+    <div id="root"></div>
+    <div id="toast" onclick="this.setAttribute('gone', '')" gone></div>
+  </body>
+</html>

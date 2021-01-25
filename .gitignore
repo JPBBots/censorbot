@@ -1,3 +1,8 @@
+website/build
+website/src/web.json
+website/src/config.json
+website/site.html
+
 TODO.txt
 
 *.env
@@ -47,9 +52,6 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-
-# TypeScript v1 declaration files
-typings/
 
 # TypeScript cache
 *.tsbuildinfo

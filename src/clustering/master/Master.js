@@ -14,6 +14,7 @@ const MasterAPI = require('./MasterAPI')
 const RestManager = require('../../discord/rest/RestManager')
 
 const { dbl, token, shardsPerCluster } = require('../../config')
+const { shards } = require('../../settings')
 
 /**
  * For controlling and starting clusters
@@ -132,11 +133,11 @@ class Master {
 
     if (!botGateway || !botGateway.shards) return console.log('Error contacting Discord gateway endpoint.')
 
-    this.internalClusters = chunkShards(botGateway.shards, shardsPerCluster)
+    this.internalClusters = chunkShards(shards.total || botGateway.shards, shards.perCluster || shardsPerCluster)
 
     this._gateway = botGateway.url
 
-    this.log(`Spawning workers (${botGateway.shards} shards | ${botGateway.session_start_limit.remaining}/${botGateway.session_start_limit.total} identify's)`)
+    this.log(`Spawning workers (${shards.total || botGateway.shards} shards | ${botGateway.session_start_limit.remaining}/${botGateway.session_start_limit.total} identify's)`)
 
     this._createWorker('api', 1)
     this._createWorker('punishments', 2)

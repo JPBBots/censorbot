@@ -1,6 +1,6 @@
 {
   "name": "censorbot",
-  "version": "10.0.0",
+  "version": "11.0.0",
   "description": "Anti-Swear bot for discord",
   "main": "./src/index.js",
   "scripts": {
@@ -8,7 +8,10 @@
     "commit": "git add . && echo \"Commit Message:\" && read msg && git commit -m \"$msg\"",
     "push": "git push",
     "jsdoc": "jsdoc ./ -r -c ./jsdoc.json --verbose -d ./docs",
-    "log": "docker logs --tail=50 censorbot_prod_1 --follow"
+    "log": "docker logs --tail=50 censorbot_prod_1 --follow",
+    "buildsite": "node ./website/build.js",
+    "site": "npm run buildsite && node ./website/server.js",
+    "quicksite": "cd website && node ./src/PreBuild.js && cd .. && node ./website/server.js"
   },
   "repository": {
     "type": "git",
@@ -21,10 +24,18 @@
   },
   "homepage": "https://github.com/jpbberry/censorbot#readme",
   "devDependencies": {
+    "autoprefixer": "10.2.3",
+    "jsdoc-baseline": "*",
+    "memory-fs": "^0.5.0",
+    "minify": "*",
+    "postcss": "*",
     "standard": "*",
-    "jsdoc-baseline": "*"
+    "ts-loader": "^8.0.14",
+    "typescript": "*",
+    "webpack-cli": "*"
   },
   "dependencies": {
+    "@yaireo/tagify": "^3.22.0",
     "body-parser": "1.19.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
@@ -39,12 +50,12 @@
     "mongodb": "3.5.5",
     "node-fetch": "2.6.1",
     "os-utils": "0.0.14",
+    "sass": "^1.32.5",
+    "smoothscroll-polyfill": "^0.4.4",
     "ws": "7.2.3"
   },
   "standard": {
     "ignore": [
-      "website/views/*",
-      "website/static/*",
       "docs/*",
       "node_modules/*"
     ],
