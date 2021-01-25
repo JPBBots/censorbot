@@ -28,6 +28,17 @@ app.delete('/', (req, res) => {
   sh('npm run buildsite').then(() => res.send('e'))
 })
 
+app.get('/robots.txt', (req, res) => {
+  res.send(
+`
+User-agent: *
+Disallow: /admin
+Disallow: /tickets
+Disallow: /dashboard/*
+`
+  )
+})
+
 app.get('/support', (req, res) => {
   res.redirect('https://discord.gg/v3r2rKP')
 })

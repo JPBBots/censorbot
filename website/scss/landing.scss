@@ -1,5 +1,6 @@
 #title {
   margin: 100px 0px 0px 80px;
+  height: 85vh
 }
 
 #logo {
@@ -7,6 +8,7 @@
   top: 8vh;
   position: fixed;
   width: 40vw;
+  height: 40vw;
   z-index: -1;
   transform: rotate(-60deg);
   user-select: none;
@@ -28,7 +30,6 @@
 }
 
 #info {
-  margin-top: 27vh;
   width: 100%;
   height: -webkit-fill-available;
   background-color: var(--topbar);
@@ -39,10 +40,6 @@
   position: fixed;
   bottom: 5px;
   left: 46vw;
-
-  @media (max-height: 430px) {
-    display: none!important;
-  }
 }
 
 #buttons > a {
@@ -107,10 +104,7 @@ section {
     margin-left: 15%;
   }
   #scroll {
-    display: none!important;
-  }
-  #info {
-    margin-top: 17vh;
+    left: 33vw;
   }
 }
 
@@ -118,14 +112,15 @@ section {
   #title {
     text-align: left;
     width: 34%;
+
+    > h1 {
+      font-size: 4vw;
+    }
+    > h2 {
+      font-size: 2vw;
+    }
   }
   #buttons > a {
-    font-size: 2vw;
-  }
-  #title > h1 {
-    font-size: 4vw;
-  }
-  #title > h4 {
     font-size: 2vw;
   }
 }

@@ -131,3 +131,17 @@ type AdminResponse = {
   cluster: Cluster
   shards: Shard[]
 }[]
+
+type SmallID = string
+
+interface Ticket {
+  id: SmallID
+  word: string
+  user: Snowflake
+  admin: Snowflake
+}
+
+interface TicketTest {
+  censored: boolean,
+  places: string[]
+}

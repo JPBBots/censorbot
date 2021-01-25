@@ -4,15 +4,7 @@ import { Collection } from './structures/Collection'
 import { Utils } from './structures/Utils'
 import { CensorBotApi } from './structures/Api'
 
-import { Landing } from "./pages/Landing";
-import { e404 } from "./pages/404"
-import { Test } from './pages/Test'
-import { DashboardHome } from './pages/DashboardHome'
-import { GuildSettings } from './pages/GuildSettings'
-import { Premium } from './pages/Premium'
-import { DashboardTwitch } from './pages/DashboardTwitch'
-import { Admin } from './pages/Admin'
-import { Terms } from './pages/Terms'
+import { Pages } from './pages'
 
 export class Loader {
   private pages: Collection<string, PageInterface>
@@ -72,7 +64,7 @@ export class Loader {
   }
 
   load () {
-    [Landing, e404, Test, DashboardHome, GuildSettings, Premium, DashboardTwitch, Admin, Terms]
+    Pages
       .forEach(Page => {
         const page = new Page(this)
         this.pages.set(page.name, page)
@@ -95,9 +87,9 @@ export class Loader {
       if (res === false) return this.log('Page didn\'t want to reload.')
       else this.currentPage.unrender()
     }
+    await Utils.scroll('nav')
     this.root.classList.add('loading')
-    await this.util.wait(200)
-    Utils.scroll('nav')
+    await this.util.wait(window.loadTime)
     await pg.render()
     if (loader) await loader
     await pg.go()

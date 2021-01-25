@@ -36,4 +36,8 @@ export class E {
       set.forEach(elm => e.appendChild(this.create(elm)))
     })
   }
+
+  static delete (element: HTMLElement) {
+    element.parentElement.removeChild(element)
+  }
 }

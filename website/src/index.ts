@@ -1,4 +1,7 @@
 import 'regenerator-runtime/runtime.js'
+import * as smoothscroll from 'smoothscroll-polyfill'
+
+smoothscroll.polyfill()
 
 import { Loader } from './Loader'
 import { Utils } from './structures/Utils'
@@ -7,6 +10,8 @@ import { E } from './structures/Elements'
 
 import './typings/dom'
 import './typings/api'
+
+window.loadTime = 100
 
 window.onload = async () => {
   if (new URLSearchParams(window.location.search).get('dev') === 'true') window.dev = true

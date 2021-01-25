@@ -1,14 +1,35 @@
 import { E } from './Elements'
+import { events } from './Events'
 
 export class Utils {
   /**
    * Scroll to element on page
    * @param query Query for element
    */
-  static scroll (query: string): void {
+  static scroll (query: string): Promise<void> {
     const doc = document.querySelector(query)
     if (!doc) return
-    window.scrollTo(0, doc.getBoundingClientRect().top - 50)
+    return new Promise(resolve => {
+      const top = doc.getBoundingClientRect().top - 50
+      const scrolled = () => window.pageYOffset > top - 60 && window.pageYOffset < top + 60
+      if (scrolled()) return resolve()
+      const timeout = setTimeout(() => {
+        resolve()
+        events.removeEventListener('util', 'scroll')
+      }, 2000)
+      events.addEventListener('util', 'scroll', () => {
+        if (scrolled()) {
+          clearTimeout(timeout)
+          events.removeEventListener('util', 'scroll')
+          resolve()
+        }
+      })
+      window.scroll({
+        behavior: 'smooth',
+        left: 0,
+        top
+      })
+    })
   }
 
   /**
@@ -93,14 +114,34 @@ export class Utils {
       document.getElementById('loadtext').innerHTML = ''
       document.getElementById('loadtext').appendChild(msg)
     }
+    this.disableScroll()
     document.getElementById('root').classList.add('loader')
     document.getElementById('loader').removeAttribute('hidden')
+  }
+
+  static disableScroll () {
+    document.body.style.marginTop = `-${window.pageYOffset}px`
+    document.body.style.position = 'fixed'
+    document.body.style.overflowY = 'scroll'
+  }
+
+  static enableScroll () {
+    document.body.style.position = ''
+    document.body.style.overflowY = ''
+    const top = -parseInt(document.body.style.marginTop, 10);
+    document.body.style.marginTop = ''
+    window.scroll({
+      behavior: 'auto',
+      top,
+      left: 0
+    })
   }
 
   /**
    * Stop loading screen
    */
   static stopLoad (): void {
+    this.enableScroll()
     document.getElementById('loadtext').innerText = 'Loading...'
     document.getElementById('loader').setAttribute('hidden', '')
     document.getElementById('root').classList.remove('loader')

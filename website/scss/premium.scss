@@ -71,6 +71,15 @@
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(auto-fill, minmax(180px, 1fr));
   padding: 0px 10vw;
+
+  > div {
+    > ul {
+      text-align: left;
+    }
+    > h3 {
+      color: var(--secondary);
+    }
+  }
 }
 
 #perks > div, #howto > ul {
@@ -82,10 +91,6 @@
   box-shadow: 0 0 10px rgba(0,0,0,0.325);
   transition: 0.1s;
   border: 1px #ea545526 solid;
-}
-
-#perks > div > h3 {
-  color: var(--secondary);
 }
 
 #premium > div:hover, #perks > div:hover {

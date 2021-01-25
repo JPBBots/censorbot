@@ -45,7 +45,8 @@ export class DashboardHome extends Page implements PageInterface {
         ? {
           elm: 'img',
           attr: {
-            src: `https://cdn.discordapp.com/icons/${guild.i}/${guild.a}.png`
+            src: `https://cdn.discordapp.com/icons/${guild.i}/${guild.a}.png`,
+            alt: guild.n
           }
         }
         : {

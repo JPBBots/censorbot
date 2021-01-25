@@ -10,6 +10,7 @@ declare global {
     LOGGER: Logger
     dev: boolean
     discordOAuthExtra?: string
+    loadTime: number
   }
   
   interface WebData {

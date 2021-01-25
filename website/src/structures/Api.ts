@@ -97,7 +97,7 @@ export class CensorBotApi {
     if (message) Utils.stopLoad()
 
     if (!req.ok && !(returnErrors && returnErrors === req.status)) {
-      if (response.message) Logger.tell('Error: ' + response.error)
+      if (response.error) Logger.tell('Error: ' + response.error)
       Logger.log('API', `Error from ${url}: ${req.status} / ${req.statusText} = ${response.error}`)
       if (req.status === 401) {
         const auth = await this.auth(true)
@@ -266,5 +266,36 @@ export class CensorBotApi {
     }
 
     if (!response) return false
+  }
+
+  public async getTickets (): Promise<Ticket[]|false> {
+    if (!this.token && !await this.auth(true)) return false
+    let response
+    if (this.user.admin) {
+      response = await this.request('Fetching tickets', 'GET', '/admin/tickets', null, 401)
+      if (!response) return false
+    }
+
+    if (!this.user.admin || response.error === 'Unauthorized') {
+      Logger.tell('You are not authorized to access this location.')
+      setTimeout(() => {
+        Utils.setPath()
+      }, 1000)
+      return false
+    }
+
+    return response
+  }
+
+  public async testTicket (id: SmallID): Promise<TicketTest> {
+    if (this.user.admin) return this.request('Fetching ticket', 'GET', '/admin/tickets/' + id)
+  }
+
+  public async acceptTicket (id: SmallID): Promise<{ success: boolean }> {
+    if (this.user.admin) return this.request('Accepting ticket', 'POST', '/admin/tickets/' + id)
+  }
+
+  public async denyTicket (id: SmallID): Promise<{ success: boolean }> {
+    if (this.user.admin) return this.request('Denying ticket', 'DELETE', '/admin/tickets/' + id)
   }
 }
