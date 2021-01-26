@@ -14,6 +14,7 @@ export class Utils {
       const scrolled = () => window.pageYOffset > top - 60 && window.pageYOffset < top + 60
       if (scrolled()) return resolve()
       const timeout = setTimeout(() => {
+        window.scrollTo(0, top)
         resolve()
         events.removeEventListener('util', 'scroll')
       }, 2000)
@@ -21,6 +22,7 @@ export class Utils {
         if (scrolled()) {
           clearTimeout(timeout)
           events.removeEventListener('util', 'scroll')
+          window.scrollTo(0, top)
           resolve()
         }
       })

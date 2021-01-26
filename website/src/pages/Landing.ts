@@ -36,7 +36,7 @@ export class Landing extends Page implements PageInterface {
 
   async remove () {
     this.e('logo').classList.add('rolloff')
-    await this.util.wait(900)
+    if (window.screen.width > 650) await this.util.wait(900)
     return true
   }
 }

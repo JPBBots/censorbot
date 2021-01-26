@@ -217,6 +217,7 @@ export class GuildSettings extends Page implements PageInterface {
   }
 
   async go () {
+    window.scrollTo(0, 0)
     if (!this.registry.guild || !this.api.user) return
 
     this.util.presentLoad('Getting your settings')
