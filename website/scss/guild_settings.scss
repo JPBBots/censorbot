@@ -124,7 +124,7 @@ h1 {
 @media (max-width: 750px) {
   #settings {
     grid-template-columns: repeat(1, 1fr);
-    grid-template-rows: repeat(auto-fill, minmax(100px, 520px));
+    grid-template-rows: repeat(auto-fill, minmax(100px, 1fr));
     grid-template-areas:
       "general"
       "filter"
@@ -152,9 +152,13 @@ h1 {
 @media (max-width: 1050px) {
   #settings > section {
     grid-template-columns: repeat(auto-fill, minmax(50%, 1fr));
+    padding: 15px 5px;
 
     > ul {
       grid-column: span 2;
+      > li > input {
+        margin: 15px 9px
+      }
     }
   }
 

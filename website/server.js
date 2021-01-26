@@ -43,6 +43,14 @@ app.get('/support', (req, res) => {
   res.redirect('https://discord.gg/v3r2rKP')
 })
 
+app.get('/review', (req, res) => {
+  res.redirect('https://top.gg/bot/394019914157129728#reviews')
+})
+
+app.get('/servers*', (req, res) => {
+  res.redirect('/dashboard')
+})
+
 app.get('/invite', (req, res) => {
   res.redirect('/api/invite')
 })

@@ -7,7 +7,7 @@ exports.run = async function (message, args) {
     return this.client.interface.dm(message.author.id,
       this.embed
         .title(`${helpme.id} (${helpme.name};${this.client.guildShard(helpme.id)})`)
-        .description(`[Dashboard](https://censor.bot/servers/${helpme.id})`)
+        .description(`[Dashboard](https://censor.bot/dashboard/${helpme.id})`)
         .field('Owner', helpme.owner)
     )
   }

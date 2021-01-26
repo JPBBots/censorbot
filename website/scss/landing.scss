@@ -31,9 +31,10 @@
 
 #info {
   width: 100%;
-  height: -webkit-fill-available;
+  height: fit-content;
   background-color: var(--topbar);
   z-index: 2;
+  overflow-y: visible;
 }
 
 #scroll {

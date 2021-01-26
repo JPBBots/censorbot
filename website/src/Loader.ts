@@ -94,6 +94,10 @@ export class Loader {
     if (loader) await loader
     await pg.go()
     this.root.classList.remove('loading')
+    // @ts-ignore
+    window.gtag('config', 'UA-111382716-3', {
+      page_path: window.location.pathname.replace(/[0-9]+$/, '')
+    })
     this.log('Finished loading page')
     this.loading = false
     this._currentPage = page

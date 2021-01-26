@@ -59,6 +59,7 @@ class FilterLoader {
     const fontPacks = require('./data/fontpacks.json')
     fontPacks.forEach(font => {
       font.split(' ').forEach((x, i) => {
+        if (x === '-') return
         this.fonts.push({
           in: new RegExp(x, 'gi'),
           out: this.constructor.alphabet[i]
