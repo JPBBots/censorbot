@@ -1,3 +1,4 @@
+
 exports.run = function (message, args) {
   this.send(
     this.embed
@@ -10,7 +11,7 @@ exports.run = function (message, args) {
         '**Moral Support**: [Peter2469](https://www.peternokes.co.uk)\n'
       )
       .field('__**Support Team**__',
-        'Baby Spinel#1866, Egyptian_Lobster#9080, Nevyl#1286'
+        '<@467593308839870475>, <@601784957664493608>, <507444005030854656>'
       )
       .field('__**Translators**__',
         '**English**: Literally everyone\n' +
