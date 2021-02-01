@@ -1,5 +1,5 @@
 const replaceSpots = {
-  spaces: /\s|_|\/|\\|\.|\n|&|-|\^|\+|=|:|~|,|\?|\(|\)/gi,
+  spaces: /\s+|_|\/|\\|\.|\n|&|-|\^|\+|=|:|~|,|\?|\(|\)/gi,
   nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|\u200D|\u200F|\u200E|\u200C/gi // eslint-disable-line no-irregular-whitespace
 }
 
@@ -28,7 +28,7 @@ function inRange (x, min, max) {
 }
 
 const linkRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g
-const emailRegex = /^([a-zA-Z0-9_\-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/g
+const emailRegex = /([a-zA-Z0-9_\-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)/g
 
 /**
  * Filter for testing against words
@@ -74,17 +74,17 @@ class Filter {
     const used = []
     function surroundRange (txt, range) {
       if (used.some(x => inRange(range[0], ...x) && inRange(range[1], ...x))) return txt
-      txt = txt.split(/ +/)
+      txt = txt.split(replaceSpots.spaces)
 
-      txt[range[0]] = `${sur}${txt[range[0]]}`
-      txt[range[1] - (txt[range[1]] ? 0 : 1)] = `${txt[range[1] - (txt[range[1]] ? 0 : 1)] || ''}${sur}`
+      txt[range[0]] = `\x1F${txt[range[0]]}`
+      txt[range[1] - (txt[range[1]] ? 0 : 1)] = `${txt[range[1] - (txt[range[1]] ? 0 : 1)] || ''}\x1F`
 
       used.push(range)
 
       return txt.join(' ')
     }
 
-    return ranges.reduce((a, b) => surroundRange(a, b), text)
+    return ranges.reduce((a, b) => surroundRange(a, b), text).replace(/\x1F/g, sur)
   }
 
   /**
@@ -110,15 +110,7 @@ class Filter {
       .replace(/<#?@?!?&?(\d+)>/g, '') // mentions
       .replace(/<a?:(\w+):(\d+)>/g, '$1') // emojis
       .replace(/(.)\1{2,}/g, '$1$1') // multiple characters only come up once
-      .replace(/\s+/, ' ')
-
-    content = content.split(' ')
-
-    for (const i in content) {
-      content[i] = content[i].replace(emailRegex, '$1 $2 $6').replace(linkRegex, '$3')
-    }
-
-    content = content.join(' ')
+      .replace(emailRegex, '$1 $2 $6').replace(linkRegex, '$3')
 
     for (const i in converter.in) { // convert special character like accents and emojis into their readable counterparts
       content = content.replace(converter.in[i], converter.out[i])
@@ -132,7 +124,7 @@ class Filter {
 
     let res = Array(content.split(replaceSpots.spaces).length + 1).fill().map(() => ({ i: [], t: '' })) // array of default objects
 
-    content = content.split(' ')
+    content = content.split(replaceSpots.spaces)
 
     function addSpot (text, spot, index) {
       if (!res[index]) return false
