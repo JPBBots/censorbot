@@ -80,18 +80,16 @@ export class Loader {
     this.loading = true
     this.log(`Loading page ${page}`)
     const pg = this.pages.get(page)
-    let loader
-    if (pg.loading) loader = pg.loading()
     if (this.currentPage) {
       const res = await this.currentPage.remove()
       if (res === false) return this.log('Page didn\'t want to reload.')
       else this.currentPage.unrender()
     }
     await Utils.scroll('nav')
+    if (pg.loading) await pg.loading()
     this.root.classList.add('loading')
     await this.util.wait(window.loadTime)
     await pg.render()
-    if (loader) await loader
     await pg.go()
     this.root.classList.remove('loading')
     // @ts-ignore
