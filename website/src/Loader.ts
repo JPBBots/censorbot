@@ -35,6 +35,7 @@ export class Loader {
   }
 
   async run () {
+    // @ts-ignore web.json only comes at compile time
     this.pageData = await import('./web.json').then(x => x.default)
 
     this.load()
