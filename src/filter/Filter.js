@@ -84,7 +84,13 @@ class Filter {
       return txt.join(' ')
     }
 
-    return ranges.reduce((a, b) => surroundRange(a, b), text).replace(/\x1F/g, sur)
+    return ranges.reduce((a, b) => surroundRange(a, b),
+      text
+        .replace(/\x1F/g, '') // eslint-disable-line no-control-regex
+        .replace(new RegExp(
+          sur.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'),
+        ''))
+      .replace(/\x1F/g, sur) // eslint-disable-line no-control-regex
   }
 
   /**
