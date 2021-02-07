@@ -1,6 +1,6 @@
 const replaceSpots = {
-  spaces: /\s+|_|\/|\\|\.|\n|&|-|\^|\+|=|:|~|,|\?|\(|\)/gi,
-  nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|\u200D|\u200F|\u200E|\u200C/gi // eslint-disable-line no-irregular-whitespace
+  spaces: /\s+|_|\/|\\|\.|\n|&|-|\^|\+|=|:|~|,|\?|\(|\)/gsi,
+  nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|\u200D|\u200F|\u200E|\u200C/gsi // eslint-disable-line no-irregular-whitespace
 }
 
 const FilterLoader = require('./Loader.js')
@@ -27,7 +27,7 @@ function inRange (x, min, max) {
   return ((x - min) * (x - max) <= 0)
 }
 
-const linkRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g
+const linkRegex = /https?:\/\/(www\.)?([-a-zA-Z0-9@:%._+~#=]{1,256})\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g
 const emailRegex = /([a-zA-Z0-9_\-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)/g
 
 /**
@@ -71,26 +71,33 @@ class Filter {
   }
 
   surround (text, ranges, sur) {
-    const used = []
-    function surroundRange (txt, range) {
-      if (used.some(x => inRange(range[0], ...x) && inRange(range[1], ...x))) return txt
-      txt = txt.split(replaceSpots.spaces)
+    const splitText = text.split(replaceSpots.spaces)
 
-      txt[range[0]] = `\x1F${txt[range[0]]}`
-      txt[range[1] - (txt[range[1]] ? 0 : 1)] = `${txt[range[1] - (txt[range[1]] ? 0 : 1)] || ''}\x1F`
+    const starterPlaces = []
+    const endPlaces = []
 
-      used.push(range)
+    ranges.forEach(range => {
+      starterPlaces.push(splitText.slice(0, range[0]).join(' ').length)
+      endPlaces.push(splitText.slice(0, range[1] + 1).join(' ').length)
+    })
 
-      return txt.join(' ')
-    }
+    let newText = text
+      .replace(/\x1F/g, '') // eslint-disable-line no-control-regex
+      .replace(replaceSpots.spaces, (spot, ind) => {
+        if (starterPlaces.includes(ind)) spot += '\x1F'
+        if (endPlaces.includes(ind)) spot = '\x1F' + spot
 
-    return ranges.reduce((a, b) => surroundRange(a, b),
-      text
-        .replace(/\x1F/g, '') // eslint-disable-line no-control-regex
-        .replace(new RegExp(
-          sur.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'),
-        ''))
+        return spot
+      })
+      .replace(new RegExp(
+        sur.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'),
+      '')
       .replace(/\x1F/g, sur) // eslint-disable-line no-control-regex
+
+    if (starterPlaces.includes(0)) newText = sur + newText
+    if (endPlaces.includes(text.length)) newText += sur
+
+    return newText
   }
 
   /**
@@ -115,8 +122,8 @@ class Filter {
       .toLowerCase()
       .replace(/<#?@?!?&?(\d+)>/g, '') // mentions
       .replace(/<a?:(\w+):(\d+)>/g, '$1') // emojis
-      .replace(/(.)\1{2,}/g, '$1$1') // multiple characters only come up once
-      .replace(emailRegex, '$1 $2 $6').replace(linkRegex, '$3')
+      .replace(/(\w)\1{2,}/g, '$1$1') // multiple characters only come up once
+      .replace(emailRegex, '$1 $2 $6').replace(linkRegex, '$2')
 
     for (const i in converter.in) { // convert special character like accents and emojis into their readable counterparts
       content = content.replace(converter.in[i], converter.out[i])
@@ -206,7 +213,7 @@ class Filter {
       }
     }
 
-    res = res.filter(x => x.t) // remove any blank spaces
+    // res = res.filter(x => x.t) // remove any blank spaces
 
     for (let i = 0; i < res.length; i++) { // combine pieces that ends and start with the same character
       const s = res[i]
@@ -220,9 +227,9 @@ class Filter {
       }
     }
 
-    content = res.filter(x => x.t) // remove any blank spaces (again)
+    // content = res.filter(x => x.t) // remove any blank spaces (again)
 
-    return content
+    return res
   }
 
   /**
