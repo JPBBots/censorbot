@@ -125,7 +125,7 @@ class Filter {
     return newText.replace(/\x1D+/, () => {
       i++
       return links[i]
-    })
+    }).replace(/`/g, '')
   }
 
   /**
@@ -153,7 +153,9 @@ class Filter {
       .replace(/<a?:(\w+):(\d+)>/g, '$1') // emojis
       .replace(emailRegex, (...email) => {
         return `${email[1]}${email[2]}${email[6]}`.replace(replaceSpots.spaces, '')
-      }).replace(linkRegex, '$2')
+      }).replace(linkRegex, (...link) => {
+        return `${link[2]}`.replace(replaceSpots.spaces, '')
+      })
       .replace(/(\w)\1{2,}/g, '$1$1') // multiple characters only come up once
 
     for (const i in converter.in) { // convert special character like accents and emojis into their readable counterparts
