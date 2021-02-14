@@ -10,7 +10,7 @@ exports.run = function (message, args) {
         '**Moral Support**: [Peter2469](https://www.peternokes.co.uk)\n'
       )
       .field('__**Support Team**__',
-        'Baby Spinel#1866, Egyptian_Lobster#9080, Nevy#4883'
+        '_Darkell#1866, Egyptian_Lobster#9080, Nevy#4883'
       )
       .field('__**Translators**__',
         '**English**: Literally everyone\n' +
