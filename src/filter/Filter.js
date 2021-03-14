@@ -2,7 +2,7 @@
 
 const replaceSpots = {
   spaces: /\s|_|\/|\\|\.|\n|&|-|\^|\+|=|:|~|,|\?|\(|\)/gi,
-  nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|\u200D|\u200F|\u200E|\u200C/gi // eslint-disable-line no-irregular-whitespace
+  nothing: /"|\*|'|\||`|<|>|#|!|\[|\]|\{|\}|;|%|\u200D|\u200F|\u200E|\u200C|\u200B/gi // eslint-disable-line no-irregular-whitespace
 }
 
 const FilterLoader = require('./Loader.js')

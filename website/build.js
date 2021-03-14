@@ -1,9 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 const minify = require('minify')
-const memoryFs = require('memory-fs')
+const MemoryFs = require('memory-fs')
 const sass = require('sass')
-const { exec } = require('child_process')
 
 const pathTo = {
   src: path.resolve.bind(undefined, __dirname, './src'),
@@ -17,21 +16,9 @@ const postcss = require('postcss')
 const autoprefixer = require('autoprefixer')
 
 const processCss = async (file) => {
-  return postcss([ autoprefixer ]).process(minify.css(sass.renderSync({
+  return postcss([autoprefixer]).process(minify.css(sass.renderSync({
     file: pathTo.scss(file)
   }).css.toString('utf-8'))).then(x => x.css)
-}
-
-async function sh(cmd) {
-  return new Promise(function (resolve, reject) {
-    exec(cmd, (err, stdout, stderr) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve({ stdout, stderr });
-      }
-    });
-  });
 }
 
 const defaultConfig = require('../src/client/Config').config;
@@ -122,12 +109,12 @@ const defaultConfig = require('../src/client/Config').config;
   }
 
   const compiler = require('webpack')(wpConfig)
-  const mfs = new memoryFs()
+  const mfs = new MemoryFs()
 
-  await new Promise((r, e) => {
+  await new Promise((resolve, reject) => {
     compiler.run((err, status) => {
-      if (err) e(err)
-      else r()
+      if (err) reject(err)
+      else resolve()
     })
     compiler.outputFileSystem = mfs
   })
@@ -141,7 +128,7 @@ const defaultConfig = require('../src/client/Config').config;
   html = html.replace(/{INDCSS}/, `<style id="indcss">${await processCss('index.scss')}</style>`)
   html = html.replace(/{JS}/, `${js}`)
 
-  fs.writeFileSync(pathTo.base('site.html'), html)
+  fs.writeFileSync(pathTo.base('site.html'), minify.html(html))
 
   console.log('Compiled to /site.html')
 
@@ -150,4 +137,3 @@ const defaultConfig = require('../src/client/Config').config;
 
   console.log('Cleaned up.')
 })()
-

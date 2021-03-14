@@ -39,12 +39,50 @@ Disallow: /dashboard/*
   )
 })
 
+app.get('/sitemap.xml', (req, res) => {
+  res.header('Content-Type', 'text/xml')
+  res.send(
+`
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  <url>
+    <loc>https://censor.bot/</loc>
+    <lastmod>2021-03-01T23:28:22+00:00</lastmod>
+    <priority>1.00</priority>
+  </url>
+  <url>
+    <loc>https://censor.bot/invite</loc>
+    <lastmod>2021-03-01T23:28:22+00:00</lastmod>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://censor.bot/dashboard</loc>
+    <lastmod>2021-03-01T23:28:22+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://censor.bot/premium</loc>
+    <lastmod>2021-03-01T23:28:22+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://censor.bot/support</loc>
+    <lastmod>2021-03-01T23:28:22+00:00</lastmod>
+    <priority>0.70</priority>
+  </url>
+</urlset>
+`)
+})
+
 app.get('/support', (req, res) => {
   res.redirect('https://discord.gg/v3r2rKP')
 })
 
 app.get('/review', (req, res) => {
   res.redirect('https://top.gg/bot/394019914157129728#reviews')
+})
+
+app.get('/stats', (req, res) => {
+  res.redirect('https://p.datadoghq.com/sb/iib7eqa83t2bea4n-3c71c6e3122e2ad6ad1b7546bb4ee491?from_ts=1611093578306&live=true&theme=dark&to_ts=1611179978306&tpl_var_var=%2A&tv_mode=false')
 })
 
 app.get('/servers*', (req, res) => {
