@@ -5,5 +5,6 @@ export default {
   aliases: [],
   exec: (ctx) => {
     ctx.reply('test')
+    ctx.worker.api.messages.react(ctx.channel.id, ctx.message.id, '🧪');
   }
 } as CommandOptions
