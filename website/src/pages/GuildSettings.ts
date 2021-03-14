@@ -9,6 +9,8 @@ const defaultConfig = JSON.stringify(Config)
 
 import Tagify from '@yaireo/tagify'
 import { Utils } from "../structures/Utils";
+import { ExtendedGuild, GuildDB, PunishmentType, WebhookReplace } from "../typings/api";
+import { Snowflake } from "discord-api-types";
 
 export class GuildSettings extends Page implements PageInterface {
   name = 'guild_settings'
@@ -64,15 +66,15 @@ export class GuildSettings extends Page implements PageInterface {
   }
 
   get id () {
-    return location.pathname.split('dashboard/')[1]
+    return location.pathname.split('dashboard/')[1] as Snowflake
   }
 
   private formSettings (): GuildDB {
     const res: GuildDB = JSON.parse(defaultConfig)
 
     res.prefix = this.elm('prefix').value || null
-    res.log = this.elm('log').value || null
-    res.role = this.elm('role').value || null
+    res.log = this.elm('log').value as Snowflake || null
+    res.role = this.elm('role').value as Snowflake || null
     res.channels = this.util.getTagify(this.inp('channels'))
     res.dm = this.inp('dm').checked
 
@@ -91,11 +93,11 @@ export class GuildSettings extends Page implements PageInterface {
     res.punishment.amount = Number(this.elm('punishment.amount').value)
     res.punishment.expires = this.util.getDuration(this.inp('punishment.expires'))
     res.punishment.type = Number(this.elm('punishment.type').value) as GuildDB['punishment']['type']
-    if (res.punishment.type === 1) {
-      res.punishment.role = this.elm('punishment.role').value
-      if (res.punishment.role === '') res.punishment.role = null
+    if (res.punishment.type === PunishmentType.Mute) {
+      res.punishment.role = this.elm('punishment.role').value as Snowflake
+      if (!res.punishment.role) res.punishment.role = null
     }
-    if ([1, 3].includes(res.punishment.type)) {
+    if ([PunishmentType.Mute, PunishmentType.Kick].includes(res.punishment.type)) {
       res.punishment.time = this.util.getDuration(this.inp('punishment.time'))
     }
 
@@ -108,7 +110,7 @@ export class GuildSettings extends Page implements PageInterface {
 
     res.webhook.enabled = this.inp('webhook.enabled').checked
     res.webhook.separate = this.inp('webhook.separate').checked
-    res.webhook.replace = Number(this.elm('webhook.replace').value) as GuildDB['webhook']['replace']
+    res.webhook.replace = Number(this.elm('webhook.replace').value) as WebhookReplace
 
     return res
   }

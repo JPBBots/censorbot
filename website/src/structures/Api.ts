@@ -2,6 +2,8 @@ import { Utils } from './Utils'
 import { Logger } from './Logger'
 
 import { E } from './Elements'
+import { AdminResponse, GuildData, GuildDB, ShortGuild, SmallID, Ticket, TicketTest, User } from '../typings/api'
+import { Snowflake } from 'discord-api-types'
 
 export class CensorBotApi {
   public user: User

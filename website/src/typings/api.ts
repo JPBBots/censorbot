@@ -1,6 +1,9 @@
-type Snowflake = string
+export * from '../../../typings/typings'
+import { Snowflake } from 'discord-api-types'
 
-interface User {
+import { GuildDB } from '../../../typings/typings'
+
+export interface User {
   /**
    * ID of user
    */
@@ -32,7 +35,7 @@ interface User {
   admin: boolean
 }
 
-interface ShortGuild {
+export interface ShortGuild {
   /**
    * ID of guild
    */
@@ -47,47 +50,7 @@ interface ShortGuild {
   a: string
 }
 
-type filterType = 'en' | 'es' | 'off' | 'de' | 'ru'
-
-interface GuildDB {
-  id?: Snowflake
-  filters: filterType[]
-  censor: {
-    msg: boolean
-    emsg: boolean
-    nick: boolean
-    react: boolean
-  }
-  log?: Snowflake
-  role?: Snowflake
-  filter: string[]
-  uncensor: string[]
-  msg: {
-    content?: string|false
-    deleteAfter?: number
-  }
-  punishment: {
-    type: 0 | 1 | 2 | 3
-    amount: number
-    role?: Snowflake
-    time: number
-    expires?: number
-  }
-  webhook: {
-    enabled: boolean
-    separate: boolean
-    replace: 0 | 1 | 2
-  }
-  multi: boolean
-  prefix?: string
-  channels: Snowflake[]
-  nsfw: boolean
-  invites: boolean
-  fonts: boolean
-  dm: boolean
-}
-
-interface ExtendedGuild extends ShortGuild {
+export interface ExtendedGuild extends ShortGuild {
   /**
    * Array of channels
    */
@@ -98,7 +61,7 @@ interface ExtendedGuild extends ShortGuild {
   r: {id: Snowflake, name: string}[]
 }
 
-interface GuildData {
+export interface GuildData {
   /**
    * Guild data
    */
@@ -113,12 +76,12 @@ interface GuildData {
   db: GuildDB
 }
 
-interface Cluster {
+export interface Cluster {
   memory: number
   uptime: number
   id: number
 }
-interface Shard {
+export interface Shard {
   events: number
   id: number
   ping: number
@@ -127,21 +90,21 @@ interface Shard {
   guilds: number
 }
 
-type AdminResponse = {
+export type AdminResponse = {
   cluster: Cluster
   shards: Shard[]
 }[]
 
-type SmallID = string
+export type SmallID = string
 
-interface Ticket {
+export interface Ticket {
   id: SmallID
   word: string
   user: Snowflake
   admin: Snowflake
 }
 
-interface TicketTest {
+export interface TicketTest {
   censored: boolean,
   places: string[]
 }

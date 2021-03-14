@@ -21,7 +21,7 @@ const processCss = async (file) => {
   }).css.toString('utf-8'))).then(x => x.css)
 }
 
-const defaultConfig = undefined; // CONFIG; // todo
+const defaultConfig = {}; // CONFIG; // todo
 
 (async () => {
   const result = {}
