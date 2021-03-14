@@ -1,11 +1,12 @@
 {
-  "include": ["src/.run/*.ts", "src/commands/**/*.ts"],
+  "include": ["src/.run/*.ts", "src/commands/**/*.ts", "src/data/filter/index.js", "src/data/filter/**/*.json"],
   "compilerOptions": {
     "target": "ES2017",
     "outDir": "./dist",
     "moduleResolution": "node",
     "module": "commonjs",
     "resolveJsonModule": true,
+    "allowJs": true,
     "esModuleInterop": true
   }
 }

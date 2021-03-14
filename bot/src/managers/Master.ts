@@ -6,6 +6,8 @@ import path from 'path'
 import { Config } from '../config'
 import { Database } from '../structures/Database'
 
+import { addHandlers } from '../helpers/masterEvents'
+
 export class MasterManager extends Master {
   config: typeof Config
   db: Database
@@ -20,6 +22,8 @@ export class MasterManager extends Master {
       }
     })
     Setup(this)
+
+    addHandlers(this)
 
     this.start()
   }

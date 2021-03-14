@@ -10,10 +10,10 @@ import DefaultConfig from '../data/DefaultConfig.json'
 import SafeConfig from '../data/SafeConfig.json'
 
 export class Database {
-  configCache = new Cache(5 * 60 * 1000) as Cache<Snowflake, GuildDB>
+  configCache: Cache<Snowflake, GuildDB> = new Cache(5 * 60 * 1000)
 
   mongo: MongoClient
-  db: Db
+  db?: Db
 
   constructor () {
     this.mongo = new MongoClient(`mongodb://${Config.db.username}:${Config.db.password}@${Config.db.host}:27017/`, {
@@ -29,12 +29,12 @@ export class Database {
   }
 
   async config (id: Snowflake): Promise<GuildDB> {
-    if (!this.db) return SafeConfig as GuildDB
+    if (this.db == null) return SafeConfig as GuildDB
 
     const cached = this.configCache.get(id)
-    if (cached) return cached
+    if (cached != null) return cached
 
-    const db: GuildDB = await this.db.collection('guild_data').findOne({ id }) || Object.assign({ id }, DefaultConfig)
+    const db = (await this.db.collection('guild_data').findOne({ id }) as GuildDB) || Object.assign({ id }, DefaultConfig) as GuildDB
 
     this.configCache.set(id, db)
 

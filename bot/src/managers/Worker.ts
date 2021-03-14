@@ -2,8 +2,13 @@ import { Worker } from 'discord-rose'
 import { Setup } from './BaseManager'
 
 import { Config } from '../config'
+
 import { Database } from '../structures/Database'
+import { Filter } from '../structures/Filter'
+
 import { Snowflake } from 'discord-api-types'
+
+import { addHandlers } from '../helpers/clusterEvents'
 
 import fetch from 'node-fetch'
 import path from 'path'
@@ -11,10 +16,13 @@ import fs from 'fs'
 
 import adminMiddleware from '@discord-rose/admin-middleware'
 import flagsMiddleware from '@discord-rose/flags-middleware'
+import permissionsMiddleware from '@discord-rose/permissions-middleware'
+
 import { CommandOptions } from 'discord-rose/dist/typings/lib'
 
 export class WorkerManager extends Worker {
   config: typeof Config
+  filter = new Filter()
   db: Database
 
   constructor () {
@@ -24,19 +32,36 @@ export class WorkerManager extends Worker {
     this.setStatus('watching', 'Rewrite')
 
     this.commands
-      .setPrefix((msg) => {
-        return this.db.config(msg.guild_id).then(x => x.prefix)
+      .prefix(async (msg) => {
+        return await this.db.config(msg.guild_id).then(x => x.prefix)
       })
       .middleware(flagsMiddleware())
-      .middleware(adminMiddleware((id) => {
-        return this.isAdmin(id)
+      .middleware(adminMiddleware(async (id) => {
+        return await this.isAdmin(id)
       }))
+      .middleware(permissionsMiddleware())
+      .middleware(async (ctx) => {
+        ctx.db = await this.db.config(ctx.guild.id)
 
-    this._loadDir(path.resolve(__dirname, '../commands'))
+        return true
+      })
+
+    addHandlers(this)
+
+    console.log = (...msg: string[]) => this.comms.log(msg.join(' '))
+
+    this.loadCommands()
   }
 
   public async isAdmin (id: Snowflake): Promise<boolean> {
-    return fetch('https://jpbbots.org/api/admin/' + id).then(x => x.text()).then(x => !!Number(x))
+    return await fetch('https://jpbbots.org/api/admin/' + id).then(async x => await x.text()).then(x => !!Number(x))
+  }
+
+  public loadCommands () {
+    console.log('Loading commands')
+    if (this.commands.commands.clear) this.commands.commands.clear()
+
+    this._loadDir(path.resolve(__dirname, '../commands'))
   }
 
   private _loadDir (dir: string) {
@@ -50,8 +75,9 @@ export class WorkerManager extends Worker {
       const [name, ext] = file.name.split('.')
       if (ext !== 'js') continue
 
+      delete require.cache[require.resolve(path.resolve(dir, file.name))]
       const command: CommandOptions = require(path.resolve(dir, file.name)).default
-      
+
       this.commands.add(command)
     }
   }

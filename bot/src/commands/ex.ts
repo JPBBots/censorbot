@@ -1,9 +1,11 @@
 import { CommandOptions } from 'discord-rose/dist/typings/lib'
 
 export default {
-  command: 'test',
+  command: 'ex',
   aliases: [],
+  description: 'ex',
+  admin: true,
   exec: (ctx) => {
-    ctx.reply('test')
+    ctx.reply('ex')
   }
 } as CommandOptions

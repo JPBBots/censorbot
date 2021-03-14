@@ -1,6 +1,6 @@
 import { CommandOptions } from 'discord-rose/dist/typings/lib'
 
-import { NonFatalError } from '../utils/NonFatalError'
+import { NonFatalError } from '../../utils/NonFatalError'
 
 function clean (text) {
   if (typeof (text) === 'string') { return text.replace(/`/g, '`' + String.fromCharCode(8203)).replace(/@/g, '@' + String.fromCharCode(8203)) } else { return text }
@@ -11,8 +11,8 @@ let temp
 
 export default {
   command: 'eval',
-  aliases: [],
   admin: true,
+  description: 'Evaluates code',
   exec: async (ctx) => {
     if (ctx.message.author.id !== '142408079177285632') throw new NonFatalError('Bonk, no eval fo u')
 
@@ -23,7 +23,7 @@ export default {
 
       let evaled
       if (ctx.flags.m) evaled = await worker.comms.masterEval(code)
-      else if(ctx.flags.b) evaled = await worker.comms.broadcastEval(code)
+      else if (ctx.flags.b) evaled = await worker.comms.broadcastEval(code)
       else evaled = eval(code)
 
       if (ctx.flags.last) last = evaled
