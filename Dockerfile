@@ -6,4 +6,4 @@ COPY package*.json /app/
 
 COPY ./src /app
 
-CMD node index.js
+CMD node .

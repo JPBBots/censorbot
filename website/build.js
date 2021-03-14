@@ -21,7 +21,7 @@ const processCss = async (file) => {
   }).css.toString('utf-8'))).then(x => x.css)
 }
 
-const defaultConfig = require('../src/client/Config').config;
+const defaultConfig = undefined; // CONFIG; // todo
 
 (async () => {
   const result = {}

@@ -1,0 +1,37 @@
+{
+  "name": "website",
+  "version": "1.0.0",
+  "description": "Website for Censor Bot",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpbberry/censorbot.git"
+  },
+  "author": "JPBBerry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jpbberry/censorbot/issues"
+  },
+  "homepage": "https://github.com/jpbberry/censorbot#readme",
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.2.5",
+    "memory-fs": "^0.5.0",
+    "minify": "^7.0.1",
+    "postcss": "^8.2.8",
+    "sass": "^1.32.8",
+    "smoothscroll-polyfill": "^0.4.4",
+    "tagify": "^0.1.1",
+    "ts-loader": "^8.0.18",
+    "typescript": "^4.2.3",
+    "webpack": "^5.25.0",
+    "@yaireo/tagify": "^3.22.0"
+  }
+}

@@ -14,12 +14,12 @@ module.exports = {
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
-        exclude: /node_modules/,
+        exclude: /node_modules/
       }
-    ],
+    ]
   },
   resolve: {
-    extensions: [ '.tsx', '.ts' ],
+    extensions: ['.tsx', '.ts']
   },
   optimization: {
     minimizer: [

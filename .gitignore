@@ -3,6 +3,8 @@ website/src/web.json
 website/src/config.json
 website/site.html
 
+package-lock.json
+
 TODO.txt
 
 *.env
