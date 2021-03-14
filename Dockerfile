@@ -2,8 +2,6 @@ FROM node:12
 
 WORKDIR /app
 
-COPY package*.json /app/
+COPY ./bot /app
 
-COPY ./src /app
-
-CMD node .
+CMD npm run start

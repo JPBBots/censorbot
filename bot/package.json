@@ -1,0 +1,34 @@
+{
+  "name": "bot",
+  "version": "12.0.0",
+  "description": "Anti-swear bot for Discord",
+  "main": "./dist/.run/master.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpbberry/censorbot.git"
+  },
+  "author": "JPBBerry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jpbberry/censorbot/issues"
+  },
+  "homepage": "https://github.com/jpbberry/censorbot#readme",
+  "dependencies": {
+    "@discord-rose/admin-middleware": "^1.1.0",
+    "@discord-rose/flags-middleware": "^1.0.2",
+    "discord-rose": "^1.0.1",
+    "dotenv": "^8.2.0",
+    "mongodb": "^3.6.3",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/mongodb": "^3.6.9",
+    "@types/node-fetch": "^2.5.8",
+    "discord-api-types": "^0.12.1",
+    "ts-standard": "^10.0.0",
+    "typescript": "^4.2.3"
+  }
+}

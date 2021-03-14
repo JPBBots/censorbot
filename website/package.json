@@ -19,7 +19,8 @@
   "homepage": "https://github.com/jpbberry/censorbot#readme",
   "dependencies": {
     "ejs": "^3.1.6",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongodb": "^3.6.2"
   },
   "devDependencies": {
     "@yaireo/tagify": "^3.22.0",
