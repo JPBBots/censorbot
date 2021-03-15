@@ -5,10 +5,14 @@ import { Config } from '../config'
 
 import { Database } from '../structures/Database'
 import { Filter } from '../structures/Filter'
+import { ActionBucket } from '../structures/ActionBucket'
+import { Responses } from '../structures/Responses'
 
 import { Snowflake } from 'discord-api-types'
 
 import { addHandlers } from '../helpers/clusterEvents'
+import { setupFilters } from '../helpers/setupFilters'
+import { setupDiscord } from '../helpers/discordEvents'
 
 import fetch from 'node-fetch'
 import path from 'path'
@@ -19,11 +23,15 @@ import flagsMiddleware from '@discord-rose/flags-middleware'
 import permissionsMiddleware from '@discord-rose/permissions-middleware'
 
 import { CommandOptions } from 'discord-rose/dist/typings/lib'
+import { PermissionsUtils, bits } from 'discord-rose/dist/utils/Permissions'
 
 export class WorkerManager extends Worker {
   config: typeof Config
   filter = new Filter()
   db: Database
+
+  actions = new ActionBucket(this)
+  responses = new Responses(this)
 
   constructor () {
     super()
@@ -47,6 +55,8 @@ export class WorkerManager extends Worker {
       })
 
     addHandlers(this)
+    setupFilters(this)
+    setupDiscord(this)
 
     console.log = (...msg: string[]) => this.comms.log(msg.join(' '))
 
@@ -80,5 +90,14 @@ export class WorkerManager extends Worker {
 
       this.commands.add(command)
     }
+  }
+
+  hasPerms (id: Snowflake, perms: keyof typeof bits) {
+    return PermissionsUtils.calculate(
+      this.selfMember.get(id),
+      this.guilds.get(id),
+      this.guildRoles.get(id),
+      perms
+    )
   }
 }

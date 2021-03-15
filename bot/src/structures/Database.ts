@@ -12,6 +12,9 @@ import SafeConfig from '../data/SafeConfig.json'
 export class Database {
   configCache: Cache<Snowflake, GuildDB> = new Cache(5 * 60 * 1000)
 
+  defaultConfig = DefaultConfig
+  safeConfig = SafeConfig
+
   mongo: MongoClient
   db?: Db
 

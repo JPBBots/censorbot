@@ -23,5 +23,9 @@ export const Config = {
     dashboard: 'https://dash.censor.bot',
     support: 'https://discord.gg/CRAbk4w',
     patreon: 'https://patreon.com/censorbot'
-  }
+  },
+
+  defaultMessage: "You're not allowed to say that.",
+
+  bucketBuffer: 3
 }

@@ -17,10 +17,10 @@ interface ResolvedPiece {
   n?: boolean
 }
 
-interface FilterResponse {
+export interface FilterResponse {
   censor: boolean
   ranges: Range[]
-  filters: filterType[]
+  filters: (filterType | 'server' | 'invites')[]
   places: JPBExp[]
 }
 
