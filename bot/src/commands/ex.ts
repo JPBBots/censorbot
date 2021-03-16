@@ -6,6 +6,6 @@ export default {
   description: 'ex',
   admin: true,
   exec: (ctx) => {
-    ctx.reply('ex')
+    void +ctx.reply('ex')
   }
 } as CommandOptions

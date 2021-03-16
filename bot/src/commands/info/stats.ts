@@ -10,9 +10,9 @@ export default {
 
     const apiPing = Date.now() - date
 
-    ctx.embed
+    void ctx.embed
       .title('Bot stats')
-      .field(':envelope_with_arrow: Ping', `${ctx.worker.guildShard(ctx.guild.id).ping}ms`, true)
+      .field(':envelope_with_arrow: Ping', `${ctx.worker.guildShard(ctx.guild?.id).ping}ms`, true)
       .field(':incoming_envelope: API Latency', `${apiPing}ms`, true)
       .send()
   }

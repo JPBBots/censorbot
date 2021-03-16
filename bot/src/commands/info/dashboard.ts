@@ -5,6 +5,6 @@ export default {
   aliases: ['dash', 'settings'],
   description: 'Sends a link to the dashboard',
   exec: (ctx) => {
-    ctx.reply(`Change server settings here: ${ctx.worker.config.links.dashboard}`)
+    void ctx.reply(`Change server settings here: ${ctx.worker.config.links.dashboard}`)
   }
 } as CommandOptions

@@ -11,8 +11,7 @@ TODO.txt
 
 *.env
 !example.env
-src/filter/data/fontpacks.json
-src/filter/data/filters/*
+bot/src/data/filter
 
 # Logs
 logs

@@ -14,6 +14,6 @@ export default {
 
     ctx.worker.comms.tell('RELOAD', reloading)
 
-    ctx.embed.title(`Reloaded ${reloading}`).send()
+    void ctx.embed.title(`Reloaded ${reloading}`).send()
   }
 } as CommandOptions

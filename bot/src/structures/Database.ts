@@ -25,14 +25,14 @@ export class Database {
     })
   }
 
-  async connect () {
+  async connect (): Promise<void> {
     await this.mongo.connect()
 
     this.db = this.mongo.db('censorbot')
   }
 
   async config (id: Snowflake): Promise<GuildDB> {
-    if (this.db == null) return SafeConfig as GuildDB
+    if (this.db == null) return SafeConfig as unknown as GuildDB
 
     const cached = this.configCache.get(id)
     if (cached != null) return cached

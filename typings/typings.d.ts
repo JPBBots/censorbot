@@ -48,11 +48,11 @@ export interface GuildDB {
   /**
    * Log channel ID
    */
-  log?: Snowflake
+  log: Snowflake|null
   /**
    * Ignored role ID
    */
-  role?: Snowflake
+  role: Snowflake|null
   /**
    * List of words to filter
    */
@@ -68,7 +68,7 @@ export interface GuildDB {
     /**
      * Message to send
      */
-    content?: string|false
+    content: string|false|null
     /**
      * Delete after x ms
      */
@@ -83,9 +83,9 @@ export interface GuildDB {
      */
     type: PunishmentType
     amount: number
-    role?: Snowflake
-    time: number
-    expires?: number
+    role: Snowflake|null
+    time: number|null
+    expires: number|null
   }
   webhook: {
     enabled: boolean
@@ -93,7 +93,7 @@ export interface GuildDB {
     replace: WebhookReplace
   }
   multi: boolean
-  prefix?: string
+  prefix: string|null
   channels: Snowflake[]
   nsfw: boolean
   invites: boolean

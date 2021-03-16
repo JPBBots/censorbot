@@ -1,19 +1,21 @@
 import { WorkerManager } from '../managers/Worker'
 
 import '../types'
+import path from 'path'
 
-const filterDataDir = require('path').resolve(__dirname, '../structures/Filter')
+const filterDataDir = path.resolve(__dirname, '../structures/Filter')
 
-export function addHandlers (worker: WorkerManager) {
-  worker.comms.on('RELOAD', async (reloading) => {
+export function addHandlers (worker: WorkerManager): void {
+  worker.comms.on('RELOAD', (reloading) => {
     switch (reloading) {
       case 'COMMANDS':
         worker.loadCommands()
         break
       case 'FILTER':
         delete require.cache[require.resolve(filterDataDir)]
-        const Filter = require(filterDataDir).Filter
-        worker.filter = new Filter()
+        void import(filterDataDir).then(({ Filter }) => {
+          worker.filter = new Filter()
+        })
         break
     }
   })

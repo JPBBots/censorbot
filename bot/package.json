@@ -20,7 +20,7 @@
     "@discord-rose/admin-middleware": "^1.1.0",
     "@discord-rose/flags-middleware": "^1.0.2",
     "@discord-rose/permissions-middleware": "^1.1.0",
-    "discord-rose": "^1.1.0",
+    "discord-rose": "^1.1.1",
     "dotenv": "^8.2.0",
     "mongodb": "^3.6.3",
     "node-fetch": "^2.6.1"
@@ -28,7 +28,13 @@
   "devDependencies": {
     "@types/mongodb": "^3.6.9",
     "@types/node-fetch": "^2.5.8",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
     "discord-api-types": "^0.12.1",
+    "eslint": "^7.22.0",
+    "eslint-config-standard-with-typescript": "^20.0.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
     "ts-standard": "^10.0.0",
     "typescript": "^4.2.3"
   },

@@ -8,7 +8,7 @@ import { Filter } from '../structures/Filter'
 import { ActionBucket } from '../structures/ActionBucket'
 import { Responses } from '../structures/Responses'
 
-import { Snowflake } from 'discord-api-types'
+import { APIRole, GatewayGuildMemberAddDispatchData, Snowflake } from 'discord-api-types'
 
 import { addHandlers } from '../helpers/clusterEvents'
 import { setupFilters } from '../helpers/setupFilters'
@@ -24,6 +24,8 @@ import permissionsMiddleware from '@discord-rose/permissions-middleware'
 
 import { CommandOptions } from 'discord-rose/dist/typings/lib'
 import { PermissionsUtils, bits } from 'discord-rose/dist/utils/Permissions'
+import { CachedGuild } from 'discord-rose/dist/typings/Discord'
+import Collection from '@discordjs/collection'
 
 export class WorkerManager extends Worker {
   config: typeof Config
@@ -35,13 +37,16 @@ export class WorkerManager extends Worker {
 
   constructor () {
     super()
-    Setup(this)
+    void Setup(this)
 
     this.setStatus('watching', 'Rewrite')
 
     this.commands
-      .prefix(async (msg) => {
-        return await this.db.config(msg.guild_id).then(x => x.prefix)
+      .prefix(async (msg): Promise<string | string[]> => {
+        const prefix = await this.db.config(msg.guild_id as Snowflake).then(x => x.prefix)
+        // @ts-expect-error
+        if (!prefix) return null
+        return prefix
       })
       .middleware(flagsMiddleware())
       .middleware(adminMiddleware(async (id) => {
@@ -49,7 +54,7 @@ export class WorkerManager extends Worker {
       }))
       .middleware(permissionsMiddleware())
       .middleware(async (ctx) => {
-        ctx.db = await this.db.config(ctx.guild.id)
+        ctx.db = await this.db.config(ctx.guild?.id)
 
         return true
       })
@@ -64,39 +69,39 @@ export class WorkerManager extends Worker {
   }
 
   public async isAdmin (id: Snowflake): Promise<boolean> {
-    return await fetch('https://jpbbots.org/api/admin/' + id).then(async x => await x.text()).then(x => !!Number(x))
+    return await fetch(`https://jpbbots.org/api/admin/${id}`).then(async x => await x.text()).then(x => !!Number(x))
   }
 
-  public loadCommands () {
+  public loadCommands (): void {
     console.log('Loading commands')
-    if (this.commands.commands.clear) this.commands.commands.clear()
+    if (this.commands.commands) this.commands.commands.clear()
 
-    this._loadDir(path.resolve(__dirname, '../commands'))
+    void this._loadDir(path.resolve(__dirname, '../commands'))
   }
 
-  private _loadDir (dir: string) {
+  private async _loadDir (dir: string): Promise<void> {
     const files = fs.readdirSync(dir, { withFileTypes: true })
     for (const file of files) {
       if (file.isDirectory()) {
-        this._loadDir(path.resolve(dir, file.name))
+        await this._loadDir(path.resolve(dir, file.name))
         continue
       }
 
-      const [name, ext] = file.name.split('.')
+      const [, ext] = file.name.split('.')
       if (ext !== 'js') continue
 
       delete require.cache[require.resolve(path.resolve(dir, file.name))]
-      const command: CommandOptions = require(path.resolve(dir, file.name)).default
+      const command: CommandOptions = await import(path.resolve(dir, file.name))
 
       this.commands.add(command)
     }
   }
 
-  hasPerms (id: Snowflake, perms: keyof typeof bits) {
+  hasPerms (id: Snowflake, perms: keyof typeof bits): boolean {
     return PermissionsUtils.calculate(
-      this.selfMember.get(id),
-      this.guilds.get(id),
-      this.guildRoles.get(id),
+      this.selfMember.get(id) as GatewayGuildMemberAddDispatchData,
+      this.guilds.get(id) as CachedGuild,
+      this.guildRoles.get(id) as Collection<Snowflake, APIRole>,
       perms
     )
   }

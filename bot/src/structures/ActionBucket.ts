@@ -21,7 +21,7 @@ export class ActionBucket {
 
   constructor (public worker: WorkerManager) {}
 
-  public async delete (channel: Snowflake, message: Snowflake[]) {
+  public async delete (channel: Snowflake, message: Snowflake[]): Promise<void> {
     let bucket = this.messages.get(channel)
     if (!bucket) {
       bucket = {
@@ -30,7 +30,7 @@ export class ActionBucket {
         amount: 0
       }
     } else {
-      clearTimeout(bucket.timeout)
+      clearTimeout(bucket.timeout as unknown as number)
     }
 
     if (bucket.amount <= this.worker.config.bucketBuffer) {
@@ -42,7 +42,7 @@ export class ActionBucket {
         this.messages.delete(channel)
       }, 15000)
 
-      return this.messages.set(channel, bucket)
+      this.messages.set(channel, bucket)
     }
 
     if (Array.isArray(message)) {
@@ -63,29 +63,30 @@ export class ActionBucket {
     }, 2000)
   }
 
-  private _executeDelete (channel: Snowflake) {
+  private _executeDelete (channel: Snowflake): void {
     const bucket = this.messages.get(channel)
+    if (!bucket) return
     this.messages.delete(channel)
 
     this.worker.api.messages.bulkDelete(channel, bucket.msgs)
       .catch(() => {})
   }
 
-  public popup (channel: Snowflake, user: Snowflake, db: GuildDB) {
+  public popup (channel: Snowflake, user: Snowflake, db: GuildDB): void {
     const id = `${channel}-${user}`
     if (this.popups.has(id)) return
 
     this.popups.set(id, true)
 
-    this.worker.responses.popup(channel, user, db.msg.content || this.worker.config.defaultMessage)
+    this.worker.responses.popup(channel, user, db.msg.content === null ? this.worker.config.defaultMessage : db.msg.content as string)
       .then(async msg => {
         if (!db.msg.deleteAfter) {
           await wait(5000)
           return this.popups.delete(id)
         }
         await wait(db.msg.deleteAfter)
-        this.worker.api.messages.delete(channel, msg.id)
+        this.worker.api.messages.delete(channel, msg.id).catch(() => {})
         this.popups.delete(id)
-      })
+      }).catch(() => {})
   }
 }

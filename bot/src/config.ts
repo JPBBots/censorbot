@@ -10,11 +10,11 @@ if (!process.env.BOT_TOKEN) {
 }
 
 export const Config = {
-  token: process.env.BOT_TOKEN,
+  token: process.env.BOT_TOKEN as string,
   db: {
-    host: process.env.DB_HOST,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD
+    host: process.env.DB_HOST as string,
+    username: process.env.DB_USERNAME as string,
+    password: process.env.DB_PASSWORD as string
   },
 
   links: {

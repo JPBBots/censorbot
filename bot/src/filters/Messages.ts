@@ -10,7 +10,7 @@ import { GuildDB } from '../../../typings/typings'
 import { ActionType } from '../structures/Responses'
 
 interface MultiLine {
-  author: Snowflake,
+  author: Snowflake
   messages: {
     [key: string]: APIMessage
   }
@@ -18,29 +18,28 @@ interface MultiLine {
 
 const multiLineStore: Cache<Snowflake, MultiLine> = new Cache(3.6e+6)
 
-function handleDeletion (worker: WorkerManager, message: APIMessage, db: GuildDB, response: FilterResponse) {
-  if (!worker.hasPerms(message.guild_id, 'sendMessages')) return
-  if (!worker.hasPerms(message.guild_id, 'embed')) {
-    return worker.api.messages.send(message.channel_id, 'Missing `Embed Links` permission.')
+function handleDeletion (worker: WorkerManager, message: APIMessage, db: GuildDB, response: FilterResponse): void {
+  if (!worker.hasPerms(message.guild_id as Snowflake, 'sendMessages')) return
+  if (!worker.hasPerms(message.guild_id as Snowflake, 'embed')) {
+    return void worker.api.messages.send(message.channel_id, 'Missing `Embed Links` permission.')
   }
-  if (!worker.hasPerms(message.guild_id, 'manageMessages')) {
-    return worker.responses.missingPermissions(message.channel_id, 'Manage Messages')
+  if (!worker.hasPerms(message.guild_id as Snowflake, 'manageMessages')) {
+    return void worker.responses.missingPermissions(message.channel_id, 'Manage Messages')
   }
   const multi = multiLineStore.get(message.channel_id)
 
-  worker.actions.delete(message.channel_id, multi ? Object.values(multi.messages).map(x => x.id) : [message.id])
+  void worker.actions.delete(message.channel_id, multi ? Object.values(multi.messages).map(x => x.id) : [message.id])
 
   if (multi) multiLineStore.delete(message.channel_id)
 
-  if (db.log) worker.responses.log(message.edited_timestamp ? ActionType.EditedMessage : ActionType.Message, message.content, message, response, db.log)
+  if (db.log) void worker.responses.log(message.edited_timestamp ? ActionType.EditedMessage : ActionType.Message, message.content, message, response, db.log)
 
   if (db.msg.content !== false) worker.actions.popup(message.channel_id, message.author.id, db)
 
   // response.filters.includes('invites')
-  return true
 }
 
-export async function MessageHandler (worker: WorkerManager, message: APIMessage) {
+export async function MessageHandler (worker: WorkerManager, message: APIMessage): Promise<void> {
   const channel = worker.channels.get(message.channel_id)
   if (!message.guild_id || !channel || !message.member) return
 
@@ -58,8 +57,8 @@ export async function MessageHandler (worker: WorkerManager, message: APIMessage
   if (
     message.type !== 0 ||
     channel.type !== 0 ||
-    channel.nsfw       ||
-    message.member.roles.includes(db.role) ||
+    channel.nsfw as boolean ||
+    message.member.roles.includes(db.role as Snowflake) ||
     db.channels.includes(message.channel_id)
   ) return
 
@@ -84,5 +83,5 @@ export async function MessageHandler (worker: WorkerManager, message: APIMessage
 
   if (!response.censor) return
 
-  return handleDeletion(worker, {...message, content}, db, response)
+  return handleDeletion(worker, { ...message, content }, db, response)
 }

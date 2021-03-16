@@ -32,7 +32,7 @@ export class JPBExp extends RegExp {
     return true
   }
 
-  toJSON () {
-    return this.toString()
+  toJSON (): string {
+    return this._text
   }
 }

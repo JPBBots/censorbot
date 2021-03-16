@@ -21,12 +21,12 @@ export class MasterManager extends Master {
         roles: ['managed', 'permissions', 'name']
       }
     })
-    Setup(this)
+    void Setup(this)
 
     addHandlers(this)
 
     const started = Date.now()
-    this.start()
+    void this.start()
       .then(() => {
         this.log(`Startup took ${((Date.now() - started) / 1000).toFixed(2)}s`)
       })

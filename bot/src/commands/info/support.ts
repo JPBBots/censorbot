@@ -5,6 +5,6 @@ export default {
   aliases: ['s'],
   description: 'Get help from real people',
   exec: (ctx) => {
-    ctx.reply(`Join for help: ${ctx.worker.config.links.support}`)
+    void ctx.reply(`Join for help: ${ctx.worker.config.links.support}`)
   }
 } as CommandOptions

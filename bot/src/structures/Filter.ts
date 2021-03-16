@@ -1,34 +1,43 @@
-delete require.cache[require.resolve('../data/filter')]
+/* eslint-disable no-control-regex */
 import filter from '../data/filter'
 
 import { JPBExp } from './JPBExp'
 
-function inRange (x: number, min: number, max: number) {
+import { filterType } from '../../../typings/typings'
+delete require.cache[require.resolve('../data/filter')]
+
+function inRange (x: number, min: number, max: number): boolean {
   return ((x - min) * (x - max) <= 0)
 }
 
-import { filterType } from '../../../typings/typings'
+type filterName = filterType | 'server' | 'invites'
 
-type Range = [number?, number?]
+type Range = [number, number] | []
 
 interface ResolvedPiece {
-  i: Range,
-  t: string,
+  i: Range
+  t: string
   n?: boolean
 }
 
 export interface FilterResponse {
   censor: boolean
   ranges: Range[]
-  filters: (filterType | 'server' | 'invites')[]
+  filters: filterName[]
   places: JPBExp[]
 }
 
 const removeRegex = /\x1D|\x1F/
 
+type filterObj = {
+  [key in filterType]: JPBExp[]
+}
+
+const filtObj = {} as filterObj
+
 export class Filter {
   masks: {
-    [key in filterType | 'server' | 'invites']: string
+    [key in filterName]: string
   } = {
     en: 'English',
     es: 'Spanish',
@@ -39,21 +48,19 @@ export class Filter {
     invites: 'Invites'
   }
 
-  filters = Object.keys(filter.filters).reduce((a, b) => {
-    a[b] = Object.keys(filter.filters[b]).reduce((c, d) => {
+  filters = Object.keys(filter.filters).reduce<filterObj>((a, b) => {
+    a[b] = Object.keys(filter.filters[b]).reduce<JPBExp[]>((c, d) => {
       c.push(new JPBExp(d, filter.filters[b][d]))
 
       return c
-    }, [] as JPBExp[])
+    }, [])
 
     return a
-  }, {} as {
-    [key in filterType]: JPBExp[]
-  })
+  }, filtObj)
 
-  surround (text: string, ranges: Range[], sur: string) {
+  surround (text: string, ranges: Range[], sur: string): string {
     text = text.replace(removeRegex, '')
-    let links = []
+    let links: string[] = []
     let splitText: string | string[] = text
       .replace(filter.bothRegex, (text) => {
         return `\x1D${links.push(text) - 1}`
@@ -67,12 +74,12 @@ export class Filter {
 
     splitText = splitText.split(' ')
 
-    const starterPlaces = []
-    const endPlaces = []
+    const starterPlaces: number[] = []
+    const endPlaces: number[] = []
 
     ranges.forEach(range => {
       starterPlaces.push((splitText as string[]).slice(0, range[0]).join(' ').length)
-      endPlaces.push((splitText as string[]).slice(0, range[1] + 1).join(' ').length)
+      endPlaces.push((splitText as string[]).slice(0, (range[1] ?? 0) + 1).join(' ').length)
     })
 
     links = []
@@ -104,16 +111,16 @@ export class Filter {
     }).replace(/`/g, '')
   }
 
-  resolve (content: string | string[], removeFonts: boolean = false) {
+  resolve (content: string | string[], removeFonts: boolean = false): ResolvedPiece[] {
     // base stuff
     content = (content as string)
       .toLowerCase()
       .replace(removeRegex, '')
       .replace(/<#?@?!?&?(\d+)>/g, '') // mentions
       .replace(/<a?:(\w+):(\d+)>/g, '$1') // emojis
-      .replace(filter.emailRegex, (...email) => {
+      .replace(filter.emailRegex, (...email: string[]) => {
         return `${email[1]}${email[2]}${email[6]}`.replace(filter.replaceSpots.spaces, '')
-      }).replace(filter.linkRegex, (...link) => {
+      }).replace(filter.linkRegex, (...link: string[]) => {
         return `${link[2]}`.replace(filter.replaceSpots.spaces, '')
       })
       .replace(/(\w)\1{2,}/g, '$1$1') // multiple characters only come up once
@@ -127,13 +134,13 @@ export class Filter {
 
     content = content.split(filter.replaceSpots.spaces)
 
-    function addSpot (text: string, spot: number | Range, index: number) {
+    function addSpot (text: string, spot: number | Range, index: number): boolean {
       if (!res[index]) return false
       res[index].t = text
 
-      function checkSpots (s) { // if indexes are outside of the range of the current spot, adjust the range
-        if (s < res[index].i[0]) res[index].i[0] = s
-        if (s > res[index].i[1]) res[index].i[1] = s
+      function checkSpots (s): void { // if indexes are outside of the range of the current spot, adjust the range
+        if (s < (res[index].i[0] ?? 0)) res[index].i[0] = s
+        if (s > (res[index].i[1] ?? 0)) res[index].i[1] = s
       }
 
       if (Array.isArray(spot)) {
@@ -155,7 +162,7 @@ export class Filter {
     }
 
     let spotted = 0
-    const nextPushes = []
+    const nextPushes: ResolvedPiece[] = []
 
     for (let i = 0; i < content.length; i++) { // base index pushing to array
       const split = content[i]
@@ -193,7 +200,7 @@ export class Filter {
       if (!s || filter.shortWords.includes(s.t)) continue
 
       if (s.t && (s.t.length < 3) && res[i - 1]) {
-        if (s.n || res[i - 1].n) continue
+        if (s.n ?? res[i - 1].n) continue
         if (addSpot(res[i - 1].t + s.t, s.i, i - 1)) {
           s.t = ''
           s.i = []
@@ -212,7 +219,7 @@ export class Filter {
         }
       }
     }
-    
+
     res = res.filter(x => x.t) // remove any blank spaces
 
     return res
@@ -221,14 +228,16 @@ export class Filter {
   test (text: string, filters: filterType[], server: string[] = [], uncensor: string[] = [], removeFonts: boolean = false): FilterResponse {
     const content = this.resolve(text, removeFonts)
 
-    const res = {
+    const res: FilterResponse = {
       censor: false,
       ranges: [],
       filters: [],
       places: []
     }
 
-    const scanFor = { server: server.map(x => new JPBExp(x)) }
+    const scanFor: {
+      [key in filterName]?: JPBExp[]
+    } = { server: server.map(x => new JPBExp(x)) }
 
     for (const filt in this.filters) {
       if (filters.includes(filt as filterType)) scanFor[filt] = this.filters[filt]
@@ -236,7 +245,7 @@ export class Filter {
 
     content.forEach(piece => {
       let done = false
-      if (res.ranges.some(x => inRange(x[0], piece.i[0], piece.i[1]) && inRange(x[1], piece.i[0], piece.i[1]))) return
+      if (res.ranges.some(x => x[0] !== undefined && x[1] !== undefined && inRange(x[0], piece.i[0] as number, piece.i[1] as number) && inRange(x[1], piece.i[0] as number, piece.i[1] as number))) return
       for (const key in scanFor) {
         for (const part of scanFor[key]) {
           if (!part.test(piece.t, uncensor)) continue
@@ -245,7 +254,7 @@ export class Filter {
 
           res.censor = true
           res.ranges.push(piece.i)
-          if (!res.filters.includes(key)) res.filters.push(key)
+          if (!res.filters.includes(key as filterName)) res.filters.push(key as filterName)
           res.places.push(part)
 
           break
