@@ -54,7 +54,8 @@ export class WorkerManager extends Worker {
       }))
       .middleware(permissionsMiddleware())
       .middleware(async (ctx) => {
-        ctx.db = await this.db.config(ctx.guild?.id)
+        if (!ctx.guild) return true
+        ctx.db = await this.db.config(ctx.guild.id)
 
         return true
       })
@@ -91,9 +92,8 @@ export class WorkerManager extends Worker {
       if (ext !== 'js') continue
 
       delete require.cache[require.resolve(path.resolve(dir, file.name))]
-      const command: CommandOptions = await import(path.resolve(dir, file.name))
-
-      this.commands.add(command)
+      const command: { default: CommandOptions } = await import(path.resolve(dir, file.name))
+      this.commands.add(command.default)
     }
   }
 

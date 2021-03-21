@@ -1,8 +1,8 @@
-import { CommandOptions } from 'discord-rose/dist/typings/lib'
+import { CommandOptions } from 'discord-rose'
 
 export default {
   command: 'help',
-  aliases: ['h', 'ayuda', 'hilfe', 'помощь'],
+  aliases: ['h', 'ayuda', 'hilfe', 'помощь', 'links'],
   description: 'Shows a list of commands and useful links',
   exec: (ctx) => {
     const links = ctx.worker.config.links

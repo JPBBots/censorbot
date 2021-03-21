@@ -25,13 +25,15 @@ export function setupDiscord (worker: WorkerManager): void {
       if (!hasPerms('sendMessages')) return
       if (!hasPerms('embed')) return void worker.api.messages.send(guild.system_channel_id, 'Missing `Embed Links` permission. This will likely cause issues with the functionality of the bot.')
 
-      const perms = (['manageMessages', 'manageNicknames', 'manageRoles', 'kick', 'ban', 'webhooks']).filter(x => !hasPerms(x as keyof typeof bits))
+      const perms = worker.config.requiredPermissions.filter(x => x.vital && !hasPerms(x.permission))
       const embed = new Embed()
         .color(worker.responses.color)
         .title('Thanks for inviting Censor Bot!')
         .field('Enjoy!', `The dashboard: ${links.dashboard}\n[Website](${links.site}) | [Support](${links.support})`)
 
-      if (perms.length > 0) embed.field('Missing a few permissions!', `Some vital permissions are missing:\n${perms.map(x => `\`${x}\``).join(', ')}`)
+      if (perms.length > 0) embed.field('Missing a few permissions!', `Some vital permissions are missing:\n${perms.map(x => `\`${x.name}\``).join(', ')}\nType +permissions to see why we need them and recheck them.`)
+      else embed.field('Permissions', 'To debug and check your permissions run `+debug`')
+
       void worker.api.messages.send(guild.system_channel_id, embed)
     }
   })

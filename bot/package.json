@@ -21,6 +21,7 @@
     "@discord-rose/flags-middleware": "^1.0.2",
     "@discord-rose/permissions-middleware": "^1.1.0",
     "discord-rose": "^1.1.1",
+    "@jpbberry/cache": "^1.0.4",
     "dotenv": "^8.2.0",
     "mongodb": "^3.6.3",
     "node-fetch": "^2.6.1"

@@ -1,4 +1,4 @@
-import { CommandOptions } from 'discord-rose/dist/typings/lib'
+import { CommandOptions } from 'discord-rose'
 
 import { NonFatalError } from '../../utils/NonFatalError'
 
@@ -24,16 +24,20 @@ export default {
     try {
       const code = ctx.args.join('\n')
 
-      let evaled: string|string[]
+      let evaled: string|string[]|Promise<any>
       if (ctx.flags.m) evaled = await worker.comms.masterEval(code)
       else if (ctx.flags.b) evaled = await worker.comms.broadcastEval(code)
       // eslint-disable-next-line no-eval
       else evaled = eval(code)
 
+      if (evaled && evaled instanceof Promise) evaled = await evaled
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      if (ctx.flags.last) last = evaled
+      if (ctx.flags.l) last = evaled
 
       if (typeof evaled !== 'string') { evaled = util.inspect(evaled) }
+
+      if (ctx.flags.s) return
 
       void ctx.embed
         .color(0x28bf62)

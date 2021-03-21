@@ -18,6 +18,11 @@ interface MultiLine {
 
 const multiLineStore: Cache<Snowflake, MultiLine> = new Cache(3.6e+6)
 
+const replaces = {
+  1: '#',
+  2: '*'
+}
+
 function handleDeletion (worker: WorkerManager, message: APIMessage, db: GuildDB, response: FilterResponse): void {
   if (!worker.hasPerms(message.guild_id as Snowflake, 'sendMessages')) return
   if (!worker.hasPerms(message.guild_id as Snowflake, 'embed')) {
@@ -36,7 +41,14 @@ function handleDeletion (worker: WorkerManager, message: APIMessage, db: GuildDB
 
   if (db.msg.content !== false) worker.actions.popup(message.channel_id, message.author.id, db)
 
-  // response.filters.includes('invites')
+  if (!response.filters.includes('invites') && db.webhook.enabled) {
+    let content = worker.filter.surround(message.content, response.ranges, '||')
+
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+    if (db.webhook.replace !== 0) content = content.split(/\|\|/g).reduce((a, b) => [(a[0] + (a[1] === 1 ? replaces[db.webhook.replace].repeat(b.length) : b)), ((a[1] as number) * -1)], ['', -1])[0]
+
+    void worker.actions.sendAs(message.channel_id, message.author, message.member?.nick ?? message.author.username, content)
+  }
 }
 
 export async function MessageHandler (worker: WorkerManager, message: APIMessage): Promise<void> {
@@ -57,12 +69,24 @@ export async function MessageHandler (worker: WorkerManager, message: APIMessage
   if (
     message.type !== 0 ||
     channel.type !== 0 ||
-    channel.nsfw as boolean ||
     message.member.roles.includes(db.role as Snowflake) ||
     db.channels.includes(message.channel_id)
   ) return
 
   let content = message.content
+
+  if (db.invites) {
+    if (content.match(/discord((app)?\.com\/invite|\.gg)\/([-\w]{2,32})/i)) {
+      return handleDeletion(worker, message, db, {
+        censor: true,
+        filters: ['invites'],
+        places: [],
+        ranges: []
+      })
+    }
+  }
+
+  if (channel.nsfw) return
 
   if (db.multi) {
     if (!multiline) {

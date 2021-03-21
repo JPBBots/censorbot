@@ -1,4 +1,4 @@
-import { MongoClient, Db } from 'mongodb'
+import { MongoClient, Db, Collection } from 'mongodb'
 
 import { Config } from '../config'
 import { Cache } from 'discord-rose/dist/utils/Cache'
@@ -42,5 +42,9 @@ export class Database {
     this.configCache.set(id, db)
 
     return db
+  }
+
+  get collection (): (name: string) => Collection {
+    return this.db?.collection.bind(this.db) as (name: string) => Collection
   }
 }

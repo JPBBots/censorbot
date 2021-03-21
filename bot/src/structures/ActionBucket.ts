@@ -1,6 +1,9 @@
 import Collection from '@discordjs/collection'
+import { Cache } from '@jpbberry/cache'
 
-import { Snowflake } from 'discord-api-types'
+import fetch from 'node-fetch'
+
+import { AllowedMentionsTypes, APIUser, APIWebhook, Snowflake } from 'discord-api-types'
 
 import { GuildDB } from '../../../typings/typings'
 
@@ -18,6 +21,7 @@ interface DeleteBucket {
 export class ActionBucket {
   messages: Collection<Snowflake, DeleteBucket> = new Collection()
   popups: Collection<string, true> = new Collection()
+  webhooks: Cache<string, APIWebhook> = new Cache(30e3)
 
   constructor (public worker: WorkerManager) {}
 
@@ -33,7 +37,7 @@ export class ActionBucket {
       clearTimeout(bucket.timeout as unknown as number)
     }
 
-    if (bucket.amount <= this.worker.config.bucketBuffer) {
+    if (bucket.amount <= this.worker.config.actionRetention) {
       await this.worker.api.messages.bulkDelete(channel, message)
         .catch(() => {})
 
@@ -60,7 +64,7 @@ export class ActionBucket {
 
     setTimeout(() => {
       this._executeDelete(channel)
-    }, 2000)
+    }, 4000)
   }
 
   private _executeDelete (channel: Snowflake): void {
@@ -88,5 +92,32 @@ export class ActionBucket {
         this.worker.api.messages.delete(channel, msg.id).catch(() => {})
         this.popups.delete(id)
       }).catch(() => {})
+  }
+
+  public async sendAs (channel: Snowflake, user: APIUser, name: string, content: string): Promise<void> {
+    let webhook = this.webhooks.get(`${channel}-${user.id}`)
+    if (!webhook) {
+      const avatar = await fetch(`https://cdn.discordapp.com/${user.avatar ? `avatars/${user.id}/${user.avatar}` : `embed/avatars/${String(Number(user.discriminator) % 5)}`}.png`)
+        .then(async (x) => await x.buffer())
+        .then(x => `data:image/png;base64,${x.toString('base64')}`)
+
+      webhook = await this.worker.api.webhooks.create(channel, {
+        name,
+        avatar
+      })
+
+      if (!webhook) return
+      this.webhooks.set(`${channel}-${user.id}`, webhook, () => {
+        void this.worker.api.request('DELETE', `/webhooks/${webhook?.id as string}/${webhook?.token as string}`)
+        return {}
+      })
+    }
+
+    await this.worker.api.webhooks.send(webhook.id, webhook.token as string, {
+      content,
+      allowed_mentions: {
+        parse: [AllowedMentionsTypes.User]
+      }
+    })
   }
 }

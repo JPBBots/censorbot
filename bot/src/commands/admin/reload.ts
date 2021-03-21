@@ -1,4 +1,4 @@
-import { CommandOptions } from 'discord-rose/dist/typings/lib'
+import { CommandOptions } from 'discord-rose'
 import { NonFatalError } from '../../utils/NonFatalError'
 
 import { Reloaders } from '../../types'
