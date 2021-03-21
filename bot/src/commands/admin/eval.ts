@@ -22,7 +22,7 @@ export default {
     const worker = ctx.worker
 
     try {
-      const code = ctx.args.join('\n')
+      const code = ctx.message.content.slice(Number(ctx.prefix.length) + Number(ctx.ran.length))
 
       let evaled: string|string[]|Promise<any>
       if (ctx.flags.m) evaled = await worker.comms.masterEval(code)

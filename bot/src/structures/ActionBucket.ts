@@ -97,7 +97,7 @@ export class ActionBucket {
   public async sendAs (channel: Snowflake, user: APIUser, name: string, content: string): Promise<void> {
     let webhook = this.webhooks.get(`${channel}-${user.id}`)
     if (!webhook) {
-      const avatar = await fetch(`https://cdn.discordapp.com/${user.avatar ? `avatars/${user.id}/${user.avatar}` : `embed/avatars/${String(Number(user.discriminator) % 5)}`}.png`)
+      const avatar = await fetch(`https://cdn.discordapp.com/${user.avatar ? `avatars/${user.id}/${user.avatar}` : `embed/avatars/${Number(user.discriminator) % 5}`}.png`)
         .then(async (x) => await x.buffer())
         .then(x => `data:image/png;base64,${x.toString('base64')}`)
 
@@ -105,10 +105,9 @@ export class ActionBucket {
         name,
         avatar
       })
-
-      if (!webhook) return
       this.webhooks.set(`${channel}-${user.id}`, webhook, () => {
-        void this.worker.api.request('DELETE', `/webhooks/${webhook?.id as string}/${webhook?.token as string}`)
+        if (!webhook) return {}
+        void this.worker.api.webhooks.delete(webhook.id, webhook.token)
         return {}
       })
     }

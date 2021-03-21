@@ -1,4 +1,4 @@
-import { APIMessage, GatewayGuildMemberUpdateDispatchData, GatewayMessageReactionAddDispatchData, Snowflake } from 'discord-api-types'
+import { APIMessage, Snowflake } from 'discord-api-types'
 import { WorkerManager } from '../managers/Worker'
 
 import { Embed } from 'discord-rose'
@@ -37,7 +37,7 @@ export class Responses {
       .send()
   }
 
-  async log (type: ActionType, content: string, data: APIMessage | GatewayGuildMemberUpdateDispatchData | GatewayMessageReactionAddDispatchData, response: FilterResponse, log: Snowflake): Promise<APIMessage> {
+  async log (type: ActionType, content: string, data: any, response: FilterResponse, log: Snowflake): Promise<APIMessage> {
     const embed = this.embed(log)
       .color(this.color)
       .timestamp()
@@ -45,17 +45,17 @@ export class Responses {
 
     switch (type) {
       case ActionType.Message:
-        embed.title('Deleted Message').description(`From <@${(data as APIMessage).author.id}> in <#${(data as APIMessage).channel_id}>`)
+        embed.title('Deleted Message').description(`From <@${data.author.id}> in <#${data.channel_id}>`)
         break
       case ActionType.EditedMessage:
-        embed.title('Deleted Edited Message').description(`From <@${(data as APIMessage).author.id}> in <#${(data as APIMessage).channel_id}>`)
+        embed.title('Deleted Edited Message').description(`From <@${data.author.id}> in <#${data.channel_id}>`)
         break
       case ActionType.Nickname:
-        embed.title('Removed Nickname').description(`User <@${String((data as GatewayGuildMemberUpdateDispatchData).user?.id)}>`)
+        embed.title('Removed Nickname').description(`User <@${data.user.id}>`)
         break
       case ActionType.Reaction:
-        embed.title('Removed Reaction').description(`User <@${(data as GatewayMessageReactionAddDispatchData).user_id}> on [this message](${
-          `https://discord.com/channels/${(data as GatewayMessageReactionAddDispatchData).guild_id as string}/${(data as GatewayMessageReactionAddDispatchData).channel_id}/${(data as GatewayMessageReactionAddDispatchData).message_id}`
+        embed.title('Removed Reaction').description(`User <@${data.user_id}> on [this message](${
+          `https://discord.com/channels/${data.guild_id}/${data.channel_id}/${data.message_id}`
         })`)
     }
 

@@ -25,10 +25,6 @@ export class MasterManager extends Master {
 
     addHandlers(this)
 
-    const started = Date.now()
     void this.start()
-      .then(() => {
-        this.log(`Startup took ${((Date.now() - started) / 1000).toFixed(2)}s`)
-      })
   }
 }
