@@ -1,7 +1,5 @@
 import { CommandOptions } from 'discord-rose'
 
-import { NonFatalError } from '../../utils/NonFatalError'
-
 import util from 'util'
 
 function clean (text): string {
@@ -17,7 +15,7 @@ export default {
   admin: true,
   description: 'Evaluates code',
   exec: async (ctx) => {
-    if (ctx.message.author.id !== '142408079177285632') throw new NonFatalError('Bonk, no eval fo u')
+    if (ctx.message.author.id !== '142408079177285632') return ctx.error('Bonk, no eval fo u')
 
     const worker = ctx.worker
 

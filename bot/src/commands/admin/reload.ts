@@ -1,5 +1,4 @@
 import { CommandOptions } from 'discord-rose'
-import { NonFatalError } from '../../utils/NonFatalError'
 
 import { Reloaders } from '../../types'
 
@@ -10,7 +9,7 @@ export default {
   admin: true,
   exec: (ctx) => {
     const reloading = Reloaders.find(x => x === ctx.args[0]?.toUpperCase())
-    if (!reloading) throw new NonFatalError(`${ctx.args[0]} not one of ${Reloaders.join(', ')}`)
+    if (!reloading) return ctx.error(`${ctx.args[0]} not one of ${Reloaders.join(', ')}`)
 
     ctx.worker.comms.tell('RELOAD', reloading)
 

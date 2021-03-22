@@ -17,6 +17,11 @@ export function addHandlers (worker: WorkerManager): void {
           worker.filter = new Filter()
         })
         break
+      case 'CACHE':
+        worker.db.configCache.clear()
+        worker.actions.webhooks.clear()
+        worker.actions.popups.clear()
+        break
     }
   })
 }

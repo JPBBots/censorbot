@@ -1,4 +1,4 @@
-export const Reloaders = ['COMMANDS', 'FILTER'] as const
+export const Reloaders = ['COMMANDS', 'FILTER', 'CACHE'] as const
 
 type ReloadNames = typeof Reloaders[number]
 
