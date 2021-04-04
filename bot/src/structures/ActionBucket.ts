@@ -5,7 +5,7 @@ import fetch from 'node-fetch'
 
 import { AllowedMentionsTypes, APIUser, APIWebhook, Snowflake } from 'discord-api-types'
 
-import { GuildDB } from '../../../typings/typings'
+import { GuildDB } from 'typings/api'
 
 import { WorkerManager } from '../managers/Worker'
 

@@ -9,13 +9,19 @@ if (!process.env.BOT_TOKEN) {
     process.env[key] = env[key]
   })
 }
-// (['manageMessages', 'manageNicknames', 'manageRoles', 'kick', 'ban', 'webhooks']).fil
+
 export const Config = {
+  id: process.env.ID as string,
   token: process.env.BOT_TOKEN as string,
   db: {
     host: process.env.DB_HOST as string,
     username: process.env.DB_USERNAME as string,
     password: process.env.DB_PASSWORD as string
+  },
+
+  oauth: {
+    mySecret: process.env.OAUTH_MYSECRET as string,
+    secret: process.env.OAUTH_TOKEN as string
   },
 
   requiredPermissions: [

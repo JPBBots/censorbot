@@ -1,4 +1,4 @@
-import { Worker } from 'discord-rose'
+import { Worker, CommandOptions } from 'discord-rose'
 import { Setup } from './BaseManager'
 
 import { Config } from '../config'
@@ -14,16 +14,14 @@ import { addHandlers } from '../helpers/clusterEvents'
 import { setupFilters } from '../helpers/setupFilters'
 import { setupDiscord } from '../helpers/discordEvents'
 
+import { Interface } from 'interface'
+
 import fetch from 'node-fetch'
 import path from 'path'
 import fs from 'fs'
 
-import adminMiddleware from '@discord-rose/admin-middleware'
-import flagsMiddleware from '@discord-rose/flags-middleware'
-import permissionsMiddleware from '@discord-rose/permissions-middleware'
-
-import { CommandOptions } from 'discord-rose/dist/typings/lib'
 import { PermissionsUtils, bits } from 'discord-rose/dist/utils/Permissions'
+
 import { CachedGuild } from 'discord-rose/dist/typings/Discord'
 import Collection from '@discordjs/collection'
 
@@ -35,9 +33,13 @@ export class WorkerManager extends Worker {
   actions = new ActionBucket(this)
   responses = new Responses(this)
 
+  interface = new Interface()
+
   constructor () {
     super()
     void Setup(this)
+
+    this.interface.setupWorker(this)
 
     this.setStatus('watching', 'Rewrite')
 
@@ -48,11 +50,6 @@ export class WorkerManager extends Worker {
         if (!prefix) return null
         return prefix
       })
-      .middleware(flagsMiddleware())
-      .middleware(adminMiddleware(async (id) => {
-        return await this.isAdmin(id)
-      }))
-      .middleware(permissionsMiddleware())
       .middleware(async (ctx) => {
         if (!ctx.guild) return true
         ctx.db = await this.db.config(ctx.guild.id)

@@ -3,6 +3,9 @@ website/src/web.json
 website/src/config.json
 website/site.html
 
+typings/*.js
+typings/*.d.ts
+
 package-lock.json
 
 TODO.txt

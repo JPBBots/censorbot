@@ -19,7 +19,10 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.tsx', '.ts']
+    extensions: ['.tsx', '.ts'],
+    alias: {
+      "@typings": path.resolve(__dirname, '../typings')
+    }
   },
   optimization: {
     minimizer: [

@@ -73,6 +73,23 @@ app.get('/sitemap.xml', (req, res) => {
 `)
 })
 
+app.get('/auth', (req, res) => {
+  res.redirect(`https://discord.com/oauth2/authorize?client_id=707322836011974667&redirect_uri=https://${req.headers.host}/callback&response_type=code&prompt=none&scope=identify%20guilds`)
+})
+
+app.get('/callback', (req, res) => {
+  res.header('Content-Type', 'text/html')
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+      <script>
+        localStorage.setItem('code', '${req.query.code}')
+        window.close()
+      </script>
+    </html>
+  `)
+})
+
 app.get('/support', (req, res) => {
   res.redirect('https://discord.gg/v3r2rKP')
 })
@@ -97,6 +114,6 @@ app.use((req, res) => {
   res.sendFile(Path.resolve(__dirname, 'site.html'))
 })
 
-app.listen(8534, () => {
+app.listen(process.argv.includes('-b') ? 8535 : 8534, () => {
   console.log('Started')
 })

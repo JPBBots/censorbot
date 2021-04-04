@@ -7,10 +7,12 @@ import { Config } from '../config'
 import { Database } from '../structures/Database'
 
 import { addHandlers } from '../helpers/masterEvents'
+import { Cluster } from 'discord-rose/dist/clustering/master/Cluster'
 
 export class MasterManager extends Master {
   config: typeof Config
   db: Database
+  api: Cluster
 
   constructor () {
     super(path.resolve(__dirname, '../.run/worker.js'), {
@@ -24,6 +26,8 @@ export class MasterManager extends Master {
     void Setup(this)
 
     addHandlers(this)
+
+    this.api = this.spawnProcess('API', path.resolve(__dirname, '../.run/api.js'))
 
     void this.start()
   }

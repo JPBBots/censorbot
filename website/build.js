@@ -4,6 +4,8 @@ const minify = require('minify')
 const MemoryFs = require('memory-fs')
 const sass = require('sass')
 
+const { ncp } = require('ncp')
+
 const pathTo = {
   src: path.resolve.bind(undefined, __dirname, './src'),
   base: path.resolve.bind(undefined, __dirname, './'),
@@ -113,6 +115,7 @@ const defaultConfig = {}; // CONFIG; // todo
 
   await new Promise((resolve, reject) => {
     compiler.run((err, status) => {
+      if (status.compilation.errors.length > 0) console.log(status.compilation.errors)
       if (err) reject(err)
       else resolve()
     })

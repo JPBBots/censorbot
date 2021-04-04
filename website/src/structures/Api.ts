@@ -1,17 +1,20 @@
 import { Utils } from './Utils'
 import { Logger } from './Logger'
 
+import { CensorBotWs } from './Websocket'
+
 import { E } from './Elements'
-import { AdminResponse, GuildData, GuildDB, ShortGuild, SmallID, Ticket, TicketTest, User } from '../typings/api'
+import { AdminResponse, GuildData, GuildDB, ShortGuild, SmallID, Ticket, TicketTest, User } from '@typings/api'
 import { Snowflake } from 'discord-api-types'
 
 export class CensorBotApi {
   public user: User
   public guilds: ShortGuild[]
-  private waitingForUser: Function[]
-  constructor () {
-    this.waitingForUser = []
+  private waitingForUser: Function[] = []
 
+  public ws = new CensorBotWs(this)
+
+  constructor () {
     this.loginButton.onclick = () => {
       if (this.user) document.getElementById('menu').toggleAttribute('hidden')
       else this.auth()
@@ -25,7 +28,20 @@ export class CensorBotApi {
       this.logout()
     }
 
+    this.ws.start()
+  }
+
+  handleOpen () {
+    if (this.token) this._handleAuth()
+
     this.fetch()
+  }
+
+  private async _handleAuth () {
+    const user = await this.ws.request('AUTHORIZE', { token: this.token }).catch(() => false as false)
+    if (!user) return
+
+    this.user = user
   }
 
   public get loginButton () {
@@ -113,7 +129,7 @@ export class CensorBotApi {
   }
 
   private async logout (redir: boolean = true) {
-    await this.request(null, 'DELETE', '/auth')
+    await this.ws.tell('LOGOUT')
 
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
@@ -128,7 +144,18 @@ export class CensorBotApi {
     Utils.presentLoad('Waiting for you to authorize...')
     await this.logout(false)
 
-    await Utils.openWindow(this._formUrl('/auth' + (window.discordOAuthExtra || '')), 'Login')
+    await Utils.openWindow('/auth' + (window.discordOAuthExtra || ''), 'Login')
+
+    const code = window.localStorage.getItem('code')
+
+    Utils.presentLoad('Logging you in...')
+
+    if (code) {
+      const user = await this.ws.request('LOGIN', { code })
+
+      this.user = user
+      document.cookie = `token=${user.token}`
+    }
 
     if (!this.token) {
       if (required) {
@@ -142,8 +169,6 @@ export class CensorBotApi {
       Utils.stopLoad()
       return false
     }
-
-    Utils.presentLoad('Logging you in...')
 
     const fet = await this.fetch()
 
@@ -160,8 +185,10 @@ export class CensorBotApi {
     })
   }
 
-  public async getSelf (): Promise<User> {
-    return this.request(false, 'GET', '/users/@me')
+  public async getSelf (): Promise<User|false> {
+    if (this.user) return this.user
+
+    return this.ws.request('AUTHORIZE', { token: this.token }).catch(() => false as false)
   }
 
   public async getGuilds (): Promise<ShortGuild[]|false> {

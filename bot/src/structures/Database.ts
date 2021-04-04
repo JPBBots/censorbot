@@ -3,7 +3,7 @@ import { MongoClient, Db, Collection } from 'mongodb'
 import { Config } from '../config'
 import { Cache } from 'discord-rose/dist/utils/Cache'
 
-import { GuildDB } from '../../../typings/typings'
+import { GuildDB } from 'typings/api'
 import { Snowflake } from 'discord-api-types'
 
 import DefaultConfig from '../data/DefaultConfig.json'

@@ -3,14 +3,15 @@ import { Page, PageInterface } from "../structures/Page";
 import { Logger } from '../structures/Logger'
 import { E } from '../structures/Elements'
 
+// @ts-ignore Only done when built properly
 import Config from '../config.json'
 
 const defaultConfig = JSON.stringify(Config)
 
 import Tagify from '@yaireo/tagify'
-import { Utils } from "../structures/Utils";
-import { ExtendedGuild, GuildDB, PunishmentType, WebhookReplace } from "../typings/api";
-import { Snowflake } from "discord-api-types";
+import { Utils } from "../structures/Utils"
+import { ExtendedGuild, GuildDB, PunishmentType, WebhookReplace } from "@typings/api"
+import { Snowflake } from "discord-api-types"
 
 export class GuildSettings extends Page implements PageInterface {
   name = 'guild_settings'

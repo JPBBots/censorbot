@@ -3,7 +3,7 @@ import filter from '../data/filter'
 
 import { JPBExp } from './JPBExp'
 
-import { filterType } from '../../../typings/typings'
+import { filterType } from 'typings/api'
 delete require.cache[require.resolve('../data/filter')]
 
 function inRange (x: number, min: number, max: number): boolean {

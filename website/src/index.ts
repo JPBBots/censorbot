@@ -9,7 +9,6 @@ import { Logger } from './structures/Logger'
 import { E } from './structures/Elements'
 
 import './typings/dom'
-import './typings/api'
 
 window.loadTime = 100
 

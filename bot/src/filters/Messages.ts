@@ -5,7 +5,7 @@ import { FilterResponse } from '../structures/Filter'
 import { APIMessage, Snowflake } from 'discord-api-types'
 
 import { Cache } from 'discord-rose/dist/utils/Cache'
-import { GuildDB } from '../../../typings/typings'
+import { GuildDB } from 'typings/api'
 
 import { ActionType } from '../structures/Responses'
 
