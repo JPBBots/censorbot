@@ -152,7 +152,7 @@ export interface ShortGuild {
   /**
    * CDN Hash of icon
    */
-  a: string
+  a: string | null
 }
 
 export interface ExtendedGuild extends ShortGuild {

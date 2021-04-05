@@ -56,7 +56,6 @@ body {
   z-index: 1;
   width: 100vw;
   overflow-x: hidden;
-  padding-bottom: 10px;
 }
 
 nav {
@@ -109,7 +108,7 @@ nav {
   min-width: 160px;
   overflow: auto;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  z-index: 5;
   overflow: hidden;
   right: -10px;
 
@@ -265,6 +264,18 @@ small {
       animation-timing-function: ease-in-out;
     }
   }
+}
+
+#connection {
+  width: 100px;
+  animation-name: spin;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  z-index: 5;
 }
 
 /** inputs **/

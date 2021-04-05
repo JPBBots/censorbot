@@ -1,4 +1,6 @@
-import { User } from "./api";
+import { ExtendedGuild, GuildData, ShortGuild, User } from "./api";
+
+import { Snowflake } from 'discord-api-types'
 
 export interface Payload {
   e: string
@@ -26,6 +28,14 @@ export interface WebSocketEventMap {
       token: string
     }
     send: User
+  }
+  GET_GUILDS: {
+    receive: null
+    send: ShortGuild[]
+  }
+  GET_GUILD: {
+    receive: Snowflake
+    send: GuildData
   }
   ERROR: {
     receive: {

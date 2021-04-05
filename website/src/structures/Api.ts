@@ -14,7 +14,7 @@ export class CensorBotApi {
 
   public ws = new CensorBotWs(this)
 
-  constructor () {
+  constructor() {
     this.loginButton.onclick = () => {
       if (this.user) document.getElementById('menu').toggleAttribute('hidden')
       else this.auth()
@@ -31,24 +31,25 @@ export class CensorBotApi {
     this.ws.start()
   }
 
-  handleOpen () {
+  handleOpen() {
     if (this.token) this._handleAuth()
 
     this.fetch()
   }
 
-  private async _handleAuth () {
+  private async _handleAuth() {
+    await this.ws.waitForConnection()
     const user = await this.ws.request('AUTHORIZE', { token: this.token }).catch(() => false as false)
     if (!user) return
 
     this.user = user
   }
 
-  public get loginButton () {
+  public get loginButton() {
     return document.getElementById('login')
   }
 
-  private async fetch (): Promise<boolean> {
+  private async fetch(): Promise<boolean> {
     let user
     if (this.token) {
       user = await this.getSelf()
@@ -71,14 +72,14 @@ export class CensorBotApi {
   /**
    * Current API Base Endpoint
    */
-  static get url (): string {
-    return `${window.location.protocol}//${window.location.hostname}/api`
+  static get url(): string {
+    return `${window.location.protocol}//${window.location.hostname}/ws`
   }
 
   /**
    * Gets token
    */
-  get token () {
+  get token() {
     var name = 'token='
     var ca = document.cookie.split(';')
     for (var i = 0; i < ca.length; i++) {
@@ -92,11 +93,7 @@ export class CensorBotApi {
     }
   }
 
-  private _formUrl (url: string): string {
-    return CensorBotApi.url + url
-  }
-
-  private async request (message: false|string, method: string, url: string, body?: object, returnErrors?: number): Promise<any|false> {
+  private async request(message: false | string, method: string, url: string, body?: object, returnErrors?: number): Promise<any | false> {
     if (message) Utils.presentLoad(message)
 
     const headers = new Headers()
@@ -104,7 +101,7 @@ export class CensorBotApi {
     if (method !== 'GET') headers.set('Content-Type', 'application/json')
     if (this.token) headers.set('Authorization', this.token)
 
-    const req = await fetch(this._formUrl(url), {
+    const req = await fetch(url, {
       method,
       headers,
       body: method !== 'GET' && body ? JSON.stringify(body) : null
@@ -128,7 +125,7 @@ export class CensorBotApi {
     return response
   }
 
-  private async logout (redir: boolean = true) {
+  private async logout(redir: boolean = true) {
     await this.ws.tell('LOGOUT')
 
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -140,7 +137,8 @@ export class CensorBotApi {
     this.fetch()
   }
 
-  public async auth (required?: boolean): Promise<boolean> {
+  public async auth(required?: boolean): Promise<boolean> {
+    await this.ws.waitForConnection()
     Utils.presentLoad('Waiting for you to authorize...')
     await this.logout(false)
 
@@ -155,6 +153,8 @@ export class CensorBotApi {
 
       this.user = user
       document.cookie = `token=${user.token}`
+
+      window.localStorage.removeItem('code')
     }
 
     if (!this.token) {
@@ -177,7 +177,8 @@ export class CensorBotApi {
     return fet
   }
 
-  async waitForUser (): Promise<void> {
+  async waitForUser(): Promise<void> {
+    await this.ws.waitForConnection()
     return new Promise(resolve => {
       if (this.user || !this.waitingForUser) resolve()
       this.waitingForUser.push(() => resolve())
@@ -185,18 +186,22 @@ export class CensorBotApi {
     })
   }
 
-  public async getSelf (): Promise<User|false> {
+  public async getSelf(): Promise<User | false> {
+    await this.ws.waitForConnection()
     if (this.user) return this.user
 
     return this.ws.request('AUTHORIZE', { token: this.token }).catch(() => false as false)
   }
 
-  public async getGuilds (): Promise<ShortGuild[]|false> {
+  public async getGuilds(): Promise<ShortGuild[] | false> {
+    await this.waitForUser()
     if (!this.token && !await this.auth(true)) return false
 
     if (this.guilds) return this.guilds
 
-    const result = await this.request('Fetching servers', 'GET', '/guilds')
+    Utils.presentLoad('Getting your servers...')
+    const result = await this.ws.request('GET_GUILDS')
+    Utils.stopLoad()
     if (!result) return false
 
     this.guilds = result
@@ -204,60 +209,65 @@ export class CensorBotApi {
     return result
   }
 
-  public async getGuild (id: Snowflake): Promise<GuildData|false> {
+  public async getGuild(id: Snowflake): Promise<GuildData | false> {
+    await this.waitForUser()
     if (!this.token && !await this.auth(true)) return false
 
-    const guild = await this.request('Fetching server', 'GET', `/guilds/${id}`, null, 404)
+    Utils.presentLoad('Finding your server')
+    const guild = await this.ws.request('GET_GUILD', id)
+      .catch(err => {
+        if (err === 'Not In Guild') {
+          Utils.presentLoad(E.create({
+            elm: 'div',
+            children: [
+              { elm: 'text', text: 'Not in server.' },
+              { elm: 'br' },
+              { elm: 'br' },
+              {
+                elm: 'a',
+                text: 'Back',
+                classes: ['button'],
+                events: {
+                  click: () => {
+                    Utils.stopLoad(),
+                      Utils.setPath('/dashboard')
+                  }
+                }
+              },
+              { elm: 'br' },
+              { elm: 'br' },
+              {
+                elm: 'a',
+                text: 'Invite',
+                classes: ['button'],
+                attr: {
+                  special: ''
+                },
+                events: {
+                  click: async () => {
+                    await Utils.openWindow('/invite?id=' + id, 'Invite')
+                    Utils.reloadPage()
+                  }
+                }
+              }
+            ]
+          }) as HTMLElement)
+          return false as false
+        } else console.error(err)
+        return false as false
+      })
     if (!guild) return false
 
-    if (guild.error === 'Not In Guild') {
-      Utils.presentLoad(E.create({
-        elm: 'div',
-        children: [
-          { elm: 'text', text: 'Not in server.' },
-          { elm: 'br' },
-          { elm: 'br' },
-          {
-            elm: 'a',
-            text: 'Back',
-            classes: ['button'],
-            events: {
-              click: () => {
-                Utils.stopLoad(),
-                Utils.setPath('/dashboard')
-              }
-            }
-          },
-          { elm: 'br' },
-          { elm: 'br' },
-          {
-            elm: 'a',
-            text: 'Invite',
-            classes: ['button'],
-            attr: {
-              special: ''
-            },
-            events: {
-              click: async () => {
-                await Utils.openWindow(this._formUrl('/invite?id=' + id), 'Invite')
-                Utils.reloadPage()
-              }
-            }
-          }
-        ]
-      }) as HTMLElement)
-      return false
-    }
     return guild
   }
 
-  public async postSettings (id: Snowflake, data: GuildDB): Promise<GuildDB|false> {
+  public async postSettings(id: Snowflake, data: GuildDB): Promise<GuildDB | false> {
     if (!this.token && !await this.auth(true)) return false
 
     return this.request('Saving...', 'POST', `/guilds/${id}`, data)
   }
 
-  public async postPremium (guilds: Snowflake[]): Promise<Snowflake[]|false> {
+  public async postPremium(guilds: Snowflake[]): Promise<Snowflake[] | false> {
     if (!this.token && !await this.auth(true)) return false
 
     const response = await this.request('Setting premium servers', 'POST', '/users/@me/premium', { guilds })
@@ -266,7 +276,7 @@ export class CensorBotApi {
     return response
   }
 
-  public async getStats (show?: boolean): Promise<AdminResponse|false> {
+  public async getStats(show?: boolean): Promise<AdminResponse | false> {
     if (!this.token && !await this.auth(true)) return false
 
     let response
@@ -297,7 +307,7 @@ export class CensorBotApi {
     if (!response) return false
   }
 
-  public async getTickets (): Promise<Ticket[]|false> {
+  public async getTickets(): Promise<Ticket[] | false> {
     if (!this.token && !await this.auth(true)) return false
     let response
     if (this.user.admin) {
@@ -316,15 +326,15 @@ export class CensorBotApi {
     return response
   }
 
-  public async testTicket (id: SmallID): Promise<TicketTest> {
+  public async testTicket(id: SmallID): Promise<TicketTest> {
     if (this.user.admin) return this.request('Fetching ticket', 'GET', '/admin/tickets/' + id)
   }
 
-  public async acceptTicket (id: SmallID): Promise<{ success: boolean }> {
+  public async acceptTicket(id: SmallID): Promise<{ success: boolean }> {
     if (this.user.admin) return this.request('Accepting ticket', 'POST', '/admin/tickets/' + id)
   }
 
-  public async denyTicket (id: SmallID): Promise<{ success: boolean }> {
+  public async denyTicket(id: SmallID): Promise<{ success: boolean }> {
     if (this.user.admin) return this.request('Denying ticket', 'DELETE', '/admin/tickets/' + id)
   }
 }

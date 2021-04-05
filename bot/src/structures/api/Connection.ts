@@ -1,16 +1,20 @@
 import WebSocket from 'ws'
 import { Socket } from './Socket'
 
-import { APIUser } from 'discord-api-types'
+import { APIUser, Snowflake } from 'discord-api-types'
 
 import { Payload, WebSocketEventMap } from 'typings/websocket'
 
 import { Events } from '../../helpers/wsEvents'
-import { User } from 'typings/api'
+import { GuildData, ShortGuild, User } from 'typings/api'
+import { Cache } from '@jpbberry/cache'
 
 export class Connection {
   public user?: APIUser
   public db?: User
+  public guilds?: ShortGuild[]
+
+  guildCache: Cache<Snowflake, GuildData> = new Cache(this.socket.manager.config.dashboardOptions.guildCacheWipeTimeout)
 
   constructor (public socket: Socket, private readonly ws: WebSocket, public host: string) {
     ws.on('close', () => {
@@ -58,12 +62,23 @@ export class Connection {
 
     try {
       await Events[event]?.(this, data, res)
-        .catch(err => {
-          res?.({ error: err.message ?? 'ERROR' })
-        })
     } catch (err) {
       res?.({ error: err.message ?? 'ERROR' })
     }
+  }
+
+  public async getGuilds (): Promise<ShortGuild[]> {
+    if (!this.authorized) throw new Error('Not authorized')
+
+    if (this.guilds) return this.guilds
+
+    const guilds = await this.socket.manager.oauth.getGuilds(this.db?.bearer as string)
+
+    if (!guilds) throw new Error('Invalid token')
+
+    this.guilds = guilds
+
+    return guilds
   }
 
   private _respond (id: number) {

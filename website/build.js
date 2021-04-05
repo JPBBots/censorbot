@@ -23,7 +23,7 @@ const processCss = async (file) => {
   }).css.toString('utf-8'))).then(x => x.css)
 }
 
-const defaultConfig = {}; // CONFIG; // todo
+const defaultConfig = require('../bot/src/data/DefaultConfig.json');
 
 (async () => {
   const result = {}

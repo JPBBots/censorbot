@@ -1,6 +1,4 @@
-import { Worker, CommandOptions } from 'discord-rose'
-import { Setup } from './BaseManager'
-
+import { Worker, CommandOptions, PermissionsUtils } from 'discord-rose'
 import { Config } from '../config'
 
 import { Database } from '../structures/Database'
@@ -15,20 +13,19 @@ import { setupFilters } from '../helpers/setupFilters'
 import { setupDiscord } from '../helpers/discordEvents'
 
 import { Interface } from 'interface'
+import EvalCommand from 'interface/dist/extras/EvalCommand'
 
 import fetch from 'node-fetch'
 import path from 'path'
 import fs from 'fs'
 
-import { PermissionsUtils, bits } from 'discord-rose/dist/utils/Permissions'
-
 import { CachedGuild } from 'discord-rose/dist/typings/Discord'
 import Collection from '@discordjs/collection'
 
 export class WorkerManager extends Worker {
-  config: typeof Config
+  config = Config
   filter = new Filter()
-  db: Database
+  db = new Database()
 
   actions = new ActionBucket(this)
   responses = new Responses(this)
@@ -37,7 +34,6 @@ export class WorkerManager extends Worker {
 
   constructor () {
     super()
-    void Setup(this)
 
     this.interface.setupWorker(this)
 
@@ -74,6 +70,8 @@ export class WorkerManager extends Worker {
     console.log('Loading commands')
     if (this.commands.commands) this.commands.commands.clear()
 
+    this.commands.add(EvalCommand)
+
     void this._loadDir(path.resolve(__dirname, '../commands'))
   }
 
@@ -94,7 +92,7 @@ export class WorkerManager extends Worker {
     }
   }
 
-  hasPerms (id: Snowflake, perms: keyof typeof bits): boolean {
+  hasPerms (id: Snowflake, perms: keyof typeof PermissionsUtils.bits): boolean {
     return PermissionsUtils.calculate(
       this.selfMember.get(id) as GatewayGuildMemberAddDispatchData,
       this.guilds.get(id) as CachedGuild,

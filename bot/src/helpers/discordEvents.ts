@@ -1,9 +1,8 @@
-import { Embed } from 'discord-rose'
+import { Embed, PermissionsUtils } from 'discord-rose'
 import { WorkerManager } from '../managers/Worker'
 
 import Collection from '@discordjs/collection'
 
-import { bits, PermissionsUtils } from 'discord-rose/dist/utils/Permissions'
 import { APIGuildMember, APIRole, Snowflake } from 'discord-api-types'
 
 const unavailables = new Set()
@@ -16,7 +15,7 @@ export function setupDiscord (worker: WorkerManager): void {
     guild.roles.forEach(x => {
       roles.set(x.id, x)
     })
-    const hasPerms = (perm: keyof typeof bits): boolean => {
+    const hasPerms = (perm: keyof typeof PermissionsUtils.bits): boolean => {
       return PermissionsUtils.calculate(guild.members?.find(x => x.user?.id === worker.user.id) as APIGuildMember, guild, roles, perm)
     }
 

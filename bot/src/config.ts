@@ -1,10 +1,10 @@
 import DotEnv from 'dotenv'
 import path from 'path'
 import fs from 'fs'
-import { bits } from 'discord-rose/dist/utils/Permissions'
+import { PermissionsUtils } from 'discord-rose'
 
 if (!process.env.BOT_TOKEN) {
-  const env = DotEnv.parse(fs.readFileSync(path.resolve(__dirname, '../../censorbottesting.env')))
+  const env = DotEnv.parse(fs.readFileSync(path.resolve(__dirname, '../../.env')))
   Object.keys(env).forEach(key => {
     process.env[key] = env[key]
   })
@@ -70,7 +70,7 @@ export const Config = {
       why: 'To create resend webhooks (premium)'
     }
   ] as Array<{
-    permission: keyof typeof bits
+    permission: keyof typeof PermissionsUtils.bits
     name: string
     why: string
     vital?: boolean
@@ -86,5 +86,11 @@ export const Config = {
 
   defaultMessage: "You're not allowed to say that.",
 
-  actionRetention: 3
+  actionRetention: 3,
+
+  dashboardOptions: {
+    guildCacheWipeTimeout: 15 * 60 * 1000, // 15 minutes
+    requiredPermission: 'manageGuild' as keyof typeof PermissionsUtils.bits,
+    scopes: ['identify', 'guilds']
+  }
 }

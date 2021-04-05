@@ -1,10 +1,12 @@
 import { ApiManager } from '../../managers/Api'
 
+import { PermissionsUtils } from 'discord-rose'
+
 import Crypto from 'crypto'
 import qs from 'querystring'
 
-import { APIUser, RESTPostOAuth2AccessTokenResult, RESTPostOAuth2AccessTokenURLEncodedData } from 'discord-api-types'
-import { User } from 'typings/api'
+import { APIGuild, APIUser, RESTPostOAuth2AccessTokenResult, RESTPostOAuth2AccessTokenURLEncodedData } from 'discord-api-types'
+import { ShortGuild, User } from 'typings/api'
 import { Collection } from 'mongodb'
 
 export class OAuth2 {
@@ -43,7 +45,7 @@ export class OAuth2 {
 
     await this.db.updateOne({ id: db.id }, { $set: db }, { upsert: true })
 
-    return { user, db }
+    return { user, db: await this.manager.extendUser(db) }
   }
 
   private async _bearer (code: string, host: string): Promise<RESTPostOAuth2AccessTokenResult | false> {
@@ -57,7 +59,7 @@ export class OAuth2 {
         code,
         grant_type: 'authorization_code',
         redirect_uri: `${host}/callback`,
-        scope: 'identify guilds'
+        scope: this.manager.config.dashboardOptions.scopes.join(' ')
       } as RESTPostOAuth2AccessTokenURLEncodedData,
       parser: qs.stringify
     }).catch(() => false)
@@ -77,5 +79,18 @@ export class OAuth2 {
     if (!user || !user.id) return false
 
     return user
+  }
+
+  public async getGuilds (token: string): Promise<ShortGuild[] | false> {
+    const guilds = await this.manager.rest.request('GET', '/users/@me/guilds', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }) as APIGuild[]
+
+    if (!guilds || !Array.isArray(guilds)) return false
+
+    return guilds.filter(x => x.owner as boolean || PermissionsUtils.has(Number(x.permissions), this.manager.config.dashboardOptions.requiredPermission))
+      .map(x => ({ n: x.name, i: x.id, a: x.icon }))
   }
 }

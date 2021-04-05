@@ -8,6 +8,7 @@ import { DashboardTwitch } from './DashboardTwitch'
 import { Admin } from './Admin'
 import { Tickets } from './Tickets'
 import { Terms } from './Terms'
+import { DashboardGuilded } from './DashboardGuilded'
 
 export const Pages = [
   Landing,
@@ -17,6 +18,7 @@ export const Pages = [
   GuildSettings,
   Premium,
   DashboardTwitch,
+  DashboardGuilded,
   Admin,
   Tickets,
   Terms

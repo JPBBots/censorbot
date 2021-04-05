@@ -12,6 +12,10 @@ export class CensorBotWs {
 
   private hbInterval: number
 
+  public reconnecting = false
+
+  private waitingForReady: (() => void)[] = []
+
   constructor (private api: CensorBotApi) {}
 
   private log (msg: string) {
@@ -19,7 +23,7 @@ export class CensorBotWs {
   }
 
   public start () {
-    this.ws = new WebSocket('wss://staging.censor.bot/ws')
+    this.ws = new WebSocket(`wss://${location.host}/ws`)
 
     this.ws.onmessage = (data) => {
       this._handleMessage(data.data)
@@ -29,6 +33,14 @@ export class CensorBotWs {
       this.log(`Closed with code: ${ev.code} / ${ev.reason}`)
       this._handleClose()
     }
+  }
+
+  waitForConnection (): Promise<void> {
+    return new Promise(resolve => {
+      if (this.ws.readyState === WebSocket.OPEN) return resolve()
+
+      this.waitingForReady.push(resolve)
+    })
   }
   
   tell (event: string, data?: any) {
@@ -70,6 +82,7 @@ export class CensorBotWs {
   }
 
   _handleClose () {
+    Logger.connectionStatus(false)
     this.sequence = 0
 
     if (this.hbInterval) clearInterval(this.hbInterval)
@@ -94,6 +107,11 @@ export class CensorBotWs {
     }
 
     if (data.e === 'HELLO') {
+      if (this.waitingForReady) this.waitingForReady.forEach(x => x())
+      this.waitingForReady = null
+
+      Logger.connectionStatus(true)
+
       this.api.handleOpen()
       this.log(`Received HELLO. Interval: ${data.d.interval / 1000}s`)
       this._heartbeat()

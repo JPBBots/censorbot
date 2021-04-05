@@ -1,6 +1,12 @@
 const Express = require('express')
 const Path = require('path')
 
+const { Config } = require('../bot/dist/config')
+
+const { PermissionsUtils } = require('discord-rose')
+
+const qs = require('querystring')
+
 const { exec } = require('child_process')
 
 /**
@@ -73,8 +79,29 @@ app.get('/sitemap.xml', (req, res) => {
 `)
 })
 
+const generateOauth = (invite, data) => {
+  const base = `https://discord.com/oauth2/authorize?${qs.stringify({
+    client_id: Config.id
+  })}&`
+
+  if (!invite) {
+    return base + qs.stringify({
+      redirect_uri: `https://${data}/callback`,
+      response_type: 'code',
+      prompt: 'none',
+      scope: Config.dashboardOptions.scopes.join(' ')
+    })
+  } else {
+    return base + qs.stringify({
+      permissions: Config.requiredPermissions.reduce((a, b) => a | PermissionsUtils.bits[b.permission], 0),
+      scope: 'bot',
+      guild_id: data
+    })
+  }
+}
+
 app.get('/auth', (req, res) => {
-  res.redirect(`https://discord.com/oauth2/authorize?client_id=707322836011974667&redirect_uri=https://${req.headers.host}/callback&response_type=code&prompt=none&scope=identify%20guilds`)
+  res.redirect(generateOauth(false, req.headers.host))
 })
 
 app.get('/callback', (req, res) => {
@@ -107,7 +134,7 @@ app.get('/servers*', (req, res) => {
 })
 
 app.get('/invite', (req, res) => {
-  res.redirect('/api/invite')
+  res.redirect(generateOauth(true, req.query.id))
 })
 
 app.use((req, res) => {

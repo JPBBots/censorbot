@@ -12,19 +12,28 @@ export class Utils {
     return new Promise(resolve => {
       const top = doc.getBoundingClientRect().top - 50
       const scrolled = () => window.pageYOffset > top - 60 && window.pageYOffset < top + 60
+      let cancelled = false
       if (scrolled()) return resolve()
       const timeout = setTimeout(() => {
+        if (cancelled) return
         window.scrollTo(0, top)
         resolve()
         events.removeEventListener('util', 'scroll')
       }, 2000)
       events.addEventListener('util', 'scroll', () => {
+        if (cancelled) return
         if (scrolled()) {
           clearTimeout(timeout)
           events.removeEventListener('util', 'scroll')
           window.scrollTo(0, top)
           resolve()
         }
+      })
+      events.addEventListener('util', 'mousewheel', () => {
+        cancelled = true
+        resolve()
+        events.removeEventListener('util', 'scroll')
+        events.removeEventListener('util', 'mousewheel')
       })
       window.scroll({
         behavior: 'smooth',

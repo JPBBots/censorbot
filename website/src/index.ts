@@ -19,8 +19,31 @@ window.onload = async () => {
   window.__LOADER = loader
 
   if (window.dev) {
-    Utils.addButton('Toast', () => Logger.tell('This is a test of the screen toast'))
-    Utils.addButton('Present Load', () => {
+    document.getElementById('connection').oncontextmenu = (e) => {
+      e.preventDefault()
+
+      Logger.tell('mgam')
+    }
+
+    const devElm = document.getElementById('devcommands')
+
+    devElm.removeAttribute('hidden')
+
+    const addButton = (name: string, fn: () => void, admin: boolean = false) => {
+      const button = document.createElement('button')
+
+      button.innerText = name
+      button.onclick = fn
+
+      if (admin) {
+        button.setAttribute('hidden', '')
+        button.classList.add('adminshow')
+      }
+      devElm.appendChild(button)
+    }
+
+    addButton('Toast', () => Logger.tell('This is a test of the screen toast'))
+    addButton('Present Load', () => {
       Utils.presentLoad(E.create({
         elm: 'div',
         text: 'This is a test of the Utils.presentLoad',
@@ -36,7 +59,10 @@ window.onload = async () => {
         ]
       }) as HTMLElement)
     })
-    Utils.addButton('Reload Page', () => Utils.reloadPage())
+    addButton('Toggle connection status', () => {
+      Logger.connectionStatus(!document.getElementById('connection').hasAttribute('hidden'))
+    })
+    addButton('Reload Page', () => Utils.reloadPage())
     const differentLogin = (type) => {
       return () => {
         window.discordOAuthExtra = type
@@ -44,16 +70,16 @@ window.onload = async () => {
       }
     }
 
-    Utils.addButton('Normal Login', differentLogin(null))
-    Utils.addButton('Login With Canary', differentLogin('/canary'))
-    Utils.addButton('Login With PTB', differentLogin('/ptb'))
+    addButton('Normal Login', differentLogin(null))
+    addButton('Login With Canary', differentLogin('canary'))
+    addButton('Login With PTB', differentLogin('ptb'))
 
-    Utils.addButton('Rebuild Site', () => {
+    addButton('Rebuild Site', () => {
       window.__LOADER.util.presentLoad('Rebuilding site')
       fetch('/', { method: 'DELETE' }).then(() => location.reload())
     }, true)
 
-    Utils.addButton('Disable DEV mode', () => { window.location.search = '' })
+    addButton('Disable DEV mode', () => { window.location.search = '' })
   } else {
     (document.querySelector('nav > h3') as HTMLElement).oncontextmenu = (event) => {
       if (event.ctrlKey) {
