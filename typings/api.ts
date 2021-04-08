@@ -1,6 +1,8 @@
 import { Snowflake } from 'discord-api-types'
 
-export type filterType = 'en' | 'es' | 'off' | 'de' | 'ru'
+export const filters = ['en', 'es', 'off', 'de', 'ru'] as const
+
+export type filterType = typeof filters[number]
 
 export enum PunishmentType {
   Nothing = 0,

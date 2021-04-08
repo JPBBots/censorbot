@@ -22,11 +22,12 @@
     "@discord-rose/permissions-middleware": "^1.1.0",
     "@jpbberry/cache": "^1.0.4",
     "crypto": "^1.0.1",
-    "discord-rose": "^1.2.2",
+    "discord-rose": "github:discord-rose/discord-rose#build",
     "dotenv": "^8.2.0",
     "interface": "github:jpbbots/interface",
     "mongodb": "^3.6.3",
     "node-fetch": "^2.6.1",
+    "validate": "^5.1.0",
     "ws": "^7.4.4"
   },
   "devDependencies": {

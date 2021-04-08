@@ -58,6 +58,7 @@ export class CensorBotApi {
     if (!user) {
       this.loginButton.innerText = 'Login'
       this.loginButton.removeAttribute('loggedin')
+      document.querySelectorAll('.adminshow').forEach(e => e.setAttribute('hidden', ''))
       return false
     } else {
       this.loginButton.innerText = `${this.user.tag}`
@@ -142,7 +143,7 @@ export class CensorBotApi {
     Utils.presentLoad('Waiting for you to authorize...')
     await this.logout(false)
 
-    await Utils.openWindow('/auth' + (window.discordOAuthExtra || ''), 'Login')
+    await Utils.openWindow('/auth' + (window.discordOAuthExtra ? `?d=${window.discordOAuthExtra}` : ''), 'Login')
 
     const code = window.localStorage.getItem('code')
 

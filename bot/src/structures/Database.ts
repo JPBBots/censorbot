@@ -7,6 +7,8 @@ import { Snowflake } from 'discord-api-types'
 import DefaultConfig from '../data/DefaultConfig.json'
 import SafeConfig from '../data/SafeConfig.json'
 
+import { schema } from '../data/ConfigSchema'
+
 import { Database as Db } from 'interface/dist/Database'
 
 export class Database extends Db {
@@ -14,6 +16,8 @@ export class Database extends Db {
 
   defaultConfig = DefaultConfig
   safeConfig = SafeConfig
+
+  schema = schema
 
   constructor () {
     super(Config.db.host, Config.db.username, Config.db.password)

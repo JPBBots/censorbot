@@ -79,8 +79,8 @@ app.get('/sitemap.xml', (req, res) => {
 `)
 })
 
-const generateOauth = (invite, data) => {
-  const base = `https://discord.com/oauth2/authorize?${qs.stringify({
+const generateOauth = (invite, data, disc) => {
+  const base = `https://${disc ? `${disc}.` : ''}discord.com/oauth2/authorize?${qs.stringify({
     client_id: Config.id
   })}&`
 
@@ -101,7 +101,7 @@ const generateOauth = (invite, data) => {
 }
 
 app.get('/auth', (req, res) => {
-  res.redirect(generateOauth(false, req.headers.host))
+  res.redirect(generateOauth(false, req.headers.host, req.query.d))
 })
 
 app.get('/callback', (req, res) => {
