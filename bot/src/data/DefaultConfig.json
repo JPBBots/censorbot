@@ -4,12 +4,7 @@
       "es",
       "off"
   ],
-  "censor": {
-      "msg": true,
-      "emsg": true,
-      "nick": true,
-      "react": true
-  },
+  "censor": 7,
   "log": null,
   "role": null,
   "filter": [],
@@ -36,5 +31,7 @@
   "prefix": "+",
   "invites": false,
   "fonts": false,
-  "dm": false
+  "dm": false,
+
+  "notInDb": true
 }

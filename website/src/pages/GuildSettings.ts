@@ -10,8 +10,80 @@ const defaultConfig = JSON.stringify(Config)
 
 import Tagify from '@yaireo/tagify'
 import { Utils } from "../structures/Utils"
-import { ExtendedGuild, GuildDB, PunishmentType, WebhookReplace } from "@typings/api"
+import { ExtendedGuild, GuildDB } from "@typings/api"
 import { Snowflake } from "discord-api-types"
+import { WebSocketEventMap } from "@typings/websocket";
+
+function generatePieces (obj: any): any {
+  const pieces = {}
+  function generatePiece (toObj: any, key: string, working?: string) {
+    const val = key ? toObj[key] : toObj
+    if (!val || val.constructor !== Object) {
+      pieces[`${working ? `${working}.` : ''}${key}`] = val
+    } else {
+      Object.keys(val).forEach(x => generatePiece(val, x, `${working ? `${working}.` : ''}${key}`))
+    }
+  }
+  generatePiece(obj, '')
+
+  return pieces
+}
+
+function wide (obj: any) {
+  const res = {}
+  const add = (key: string, addTo: any, value: any) => {
+    if (key.includes('.')) {
+      const split = key.split('.')
+      const piece = split.shift()
+      if (!addTo[piece]) addTo[piece] = {}
+      add(split.join('.'), addTo[piece], value)
+    } else {
+      addTo[key] = value
+    }
+  }
+
+  Object.keys(obj).forEach(key => {
+    add(key, res, obj[key])
+  })
+
+  return res
+}
+
+const settings = [
+  'prefix',
+  'log',
+  'role',
+  'channels',
+  'dm',
+  'nsfw',
+  'invites',
+  'multi',
+  'fonts',
+  'filters',
+  'filter',
+  'uncensor',
+  'censor',
+  'punishment.amount',
+  'punishment.expires',
+  'punishment.role',
+  'punishment.type',
+  'punishment.time',
+  'msg.deleteAfter',
+  'msg.content',
+  'webhook.enabled',
+  'webhook.separate',
+  'webhook.replace'
+] as const
+
+interface SettingType {
+  bools: { elm: HTMLInputElement, val: boolean}
+  select: { elm: HTMLSelectElement, val: string }
+  duration: { elm: any, val: number }
+  list: { elm: any, val: string[] }
+  input: { elm: HTMLInputElement, val: string }
+  number: { elm: HTMLInputElement, val: number }
+  bitwise: { elm: HTMLDivElement, val: number }
+}
 
 export class GuildSettings extends Page implements PageInterface {
   name = 'guild_settings'
@@ -26,33 +98,25 @@ export class GuildSettings extends Page implements PageInterface {
     'ptotal',
     'premium',
     // settings
-    'prefix',
-    'log',
-    'role',
-    'channels',
-    'dm',
-    'nsfw',
-    'invites',
-    'multi',
-    'fonts',
-    'filters',
-    'filter',
-    'uncensor',
-    'censor.msg',
-    'censor.emsg',
-    'censor.nick',
-    'censor.react',
-    'punishment.amount',
-    'punishment.expires',
-    'punishment.role',
-    'punishment.type',
-    'punishment.time',
-    'msg.deleteAfter',
-    'msg.content',
-    'webhook.enabled',
-    'webhook.separate',
-    'webhook.replace'
+    ...settings
   ]
+
+  settingTag = false
+
+  private types: {
+    [key in keyof SettingType]: Array<typeof settings[number]>
+  } = {
+    bools: [
+      'dm', 'nsfw', 'multi', 'invites', 'fonts',
+      'webhook.enabled', 'webhook.separate'
+    ],
+    select: ['log', 'role', 'punishment.role'],
+    duration: ['punishment.expires', 'punishment.time'],
+    list: ['filter', 'uncensor', 'filters', 'channels'],
+    input: ['msg.content', 'prefix'],
+    number: ['punishment.amount', 'msg.deleteAfter', 'webhook.replace', 'punishment.type'],
+    bitwise: ['censor']
+  }
 
   private get guild (): ExtendedGuild {
     return this.registry.guild.guild
@@ -62,124 +126,191 @@ export class GuildSettings extends Page implements PageInterface {
     return this.registry.guild.premium
   }
 
-  private get db (): GuildSettings {
-    return this.registry.db
-  }
-
   get id () {
     return location.pathname.split('dashboard/')[1] as Snowflake
   }
 
+  setters: {
+    [key in keyof SettingType]: (value: SettingType[key]['val'], elm: SettingType[key]['elm']) => void
+  } = {
+    bools: (value, elm) => {
+      elm.checked = value
+    },
+    input: (value, elm) => {
+      if (value === null) value = 'Default'
+      if ((value as any) === false) value = 'Off'
+      elm.value = value
+    },
+    number: (value, elm) => {
+      elm.value = String(value)
+    },
+    select: (value, elm) => {
+      elm.value = value === null ? "" : value
+    },
+    duration: (value, elm) => {
+      this.util.setDuration(elm, value)
+    },
+    list: (value, elm) => {
+      this.settingTag = true
+      this.util.setTagify(value, elm)
+      this.settingTag = false
+    },
+    bitwise: (value, elm) => {
+      elm.querySelectorAll('input').forEach(bit => {
+        const num = Number(bit.parentElement.parentElement.id.split('.').pop())
+        console.log(num)
+
+        bit.checked = (value & num) !== 0
+      })
+    }
+  }
+
+  getters: {
+    [key in keyof SettingType]: (elm: SettingType[key]['elm']) => SettingType[key]['val'] |  null | false
+  } = {
+    bools: (elm) => {
+      return elm.checked
+    },
+    input: (elm) => {
+      if (elm.value === 'Off') return false
+      if (elm.value === 'Default') return null
+      return elm.value
+    },
+    number: (elm) => {
+      return Number(elm.value)
+    },
+    select: (elm) => {
+      if (elm.value === '') return null
+      return elm.value
+    },
+    duration: (elm) => {
+      return this.util.getDuration(elm)
+    },
+    list: (elm) => {
+      return elm.value.reduce((a, b) => a.concat([b.id || b.value]), [])
+    },
+    bitwise: (elm) => {
+      let res = 0
+      elm.querySelectorAll('input').forEach(bit => {
+        const num = Number(bit.parentElement.parentElement.id.split('.').pop())
+
+        if (bit.checked) {
+          res |= num
+        }
+      })
+
+      return res
+    }
+  }
+  
+  event: {
+    [key in keyof SettingType]: (elm: SettingType[key]['elm'], fn: () => void) => void
+  } = {
+    bools: (elm, fn) => {
+      elm.addEventListener('change', fn)
+    },
+    input: (elm, fn) => {
+      elm.addEventListener('change', fn)
+    },
+    number: (elm, fn) => {
+      elm.addEventListener('change', fn)
+    },
+    select: (elm, fn) => {
+      elm.addEventListener('change', fn)
+    },
+    duration: (elm, fn) => {
+      elm.parentElement.querySelectorAll('input, select').forEach(elm => {
+        elm.addEventListener('change', fn)
+      })
+    },
+    list: (elm, fn) => {
+      elm.on('change', async () => {
+        if (this.settingTag) return
+        fn()
+      })
+    },
+    bitwise: (elm, fn) => {
+      elm.querySelectorAll('input').forEach(inp => {
+        inp.addEventListener('change', fn)
+      })
+    }
+  }
+
+  _elementFromType (type: keyof SettingType, piece: typeof settings[number]) {
+    let elm: HTMLElement
+
+    switch (type) {
+      case 'list':
+        elm = this.registry.tags.get(piece)
+        break
+      case 'bools':
+      case 'duration':
+        elm = this.e(piece).querySelector('input')
+        break
+      case 'bitwise':
+        elm = this.e(piece)
+        break
+      default:
+        elm = this.elm(piece)
+        break
+    }
+
+    return elm
+  }
+
+  formSetting (setting: typeof settings[number]) {
+    const type = this._getType(setting)
+    if (!type) return
+
+    let value = this.getters[type](this._elementFromType(type, setting))
+
+    if (setting === 'msg.deleteAfter') (value as number) *= 1000
+
+    return value
+  }
+
   private formSettings (): GuildDB {
-    const res: GuildDB = JSON.parse(defaultConfig)
+    const res = {}
 
-    res.prefix = this.elm('prefix').value || null
-    res.log = this.elm('log').value as Snowflake || null
-    res.role = this.elm('role').value as Snowflake || null
-    res.channels = this.util.getTagify(this.inp('channels'))
-    res.dm = this.inp('dm').checked
+    settings.forEach(key => {
+      res[key] = this.formSetting(key)
+    })
 
-    res.invites = this.inp('invites').checked
-    res.multi = this.inp('multi').checked
-    res.fonts = this.inp('fonts').checked
-    res.nsfw = this.inp('nsfw').checked
-    res.filters = this.util.getTagify(this.inp('filters'))
-    res.filter = this.util.getTagify(this.inp('filter'))
-    res.uncensor = this.util.getTagify(this.inp('uncensor'))
-    res.censor.msg = this.inp('censor.msg').checked
-    res.censor.emsg = this.inp('censor.emsg').checked
-    res.censor.nick = this.inp('censor.nick').checked
-    res.censor.react = this.inp('censor.react').checked
+    return wide(res) as GuildDB
+  }
 
-    res.punishment.amount = Number(this.elm('punishment.amount').value)
-    res.punishment.expires = this.util.getDuration(this.inp('punishment.expires'))
-    res.punishment.type = Number(this.elm('punishment.type').value) as GuildDB['punishment']['type']
-    if (res.punishment.type === PunishmentType.Mute) {
-      res.punishment.role = this.elm('punishment.role').value as Snowflake
-      if (!res.punishment.role) res.punishment.role = null
-    }
-    if ([PunishmentType.Mute, PunishmentType.Kick].includes(res.punishment.type)) {
-      res.punishment.time = this.util.getDuration(this.inp('punishment.time'))
-    }
-
-    res.msg.content = this.elm('msg.content').value || null
-    if (res.msg.content === 'Default') res.msg.content = null
-    if (res.msg.content === 'Off') res.msg.content = false
-    res.msg.deleteAfter = Number(this.elm('msg.deleteAfter').value)
-    if (res.msg.deleteAfter) res.msg.deleteAfter*=1000
-    else res.msg.deleteAfter = null
-
-    res.webhook.enabled = this.inp('webhook.enabled').checked
-    res.webhook.separate = this.inp('webhook.separate').checked
-    res.webhook.replace = Number(this.elm('webhook.replace').value) as WebhookReplace
-
-    return res
+  private _getType (set: string): keyof SettingType {
+    return Object.keys(this.types).find(x => this.types[x].includes(set)) as keyof SettingType
   }
 
   private pushSettings (obj: GuildDB): void {
     delete obj.id
-    this.registry.db = obj
-    this.elm('prefix').value = obj.prefix
-    this.elm('log').value = obj.log || ""
-    this.elm('role').value = obj.role || ""
-    this.util.setTagify(obj.channels, this.registry.tags.get('channels'))
-    this.inp('dm').checked = obj.dm
+    delete obj.notInDb
 
-    this.inp('invites').checked = obj.invites
-    this.inp('multi').checked = obj.multi
-    this.inp('fonts').checked = obj.fonts
-    this.inp('nsfw').checked = obj.nsfw
-    this.util.setTagify(obj.filters, this.registry.tags.get('filters'))
-    this.util.setTagify(obj.filter, this.registry.tags.get('filter'))
-    this.util.setTagify(obj.uncensor, this.registry.tags.get('uncensor'))
-    this.inp('censor.msg').checked = obj.censor.msg
-    this.inp('censor.emsg').checked = obj.censor.emsg
-    this.inp('censor.nick').checked = obj.censor.nick
-    this.inp('censor.react').checked = obj.censor.react
+    const pieces: {
+      [key in typeof settings[number]]: any
+    } = generatePieces(obj)
 
-    this.inp('punishment.amount').value = String(obj.punishment.amount)
-    this.util.setDuration(this.inp('punishment.time'), obj.punishment.time)
-    this.elm('punishment.type').value = String(obj.punishment.type)
-    this.elm('punishment.role').value = String(obj.punishment.role)
-    this.util.setDuration(this.inp('punishment.expires'), obj.punishment.expires)
+    Object.keys(pieces).forEach((piece: typeof settings[number]) => {
+      const type = this._getType(piece)
+      if (!type) return
 
-    if (obj.msg.content === null) this.inp('msg.content').value = 'Default'
-    else if (obj.msg.content === false) this.inp('msg.content').value = 'Off'
-    else this.inp('msg.content').value = obj.msg.content
-    this.inp('msg.deleteAfter').value = obj.msg.deleteAfter ? String(obj.msg.deleteAfter / 1000) : ''
+      let value = pieces[piece]
 
-    this.inp('webhook.enabled').checked = obj.webhook.enabled
-    this.inp('webhook.separate').checked = obj.webhook.separate
-    this.elm('webhook.replace').value = String(obj.webhook.replace)
+      if (piece === 'msg.deleteAfter') value /= 1000
 
-    this.e('settings').querySelectorAll('input, select').forEach((x: HTMLElement) => x.onchange ? x.onchange(null): null)
-
-    this.updateButton()
+      this.setters[type](value as never, this._elementFromType(type, piece))
+    })
   }
 
   private elm (name: string): HTMLInputElement | HTMLSelectElement {
     return this.e(name).querySelector('input, select')
   }
 
-  private inp (name: string): HTMLInputElement {
-    return this.e(name).querySelector('input')
-  }
-
   async loading () {
     const guild = await this.api.getGuild(this.id)
     if (guild) this.registry.guild = guild
     await this.api.waitForUser()
-  }
-
-  private get changed (): boolean {
-    return !this.util.isEqual(this.registry.db, this.formSettings())
-  }
-
-  private updateButton () {
-    setTimeout(() => {
-      if (this.changed) this.e('save').removeAttribute('hidden')
-      else this.e('save').setAttribute('hidden', '')
-    }, 100)
   }
 
   private async save () {
@@ -269,14 +400,6 @@ export class GuildSettings extends Page implements PageInterface {
       this.updatePremium()
     })
 
-    this.on('keydown', (event: KeyboardEvent) => {
-      if (event.key === 's' && event.ctrlKey) {
-        event.preventDefault()
-        if (!this.changed) return Logger.tell('No changes found, not saving.')
-        this.save()
-      }
-    })
-
     this.registry.tags = new Map()
 
     const listSettings = {
@@ -284,7 +407,7 @@ export class GuildSettings extends Page implements PageInterface {
       pattern: /^.{1,20}$/,
       callbacks: {
         invalid: (e) => {
-          console.log(`Error whilst adding tag: ${e.detail.message}`)
+          this.log(`Error whilst adding tag: ${e.detail.message}`)
           if (e.detail.message == "pattern mismatch") Logger.tell('Word cannot be over 20 characters long.')
           if (e.detail.message == "number of tags exceeded") Logger.tell("Reached max words. Get premium to get up to 500!")
         } // TODO: make it so that this pops up above the input instead of an alert
@@ -349,22 +472,52 @@ export class GuildSettings extends Page implements PageInterface {
           if (!this.premium) {
             event.preventDefault()
             Logger.tell('You need premium to use this feature.')
-            this.updateButton()
           }
         })
       })
     })
 
+    const special = {
+      'msg.content': (fn: () => void) => {
+        this.elm('msg.content').addEventListener('change', (elm) => {
+          if ((elm.target as HTMLInputElement).value === '') {
+            (elm.target as HTMLInputElement).value = 'Default'
+          }
+          fn()
+        })
+        this.e('msg.content').querySelectorAll('a').forEach(elm => {
+          elm.addEventListener('click', () => {
+            fn()
+          })
+        })
+      }
+    }
+
+    settings.forEach(setting => {
+      const type = this._getType(setting)
+      if (!type) return
+
+      const fn = async () => {
+        const obj = {}
+        obj[setting] = this.formSetting(setting)
+
+        await this.api.postSettings(this.id, wide(obj) as GuildDB)
+      }
+
+      if (special[setting]) return special[setting](fn)
+
+      this.event[type](this._elementFromType(type, setting), fn)
+    })
+
     this.pushSettings(this.registry.guild.db)
-    this.e('save').onclick = () => this.save()
-    this.on('keyup', () => this.updateButton())
-    this.on('click', () => this.updateButton())
-    this.on('change', () => this.updateButton())
-    this.registry.interval = setInterval(() => {
-      this.updateButton()
-    }, 5000)
+    this.e('settings').querySelectorAll('input, select').forEach((x: HTMLElement) => x.onchange ? x.onchange(null): null)
+
     await this.util.wait(500)
     this.util.stopLoad()
+  }
+
+  public intakeUpdate (data: WebSocketEventMap['CHANGE_SETTING']['receive']) {
+    this.pushSettings(data.data)
   }
 
   async remove () {

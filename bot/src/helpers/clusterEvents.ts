@@ -24,4 +24,8 @@ export function addHandlers (worker: WorkerManager): void {
         break
     }
   })
+
+  worker.comms.on('GUILD_DUMP', (id) => {
+    worker.db.configCache.delete(id)
+  })
 }

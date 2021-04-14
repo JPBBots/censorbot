@@ -21,6 +21,12 @@ export class ApiManager {
   server = new Socket(this)
   oauth = new OAuth2(this)
 
+  constructor () {
+    this.thread.on('RELOAD_WEBSOCKETS', () => {
+      this.server.connections.forEach(client => client.sendEvent('RELOAD', null))
+    })
+  }
+
   log (..._): void {
     this.thread.log(..._)
   }

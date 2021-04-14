@@ -53,18 +53,17 @@
       <Switch>
     </Setting>
     <h2>Censor Methods</h2>
-    <Setting:censor.msg Messages>
-      <Switch>
-    </Setting>
-    <Setting:censor.emsg Edited Messages>
-      <Switch>
-    </Setting>
-    <Setting:censor.nick Nicknames>
-      <Switch>
-    </Setting>
-    <Setting:censor.react Reactions>
-      <Switch>
-    </Setting>
+    <div id="censor" style="display: contents">
+      <Setting:censor.1 Messages>
+        <Switch>
+      </Setting>
+      <Setting:censor.2 Nicknames>
+        <Switch>
+      </Setting>
+      <Setting:censor.4 Reactions>
+        <Switch>
+      </Setting>
+    </div>
     <Setting:filters Pre-Built Filters>
       <input placeholder="Add Filters" hidden>
     </Setting>
@@ -81,8 +80,8 @@
     <h2>Popup Message<br /><small>The message that comes up after someone curses</small></h2>
     <ul>
       <li id="msg.content">
-        Says <input maxlength="200" onblur="this.value === '' ? this.value = 'Default' : ''" onfocus="['Default', 'Off'].includes(this.value) ? this.value = '' : null">
-        <Button onclick="this.parentElement.querySelector('input').value = 'Default'">Default</Button>
+        Says <input maxlength="200" onblur="this.value === '' ? document.getElementById('setDefault').click() : ''" onfocus="['Default', 'Off'].includes(this.value) ? this.value = '' : null">
+        <Button onclick="this.parentElement.querySelector('input').value = 'Default'" id="setDefault">Default</Button>
         <Button onclick="this.parentElement.querySelector('input').value = 'Off'">Off</Button>
       </li>
       <li id="msg.deleteAfter">
@@ -137,4 +136,3 @@
     </ul>
   </section>
 </div>
-<Button id="save" hidden>Save</Button>

@@ -17,6 +17,12 @@ export enum WebhookReplace {
   Stars
 }
 
+export enum CensorMethods {
+  Messages = 1,
+  Nicknames = 2,
+  Reactions = 4
+}
+
 export interface GuildDB {
   /**
    * ID of guild
@@ -29,24 +35,7 @@ export interface GuildDB {
   /**
    * Censor options
    */
-  censor: {
-    /**
-     * Whether to censor messages
-     */
-    msg: boolean
-    /**
-     * Whether to censor edited messages
-     */
-    emsg: boolean
-    /**
-     * Whether to censor nicknames
-     */
-    nick: boolean
-    /**
-     * Whether to censor reaction emoji names
-     */
-    react: boolean
-  }
+  censor: number
   /**
    * Log channel ID
    */
@@ -101,6 +90,11 @@ export interface GuildDB {
   invites: boolean
   fonts: boolean
   dm: boolean
+
+  /**
+   * Whether or not the entry is in the database or not
+   */
+  notInDb?: boolean
 }
 
 export interface User {

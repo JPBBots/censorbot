@@ -33,9 +33,24 @@ export interface WebSocketEventMap {
     receive: null
     send: ShortGuild[]
   }
-  GET_GUILD: {
+  SUBSCRIBE: {
     receive: Snowflake
     send: GuildData
+  }
+  UNSUBSCRIBE: {
+    receive: Snowflake
+    send: null
+  }
+  CHANGE_SETTING: {
+    receive: {
+      id: Snowflake,
+      data: any
+    },
+    send: true
+  }
+  RELOAD: {
+    receive: null
+    send: null
   }
   ERROR: {
     receive: {

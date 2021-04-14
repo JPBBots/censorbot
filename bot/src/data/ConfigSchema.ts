@@ -1,6 +1,6 @@
 import Schema, { PropertyDefinition, SchemaDefinition } from 'validate'
 
-import { filters, PunishmentType, WebhookReplace } from 'typings'
+import { CensorMethods, filters, PunishmentType, WebhookReplace } from 'typings'
 
 const multipleTypes = (...types) => (val) => {
   if (val === undefined) return true
@@ -37,7 +37,7 @@ const Snowflake = create((val: string) => /^[0-9]{15,}$/.test(val))
 
 const ListValid = {
   type: Array,
-  length: { max: 150 },
+  length: { max: 1500 },
   each: {
     type: String,
     length: { min: 1, max: 20 },
@@ -52,10 +52,8 @@ export const config = {
     use: { denyNull, denyDupes }
   },
   censor: {
-    msg: simple(Boolean),
-    emsg: simple(Boolean),
-    nick: simple(Boolean),
-    react: simple(Boolean)
+    type: Number,
+    size: { min: 0, max: CensorMethods.Messages | CensorMethods.Nicknames | CensorMethods.Reactions }
   },
   log: {
     type: String,
@@ -69,11 +67,12 @@ export const config = {
   uncensor: ListValid,
   msg: {
     content: {
+      length: { max: 1000 },
       use: { is: multipleTypes('string', false, null) }
     },
     deleteAfter: {
       type: Number,
-      size: { min: 1, max: 120e3 }
+      size: { min: 1, max: 600e3 }
     }
   },
   punishment: {

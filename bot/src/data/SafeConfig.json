@@ -1,11 +1,6 @@
 {
   "filters": [],
-  "censor": {
-      "msg": true,
-      "emsg": true,
-      "nick": true,
-      "react": true
-  },
+  "censor": 0,
   "log": null,
   "role": null,
   "filter": [],
@@ -18,7 +13,7 @@
       "type": 0,
       "amount": 3,
       "role": null,
-      "time": 0,
+      "time": null,
       "expires": null
   },
   "webhook": {

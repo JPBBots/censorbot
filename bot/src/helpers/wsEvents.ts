@@ -1,5 +1,4 @@
-import { Snowflake } from 'discord-api-types'
-import { GuildData, User } from 'typings/api'
+import { User } from 'typings/api'
 import { WebSocketEventMap } from 'typings/websocket'
 
 import { Connection } from '../structures/api/Connection'
@@ -17,13 +16,11 @@ export const Events = {
 
     if (!user) return
 
-    con.user = user.user
     con.db = await con.socket.manager.extendUser(user.db)
 
     resolve?.({ ...con.db, _id: undefined, bearer: undefined })
   },
   LOGOUT: (con) => {
-    con.user = undefined
     con.db = undefined
   },
   AUTHORIZE: async (con, data, resolve) => {
@@ -39,40 +36,34 @@ export const Events = {
   GET_GUILDS: async (con, data, resolve) => {
     resolve?.(await con.getGuilds())
   },
-  GET_GUILD: async (con, data: Snowflake, resolve) => {
-    if (!con.authorized) throw new Error('Not authorized')
+  SUBSCRIBE: async (con, data, resolve) => {
+    if (!data) return resolve?.({ error: 'Invalid Payload' })
 
-    const cached = con.guildCache.get(data)
-    if (cached) return resolve?.(cached)
+    if (!await con.access(data)) return resolve?.({ error: 'Unauthorized' })
 
-    const short = (await con.getGuilds()).find(x => x.i === data)
-
-    if (!short && !con.db?.admin) throw new Error('No access to guild')
-
-    const guild = await con.socket.manager.thread.getGuild(data)
-    if (!guild || !guild.channels || !guild.roles) throw new Error('Not In Guild')
-
-    const g: GuildData = {
-      guild: {
-        n: guild.name,
-        a: guild.icon,
-        i: data,
-        c: guild.channels?.map(x => ({
-          id: x.id,
-          name: x.name as string
-        })),
-        r: guild.roles.map(x => ({
-          id: x.id,
-          name: x.name
-        }))
-      },
-      premium: await con.socket.manager.db.guildPremium(data),
-      db: await con.socket.manager.db.config(data)
+    if (con.subscribed) {
+      con.socket.guilds.unsubscribe(con, con.subscribed)
+      con.subscribed = undefined
     }
 
-    con.guildCache.set(data, g)
+    const guild = await con.socket.guilds.subscribe(con, data)
+    con.subscribed = data
 
-    resolve?.(g)
+    resolve?.(guild)
+  },
+  UNSUBSCRIBE: async (con) => {
+    if (!con.subscribed) return
+
+    con.socket.guilds.unsubscribe(con, con.subscribed)
+  },
+  CHANGE_SETTING: async (con, data, resolve) => {
+    if (!con.authorized || !data || !data.data || !data.id) return resolve?.({ error: 'Invalid Payload' })
+
+    if (!await con.access(data.id)) return resolve?.({ error: 'You cannot do this' })
+
+    await con.socket.guilds.set(data.id, data.data)
+
+    resolve?.(true)
   }
 } as {
   [key in keyof WebSocketEventMap]?: (con: Connection, data?: WebSocketEventMap[key]['receive'], resolve?: (data?: WebSocketEventMap[key]['send'] | { error: string }) => void) => void

@@ -5,7 +5,7 @@ import { FilterResponse } from '../structures/Filter'
 import { APIMessage, Snowflake } from 'discord-api-types'
 
 import { Cache } from 'discord-rose/dist/utils/Cache'
-import { GuildDB } from 'typings/api'
+import { CensorMethods, GuildDB } from 'typings/api'
 
 import { ActionType } from '../structures/Responses'
 
@@ -62,9 +62,7 @@ export async function MessageHandler (worker: WorkerManager, message: APIMessage
 
   const db = await worker.db.config(message.guild_id)
 
-  if (message.edited_timestamp) {
-    if (!db.censor.emsg) return
-  } else if (!db.censor.msg) return
+  if ((db.censor & CensorMethods.Messages) === 0) return
 
   if (
     message.type !== 0 ||

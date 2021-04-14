@@ -1,24 +1,21 @@
 import WebSocket from 'ws'
 import { Socket } from './Socket'
 
-import { APIUser, Snowflake } from 'discord-api-types'
+import { Snowflake } from 'discord-api-types'
 
 import { Payload, WebSocketEventMap } from 'typings/websocket'
 
 import { Events } from '../../helpers/wsEvents'
 import { GuildData, ShortGuild, User } from 'typings/api'
-import { Cache } from '@jpbberry/cache'
 
 export class Connection {
-  public user?: APIUser
   public db?: User
-  public guilds?: ShortGuild[]
 
-  guildCache: Cache<Snowflake, GuildData> = new Cache(this.socket.manager.config.dashboardOptions.guildCacheWipeTimeout)
+  public subscribed?: Snowflake
 
   constructor (public socket: Socket, private readonly ws: WebSocket, public host: string) {
     ws.on('close', () => {
-      this.socket.users.delete(this)
+      this.socket.handleClose(this)
     })
 
     ws.on('message', (data) => {
@@ -33,8 +30,21 @@ export class Connection {
     })
   }
 
+  get guilds (): null|ShortGuild[] {
+    if (!this.authorized || !this.db) throw new Error('Not authorized')
+
+    const cached = this.socket.cachedShortGuilds.get(this.db.id)
+    if (cached) return cached
+
+    return null
+  }
+
   get authorized (): boolean {
     return this.ws?.readyState === WebSocket.OPEN && !!this.db?.token
+  }
+
+  async access (guildId: Snowflake): Promise<boolean> {
+    return (await this.getGuilds()).some(x => x.i === guildId) || !!this.db?.admin
   }
 
   send (payload: Payload): void {
@@ -76,9 +86,17 @@ export class Connection {
 
     if (!guilds) throw new Error('Invalid token')
 
-    this.guilds = guilds
+    if (this.db) this.socket.cachedShortGuilds.set(this.db.id, guilds)
 
     return guilds
+  }
+
+  public async getGuild (id: Snowflake): Promise<GuildData> {
+    if (!this.authorized) throw new Error('Not authorized')
+
+    if (!await this.access(id)) throw new Error('No access to guild')
+
+    return await this.socket.guilds.get(id)
   }
 
   private _respond (id: number) {

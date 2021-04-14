@@ -6,6 +6,7 @@ import { CensorBotWs } from './Websocket'
 import { E } from './Elements'
 import { AdminResponse, GuildData, GuildDB, ShortGuild, SmallID, Ticket, TicketTest, User } from '@typings/api'
 import { Snowflake } from 'discord-api-types'
+import { Loader } from '../Loader'
 
 export class CensorBotApi {
   public user: User
@@ -14,7 +15,7 @@ export class CensorBotApi {
 
   public ws = new CensorBotWs(this)
 
-  constructor() {
+  constructor (public loader: Loader) {
     this.loginButton.onclick = () => {
       if (this.user) document.getElementById('menu').toggleAttribute('hidden')
       else this.auth()
@@ -215,7 +216,7 @@ export class CensorBotApi {
     if (!this.token && !await this.auth(true)) return false
 
     Utils.presentLoad('Finding your server')
-    const guild = await this.ws.request('GET_GUILD', id)
+    const guild = await this.ws.request('SUBSCRIBE', id)
       .catch(err => {
         if (err === 'Not In Guild') {
           Utils.presentLoad(E.create({
@@ -261,11 +262,43 @@ export class CensorBotApi {
 
     return guild
   }
+  
+  waitingForPost?: GuildDB = null
+  timeout?: number = null
 
-  public async postSettings(id: Snowflake, data: GuildDB): Promise<GuildDB | false> {
+  resolve?: (value: unknown) => void = null
+
+  public async postSettings(id: Snowflake, data: GuildDB): Promise<void|false> {
     if (!this.token && !await this.auth(true)) return false
 
-    return this.request('Saving...', 'POST', `/guilds/${id}`, data)
+    await this.waitForUser()
+
+    Logger.connectionStatus(false)
+
+    if (!this.waitingForPost) this.waitingForPost = data
+    else {
+      this.waitingForPost = Utils.patch(this.waitingForPost, data)
+      clearTimeout(this.timeout)
+      this.timeout = setTimeout(() => {
+        this.resolve(null)
+      }, 600) as unknown as number
+      return
+    }
+
+    this.timeout = setTimeout(() => {
+      this.resolve(null)
+    }, 600) as unknown as number
+
+    await new Promise((resolve) => {
+      this.resolve = resolve
+    })
+
+    data = this.waitingForPost
+    this.waitingForPost = null
+
+    await this.ws.request('CHANGE_SETTING', { id, data })
+
+    Logger.connectionStatus(true)
   }
 
   public async postPremium(guilds: Snowflake[]): Promise<Snowflake[] | false> {

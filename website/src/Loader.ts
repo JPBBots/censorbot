@@ -15,7 +15,7 @@ export class Loader {
   public loading: boolean
 
   util = Utils
-  api = new CensorBotApi()
+  api = new CensorBotApi(this)
 
   constructor () {
     this.log('Loading...')

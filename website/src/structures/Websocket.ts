@@ -3,6 +3,10 @@ import { CensorBotApi } from './Api'
 import { Logger } from './Logger'
 
 import { WebSocketEventMap } from '@typings/websocket'
+import { GuildSettings } from '../pages/GuildSettings'
+import { Utils } from './Utils'
+
+let firstConnect = false
 
 export class CensorBotWs {
   private ws: WebSocket
@@ -24,6 +28,8 @@ export class CensorBotWs {
 
   public start () {
     this.ws = new WebSocket(`wss://${location.host}/ws`)
+
+    Logger.connectionStatus(false)
 
     this.ws.onmessage = (data) => {
       this._handleMessage(data.data)
@@ -85,6 +91,9 @@ export class CensorBotWs {
     Logger.connectionStatus(false)
     this.sequence = 0
 
+    this.api.user = null
+    this.api.guilds = null
+
     if (this.hbInterval) clearInterval(this.hbInterval)
     this.promises.forEach(x => x({ closed: true }))
 
@@ -93,12 +102,16 @@ export class CensorBotWs {
     this.start()
   }
 
-  private _handleMessage (dat: string) {
+  private async _handleMessage (dat: string) {
     const data: {
       e: string
       d: any
       i: number
     } = JSON.parse(dat)
+
+    if (window.dev) {
+      this.log(`${data.e}: ${JSON.stringify(data.d, null, 2)} / ${data.i}`)
+    }
 
     if (data.e === 'RETURN') {
       const res = this.promises.get(data.i)
@@ -106,7 +119,14 @@ export class CensorBotWs {
       return
     }
 
+    if (data.e === 'RELOAD') return location.reload()
+
     if (data.e === 'HELLO') {
+      if (firstConnect) {
+        Utils.reloadPage()
+        firstConnect = false
+      }
+
       if (this.waitingForReady) this.waitingForReady.forEach(x => x())
       this.waitingForReady = null
 
@@ -119,6 +139,12 @@ export class CensorBotWs {
       this.hbInterval = setInterval(() => {
         void this._heartbeat()
       }, data.d.interval) as unknown as number
+    }
+
+    if (this.api.loader.currentPage instanceof GuildSettings) {
+      if (data.e === 'CHANGE_SETTING') {
+        this.api.loader.currentPage.intakeUpdate(data.d)
+      }
     }
   }
 

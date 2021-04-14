@@ -89,7 +89,7 @@ export class ActionBucket {
           return this.popups.delete(id)
         }
         await wait(db.msg.deleteAfter)
-        this.worker.api.messages.delete(channel, msg.id).catch(() => {})
+        this.worker.api.messages.delete(channel, msg.id).catch(console.log)
         this.popups.delete(id)
       }).catch(() => {})
   }
