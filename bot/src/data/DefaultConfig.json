@@ -6,7 +6,7 @@
   ],
   "censor": 7,
   "log": null,
-  "role": null,
+  "role": [],
   "filter": [],
   "uncensor": [],
   "msg": {
@@ -30,7 +30,8 @@
   "multi": false,
   "prefix": "+",
   "invites": false,
-  "fonts": false,
+  "toxicity": false,
+  "images": false,
   "dm": false,
 
   "notInDb": true

@@ -17,10 +17,12 @@ export class MasterManager extends Master {
       token: Config.token,
       cacheControl: {
         guilds: ['name', 'icon', 'owner_id', 'region', 'unavailable', 'member_count'],
-        channels: ['type', 'name', 'nsfw'],
+        channels: ['type', 'name', 'nsfw', 'permission_overwrites'],
         roles: ['managed', 'permissions', 'name']
       },
-      intents: ['GUILD_MESSAGES', 'GUILDS', 'GUILD_MESSAGE_REACTIONS', 'GUILD_MEMBERS']
+      intents: ['GUILD_MESSAGES', 'GUILDS', 'GUILD_MESSAGE_REACTIONS', 'GUILD_MEMBERS'],
+      shards: 2,
+      shardsPerCluster: 1
     })
 
     addHandlers(this)

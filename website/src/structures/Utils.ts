@@ -217,7 +217,10 @@ export class Utils {
     } else {
       const multiples: HTMLOptionElement[] = []
       for (let i = 0; i < select.children.length - 1; i++) multiples.push(select.children[i] as HTMLOptionElement)
-      const currentTime = multiples.slice(1).reduce((a, b) => (Number((a as HTMLOptionElement).value) * Number(inp.max)) < value ? b : a, multiples[0]) as HTMLOptionElement
+      const currentTime = multiples.slice(1).reduce<HTMLOptionElement>((a, b) => {
+        if (Number(b.value) / value === 1) return b
+        return (Number(a.value) * Number(inp.max)) < value ? b : a 
+      }, multiples[0])
       select.value = currentTime.value
       inp.value = String(value / Number(currentTime.value))
     }

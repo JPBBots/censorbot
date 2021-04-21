@@ -27,7 +27,12 @@ export class CensorBotWs {
   }
 
   public start () {
-    this.ws = new WebSocket(`wss://${location.host}/ws`)
+    try {
+      this.ws = new WebSocket(`wss://${location.host}/ws`)
+    } catch (err) {
+      Logger.tell(err)
+      return
+    }
 
     Logger.connectionStatus(false)
 

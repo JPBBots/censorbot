@@ -19,6 +19,11 @@ window.onload = async () => {
   window.__LOADER = loader
 
   if (window.dev) {
+    window.onerror = (err) => {
+      alert(err)
+    }
+    console.error = (msg) => alert(msg)
+
     document.getElementById('connection').oncontextmenu = (e) => {
       e.preventDefault()
 
@@ -89,4 +94,12 @@ window.onload = async () => {
       }
     }
   }
+
+  if (location.hostname.split('.')[0] === 'staging') {
+    await loader.api.waitForUser()
+    if (!loader.api.user.admin) Utils.presentLoad('You cannot view staging.')
+
+    loader.api = null
+  }
+
 }

@@ -2,7 +2,7 @@
   "filters": [],
   "censor": 0,
   "log": null,
-  "role": null,
+  "role": [],
   "filter": [],
   "uncensor": [],
   "msg": {
@@ -26,6 +26,7 @@
   "multi": false,
   "prefix": null,
   "invites": false,
-  "fonts": false,
+  "toxicity": false,
+  "images": false,
   "dm": false
 }

@@ -11,7 +11,7 @@ export class Landing extends Page implements PageInterface {
 
   async go () {
     this.on('scroll', () => {
-      this.e('logo').style.transform = `rotate(${-scrollY/3-60}deg)`
+      this.e('logo').style.transform = `rotate(${-scrollY/6-60}deg)`
 
       if ((scrollY + innerHeight - 100) > this.e('info').getBoundingClientRect().top) {
         this.e('scroll').style.display = 'none'

@@ -25,14 +25,12 @@
         <option value>None</option>
       </select>
     </Setting>
-    <Setting:role Ignored Role>
-      <select>
-        <option value>None</option>
-      </select>
-    </Setting>
-    <PremiumSetting:dm DM Command Responses>
+    <PremiumSetting:dm DM>
       <Switch>
     </PremiumSetting>
+    <Setting:role Ignored Roles>
+      <input placeholder="Add roles" hidden>
+    </Setting>
     <PremiumSetting:channels Ignore Channels>
       <input placeholder="Add Channels" hidden>
     </PremiumSetting>
@@ -46,9 +44,6 @@
     <PremiumSetting:multi Multi-Line>
       <Switch>
     </PremiumSetting>
-    <PremiumSetting:fonts Font Recognition>
-      <Switch>
-    </PremiumSetting>
     <Setting:nsfw Ignore NSFW Channels>
       <Switch>
     </Setting>
@@ -57,7 +52,7 @@
       <Setting:censor.1 Messages>
         <Switch>
       </Setting>
-      <Setting:censor.2 Nicknames>
+      <Setting:censor.2 Names>
         <Switch>
       </Setting>
       <Setting:censor.4 Reactions>
@@ -73,6 +68,13 @@
     <Setting:uncensor Uncensor Words>
       <input placeholder="Add Words" hidden>
     </Setting>
+    <h2>AI (Experimental)</h2>
+    <PremiumSetting:toxicity Toxicity Filter>
+      <Switch>
+    </PremiumSetting>
+    <PremiumSetting:images Anti-NSFW Images>
+      <Switch>
+    </PremiumSetting>
   </section>
 
   <section class="other">

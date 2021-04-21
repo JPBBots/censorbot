@@ -44,6 +44,11 @@ export class Database extends Db {
       db.censor = bit
     }
 
+    if (!Array.isArray(db.role)) {
+      if (db.role) db.role = []
+      else db.role = [db.role]
+    }
+
     this.configCache.set(id, db)
 
     return db

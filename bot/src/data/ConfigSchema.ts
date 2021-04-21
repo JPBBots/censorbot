@@ -41,7 +41,7 @@ const ListValid = {
   each: {
     type: String,
     length: { min: 1, max: 20 },
-    use: { denyNull, denyDupes }
+    use: { denyNull }
   }
 } as PropertyDefinition
 
@@ -53,15 +53,18 @@ export const config = {
   },
   censor: {
     type: Number,
-    size: { min: 0, max: CensorMethods.Messages | CensorMethods.Nicknames | CensorMethods.Reactions }
+    size: { min: 0, max: CensorMethods.Messages | CensorMethods.Usernames | CensorMethods.Reactions }
   },
   log: {
     type: String,
     use: { Snowflake }
   },
   role: {
-    type: String,
-    use: { Snowflake }
+    type: Array,
+    each: {
+      type: String,
+      use: { Snowflake }
+    }
   },
   filter: ListValid,
   uncensor: ListValid,
@@ -120,7 +123,8 @@ export const config = {
   }],
   nsfw: simple(Boolean),
   invites: simple(Boolean),
-  fonts: simple(Boolean),
+  toxicity: simple(Boolean),
+  images: simple(Boolean),
   dm: simple(Boolean)
 } as SchemaDefinition
 

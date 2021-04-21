@@ -58,7 +58,8 @@ const settings = [
   'nsfw',
   'invites',
   'multi',
-  'fonts',
+  'toxicity',
+  'images',
   'filters',
   'filter',
   'uncensor',
@@ -107,12 +108,12 @@ export class GuildSettings extends Page implements PageInterface {
     [key in keyof SettingType]: Array<typeof settings[number]>
   } = {
     bools: [
-      'dm', 'nsfw', 'multi', 'invites', 'fonts',
+      'dm', 'nsfw', 'multi', 'invites', 'toxicity', 'images',
       'webhook.enabled', 'webhook.separate'
     ],
-    select: ['log', 'role', 'punishment.role'],
+    select: ['log', 'punishment.role'],
     duration: ['punishment.expires', 'punishment.time'],
-    list: ['filter', 'uncensor', 'filters', 'channels'],
+    list: ['filter', 'uncensor', 'filters', 'channels', 'role'],
     input: ['msg.content', 'prefix'],
     number: ['punishment.amount', 'msg.deleteAfter', 'webhook.replace', 'punishment.type'],
     bitwise: ['censor']
@@ -158,7 +159,6 @@ export class GuildSettings extends Page implements PageInterface {
     bitwise: (value, elm) => {
       elm.querySelectorAll('input').forEach(bit => {
         const num = Number(bit.parentElement.parentElement.id.split('.').pop())
-        console.log(num)
 
         bit.checked = (value & num) !== 0
       })
@@ -328,6 +328,7 @@ export class GuildSettings extends Page implements PageInterface {
     this.registry.tags.get('channels').settings.maxTags = Infinity
     this.registry.tags.get('filter').settings.maxTags = 1500
     this.registry.tags.get('uncensor').settings.maxTags = 1500
+    this.registry.tags.get('role').settings.maxTags = Infinity
 
     this.elm('msg.content').setAttribute('maxlength', '1000')
     this.elm('msg.deleteAfter').setAttribute('max', '600')
@@ -341,6 +342,7 @@ export class GuildSettings extends Page implements PageInterface {
     this.registry.tags.get('channels').settings.maxTags = 0
     this.registry.tags.get('filter').settings.maxTags = 150
     this.registry.tags.get('uncensor').settings.maxTags = 150
+    this.registry.tags.get('role').settings.maxTags = 4
 
     this.elm('msg.content').setAttribute('maxlength', '200')
     this.elm('msg.deleteAfter').setAttribute('max', '120')
@@ -409,7 +411,7 @@ export class GuildSettings extends Page implements PageInterface {
         invalid: (e) => {
           this.log(`Error whilst adding tag: ${e.detail.message}`)
           if (e.detail.message == "pattern mismatch") Logger.tell('Word cannot be over 20 characters long.')
-          if (e.detail.message == "number of tags exceeded") Logger.tell("Reached max words. Get premium to get up to 500!")
+          if (e.detail.message == "number of tags exceeded") Logger.tell("Reached max words. Get premium to get up to 1500!")
         } // TODO: make it so that this pops up above the input instead of an alert
       }
     }
@@ -427,6 +429,19 @@ export class GuildSettings extends Page implements PageInterface {
         dropdown: {
           enabled: 0,
           maxItems: this.guild.c.length
+        }
+      }))
+      .set('role', new Tagify(this.elm('role'), {
+        whitelist: this.guild.r.map(x => ({ value: `@${x.name}`, id: x.id })),
+        enforceWhitelist: true,
+        callbacks: {
+          invalid: (e) => {
+            if (e.detail.message === 'number of tags exceeded') Logger.tell('You need premium to get more ignored role slots.')
+          }
+        },
+        dropdown: {
+          enabled: 0,
+          maxItems: this.guild.r.length
         }
       }))
       .set('filters', new Tagify(this.elm('filters'), {

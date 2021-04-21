@@ -53,10 +53,13 @@
 }
 
 #settings > section > h1, #settings > section > h2,
-#channels, #filters, #filter, #uncensor {
+#channels, #filters, #filter, #uncensor, #role {
   grid-column: span 3;
   margin-top: 20px;
   user-select: none;
+  @media (max-width: 1050px) {
+    grid-column: span 2;
+  }
 }
 
 .general {
@@ -160,11 +163,6 @@ h1 {
         margin: 15px 9px
       }
     }
-  }
-
-  #settings > section > h1, #settings > section > h2,
-  #channels, #filters, #filter, #uncensor {
-    grid-column: span 2;
   }
 
   .other > h2, .punishments > h1 {

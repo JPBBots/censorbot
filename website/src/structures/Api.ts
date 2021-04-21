@@ -81,18 +81,8 @@ export class CensorBotApi {
   /**
    * Gets token
    */
-  get token() {
-    var name = 'token='
-    var ca = document.cookie.split(';')
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i]
-      while (c.charAt(0) === ' ') {
-        c = c.substring(1)
-      }
-      if (c.indexOf(name) === 0) {
-        return c.substring(name.length, c.length)
-      }
-    }
+  get token () {
+    return window.localStorage.getItem('token')
   }
 
   private async request(message: false | string, method: string, url: string, body?: object, returnErrors?: number): Promise<any | false> {
@@ -128,9 +118,9 @@ export class CensorBotApi {
   }
 
   private async logout(redir: boolean = true) {
-    await this.ws.tell('LOGOUT')
+    this.ws.tell('LOGOUT')
 
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    window.localStorage.removeItem('token')
 
     this.guilds = null
 
@@ -154,8 +144,8 @@ export class CensorBotApi {
       const user = await this.ws.request('LOGIN', { code })
 
       this.user = user
-      document.cookie = `token=${user.token}`
 
+      window.localStorage.setItem('token', user.token)
       window.localStorage.removeItem('code')
     }
 

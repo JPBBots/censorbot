@@ -5,7 +5,7 @@ export default {
   description: 'Test filter',
   admin: true,
   exec: (ctx) => {
-    const response = ctx.worker.filter.test(ctx.args.join(' '), ctx.db.filters, ctx.db.filter, ctx.db.uncensor, true)
+    const response = ctx.worker.filter.test(ctx.args.join(' '), ctx.db.filters, ctx.db.filter, ctx.db.uncensor)
     const embed = ctx.embed
       .title(`Censored: ${response.censor}`)
       .description(`\`\`\`json\n${JSON.stringify(response, null, 4)}\`\`\``)

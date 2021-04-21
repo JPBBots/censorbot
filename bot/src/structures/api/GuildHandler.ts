@@ -35,7 +35,7 @@ export class GuildHandler {
           id: x.id,
           name: x.name as string
         })),
-        r: guild.roles.map(x => ({
+        r: guild.roles.filter(x => !x.managed && x.id !== id).map(x => ({
           id: x.id,
           name: x.name
         }))
@@ -97,7 +97,8 @@ export class GuildHandler {
       }
 
       db.multi = false
-      db.fonts = false
+      db.toxicity = false
+      db.images = false
       db.dm = false
     }
 

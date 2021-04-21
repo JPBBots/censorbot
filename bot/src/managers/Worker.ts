@@ -22,6 +22,11 @@ import fs from 'fs'
 import { CachedGuild } from 'discord-rose/dist/typings/Discord'
 import Collection from '@discordjs/collection'
 
+import { PerspectiveApi } from '../structures/ai/PerspectiveApi'
+import { AntiNSFW } from '../structures/ai/AntiNSFW'
+
+import { PunishmentManager } from '../structures/punishments/PunishmentManager'
+
 export class WorkerManager extends Worker {
   config = Config
   filter = new Filter()
@@ -29,6 +34,11 @@ export class WorkerManager extends Worker {
 
   actions = new ActionBucket(this)
   responses = new Responses(this)
+
+  perspective = new PerspectiveApi()
+  images = new AntiNSFW()
+
+  punishments = new PunishmentManager(this)
 
   interface = new Interface()
 
@@ -92,12 +102,12 @@ export class WorkerManager extends Worker {
     }
   }
 
-  hasPerms (id: Snowflake, perms: keyof typeof PermissionsUtils.bits): boolean {
-    return PermissionsUtils.calculate(
-      this.selfMember.get(id) as GatewayGuildMemberAddDispatchData,
-      this.guilds.get(id) as CachedGuild,
-      this.guildRoles.get(id) as Collection<Snowflake, APIRole>,
-      perms
-    )
+  hasPerms (id: Snowflake, perms: keyof typeof PermissionsUtils.bits, channel?: Snowflake): boolean {
+    return PermissionsUtils.has(PermissionsUtils.combine({
+      guild: this.guilds.get(id) as CachedGuild,
+      member: this.selfMember.get(id) as GatewayGuildMemberAddDispatchData,
+      roleList: this.guildRoles.get(id) as Collection<Snowflake, APIRole>,
+      overwrites: channel ? this.channels.get(channel)?.permission_overwrites : undefined
+    }), perms)
   }
 }

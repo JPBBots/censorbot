@@ -92,5 +92,12 @@ export const Config = {
     guildCacheWipeTimeout: 15 * 60 * 1000, // 15 minutes
     requiredPermission: 'manageGuild' as keyof typeof PermissionsUtils.bits,
     scopes: ['identify', 'guilds']
+  },
+
+  ai: {
+    predictionMin: 0.85, // 85%
+    cacheWipe: 10 * 60 * 100, // 10 minutes
+    perspectiveKey: process.env.PERSPECTIVE_KEY,
+    antiNsfwKey: process.env.ANTI_NSFW_KEY
   }
 }

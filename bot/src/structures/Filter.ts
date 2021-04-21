@@ -10,7 +10,7 @@ function inRange (x: number, min: number, max: number): boolean {
   return ((x - min) * (x - max) <= 0)
 }
 
-type filterName = filterType | 'server' | 'invites'
+type filterName = filterType | 'server' | 'invites' | 'toxicity' | 'images'
 
 type Range = [number, number] | []
 
@@ -25,6 +25,7 @@ export interface FilterResponse {
   ranges: Range[]
   filters: filterName[]
   places: JPBExp[]
+  percentage?: `${number}%`
 }
 
 const removeRegex = /\x1D|\x1F/
@@ -33,7 +34,7 @@ type filterObj = {
   [key in filterType]: JPBExp[]
 }
 
-const filtObj = {} as filterObj
+const filtObj = {} as filterObj // ଈ
 
 export class Filter {
   masks: {
@@ -45,7 +46,9 @@ export class Filter {
     de: 'German',
     ru: 'Russian',
     server: 'Server',
-    invites: 'Invites'
+    invites: 'Invites',
+    toxicity: 'Toxicity',
+    images: 'Anti-NSFW Image'
   }
 
   filters = Object.keys(filter.filters).reduce<filterObj>((a, b) => {
@@ -111,7 +114,7 @@ export class Filter {
     }).replace(/`/g, '')
   }
 
-  resolve (content: string | string[], removeFonts: boolean = false): ResolvedPiece[] {
+  resolve (content: string | string[]): ResolvedPiece[] {
     // base stuff
     content = (content as string)
       .toLowerCase()
@@ -126,8 +129,6 @@ export class Filter {
       .replace(/(\w)\1{2,}/g, '$1$1') // multiple characters only come up once
 
     content = filter.converter(content) as string
-
-    if (removeFonts) content = filter.resolveFont(content) as string
 
     let res: ResolvedPiece[] = Array(content.split(filter.replaceSpots.spaces).length + 1)
       .fill(null).map(() => ({ i: [], t: '' })) // array of default objects
@@ -225,8 +226,8 @@ export class Filter {
     return res
   }
 
-  test (text: string, filters: filterType[], server: string[] = [], uncensor: string[] = [], removeFonts: boolean = false): FilterResponse {
-    const content = this.resolve(text, removeFonts)
+  test (text: string, filters: filterType[], server: string[] = [], uncensor: string[] = []): FilterResponse {
+    const content = this.resolve(text)
 
     const res: FilterResponse = {
       censor: false,

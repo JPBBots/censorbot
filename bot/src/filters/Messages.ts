@@ -5,7 +5,7 @@ import { FilterResponse } from '../structures/Filter'
 import { APIMessage, Snowflake } from 'discord-api-types'
 
 import { Cache } from 'discord-rose/dist/utils/Cache'
-import { CensorMethods, GuildDB } from 'typings/api'
+import { CensorMethods, GuildDB, PunishmentType } from 'typings/api'
 
 import { ActionType } from '../structures/Responses'
 
@@ -24,11 +24,13 @@ const replaces = {
 }
 
 function handleDeletion (worker: WorkerManager, message: APIMessage, db: GuildDB, response: FilterResponse): void {
-  if (!worker.hasPerms(message.guild_id as Snowflake, 'sendMessages')) return
-  if (!worker.hasPerms(message.guild_id as Snowflake, 'embed')) {
+  if (!message.guild_id) return
+
+  if (!worker.hasPerms(message.guild_id, 'sendMessages', message.channel_id)) return
+  if (!worker.hasPerms(message.guild_id, 'embed', message.channel_id)) {
     return void worker.api.messages.send(message.channel_id, 'Missing `Embed Links` permission.')
   }
-  if (!worker.hasPerms(message.guild_id as Snowflake, 'manageMessages')) {
+  if (!worker.hasPerms(message.guild_id, 'manageMessages', message.channel_id)) {
     return void worker.responses.missingPermissions(message.channel_id, 'Manage Messages')
   }
   const multi = multiLineStore.get(message.channel_id)
@@ -37,17 +39,35 @@ function handleDeletion (worker: WorkerManager, message: APIMessage, db: GuildDB
 
   if (multi) multiLineStore.delete(message.channel_id)
 
-  if (db.log) void worker.responses.log(message.edited_timestamp ? ActionType.EditedMessage : ActionType.Message, message.content, message, response, db.log)
+  if (db.log && worker.channels.has(db.log)) {
+    void worker.responses.log(message.edited_timestamp ? ActionType.EditedMessage : ActionType.Message, message.content, message, response, db.log)
+  }
 
   if (db.msg.content !== false) worker.actions.popup(message.channel_id, message.author.id, db)
 
-  if (!response.filters.includes('invites') && db.webhook.enabled) {
+  if (response.ranges.length > 0 && db.webhook.enabled) {
     let content = worker.filter.surround(message.content, response.ranges, '||')
 
     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     if (db.webhook.replace !== 0) content = content.split(/\|\|/g).reduce((a, b) => [(a[0] + (a[1] === 1 ? replaces[db.webhook.replace].repeat(b.length) : b)), ((a[1] as number) * -1)], ['', -1])[0]
 
     void worker.actions.sendAs(message.channel_id, message.author, message.member?.nick ?? message.author.username, content)
+  }
+
+  if (db.punishment.type !== PunishmentType.Nothing) {
+    switch (db.punishment.type) {
+      case PunishmentType.Mute:
+        if (!worker.hasPerms(message.guild_id, 'manageRoles')) return void worker.responses.missingPermissions(message.channel_id, 'Manage Roles')
+        break
+      case PunishmentType.Kick:
+        if (!worker.hasPerms(message.guild_id, 'kick')) return void worker.responses.missingPermissions(message.channel_id, 'Kick Members')
+        break
+      case PunishmentType.Ban:
+        if (!worker.hasPerms(message.guild_id, 'ban')) return void worker.responses.missingPermissions(message.channel_id, 'Ban Members')
+        break
+    }
+
+    void worker.punishments.punish(message.guild_id, message.author.id)
   }
 }
 
@@ -67,7 +87,7 @@ export async function MessageHandler (worker: WorkerManager, message: APIMessage
   if (
     message.type !== 0 ||
     channel.type !== 0 ||
-    message.member.roles.includes(db.role as Snowflake) ||
+    message.member.roles.some(role => db.role?.includes(role)) ||
     db.channels.includes(message.channel_id)
   ) return
 
@@ -80,6 +100,18 @@ export async function MessageHandler (worker: WorkerManager, message: APIMessage
         filters: ['invites'],
         places: [],
         ranges: []
+      })
+    }
+  }
+  if (db.toxicity) {
+    const prediction = await worker.perspective.test(content)
+    if (prediction.bad) {
+      return handleDeletion(worker, message, db, {
+        censor: true,
+        filters: ['toxicity'],
+        places: [],
+        ranges: [],
+        percentage: prediction.percent
       })
     }
   }
@@ -101,7 +133,7 @@ export async function MessageHandler (worker: WorkerManager, message: APIMessage
     content = Object.values(multiline.messages).sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()).map(x => x.content).join('\n')
   }
 
-  const response = worker.filter.test(content, db.filters, db.filter, db.uncensor, db.fonts)
+  const response = worker.filter.test(content, db.filters, db.filter, db.uncensor)
 
   if (!response.censor) return
 

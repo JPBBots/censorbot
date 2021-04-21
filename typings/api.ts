@@ -11,6 +11,8 @@ export enum PunishmentType {
   Ban
 }
 
+export type TimedPunishments = PunishmentType.Ban | PunishmentType.Mute
+
 export enum WebhookReplace {
   Spoilers = 0,
   Hashtags,
@@ -19,7 +21,7 @@ export enum WebhookReplace {
 
 export enum CensorMethods {
   Messages = 1,
-  Nicknames = 2,
+  Usernames = 2,
   Reactions = 4
 }
 
@@ -43,7 +45,7 @@ export interface GuildDB {
   /**
    * Ignored role ID
    */
-  role: Snowflake|null
+  role: Snowflake[]
   /**
    * List of words to filter
    */
@@ -73,11 +75,26 @@ export interface GuildDB {
      * Type of punishment
      */
     type: PunishmentType
+    /**
+     * How many times a user has to curse
+     */
     amount: number
+    /**
+     * What role they get if it's a mute
+     */
     role: Snowflake|null
+    /**
+     * Amount of time to keep the punishment going
+     */
     time: number|null
+    /**
+     * How long the amount has to expire
+     */
     expires: number|null
   }
+  /**
+   * Webhook options
+   */
   webhook: {
     enabled: boolean
     separate: boolean
@@ -88,8 +105,10 @@ export interface GuildDB {
   channels: Snowflake[]
   nsfw: boolean
   invites: boolean
-  fonts: boolean
   dm: boolean
+
+  toxicity: boolean
+  images: boolean
 
   /**
    * Whether or not the entry is in the database or not

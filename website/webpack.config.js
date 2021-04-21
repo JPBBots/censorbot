@@ -28,7 +28,7 @@ module.exports = {
     minimizer: [
       new TerserPlugin({
         terserOptions: {
-          ecma: 5,
+          ecma: 4,
           sourceMap: true,
           mangle: {
             module: true,

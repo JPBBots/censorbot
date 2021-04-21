@@ -5,14 +5,22 @@ import { PermissionsUtils } from 'discord-rose'
 import Crypto from 'crypto'
 import qs from 'querystring'
 
-import { APIGuild, APIUser, RESTPostOAuth2AccessTokenResult, RESTPostOAuth2AccessTokenURLEncodedData } from 'discord-api-types'
+import { APIGuild, APIUser, RESTPostOAuth2AccessTokenResult, RESTPostOAuth2AccessTokenURLEncodedData, Snowflake } from 'discord-api-types'
 import { ShortGuild, User } from 'typings/api'
 import { Collection } from 'mongodb'
+
+export interface DatabaseUserSchema {
+  id: Snowflake
+  token: string
+  bearer: string
+  avatar: string|null
+  tag: string
+}
 
 export class OAuth2 {
   constructor (public manager: ApiManager) {}
 
-  get db (): Collection {
+  get db (): Collection<DatabaseUserSchema> {
     return this.manager.db.collection('users')
   }
 
@@ -35,7 +43,7 @@ export class OAuth2 {
 
     const token = currentUser?.token ?? this.createToken()
 
-    const db: User = {
+    const db: DatabaseUserSchema = {
       id: user.id,
       bearer: oauthUser.access_token,
       token,
