@@ -7,8 +7,6 @@ import { APIMessage, Snowflake } from 'discord-api-types'
 import { Cache } from 'discord-rose/dist/utils/Cache'
 import { CensorMethods, GuildDB, PunishmentType } from 'typings/api'
 
-import { ActionType } from '../structures/Responses'
-
 interface MultiLine {
   author: Snowflake
   messages: {
@@ -40,7 +38,7 @@ function handleDeletion (worker: WorkerManager, message: APIMessage, db: GuildDB
   if (multi) multiLineStore.delete(message.channel_id)
 
   if (db.log && worker.channels.has(db.log)) {
-    void worker.responses.log(message.edited_timestamp ? ActionType.EditedMessage : ActionType.Message, message.content, message, response, db.log)
+    void worker.responses.log(CensorMethods.Messages, message.content, message, response, db.log)
   }
 
   if (db.msg.content !== false) worker.actions.popup(message.channel_id, message.author.id, db)

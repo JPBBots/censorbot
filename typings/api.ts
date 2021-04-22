@@ -21,7 +21,7 @@ export enum WebhookReplace {
 
 export enum CensorMethods {
   Messages = 1,
-  Usernames = 2,
+  Names = 2,
   Reactions = 4
 }
 

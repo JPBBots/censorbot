@@ -41,5 +41,18 @@ export function setupDiscord (worker: WorkerManager): void {
   })
   worker.on('READY', () => {
     void worker.punishments.timeouts.checkTimeouts()
+
+    if (worker.config.custom.allowedGuilds) {
+      worker.guilds.forEach(guild => {
+        if (!worker.config.custom.allowedGuilds?.includes(guild.id)) {
+          void worker.api.guilds.leave(guild.id)
+        }
+      })
+    }
+  })
+  worker.on('GUILD_CREATE', (guild) => {
+    if (worker.config.custom.allowedGuilds && !worker.config.custom.allowedGuilds.includes(guild.id)) {
+      void worker.api.guilds.leave(guild.id)
+    }
   })
 }

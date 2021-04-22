@@ -99,6 +99,7 @@ export class OAuth2 {
     if (!guilds || !Array.isArray(guilds)) return false
 
     return guilds.filter(x => x.owner as boolean || PermissionsUtils.has(Number(x.permissions), this.manager.config.dashboardOptions.requiredPermission))
+      .filter(x => this.manager.config.custom.allowedGuilds ? this.manager.config.custom.allowedGuilds.includes(x.id) : true)
       .map(x => ({ n: x.name, i: x.id, a: x.icon }))
   }
 }

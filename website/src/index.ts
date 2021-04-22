@@ -96,10 +96,21 @@ window.onload = async () => {
   }
 
   if (location.hostname.split('.')[0] === 'staging') {
+    console.log('a')
     await loader.api.waitForUser()
-    if (!loader.api.user.admin) Utils.presentLoad('You cannot view staging.')
+    if (!loader.api.user.admin) {
+      Utils.setPath('/no')
+      Utils.presentLoad('You cannot view staging.')
+      document.querySelector('nav').parentElement.removeChild(document.querySelector('nav'))
+      loader.api = null
 
-    loader.api = null
+      setInterval(() => {
+        Utils.setPath('/no')
+        Utils.presentLoad('You cannot view staging.')
+        document.querySelector('nav').parentElement.removeChild(document.querySelector('nav'))
+        loader.api = null
+      }, 1000)
+    }
   }
 
 }

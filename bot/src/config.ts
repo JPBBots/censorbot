@@ -94,6 +94,13 @@ export const Config = {
     scopes: ['identify', 'guilds']
   },
 
+  custom: {
+    on: Boolean(process.env.CUSTOM),
+    lock: Boolean(process.env.LOCK_COMMANDS),
+    allowedGuilds: process.env.ALLOWED_GUILDS?.split(','),
+    status: process.env.CUSTOM_STATUS?.split(',') as ['playing' | 'streaming' | 'listening' | 'watching' | 'competing', string]
+  },
+
   ai: {
     predictionMin: 0.85, // 85%
     cacheWipe: 10 * 60 * 100, // 10 minutes

@@ -53,7 +53,7 @@ export const config = {
   },
   censor: {
     type: Number,
-    size: { min: 0, max: CensorMethods.Messages | CensorMethods.Usernames | CensorMethods.Reactions }
+    size: { min: 0, max: CensorMethods.Messages | CensorMethods.Names | CensorMethods.Reactions }
   },
   log: {
     type: String,

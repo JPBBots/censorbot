@@ -47,7 +47,7 @@ export class WorkerManager extends Worker {
 
     this.interface.setupWorker(this)
 
-    this.setStatus('watching', 'Rewrite')
+    this.setStatus(this.config.custom.status?.[0] ?? 'watching', this.config.custom.status?.[1] ?? 'For Bad Words')
 
     this.commands
       .prefix(async (msg): Promise<string | string[]> => {
