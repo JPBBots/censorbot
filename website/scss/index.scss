@@ -7,6 +7,7 @@
   --topbaralt: #1a212b;
   --background: #333b52;
   --gold: #c2973a;
+  --footer: #303134;
 
   --duration: 0.4s
 }
@@ -48,14 +49,21 @@ body {
   color: var(--different);
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
+  display: grid;
+  grid-template-columns: 2;
+  grid-template-rows: 1;
+  grid-template-areas:
+    "root"
+    "footer"
 }
 
 #root {
-  position: relative;
-  top: 50px;
+  grid-area: root;
+  // position: relative;
+  padding-top: 50px;
   z-index: 1;
-  width: 100vw;
-  overflow-x: hidden;
+  // width: 100vw;
+  // overflow-x: hidden;
 }
 
 nav {
@@ -276,6 +284,43 @@ small {
   right: 10px;
   bottom: 10px;
   z-index: 5;
+}
+
+footer {
+  grid-area: footer;
+  background-color: var(--topbar);
+  height: 7vw;
+  // margin-top: 44px;
+
+  // background-color: var(--footer);
+  // height: 7vw;
+  // width: inherit;
+  padding: 50px 200px;
+  // margin-top: 44px;
+  z-index: 2;
+  // position: initial;
+  // bottom: 0px;
+
+
+  #copyright {
+    float: left;
+    h1 {
+      margin: 0px;
+      font-size: 2em;
+      font-weight: bolder;
+    }
+    p {
+      font-size: 1em
+    }
+  }
+  #links {
+    display: inline-grid;
+    float: right;
+    padding-top: 11px;
+    a {
+      text-decoration: none;
+    }
+  }
 }
 
 /** inputs **/

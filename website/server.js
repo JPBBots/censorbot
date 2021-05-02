@@ -117,24 +117,23 @@ app.get('/callback', (req, res) => {
   `)
 })
 
-app.get('/support', (req, res) => {
-  res.redirect('https://discord.gg/v3r2rKP')
-})
-
-app.get('/review', (req, res) => {
-  res.redirect('https://top.gg/bot/394019914157129728#reviews')
-})
-
-app.get('/stats', (req, res) => {
-  res.redirect('https://p.datadoghq.com/sb/iib7eqa83t2bea4n-3c71c6e3122e2ad6ad1b7546bb4ee491?from_ts=1611093578306&live=true&theme=dark&to_ts=1611179978306&tpl_var_var=%2A&tv_mode=false')
-})
-
-app.get('/servers*', (req, res) => {
-  res.redirect('/dashboard')
-})
-
 app.get('/invite', (req, res) => {
   res.redirect(generateOauth(true, req.query.id))
+})
+
+
+const links = {
+  support: 'https://discord.gg/v3r2rKP',
+  review: 'https://top.gg/bot/394019914157129728#reviews',
+  'servers*': '/dashboard',
+  terms: 'https://www.iubenda.com/terms-and-conditions/23592172',
+  privacy: 'https://www.iubenda.com/privacy-policy/23592172/full-legal'
+}
+
+Object.keys(links).forEach(link => {
+  app.get(`/${link}`, (req, res) => {
+    res.redirect(links[link])
+  })
 })
 
 app.use((req, res) => {

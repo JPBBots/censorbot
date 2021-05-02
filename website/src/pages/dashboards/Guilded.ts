@@ -1,4 +1,4 @@
-import { Page, PageInterface } from "../structures/Page";
+import { Page, PageInterface } from "../../structures/Page";
 
 export class DashboardGuilded extends Page implements PageInterface {
   name = 'dashboard_guilded'

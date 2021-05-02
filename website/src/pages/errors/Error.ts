@@ -1,4 +1,4 @@
-import { Page, PageInterface } from "../structures/Page";
+import { Page, PageInterface } from "../../structures/Page";
 
 export class ErrorPage extends Page implements PageInterface {
   _pageName = 'error'

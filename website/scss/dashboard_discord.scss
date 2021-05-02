@@ -2,6 +2,7 @@
   margin-top: 20px;
   padding: 0px 10vw;
   display: grid;
+  height: 70vw;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   grid-template-rows: repeat(auto-fill, minmax(170px, 1fr));
 

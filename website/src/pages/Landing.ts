@@ -9,11 +9,15 @@ export class Landing extends Page implements PageInterface {
      'info'
   ]
 
+  get isBound (): boolean {
+    return (scrollY + innerHeight - 100) > this.e('info').getBoundingClientRect().top
+  }
+
   async go () {
     this.on('scroll', () => {
       this.e('logo').style.transform = `rotate(${-scrollY/6-60}deg)`
 
-      if ((scrollY + innerHeight - 100) > this.e('info').getBoundingClientRect().top) {
+      if (this.isBound) {
         this.e('scroll').style.display = 'none'
       } else {
         this.e('scroll').style.removeProperty('display')
@@ -36,7 +40,7 @@ export class Landing extends Page implements PageInterface {
 
   async remove () {
     this.e('logo').classList.add('rolloff')
-    if (window.screen.width > 650) await this.util.wait(900)
+    if (window.screen.width > 650 && !this.isBound) await this.util.wait(900)
     return true
   }
 }

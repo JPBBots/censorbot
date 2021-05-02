@@ -86,13 +86,17 @@ export class Loader {
       if (res === false) return this.log('Page didn\'t want to reload.')
       else this.currentPage.unrender()
     }
-    await Utils.scroll('nav')
+    scrollTo({
+      left: 0,
+      top: 0
+    })
+
     if (pg.loading) await pg.loading()
-    this.root.classList.add('loading')
-    await this.util.wait(window.loadTime)
+    // this.root.classList.add('loading')
+    // await this.util.wait(window.loadTime)
     await pg.render()
     await pg.go()
-    this.root.classList.remove('loading')
+    // this.root.classList.remove('loading')
     // @ts-ignore
     window.gtag('config', 'UA-111382716-3', {
       page_path: window.location.pathname.replace(/[0-9]+$/, '')
@@ -100,6 +104,7 @@ export class Loader {
     this.log('Finished loading page')
     this.loading = false
     this._currentPage = page
+    if (pg !== this.pathPage()) this.updatePage()
   }
 
   updatePage () {

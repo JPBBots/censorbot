@@ -1,15 +1,15 @@
-import { Page, PageInterface } from "../structures/Page";
+import { Page, PageInterface } from "../../../structures/Page";
 
-import { Logger } from '../structures/Logger'
-import { E } from '../structures/Elements'
+import { Logger } from '../../../structures/Logger'
+import { E } from '../../../structures/Elements'
 
 // @ts-ignore Only done when built properly
-import Config from '../config.json'
+import Config from '../../../config.json'
 
 const defaultConfig = JSON.stringify(Config)
 
 import Tagify from '@yaireo/tagify'
-import { Utils } from "../structures/Utils"
+import { Utils } from "../../../structures/Utils"
 import { ExtendedGuild, GuildDB } from "@typings/api"
 import { Snowflake } from "discord-api-types"
 import { WebSocketEventMap } from "@typings/websocket";
@@ -86,8 +86,8 @@ interface SettingType {
   bitwise: { elm: HTMLDivElement, val: number }
 }
 
-export class GuildSettings extends Page implements PageInterface {
-  name = 'guild_settings'
+export class DiscordSettings extends Page implements PageInterface {
+  name = 'settings_discord'
   url = /^\/dashboard\/[0-9]+$/
 
   fetchElements = [
@@ -355,8 +355,6 @@ export class GuildSettings extends Page implements PageInterface {
   async go () {
     if (!this.registry.guild || !this.api.user) return
 
-    this.util.presentLoad('Getting your settings')
-
     this.e('name').innerHTML = this.guild.n
 
     this.e('ptotal').innerText = this.api.user.premium.count.toLocaleString()
@@ -528,7 +526,6 @@ export class GuildSettings extends Page implements PageInterface {
     this.e('settings').querySelectorAll('input, select').forEach((x: HTMLElement) => x.onchange ? x.onchange(null): null)
 
     await this.util.wait(500)
-    this.util.stopLoad()
   }
 
   public intakeUpdate (data: WebSocketEventMap['CHANGE_SETTING']['receive']) {

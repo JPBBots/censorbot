@@ -1,4 +1,3 @@
-import { Api } from 'interface/dist/Api'
 import { ApiManager } from '../managers/Api'
 
 module.exports = new ApiManager()

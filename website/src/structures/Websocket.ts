@@ -2,8 +2,8 @@ import { CensorBotApi } from './Api'
 
 import { Logger } from './Logger'
 
-import { WebSocketEventMap } from '@typings/websocket'
-import { GuildSettings } from '../pages/GuildSettings'
+import { WebSocketEventMap, MetaObject } from '@typings/websocket'
+import { DiscordSettings } from '../pages/dashboards/settings/Discord'
 import { Utils } from './Utils'
 
 let firstConnect = false
@@ -13,6 +13,13 @@ export class CensorBotWs {
   private promises: Map<number, (data: any) => void> = new Map()
 
   public sequence = 0
+
+  public ping = null
+  public meta: MetaObject = {
+    connection: null,
+    worker: null,
+    region: null
+  }
 
   private hbInterval: number
 
@@ -24,6 +31,10 @@ export class CensorBotWs {
 
   private log (msg: string) {
     Logger.log('WS', msg)
+  }
+
+  get connected () {
+    return this.ws.readyState === WebSocket.OPEN
   }
 
   public start () {
@@ -48,7 +59,7 @@ export class CensorBotWs {
 
   waitForConnection (): Promise<void> {
     return new Promise(resolve => {
-      if (this.ws.readyState === WebSocket.OPEN) return resolve()
+      if (this.connected) return resolve()
 
       this.waitingForReady.push(resolve)
     })
@@ -67,6 +78,7 @@ export class CensorBotWs {
   }
 
   public request <K extends keyof WebSocketEventMap> (event: K, data?: WebSocketEventMap[K]['receive']): Promise<WebSocketEventMap[K]['send']> {
+    if (event !== 'HEARTBEAT') Logger.connectionStatus(false)
     return new Promise((resolve, reject) => {
       const id = this.sequence++
 
@@ -82,6 +94,7 @@ export class CensorBotWs {
       this.promises.set(id, (data) => {
         clearTimeout(timeout)
         this.promises.delete(id)
+        Logger.connectionStatus(true)
 
         if (data && data.closed) return reject('ABORTED')
         if (data && data.error) return reject(data.error)
@@ -109,7 +122,7 @@ export class CensorBotWs {
 
   private async _handleMessage (dat: string) {
     const data: {
-      e: string
+      e: keyof WebSocketEventMap | 'RETURN'
       d: any
       i: number
     } = JSON.parse(dat)
@@ -141,12 +154,14 @@ export class CensorBotWs {
       this.log(`Received HELLO. Interval: ${data.d.interval / 1000}s`)
       this._heartbeat()
 
+      this.meta = data.d.$meta
+
       this.hbInterval = setInterval(() => {
         void this._heartbeat()
       }, data.d.interval) as unknown as number
     }
 
-    if (this.api.loader.currentPage instanceof GuildSettings) {
+    if (this.api.loader.currentPage instanceof DiscordSettings) {
       if (data.e === 'CHANGE_SETTING') {
         this.api.loader.currentPage.intakeUpdate(data.d)
       }
@@ -158,6 +173,8 @@ export class CensorBotWs {
 
     await this.request('HEARTBEAT')
 
-    this.log(`Heartbeat took ${Date.now() - started}ms`)
+    this.ping = Date.now() - started
+
+    this.log(`Heartbeat took ${this.ping}ms`)
   }
 }

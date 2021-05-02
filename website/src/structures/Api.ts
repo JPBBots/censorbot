@@ -131,14 +131,14 @@ export class CensorBotApi {
 
   public async auth(required?: boolean): Promise<boolean> {
     await this.ws.waitForConnection()
-    Utils.presentLoad('Waiting for you to authorize...')
+    // Utils.presentLoad('Waiting for you to authorize...')
     await this.logout(false)
 
     await Utils.openWindow('/auth' + (window.discordOAuthExtra ? `?d=${window.discordOAuthExtra}` : ''), 'Login')
 
     const code = window.localStorage.getItem('code')
 
-    Utils.presentLoad('Logging you in...')
+    // Utils.presentLoad('Logging you in...')
 
     if (code) {
       const user = await this.ws.request('LOGIN', { code })
@@ -158,13 +158,13 @@ export class CensorBotApi {
           }, 100)
         }
       } else Logger.tell('Failed to authorize')
-      Utils.stopLoad()
+      // Utils.stopLoad()
       return false
     }
 
     const fet = await this.fetch()
 
-    Utils.stopLoad()
+    // Utils.stopLoad()
 
     return fet
   }
@@ -191,9 +191,9 @@ export class CensorBotApi {
 
     if (this.guilds) return this.guilds
 
-    Utils.presentLoad('Getting your servers...')
+    // Utils.presentLoad('Getting your servers...')
     const result = await this.ws.request('GET_GUILDS')
-    Utils.stopLoad()
+    // Utils.stopLoad()
     if (!result) return false
 
     this.guilds = result
@@ -205,7 +205,7 @@ export class CensorBotApi {
     await this.waitForUser()
     if (!this.token && !await this.auth(true)) return false
 
-    Utils.presentLoad('Finding your server')
+    // Utils.presentLoad('Finding your server')
     const guild = await this.ws.request('SUBSCRIBE', id)
       .catch(err => {
         if (err === 'Not In Guild') {

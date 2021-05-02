@@ -1,10 +1,15 @@
-import { Worker, CommandOptions, PermissionsUtils } from 'discord-rose'
+import { Worker, PermissionsUtils, CachedGuild } from 'discord-rose'
 import { Config } from '../config'
 
 import { Database } from '../structures/Database'
 import { Filter } from '../structures/Filter'
 import { ActionBucket } from '../structures/ActionBucket'
 import { Responses } from '../structures/Responses'
+
+import { PerspectiveApi } from '../structures/ai/PerspectiveApi'
+import { AntiNSFW } from '../structures/ai/AntiNSFW'
+
+import { PunishmentManager } from '../structures/punishments/PunishmentManager'
 
 import { APIRole, GatewayGuildMemberAddDispatchData, Snowflake } from 'discord-api-types'
 
@@ -13,19 +18,11 @@ import { setupFilters } from '../helpers/setupFilters'
 import { setupDiscord } from '../helpers/discordEvents'
 
 import { Interface } from 'interface'
-import EvalCommand from 'interface/dist/extras/EvalCommand'
 
 import fetch from 'node-fetch'
 import path from 'path'
-import fs from 'fs'
 
-import { CachedGuild } from 'discord-rose/dist/typings/Discord'
 import Collection from '@discordjs/collection'
-
-import { PerspectiveApi } from '../structures/ai/PerspectiveApi'
-import { AntiNSFW } from '../structures/ai/AntiNSFW'
-
-import { PunishmentManager } from '../structures/punishments/PunishmentManager'
 
 export class WorkerManager extends Worker {
   config = Config
@@ -80,26 +77,9 @@ export class WorkerManager extends Worker {
     console.log('Loading commands')
     if (this.commands.commands) this.commands.commands.clear()
 
-    this.commands.add(EvalCommand)
+    this.interface.addCommands(this)
 
-    void this._loadDir(path.resolve(__dirname, '../commands'))
-  }
-
-  private async _loadDir (dir: string): Promise<void> {
-    const files = fs.readdirSync(dir, { withFileTypes: true })
-    for (const file of files) {
-      if (file.isDirectory()) {
-        await this._loadDir(path.resolve(dir, file.name))
-        continue
-      }
-
-      const [, ext] = file.name.split('.')
-      if (ext !== 'js') continue
-
-      delete require.cache[require.resolve(path.resolve(dir, file.name))]
-      const command: { default: CommandOptions } = await import(path.resolve(dir, file.name))
-      this.commands.add(command.default)
-    }
+    this.commands.load(path.resolve(__dirname, '../commands'))
   }
 
   hasPerms (id: Snowflake, perms: keyof typeof PermissionsUtils.bits, channel?: Snowflake): boolean {

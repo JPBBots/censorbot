@@ -1,9 +1,9 @@
-import { Page, PageInterface } from "../structures/Page";
-import { Utils } from "../structures/Utils";
-import { E } from '../structures/Elements'
+import { Page, PageInterface } from "../../structures/Page";
+import { Utils } from "../../structures/Utils";
+import { E } from '../../structures/Elements'
 
-export class DashboardHome extends Page implements PageInterface {
-  name = 'dashboard_home'
+export class DashboardDiscord extends Page implements PageInterface {
+  name = 'dashboard_discord'
   url = /^\/dashboard$/
   fetchElements = [
     'guilds', 'ispremium', 'reset',

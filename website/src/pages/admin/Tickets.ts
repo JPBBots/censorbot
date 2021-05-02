@@ -1,6 +1,6 @@
-import { Page, PageInterface } from "../structures/Page";
+import { Page, PageInterface } from "../../structures/Page";
 
-import { E } from '../structures/Elements'
+import { E } from '../../structures/Elements'
 
 export class Tickets extends Page implements PageInterface {
   name = 'tickets'

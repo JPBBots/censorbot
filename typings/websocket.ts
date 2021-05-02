@@ -1,4 +1,4 @@
-import { ExtendedGuild, GuildData, ShortGuild, User } from "./api";
+import { GuildData, ShortGuild, User } from "./api";
 
 import { Snowflake } from 'discord-api-types'
 
@@ -8,7 +8,22 @@ export interface Payload {
   i?: number
 }
 
+export type Region = 'na' | 'eu'
+
+export interface MetaObject {
+  worker: number
+  connection: string
+  region: Region
+}
+
 export interface WebSocketEventMap {
+  HELLO: {
+    receive: {
+      interval: number
+      $meta: MetaObject
+    }
+    send: null
+  }
   HEARTBEAT: {
     receive: null
     send: null

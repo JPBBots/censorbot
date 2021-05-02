@@ -55,4 +55,12 @@ export class Responses {
       .field('Filter(s)', response.filters.map(x => this.worker.filter.masks[x]).join(', '), true)
       .send()
   }
+
+  async errorLog (log: Snowflake, message: string): Promise<APIMessage> {
+    return await this.embed(log)
+      .color(this.color)
+      .title('Error occured')
+      .description(message)
+      .send()
+  }
 }

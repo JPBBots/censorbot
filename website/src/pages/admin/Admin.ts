@@ -1,5 +1,5 @@
-import { Page, PageInterface } from "../structures/Page";
-import { E } from '../structures/Elements'
+import { Page, PageInterface } from "../../structures/Page";
+import { E } from '../../structures/Elements'
 import { AdminResponse } from "@typings/api";
 
 export class Admin extends Page implements PageInterface {

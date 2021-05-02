@@ -9,11 +9,15 @@ import { OAuth2 } from '../structures/api/OAuth2'
 
 import { Interface } from 'interface'
 import { User } from 'typings/api'
+import { Region } from 'typings/websocket'
 
 export class ApiManager {
   config = Config
   db = new Database()
   interface = new Interface()
+
+  id = 0 // for future scale
+  region: Region = 'na'
 
   thread = new Thread()
   rest = new RestManager(Config.token)

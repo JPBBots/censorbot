@@ -10,6 +10,7 @@ import { GuildData, ShortGuild, User } from 'typings/api'
 
 export class Connection {
   public db?: User
+  id = `${this.socket.manager.region}_${Math.floor(Math.random() * 10000000 + Date.now()) + 1 + Date.now()}`
 
   public subscribed?: Snowflake
 
@@ -22,10 +23,12 @@ export class Connection {
       this._handleMessage((data as Buffer).toString('utf-8'))
     })
 
-    this.send({
-      e: 'HELLO',
-      d: {
-        interval: 30e3
+    this.sendEvent('HELLO', {
+      interval: 30e3,
+      $meta: {
+        worker: socket.manager.id,
+        connection: this.id,
+        region: socket.manager.region
       }
     })
   }

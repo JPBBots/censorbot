@@ -85,6 +85,25 @@ window.onload = async () => {
     }, true)
 
     addButton('Disable DEV mode', () => { window.location.search = '' })
+
+    const wsInfo = document.createElement('div')
+    const ws = loader.api.ws
+    const setInfo = () => {
+      wsInfo.innerText =
+        `Connected: ${ws.connected}\n` +
+        `Authorized: ${Boolean(loader.api.user)}\n` +
+        `Ping: ${ws.ping}ms\n` +
+        `Connection ID: ${ws.meta.connection}\n` +
+        `Worker: ${ws.meta.region}/${ws.meta.worker}`
+    }
+
+    setInfo()
+    ws.waitForConnection().then(() => setInfo())
+    setInterval(() => {
+      setInfo()
+    }, 5000)
+
+    devElm.appendChild(wsInfo)
   } else {
     (document.querySelector('nav > h3') as HTMLElement).oncontextmenu = (event) => {
       if (event.ctrlKey) {
