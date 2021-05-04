@@ -1,7 +1,6 @@
 import { Landing } from "./Landing";
 import { Premium } from './Premium'
 
-import { Admin } from './admin/Admin'
 import { Test } from './admin/Test'
 import { Tickets } from './admin/Tickets'
 
@@ -22,6 +21,5 @@ export const Pages = [
   DashboardTwitch,
   DashboardGuilded,
   DashboardDiscord,
-  Admin,
   Tickets
 ]

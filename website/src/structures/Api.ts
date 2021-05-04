@@ -291,44 +291,15 @@ export class CensorBotApi {
     Logger.connectionStatus(true)
   }
 
-  public async postPremium(guilds: Snowflake[]): Promise<Snowflake[] | false> {
+  public async postPremium(guilds: Snowflake[]): Promise<boolean> {
     if (!this.token && !await this.auth(true)) return false
 
-    const response = await this.request('Setting premium servers', 'POST', '/users/@me/premium', { guilds })
-
-    if (response) this.user.premium.guilds = response
-    return response
-  }
-
-  public async getStats(show?: boolean): Promise<AdminResponse | false> {
-    if (!this.token && !await this.auth(true)) return false
-
-    let response
-    if (this.user.admin) {
-      response = await this.request(show ? 'Fetching statuses' : null, 'GET', '/admin', null, 401)
-      if (!response) return false
-    }
-
-    if (!this.user.admin || response.error === 'Unauthorized') {
-      Logger.tell('You are not authorized to access this location.')
-      setTimeout(() => {
-        Utils.setPath()
-      }, 1000)
-      return false
+    const response = await this.ws.request('SET_PREMIUM', { guilds })
+    if (response === true) {
+      this.user.premium.guilds = guilds
     }
 
     return response
-  }
-
-  public async restartShard(id: number): Promise<any> {
-    if (!this.token && !await this.auth(true)) return false
-
-    let response
-    if (this.user.admin) {
-      response = await this.request(null, 'DELETE', '/admin/shards/' + id, null, 401)
-    }
-
-    if (!response) return false
   }
 
   public async getTickets(): Promise<Ticket[] | false> {

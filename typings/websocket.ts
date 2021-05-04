@@ -82,6 +82,12 @@ export interface WebSocketEventMap {
     receive: null
     send: null
   }
+  SET_PREMIUM: {
+    receive: {
+      guilds: Snowflake[]
+    }
+    send: true
+  }
   ERROR: {
     receive: {
       error: string

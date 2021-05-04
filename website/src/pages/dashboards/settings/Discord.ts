@@ -316,9 +316,7 @@ export class DiscordSettings extends Page implements PageInterface {
   }
 
   private async save () {
-    const res = await this.api.postSettings(this.id, this.formSettings())
-    if (!res) return
-    this.pushSettings(res)
+    await this.api.postSettings(this.id, this.formSettings())
   }
 
   private setPremium () {
@@ -377,7 +375,7 @@ export class DiscordSettings extends Page implements PageInterface {
           this.log('Adding premium server')
           const newGuilds = premUser.guilds.concat([this.id])
           const guilds = await this.api.postPremium(newGuilds)
-          if (guilds && guilds.includes(this.id)) {
+          if (guilds) {
             premium.checked = true
             this.registry.guild.premium = true
             this.setPremium()
@@ -391,7 +389,7 @@ export class DiscordSettings extends Page implements PageInterface {
           this.log('Removing premium server')
           const newGuilds = premUser.guilds.filter(x => x !== this.id)
           const guilds = await this.api.postPremium(newGuilds)
-          if (guilds && !guilds.includes(this.id)) {
+          if (guilds) {
             premium.checked = false
             this.registry.guild.premium = false
             this.clearPremium()
