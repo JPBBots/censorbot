@@ -16,7 +16,22 @@ export interface MetaObject {
   region: Region
 }
 
+interface Variant<Tag extends string, Value> extends Payload {
+  e: Tag
+  d: Value
+}
+
+type Values<T> = T[keyof T]
+
+export type Incoming <Client extends 'frontend' | 'backend'> = Values<{
+  [Tag in keyof WebSocketEventMap]: Variant<Tag, WebSocketEventMap[Tag][Client extends 'frontend' ? 'receive' : 'send']>
+}>
+
 export interface WebSocketEventMap {
+  RETURN: {
+    receive: any
+    send: null
+  }
   HELLO: {
     receive: {
       interval: number

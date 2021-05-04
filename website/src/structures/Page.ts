@@ -104,6 +104,8 @@ export interface PageInterface extends PageClass {
    * Ran when page is unloaded
    */
   remove (): Promise<boolean>
+
+  onConnect? (): void|Promise<void>
 }
 
 export const Page = PageClass

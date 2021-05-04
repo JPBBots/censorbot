@@ -3,7 +3,7 @@ import filter from '../data/filter'
 
 import { JPBExp } from './JPBExp'
 
-import { filterType } from 'typings/api'
+import { filterType, GuildDB } from 'typings/api'
 delete require.cache[require.resolve('../data/filter')]
 
 function inRange (x: number, min: number, max: number): boolean {
@@ -226,7 +226,7 @@ export class Filter {
     return res
   }
 
-  test (text: string, filters: filterType[], server: string[] = [], uncensor: string[] = []): FilterResponse {
+  test (text: string, db: GuildDB): FilterResponse {
     const content = this.resolve(text)
 
     const res: FilterResponse = {
@@ -238,10 +238,25 @@ export class Filter {
 
     const scanFor: {
       [key in filterName]?: JPBExp[]
-    } = { server: server.map(x => new JPBExp(x)) }
+    } = {}
+
+    if (!db.matchExact) {
+      scanFor.server = db.filter.map(x => new JPBExp(x))
+    } else {
+      if (db.filter.some(x =>
+        text.toLowerCase().includes(x)
+      )) {
+        return {
+          censor: true,
+          ranges: [],
+          filters: ['server'],
+          places: []
+        }
+      }
+    }
 
     for (const filt in this.filters) {
-      if (filters.includes(filt as filterType)) scanFor[filt] = this.filters[filt]
+      if (db.filters.includes(filt as filterType)) scanFor[filt] = this.filters[filt]
     }
 
     content.forEach(piece => {
@@ -249,7 +264,7 @@ export class Filter {
       if (res.ranges.some(x => x[0] !== undefined && x[1] !== undefined && inRange(x[0], piece.i[0] as number, piece.i[1] as number) && inRange(x[1], piece.i[0] as number, piece.i[1] as number))) return
       for (const key in scanFor) {
         for (const part of scanFor[key]) {
-          if (!part.test(piece.t, uncensor)) continue
+          if (!part.test(piece.t, db.uncensor)) continue
 
           done = true
 

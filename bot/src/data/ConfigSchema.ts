@@ -68,6 +68,7 @@ export const config = {
   },
   filter: ListValid,
   uncensor: ListValid,
+  matchExact: simple(Boolean),
   msg: {
     content: {
       length: { max: 1000 },
@@ -125,7 +126,8 @@ export const config = {
   invites: simple(Boolean),
   toxicity: simple(Boolean),
   images: simple(Boolean),
-  dm: simple(Boolean)
+  dm: simple(Boolean),
+  antiHoist: simple(Boolean)
 } as SchemaDefinition
 
 export const schema = new Schema(config)

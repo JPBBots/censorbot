@@ -31,9 +31,9 @@
     <Setting:role Ignored Roles>
       <input placeholder="Add roles" hidden>
     </Setting>
-    <PremiumSetting:channels Ignore Channels>
+    <Setting:channels Ignore Channels>
       <input placeholder="Add Channels" hidden>
-    </PremiumSetting>
+    </Setting>
   </section>
 
   <section class="filter">
@@ -65,6 +65,12 @@
     <Setting:filter Server Filter>
       <input placeholder="Add Words" hidden>
     </Setting>
+    <Setting:matchExact Match Exact>
+      <Tooltip href="'javascript:void(0);'">
+        Will make your server filter only match if the text is exactly as it shows (can be inaccurate)
+      </Tooltip>
+      <Switch>
+    </Setting>
     <Setting:uncensor Uncensor Words>
       <input placeholder="Add Words" hidden>
     </Setting>
@@ -73,12 +79,21 @@
       <Switch>
     </PremiumSetting>
     <PremiumSetting:images Anti-NSFW Images>
+      <Tooltip href="https://twitter.com/Link90355556">
+        Made possible by Link#0069
+      </Tooltip>
       <Switch>
     </PremiumSetting>
   </section>
 
   <section class="other">
     <h1>Other</h1>
+    <Setting:antiHoist Anti-Hoist>
+      <Tooltip href=";">
+        Automatically detects when a user has a hoisting character in their name and adds a dehoisting character in front.
+      </Tooltip>
+      <Switch>
+    </Setting>
     <h2>Popup Message<br /><small>The message that comes up after someone curses</small></h2>
     <ul>
       <li id="msg.content">
@@ -90,7 +105,9 @@
         Deletes after <Number placeholder="Never" min="0" max="120"> seconds
       </li>
     </ul>
-    <h2>Resend <Star></h2>
+    <h2>Resend <Star> <Tooltip href="javascript:void(0);">
+      Resends a users message via a webhook, with the same username and profile picture, but with the curses blocked out.
+    </Tooltip></h2>
     <PremiumSetting:webhook.enabled Enabled>
       <Switch>
     </PremiumSetting>

@@ -2,7 +2,7 @@ import { WorkerManager } from '../managers/Worker'
 
 import { FilterResponse } from '../structures/Filter'
 
-import { APIMessage, Snowflake } from 'discord-api-types'
+import { Snowflake, GatewayMessageCreateDispatchData, GatewayMessageUpdateDispatchData } from 'discord-api-types'
 
 import { Cache } from 'discord-rose/dist/utils/Cache'
 import { CensorMethods, GuildDB, PunishmentType } from 'typings/api'
@@ -10,7 +10,7 @@ import { CensorMethods, GuildDB, PunishmentType } from 'typings/api'
 interface MultiLine {
   author: Snowflake
   messages: {
-    [key: string]: APIMessage
+    [key: string]: EventData
   }
 }
 
@@ -21,8 +21,10 @@ const replaces = {
   2: '*'
 }
 
-function handleDeletion (worker: WorkerManager, message: APIMessage, db: GuildDB, response: FilterResponse): void {
-  if (!message.guild_id) return
+type EventData = GatewayMessageCreateDispatchData | GatewayMessageUpdateDispatchData
+
+function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB, response: FilterResponse): void {
+  if (!message.guild_id || !message.content || !message.author || !message.member) return
 
   if (!worker.hasPerms(message.guild_id, 'sendMessages', message.channel_id)) return
   if (!worker.hasPerms(message.guild_id, 'embed', message.channel_id)) {
@@ -69,9 +71,9 @@ function handleDeletion (worker: WorkerManager, message: APIMessage, db: GuildDB
   }
 }
 
-export async function MessageHandler (worker: WorkerManager, message: APIMessage): Promise<void> {
+export async function MessageHandler (worker: WorkerManager, message: EventData): Promise<void> {
   const channel = worker.channels.get(message.channel_id)
-  if (!message.guild_id || !channel || !message.member) return
+  if (!message.guild_id || !message.content || !message.author || !channel || !message.member) return
 
   let multiline = multiLineStore.get(message.channel_id)
   if (multiline && multiline.author !== message.author.id) multiLineStore.delete(message.channel_id)
@@ -101,6 +103,9 @@ export async function MessageHandler (worker: WorkerManager, message: APIMessage
       })
     }
   }
+
+  if (db.nsfw && channel.nsfw) return
+
   if (db.toxicity) {
     const prediction = await worker.perspective.test(content)
     if (prediction.bad) {
@@ -114,8 +119,6 @@ export async function MessageHandler (worker: WorkerManager, message: APIMessage
     }
   }
 
-  if (channel.nsfw) return
-
   if (db.multi) {
     if (!multiline) {
       multiline = {
@@ -128,10 +131,10 @@ export async function MessageHandler (worker: WorkerManager, message: APIMessage
 
     multiLineStore.set(message.channel_id, multiline)
 
-    content = Object.values(multiline.messages).sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()).map(x => x.content).join('\n')
+    content = Object.values(multiline.messages).sort((a, b) => new Date(a.timestamp as string).getTime() - new Date(b.timestamp as string).getTime()).map(x => x.content).join('\n')
   }
 
-  const response = worker.filter.test(content, db.filters, db.filter, db.uncensor)
+  const response = worker.filter.test(content, db)
 
   if (!response.censor) return
 

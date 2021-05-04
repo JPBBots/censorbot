@@ -1,5 +1,5 @@
 import { Config } from '../config'
-import { Cache } from 'discord-rose/dist/utils/Cache'
+import { Cache } from '@jpbberry/cache'
 
 import { CensorMethods, GuildDB } from 'typings/api'
 import { Snowflake } from 'discord-api-types'

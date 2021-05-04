@@ -79,11 +79,15 @@ export class GuildHandler {
     if (valid.length > 0) throw valid[0] as unknown as Error
 
     if (!guild.premium) {
-      if (db.filter) db.filter = db.filter.slice(150)
-      if (db.uncensor) db.uncensor = db.uncensor.slice(150)
+      if (db.filter) db.filter = db.filter.slice(0, 150)
+      if (db.uncensor) db.uncensor = db.uncensor.slice(0, 150)
 
       if (typeof db.msg?.content === 'string') {
         db.msg.content = db.msg.content.slice(0, 200)
+      }
+
+      if (Array.isArray(db.channels)) {
+        db.channels = db.channels.slice(0, 5)
       }
 
       if (typeof db.msg?.deleteAfter === 'number' && db.msg.deleteAfter > 120e3) {
@@ -100,6 +104,13 @@ export class GuildHandler {
       db.toxicity = false
       db.images = false
       db.dm = false
+    }
+
+    if (Object.keys(db).includes('matchExact') ? !db.matchExact : !guild.db.matchExact) {
+      db.filter = (db.filter || guild.db.filter).map(x => this.socket.manager.filter.resolve(x)[0]?.t).filter(x => x)
+    }
+    if (db.uncensor) {
+      db.uncensor = db.uncensor.map(x => this.socket.manager.filter.resolve(x)[0]?.t).filter(x => x)
     }
 
     await this.socket.manager.db.collection('guild_data').updateOne({

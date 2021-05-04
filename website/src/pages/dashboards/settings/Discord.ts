@@ -63,6 +63,7 @@ const settings = [
   'filters',
   'filter',
   'uncensor',
+  'matchExact',
   'censor',
   'punishment.amount',
   'punishment.expires',
@@ -73,7 +74,8 @@ const settings = [
   'msg.content',
   'webhook.enabled',
   'webhook.separate',
-  'webhook.replace'
+  'webhook.replace',
+  'antiHoist'
 ] as const
 
 interface SettingType {
@@ -109,7 +111,7 @@ export class DiscordSettings extends Page implements PageInterface {
   } = {
     bools: [
       'dm', 'nsfw', 'multi', 'invites', 'toxicity', 'images',
-      'webhook.enabled', 'webhook.separate'
+      'webhook.enabled', 'webhook.separate', 'matchExact', 'antiHoist'
     ],
     select: ['log', 'punishment.role'],
     duration: ['punishment.expires', 'punishment.time'],
@@ -339,7 +341,7 @@ export class DiscordSettings extends Page implements PageInterface {
 
     this.e('name').innerText = this.guild.n
 
-    this.registry.tags.get('channels').settings.maxTags = 0
+    this.registry.tags.get('channels').settings.maxTags = 5
     this.registry.tags.get('filter').settings.maxTags = 150
     this.registry.tags.get('uncensor').settings.maxTags = 150
     this.registry.tags.get('role').settings.maxTags = 4
@@ -530,6 +532,10 @@ export class DiscordSettings extends Page implements PageInterface {
 
   public intakeUpdate (data: WebSocketEventMap['CHANGE_SETTING']['receive']) {
     this.pushSettings(data.data)
+  }
+
+  onConnect () {
+    this.api.getGuild(this.id)
   }
 
   async remove () {

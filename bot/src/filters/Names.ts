@@ -2,13 +2,18 @@ import { WorkerManager } from '../managers/Worker'
 
 import { FilterResponse } from '../structures/Filter'
 
-import { GatewayGuildMemberUpdateDispatchData } from 'discord-api-types'
+import { GatewayGuildMemberUpdateDispatchData, GatewayGuildMemberAddDispatchData } from 'discord-api-types'
 
 import { CensorMethods, GuildDB, PunishmentType } from 'typings/api'
 
 const inappName = 'Innapropriate name'
+const deHoist = String.fromCharCode(848)
 
-function handleCensor (worker: WorkerManager, member: GatewayGuildMemberUpdateDispatchData, db: GuildDB, response: FilterResponse): void {
+type EventData = GatewayGuildMemberUpdateDispatchData | GatewayGuildMemberAddDispatchData
+
+function handleCensor (worker: WorkerManager, member: EventData, db: GuildDB, response: FilterResponse): void {
+  if (!member.user) return
+
   if (!worker.hasPerms(member.guild_id, 'manageNicknames') && db.log) {
     return void worker.responses.errorLog(db.log, 'Missing permissions to Manage Nicknames')
   }
@@ -34,13 +39,22 @@ function handleCensor (worker: WorkerManager, member: GatewayGuildMemberUpdateDi
   }
 }
 
-export async function NameHandler (worker: WorkerManager, member: GatewayGuildMemberUpdateDispatchData): Promise<void> {
+export async function NameHandler (worker: WorkerManager, member: EventData): Promise<void> {
   if (
     !member ||
+    !member.user ||
     member.user.bot
   ) return
 
   const db = await worker.db.config(member.guild_id)
+
+  const name = member.nick ?? member.user.username
+
+  if (db.antiHoist) {
+    if (name.charCodeAt(0) < 65) {
+      return void worker.api.members.setNickname(member.guild_id, member.user.id, `${deHoist}${name}`)
+    }
+  }
 
   if (
     (db.censor & CensorMethods.Names) === 0 ||
@@ -49,7 +63,7 @@ export async function NameHandler (worker: WorkerManager, member: GatewayGuildMe
 
   if (member.nick === inappName) return
 
-  const res = worker.filter.test(member.nick ?? member.user.username, db.filters, db.filter, db.uncensor)
+  const res = worker.filter.test(name, db)
 
   if (!res.censor) return
 

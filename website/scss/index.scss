@@ -62,13 +62,13 @@ body {
   // position: relative;
   padding-top: 50px;
   z-index: 1;
-  // width: 100vw;
-  // overflow-x: hidden;
+  min-height: 95vh;
 }
 
 nav {
   top: 0px;
-  height: 50px;
+  min-height: 50px;
+  height: 5vh;
   width: 100%;
   background-color: var(--topbar);
   position: fixed;
@@ -189,19 +189,6 @@ nav {
   }
 }
 
-#root {
-  transition: 0.5s;
-  &.loading {
-    transition: 0.5s;
-    opacity: 0;
-    position: fixed;
-  }
-  &.loader {
-    filter: url("data:image/svg+xml;utf9,<svg%20version='1.1'%20xmlns='http://www.w3.org/2000/svg'><filter%20id='blur'><feGaussianBlur%20stdDeviation='10'%20/></filter></svg>#blur");
-    -webkit-filter: blur(20px);
-  }
-}
-
 #toast {
   position: fixed;
   bottom: 10px;
@@ -289,17 +276,9 @@ small {
 footer {
   grid-area: footer;
   background-color: var(--topbar);
-  height: 7vw;
-  // margin-top: 44px;
-
-  // background-color: var(--footer);
-  // height: 7vw;
-  // width: inherit;
-  padding: 50px 200px;
-  // margin-top: 44px;
+  min-height: 7vw;
+  padding: 50px 10vw;
   z-index: 2;
-  // position: initial;
-  // bottom: 0px;
 
 
   #copyright {
@@ -448,4 +427,27 @@ input, select {
   &.premium:checked ~ .checkmark > svg {
     background: var(--gold) !important;
   }
+}
+
+.tooltip {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: fit-content;
+  font-size: 15px;
+  background-color: var(--footer);
+  color: var(--different);
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }

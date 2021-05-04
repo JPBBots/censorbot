@@ -5,6 +5,7 @@
   "role": [],
   "filter": [],
   "uncensor": [],
+  "matchExact": false,
   "msg": {
       "content": false,
       "deleteAfter": 3000
@@ -28,5 +29,6 @@
   "invites": false,
   "toxicity": false,
   "images": false,
-  "dm": false
+  "dm": false,
+  "antiHoist": false
 }

@@ -35,7 +35,7 @@
     "@types/node-fetch": "^2.5.8",
     "@types/ws": "^7.4.1",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
-    "discord-api-types": "^0.15.1",
+    "discord-api-types": "latest",
     "eslint": "^7.22.0",
     "eslint-config-standard-with-typescript": "^20.0.0",
     "eslint-plugin-import": "^2.22.1",

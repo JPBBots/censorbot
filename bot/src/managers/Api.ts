@@ -10,6 +10,7 @@ import { OAuth2 } from '../structures/api/OAuth2'
 import { Interface } from 'interface'
 import { User } from 'typings/api'
 import { Region } from 'typings/websocket'
+import { Filter } from '../structures/Filter'
 
 export class ApiManager {
   config = Config
@@ -21,6 +22,7 @@ export class ApiManager {
 
   thread = new Thread()
   rest = new RestManager(Config.token)
+  filter = new Filter()
 
   server = new Socket(this)
   oauth = new OAuth2(this)

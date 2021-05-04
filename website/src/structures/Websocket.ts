@@ -2,7 +2,7 @@ import { CensorBotApi } from './Api'
 
 import { Logger } from './Logger'
 
-import { WebSocketEventMap, MetaObject } from '@typings/websocket'
+import { WebSocketEventMap, MetaObject, Incoming } from '@typings/websocket'
 import { DiscordSettings } from '../pages/dashboards/settings/Discord'
 import { Utils } from './Utils'
 
@@ -105,7 +105,7 @@ export class CensorBotWs {
     })
   }
 
-  _handleClose () {
+  async _handleClose () {
     Logger.connectionStatus(false)
     this.sequence = 0
 
@@ -117,15 +117,13 @@ export class CensorBotWs {
 
     this.promises.clear()
 
+    await Utils.wait(5e3)
+
     this.start()
   }
 
   private async _handleMessage (dat: string) {
-    const data: {
-      e: keyof WebSocketEventMap | 'RETURN'
-      d: any
-      i: number
-    } = JSON.parse(dat)
+    const data: Incoming<'frontend'> = JSON.parse(dat)
 
     if (window.dev) {
       this.log(`${data.e}: ${JSON.stringify(data.d, null, 2)} / ${data.i}`)
@@ -151,14 +149,16 @@ export class CensorBotWs {
       Logger.connectionStatus(true)
 
       this.api.handleOpen()
-      this.log(`Received HELLO. Interval: ${data.d.interval / 1000}s`)
+      this.log(`Received HELLO.\nConnected to: ${data.d.$meta.region}/${data.d.$meta.worker}\nID: ${data.d.$meta.connection}\nInterval: ${data.d.interval / 1000}s`)
       this._heartbeat()
 
       this.meta = data.d.$meta
 
-      this.hbInterval = setInterval(() => {
+      if (this.api.loader.currentPage && this.api.loader.currentPage.onConnect) this.api.loader.currentPage.onConnect()
+
+      this.hbInterval = window.setInterval(() => {
         void this._heartbeat()
-      }, data.d.interval) as unknown as number
+      }, data.d.interval)
     }
 
     if (this.api.loader.currentPage instanceof DiscordSettings) {

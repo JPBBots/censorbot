@@ -9,6 +9,7 @@
   "role": [],
   "filter": [],
   "uncensor": [],
+  "matchExact": false,
   "msg": {
       "content": null,
       "deleteAfter": 3000
@@ -33,6 +34,7 @@
   "toxicity": false,
   "images": false,
   "dm": false,
+  "antiHoist": false,
 
   "notInDb": true
 }

@@ -9,7 +9,8 @@
   > a {
     background-color: var(--topbar);
     width: 75%;
-    height: 81%;
+    height: fit-content;
+    max-height: 81%;
     padding: 20px 10px 2px 10px;
     margin: auto;
     text-align: center;

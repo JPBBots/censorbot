@@ -54,6 +54,8 @@ export interface GuildDB {
    * List of words to uncensor
    */
   uncensor: string[]
+  matchExact: boolean
+  antiHoist: boolean
   /**
    * Popup message options
    */
