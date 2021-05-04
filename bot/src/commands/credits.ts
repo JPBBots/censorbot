@@ -3,7 +3,7 @@ import { CommandOptions } from 'discord-rose'
 export default {
   command: 'credits',
   aliases: ['creds'],
-  description: 'Staff List',
+  description: 'Displays Censor Bot\'s Developers and Contributers',
   exec: (ctx) => {
     void ctx.embed
       .title('Credits')
