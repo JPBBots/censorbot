@@ -11,6 +11,14 @@ const deHoist = String.fromCharCode(848)
 
 type EventData = GatewayGuildMemberUpdateDispatchData | GatewayGuildMemberAddDispatchData
 
+const isHoisting = (name: string): boolean => {
+  const char = name.charCodeAt(0)
+  if (char < 65) return true
+  if (char > 90 && char < 97) return true
+
+  return false
+}
+
 function handleCensor (worker: WorkerManager, member: EventData, db: GuildDB, response: FilterResponse): void {
   if (!member.user) return
 
@@ -50,10 +58,8 @@ export async function NameHandler (worker: WorkerManager, member: EventData): Pr
 
   const name = member.nick ?? member.user.username
 
-  if (db.antiHoist) {
-    if (name.charCodeAt(0) < 65) {
-      return void worker.api.members.setNickname(member.guild_id, member.user.id, `${deHoist}${name}`)
-    }
+  if (db.antiHoist && isHoisting(name)) {
+    void worker.api.members.setNickname(member.guild_id, member.user.id, `${deHoist}${name}`)
   }
 
   if (

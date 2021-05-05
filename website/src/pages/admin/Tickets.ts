@@ -8,6 +8,7 @@ export class Tickets extends Page implements PageInterface {
   fetchElements = [
     'tickets'
   ]
+  needsAuth = true
 
   async loading() {
     await this.api.waitForUser()

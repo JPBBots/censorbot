@@ -14,6 +14,8 @@ export class Loader {
 
   public loading: boolean
 
+  chargebee: any = {}
+
   util = Utils
   api = new CensorBotApi(this)
 
@@ -32,6 +34,10 @@ export class Loader {
     this.run()
 
     this.log('Loaded API: ' + CensorBotApi.url)
+  }
+
+  get staging () {
+    return location.hostname.split('.')[0] === 'staging'
   }
 
   async run () {

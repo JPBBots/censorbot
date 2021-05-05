@@ -121,20 +121,26 @@ export class CensorBotApi {
     this.ws.tell('LOGOUT')
 
     window.localStorage.removeItem('token')
+    this.loader.chargebee.authHandler.logout()
 
     this.guilds = null
+    this.user = null
 
-    if (redir && window.location.pathname !== '/') Utils.setPath()
+    if (this.loader.currentPage.needsAuth && redir && window.location.pathname !== '/') Utils.setPath()
 
     this.fetch()
   }
 
-  public async auth(required?: boolean): Promise<boolean> {
+  public async auth(required?: boolean, email?: boolean): Promise<boolean> {
     await this.ws.waitForConnection()
     // Utils.presentLoad('Waiting for you to authorize...')
     await this.logout(false)
 
-    await Utils.openWindow('/auth' + (window.discordOAuthExtra ? `?d=${window.discordOAuthExtra}` : ''), 'Login')
+    const params = new URLSearchParams()
+    if (window.discordOAuthExtra) params.append('d', window.discordOAuthExtra)
+    if (email) params.append('email', 'true')
+
+    await Utils.openWindow('/auth?' + params.toString(), 'Login')
 
     const code = window.localStorage.getItem('code')
 

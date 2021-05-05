@@ -8,7 +8,7 @@ export const Events = {
     resolve?.()
   },
   LOGIN: async (con, data, resolve) => {
-    if (!data?.code) return
+    if (!data?.code) return resolve?.({ error: 'Login cancelled' })
     const user = await con.socket.manager.oauth.callback(data.code, con.host)
       .catch(err => {
         resolve?.({ error: err.message ?? 'ERROR' })

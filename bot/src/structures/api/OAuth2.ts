@@ -14,6 +14,7 @@ export interface DatabaseUserSchema {
   token: string
   bearer: string
   avatar: string|null
+  email?: string|null
   tag: string
 }
 
@@ -48,6 +49,7 @@ export class OAuth2 {
       bearer: oauthUser.access_token,
       token,
       avatar: user.avatar,
+      email: user.email,
       tag: `${user.username}#${user.discriminator}`
     }
 

@@ -152,6 +152,10 @@ export interface User {
    * Whether or not user is admin
    */
   admin?: boolean
+  /**
+   * Email of the user
+   */
+  email?: string|null
 
   _id?: string
   bearer?: string

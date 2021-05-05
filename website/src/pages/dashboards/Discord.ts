@@ -9,10 +9,10 @@ export class DashboardDiscord extends Page implements PageInterface {
     'guilds', 'ispremium', 'reset',
     'ptotal', 'pused'
   ]
+  needsAuth = true
 
   async loading () {
     await this.api.getGuilds()
-    await this.api.waitForUser()
   }
 
   async go () {

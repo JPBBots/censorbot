@@ -103,6 +103,7 @@ export class DiscordSettings extends Page implements PageInterface {
     // settings
     ...settings
   ]
+  needsAuth = true
 
   settingTag = false
 
@@ -312,7 +313,6 @@ export class DiscordSettings extends Page implements PageInterface {
   async loading () {
     const guild = await this.api.getGuild(this.id)
     if (guild) this.registry.guild = guild
-    await this.api.waitForUser()
   }
 
   private async save () {

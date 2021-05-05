@@ -79,17 +79,20 @@ app.get('/sitemap.xml', (req, res) => {
 `)
 })
 
-const generateOauth = (invite, data, disc) => {
+const generateOauth = (invite, data, disc, email = false) => {
   const base = `https://${disc ? `${disc}.` : ''}discord.com/oauth2/authorize?${qs.stringify({
     client_id: Config.id
   })}&`
 
   if (!invite) {
+    const scopes = [...Config.dashboardOptions.scopes]
+    if (email) scopes.push('email')
+
     return base + qs.stringify({
       redirect_uri: `https://${data}/callback`,
       response_type: 'code',
       prompt: 'none',
-      scope: Config.dashboardOptions.scopes.join(' ')
+      scope: scopes.join(' ')
     })
   } else {
     return base + qs.stringify({
@@ -101,7 +104,7 @@ const generateOauth = (invite, data, disc) => {
 }
 
 app.get('/auth', (req, res) => {
-  res.redirect(generateOauth(false, req.headers.host, req.query.d))
+  res.redirect(generateOauth(false, req.headers.host, req.query.d, req.query.email === 'true'))
 })
 
 app.get('/callback', (req, res) => {

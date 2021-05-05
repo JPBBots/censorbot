@@ -22,6 +22,10 @@ class PageClass {
    */
   public fetchElements: Array<string> = []
   /**
+   * Whether or not a page requires user authentication
+   */
+  public needsAuth = false
+  /**
    * Page registry for caching data, cleared when unrendered
    */
   public registry: any = {}
@@ -72,6 +76,7 @@ class PageClass {
   }
   
   async render () {
+    if (this.needsAuth) await this.loader.api.waitForUser()
     document.getElementById('root').innerHTML = ''
     document.getElementById('css').innerText = this.data.css || ''
     document.getElementById('root').innerHTML = this.data.html
