@@ -1,5 +1,5 @@
-import { Logger } from "../structures/Logger";
-import { Page, PageInterface } from "../structures/Page";
+import { Logger } from "../../structures/Logger";
+import { Page, PageInterface } from "../../structures/Page";
 
 export class Premium extends Page implements PageInterface {
   name = 'premium'
@@ -11,7 +11,7 @@ export class Premium extends Page implements PageInterface {
 
   async openCheckout (id: string) {
     if (!this.loader.api.user || !this.loader.api.user.email) {
-      const res = await this.loader.api.auth(false, true)
+      const res = await this.loader.api.auth(false, true, false)
       if (!res || !this.loader.api.user.email) return Logger.tell('Could not retrieve email')
     }
 

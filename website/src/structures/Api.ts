@@ -82,10 +82,20 @@ export class CensorBotApi {
    * Gets token
    */
   get token () {
-    return window.localStorage.getItem('token')
+    var name = 'token='
+    var ca = document.cookie.split(';')
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i]
+      while (c.charAt(0) === ' ') {
+        c = c.substring(1)
+      }
+      if (c.indexOf(name) === 0) {
+        return c.substring(name.length, c.length)
+      }
+    }
   }
 
-  private async request(message: false | string, method: string, url: string, body?: object, returnErrors?: number): Promise<any | false> {
+  public async request(message: false | string, method: string, url: string, body?: object, returnErrors?: number): Promise<any | false> {
     if (message) Utils.presentLoad(message)
 
     const headers = new Headers()
@@ -120,41 +130,30 @@ export class CensorBotApi {
   private async logout(redir: boolean = true) {
     this.ws.tell('LOGOUT')
 
-    window.localStorage.removeItem('token')
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     this.loader.chargebee.authHandler.logout()
 
     this.guilds = null
     this.user = null
 
-    if (this.loader.currentPage.needsAuth && redir && window.location.pathname !== '/') Utils.setPath()
+    if (this.loader.currentPage && this.loader.currentPage.needsAuth && redir && window.location.pathname !== '/') Utils.setPath()
 
     this.fetch()
   }
 
-  public async auth(required?: boolean, email?: boolean): Promise<boolean> {
+  public async auth(required?: boolean, email?: boolean, logout: boolean = true): Promise<boolean> {
     await this.ws.waitForConnection()
     // Utils.presentLoad('Waiting for you to authorize...')
-    await this.logout(false)
+    if (logout) await this.logout(false)
 
     const params = new URLSearchParams()
     if (window.discordOAuthExtra) params.append('d', window.discordOAuthExtra)
     if (email) params.append('email', 'true')
 
-    await Utils.openWindow('/auth?' + params.toString(), 'Login')
-
-    const code = window.localStorage.getItem('code')
+    await Utils.openWindow('/api/auth/discord?' + params.toString(), 'Login')
+    Utils.stopLoad()
 
     // Utils.presentLoad('Logging you in...')
-
-    if (code) {
-      const user = await this.ws.request('LOGIN', { code })
-
-      this.user = user
-
-      window.localStorage.setItem('token', user.token)
-      window.localStorage.removeItem('code')
-    }
-
     if (!this.token) {
       if (required) {
         if (confirm('Failed the authorize, try again?')) return this.auth(true)

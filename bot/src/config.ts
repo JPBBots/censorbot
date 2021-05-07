@@ -14,9 +14,16 @@ export const Config = {
   id: process.env.ID as string,
   token: process.env.BOT_TOKEN as string,
   db: {
-    host: process.env.DB_HOST as string,
     username: process.env.DB_USERNAME as string,
     password: process.env.DB_PASSWORD as string
+  },
+
+  chargebeeKey: process.env.CHARGEBEE as string,
+
+  premiumAmounts: {
+    premium: 3,
+    'super-premium': 6,
+    'own-instance': 6
   },
 
   oauth: {
@@ -89,9 +96,10 @@ export const Config = {
   actionRetention: 3,
 
   dashboardOptions: {
-    guildCacheWipeTimeout: 15 * 60 * 1000, // 15 minutes
+    wipeTimeout: 15 * 60 * 1000, // 15 minutes
     requiredPermission: 'manageGuild' as keyof typeof PermissionsUtils.bits,
-    scopes: ['identify', 'guilds']
+    scopes: ['identify', 'guilds'],
+    port: Number(process.env.PORT)
   },
 
   custom: {

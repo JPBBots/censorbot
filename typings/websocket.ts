@@ -43,12 +43,6 @@ export interface WebSocketEventMap {
     receive: null
     send: null
   }
-  LOGIN: {
-    receive: {
-      code: string
-    }
-    send: User
-  }
   LOGOUT: {
     receive: null
     send: null

@@ -3,8 +3,6 @@ import { Collection } from 'mongodb'
 import { PunishmentType, TimedPunishments } from 'typings'
 import { PunishmentManager } from './PunishmentManager'
 
-import { guildShard } from 'discord-rose/dist/utils/UtilityFunctions'
-
 import DJSCollection from '@discordjs/collection'
 
 interface TimeoutSchema {
@@ -24,7 +22,7 @@ export class Timeouts {
   constructor (public manager: PunishmentManager) {}
 
   get db (): Collection<TimeoutSchema> {
-    return this.manager.worker.db.collection('times')
+    return this.manager.worker.db.collection('timeouts')
   }
 
   private async execute (guild: Snowflake, user: Snowflake, type: TimedPunishments): Promise<void> {
@@ -44,26 +42,31 @@ export class Timeouts {
     const timeouts = await this.db.find({ at: { $lt: Date.now() + 30e4 } }).toArray()
 
     timeouts
-      .filter(x => this.manager.worker.shards.has(guildShard(x.guild, this.manager.worker.options.shards)))
+      .filter(x => this.manager.worker.guilds.has(x.guild))
       .filter(x => !this.timeouts.has(`${x.user}-${x.guild}`))
       .forEach(timeout => {
-        console.debug(`Setting ${timeout.user}-${timeout.guild}`)
-        this.timeouts.set(`${timeout.user}-${timeout.guild}`, setTimeout(() => {
-          void this.execute(timeout.guild, timeout.user, timeout.type)
-        }, timeout.at - Date.now()))
+        this._create(timeout)
       })
   }
 
+  private _create (timeout: TimeoutSchema): void {
+    console.debug(`Setting ${timeout.user}-${timeout.guild}`)
+    this.timeouts.set(`${timeout.user}-${timeout.guild}`, setTimeout(() => {
+      void this.execute(timeout.guild, timeout.user, timeout.type)
+    }, timeout.at - Date.now()))
+  }
+
   public async add (guild: Snowflake, user: Snowflake, type: TimedPunishments, at: number): Promise<void> {
+    const time = {
+      guild,
+      user,
+      type,
+      at
+    }
     await this.db.updateOne({
       guild, user
     }, {
-      $set: {
-        guild,
-        user,
-        type,
-        at
-      }
+      $set: time
     }, {
       upsert: true
     })
@@ -72,6 +75,10 @@ export class Timeouts {
     if (timeout) {
       clearTimeout(timeout)
       this.timeouts.delete(`${user}-${guild}`)
+    }
+
+    if (time.at < Date.now() + 30e4) {
+      this._create(time)
     }
   }
 

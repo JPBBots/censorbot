@@ -20,7 +20,7 @@ export class Database extends Db {
   schema = schema
 
   constructor () {
-    super(Config.db.host, Config.db.username, Config.db.password)
+    super('localhost', Config.db.username, Config.db.password)
   }
 
   async config (id: Snowflake): Promise<GuildDB> {

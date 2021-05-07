@@ -13,6 +13,12 @@ export enum PunishmentType {
 
 export type TimedPunishments = PunishmentType.Ban | PunishmentType.Mute
 
+export enum PremiumTypes {
+  Premium = 'premium',
+  SuperPremium = 'super-premium',
+  OwnInstance = 'own-instance'
+}
+
 export enum WebhookReplace {
   Spoilers = 0,
   Hashtags,
@@ -233,4 +239,11 @@ export interface Ticket {
 export interface TicketTest {
   censored: boolean,
   places: string[]
+}
+
+export interface RegisterResponse {
+  sub: PremiumTypes,
+  amount: number
+  endDate: number
+  error?: string
 }

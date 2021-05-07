@@ -9,8 +9,8 @@ import { Events } from '../../helpers/wsEvents'
 import { GuildData, ShortGuild, User } from 'typings/api'
 
 export class Connection {
-  public db?: User
   id = `${this.socket.manager.region}_${Math.floor(Math.random() * 10000000 + Date.now()) + 1 + Date.now()}`
+  userId?: Snowflake
 
   public subscribed?: Snowflake
 
@@ -31,6 +31,11 @@ export class Connection {
         region: socket.manager.region
       }
     })
+  }
+
+  get db (): User | undefined {
+    if (!this.userId) return undefined
+    return this.socket.cachedUsers.get(this.userId)
   }
 
   get guilds (): null|ShortGuild[] {
@@ -81,11 +86,11 @@ export class Connection {
   }
 
   public async getGuilds (): Promise<ShortGuild[]> {
-    if (!this.authorized) throw new Error('Not authorized')
+    if (!this.authorized || !this.db?.bearer) throw new Error('Not authorized')
 
     if (this.guilds) return this.guilds
 
-    const guilds = await this.socket.manager.oauth.getGuilds(this.db?.bearer as string)
+    const guilds = await this.socket.manager.oauth.getGuilds(this.db.bearer)
 
     if (!guilds) throw new Error('Invalid token')
 

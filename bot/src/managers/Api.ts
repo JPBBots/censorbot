@@ -6,11 +6,17 @@ import { Database } from '../structures/Database'
 
 import { Socket } from '../structures/api/Socket'
 import { OAuth2 } from '../structures/api/OAuth2'
+import { RouterManager } from '../structures/api/RouterManager'
+import { ChargeBee } from '../structures/api/ChargeBee'
 
 import { Interface } from 'interface'
+
 import { User } from 'typings/api'
 import { Region } from 'typings/websocket'
+
 import { Filter } from '../structures/Filter'
+
+import http from 'http'
 
 export class ApiManager {
   config = Config
@@ -23,14 +29,21 @@ export class ApiManager {
   thread = new Thread()
   rest = new RestManager(Config.token)
   filter = new Filter()
+  chargebee = new ChargeBee(this)
 
-  server = new Socket(this)
+  router = new RouterManager(this)
+
+  server = http.createServer(this.router.app)
+
+  socket = new Socket(this)
   oauth = new OAuth2(this)
 
   constructor () {
     this.thread.on('RELOAD_WEBSOCKETS', () => {
-      this.server.connections.forEach(client => client.sendEvent('RELOAD', null))
+      this.socket.connections.forEach(client => client.sendEvent('RELOAD', null))
     })
+
+    this.server.listen(this.config.dashboardOptions.port)
   }
 
   log (..._): void {
@@ -39,7 +52,7 @@ export class ApiManager {
 
   async extendUser (user: User): Promise<User> {
     user.admin = await this.interface.api.isAdmin(user.id)
-    const isPremium = await this.interface.api.getPremium(user.id)
+    const isPremium = await this.chargebee.getAmount(user.id)
 
     const premium = {
       count: 0,

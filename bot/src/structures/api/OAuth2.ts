@@ -6,7 +6,7 @@ import Crypto from 'crypto'
 import qs from 'querystring'
 
 import { APIGuild, APIUser, RESTPostOAuth2AccessTokenResult, RESTPostOAuth2AccessTokenURLEncodedData, Snowflake } from 'discord-api-types'
-import { ShortGuild, User } from 'typings/api'
+import { ShortGuild } from 'typings/api'
 import { Collection } from 'mongodb'
 
 export interface DatabaseUserSchema {
@@ -33,7 +33,7 @@ export class OAuth2 {
       .digest('hex')
   }
 
-  async callback (code: string, host: string): Promise<{ user: APIUser, db: User }> {
+  async callback (code: string, host: string): Promise<string> {
     const oauthUser = await this._bearer(code, host)
     if (!oauthUser) throw new Error('Invalid Code')
 
@@ -55,7 +55,7 @@ export class OAuth2 {
 
     await this.db.updateOne({ id: db.id }, { $set: db }, { upsert: true })
 
-    return { user, db: await this.manager.extendUser(db) }
+    return token
   }
 
   private async _bearer (code: string, host: string): Promise<RESTPostOAuth2AccessTokenResult | false> {
@@ -68,7 +68,7 @@ export class OAuth2 {
         client_secret: this.manager.config.oauth.secret,
         code,
         grant_type: 'authorization_code',
-        redirect_uri: `${host}/callback`,
+        redirect_uri: `https://${host}/api/auth/discord/callback`,
         scope: this.manager.config.dashboardOptions.scopes.join(' ')
       } as RESTPostOAuth2AccessTokenURLEncodedData,
       parser: qs.stringify

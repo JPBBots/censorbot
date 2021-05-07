@@ -11,7 +11,7 @@ import { Socket } from './Socket'
 
 export class GuildHandler {
   subs: Map<Snowflake, Set<Connection>> = new Map()
-  cache: Cache<Snowflake, GuildData> = new Cache(this.socket.manager.config.dashboardOptions.guildCacheWipeTimeout)
+  cache: Cache<Snowflake, GuildData> = new Cache(this.socket.manager.config.dashboardOptions.wipeTimeout)
 
   constructor (private readonly socket: Socket) {}
 
@@ -31,9 +31,9 @@ export class GuildHandler {
         n: guild.name,
         a: guild.icon,
         i: id,
-        c: guild.channels?.map(x => ({
+        c: guild.channels.map(x => ({
           id: x.id,
-          name: x.name as string
+          name: x.name ?? ''
         })),
         r: guild.roles.filter(x => !x.managed && x.id !== id).map(x => ({
           id: x.id,

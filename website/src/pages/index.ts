@@ -1,5 +1,7 @@
 import { Landing } from "./Landing";
-import { Premium } from './Premium'
+
+import { Premium } from './premium/Premium'
+import { Payment } from './premium/Payment'
 
 import { Test } from './admin/Test'
 import { Tickets } from './admin/Tickets'
@@ -18,6 +20,7 @@ export const Pages = [
   Test,
   DiscordSettings,
   Premium,
+  Payment,
   DashboardTwitch,
   DashboardGuilded,
   DashboardDiscord,

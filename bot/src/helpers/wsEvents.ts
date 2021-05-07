@@ -7,29 +7,18 @@ export const Events = {
   HEARTBEAT: (con, data, resolve) => {
     resolve?.()
   },
-  LOGIN: async (con, data, resolve) => {
-    if (!data?.code) return resolve?.({ error: 'Login cancelled' })
-    const user = await con.socket.manager.oauth.callback(data.code, con.host)
-      .catch(err => {
-        resolve?.({ error: err.message ?? 'ERROR' })
-      })
-
-    if (!user) return
-
-    con.db = await con.socket.manager.extendUser(user.db)
-
-    resolve?.({ ...con.db, _id: undefined, bearer: undefined })
-  },
   LOGOUT: (con) => {
-    con.db = undefined
+    con.userId = undefined
   },
   AUTHORIZE: async (con, data, resolve) => {
     if (!con.db) {
       const user = await con.socket.manager.db.collection('users').findOne({ token: data?.token }) as User
       if (!user) throw new Error('Invalid Token')
 
-      con.db = user
+      con.userId = user.id
+      con.socket.cachedUsers.set(user.id, user)
     }
+    if (!con.db) return
 
     resolve?.({ ...await con.socket.manager.extendUser(con.db), _id: undefined, bearer: undefined })
   },

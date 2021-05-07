@@ -103,27 +103,9 @@ const generateOauth = (invite, data, disc, email = false) => {
   }
 }
 
-app.get('/auth', (req, res) => {
-  res.redirect(generateOauth(false, req.headers.host, req.query.d, req.query.email === 'true'))
-})
-
-app.get('/callback', (req, res) => {
-  res.header('Content-Type', 'text/html')
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-      <script>
-        localStorage.setItem('code', '${req.query.code}')
-        window.close()
-      </script>
-    </html>
-  `)
-})
-
 app.get('/invite', (req, res) => {
   res.redirect(generateOauth(true, req.query.id))
 })
-
 
 const links = {
   support: 'https://discord.gg/v3r2rKP',
