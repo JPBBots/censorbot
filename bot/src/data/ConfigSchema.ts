@@ -102,7 +102,8 @@ export const config = {
       expires: {
         type: Number,
         size: { min: 1, max: 5184000000 }
-      }
+      },
+      retainRoles: simple(Boolean)
     }
   },
   webhook: {

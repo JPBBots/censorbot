@@ -79,8 +79,10 @@
   grid-template-rows: repeat(2, 0fr) !important;
   height: fit-content;
 
-  ul {
+  li > p {
     font-size: 1.7em;
+    display: inline;
+    margin-right: 10px;
   }
 }
 

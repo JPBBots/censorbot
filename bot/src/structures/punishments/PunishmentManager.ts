@@ -29,7 +29,7 @@ export class PunishmentManager {
     return await this.worker.db.config(id)
   }
 
-  async punish (guild: Snowflake, user: Snowflake): Promise<void> {
+  async punish (guild: Snowflake, user: Snowflake, roles?: Snowflake[]): Promise<void> {
     const db = await this.config(guild)
 
     if (!db.punishment.type) return
@@ -50,7 +50,7 @@ export class PunishmentManager {
     if (punish.warnings.length >= db.punishment.amount) {
       switch (db.punishment.type) {
         case PunishmentType.Mute:
-          void this.mute(guild, user)
+          void this.mute(guild, user, roles)
           break
         case PunishmentType.Kick:
           void this.kick(guild, user)
@@ -82,24 +82,41 @@ export class PunishmentManager {
     )
   }
 
-  async mute (guild: Snowflake, user: Snowflake): Promise<void> {
+  async mute (guild: Snowflake, user: Snowflake, roles?: Snowflake[]): Promise<void> {
     const db = await this.config(guild)
     if (!db.punishment.role) throw new Error('No muted role has been set')
 
-    await this.members.addRole(guild, user, db.punishment.role)
+    if (db.punishment.retainRoles) {
+      await this.members.edit(guild, user, {
+        roles: [db.punishment.role]
+      })
+    } else {
+      await this.members.addRole(guild, user, db.punishment.role)
+    }
 
     await this.sendLog(false, guild, user, 'Muted', `Received <@&${db.punishment.role}>${db.punishment.time ? `\nWill be unmuted in ${(db.punishment.time / 60000).toLocaleString()} minutes` : ''}`)
 
     if (db.punishment.time) {
-      await this.timeouts.add(guild, user, PunishmentType.Mute, Date.now() + db.punishment.time)
+      await this.timeouts.add(guild, user, PunishmentType.Mute, Date.now() + db.punishment.time,
+        db.punishment.retainRoles ? roles?.filter(x => x !== db.punishment.role) : undefined
+      )
     }
   }
 
-  async unmute (guild: Snowflake, user: Snowflake, extra?: boolean): Promise<void> {
+  async unmute (guild: Snowflake, user: Snowflake, extra: boolean, roles?: Snowflake[]): Promise<void> {
     const db = await this.config(guild)
     if (!db.punishment.role) return
 
-    await this.members.removeRole(guild, user, db.punishment.role)
+    if (db.punishment.retainRoles && roles) {
+      const current = await this.worker.api.members.get(guild, user)
+      if (!current) return
+
+      await this.worker.api.members.edit(guild, user, {
+        roles: Array.from(new Set(roles.concat(current.roles))).filter(x => x !== db.punishment.role)
+      })
+    } else {
+      await this.members.removeRole(guild, user, db.punishment.role)
+    }
 
     await this.timeouts.remove(guild, user)
 

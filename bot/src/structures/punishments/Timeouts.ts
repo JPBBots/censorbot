@@ -10,6 +10,7 @@ interface TimeoutSchema {
   user: Snowflake
   at: number
   type: TimedPunishments
+  roles?: Snowflake[]
 }
 
 export class Timeouts {
@@ -25,7 +26,7 @@ export class Timeouts {
     return this.manager.worker.db.collection('timeouts')
   }
 
-  private async execute (guild: Snowflake, user: Snowflake, type: TimedPunishments): Promise<void> {
+  private async execute (guild: Snowflake, user: Snowflake, type: TimedPunishments, roles?: Snowflake[]): Promise<void> {
     this.timeouts.delete(`${user}-${guild}`)
 
     switch (type) {
@@ -33,7 +34,7 @@ export class Timeouts {
         void this.manager.unban(guild, user)
         break
       case PunishmentType.Mute:
-        void this.manager.unmute(guild, user)
+        void this.manager.unmute(guild, user, false, roles)
         break
     }
   }
@@ -52,16 +53,17 @@ export class Timeouts {
   private _create (timeout: TimeoutSchema): void {
     console.debug(`Setting ${timeout.user}-${timeout.guild}`)
     this.timeouts.set(`${timeout.user}-${timeout.guild}`, setTimeout(() => {
-      void this.execute(timeout.guild, timeout.user, timeout.type)
+      void this.execute(timeout.guild, timeout.user, timeout.type, timeout.roles)
     }, timeout.at - Date.now()))
   }
 
-  public async add (guild: Snowflake, user: Snowflake, type: TimedPunishments, at: number): Promise<void> {
+  public async add (guild: Snowflake, user: Snowflake, type: TimedPunishments, at: number, roles?: Snowflake[]): Promise<void> {
     const time = {
       guild,
       user,
       type,
-      at
+      at,
+      roles
     }
     await this.db.updateOne({
       guild, user

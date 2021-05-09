@@ -104,6 +104,9 @@ export class GuildHandler {
       db.toxicity = false
       db.images = false
       db.dm = false
+      if (db.punishment) {
+        db.punishment.retainRoles = false
+      }
     }
 
     if (Object.keys(db).includes('matchExact') ? !db.matchExact : !guild.db.matchExact) {

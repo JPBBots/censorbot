@@ -43,7 +43,7 @@ function handleCensor (worker: WorkerManager, member: EventData, db: GuildDB, re
         break
     }
 
-    void worker.punishments.punish(member.guild_id, member.user.id)
+    void worker.punishments.punish(member.guild_id, member.user.id, member.roles)
   }
 }
 

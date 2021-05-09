@@ -10,16 +10,22 @@ export class Premium extends Page implements PageInterface {
   ]
 
   async openCheckout (id: string) {
-    if (!this.loader.api.user || !this.loader.api.user.email) {
-      const res = await this.loader.api.auth(false, true, false)
-      if (!res || !this.loader.api.user.email) return Logger.tell('Could not retrieve email')
+    if (!this.api.user || !this.api.user.email) {
+      const res = await this.api.auth(false, true, false)
+      if (!res || !this.api.user.email) return Logger.tell('Could not retrieve email')
+    }
+    if (this.api.user.premium.customer) {
+      const res = confirm("You're already a customer! Press OK to go to the portal.")
+      if (res) this.loader.chargebee.openPortal()
+
+      return
     }
 
     this.loader.chargebee.getCart().replaceProduct(
       this.loader.chargebee.initializeProduct(id)
     )
 
-    this.loader.chargebee.getCart().customer.email = this.loader.api.user.email
+    this.loader.chargebee.getCart().customer.email = this.api.user.email
     this.loader.chargebee.openCheckout({})
   }
 

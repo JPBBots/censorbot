@@ -40,7 +40,7 @@ export class CensorBotApi {
 
   private async _handleAuth() {
     await this.ws.waitForConnection()
-    const user = await this.ws.request('AUTHORIZE', { token: this.token }).catch(() => false as false)
+    const user = await this.getSelf()
     if (!user) return
 
     this.user = user
@@ -50,16 +50,23 @@ export class CensorBotApi {
     return document.getElementById('login')
   }
 
-  private async fetch(): Promise<boolean> {
+  public async fetch(reload = false): Promise<boolean> {
     let user
     if (this.token) {
-      user = await this.getSelf()
+      user = await this.getSelf(reload)
     }
     this.user = user
-    if (!user) {
+
+    return this.handleUser()
+  }
+
+  handleUser (): boolean {
+    if (!this.user) {
       this.loginButton.innerText = 'Login'
       this.loginButton.removeAttribute('loggedin')
       document.querySelectorAll('.adminshow').forEach(e => e.setAttribute('hidden', ''))
+      document.getElementById('portal').setAttribute('hidden', '')
+
       return false
     } else {
       this.loginButton.innerText = `${this.user.tag}`
@@ -67,6 +74,10 @@ export class CensorBotApi {
       if (this.user.admin) document.querySelectorAll('.adminshow').forEach(e => e.removeAttribute('hidden'))
       else document.querySelectorAll('.adminshow').forEach(e => e.setAttribute('hidden', ''))
       if (this.waitingForUser) this.waitingForUser.forEach(x => x())
+
+      if (this.user.premium.customer) document.getElementById('portal').removeAttribute('hidden')
+      else document.getElementById('portal').setAttribute('hidden', '')
+
       return true
     }
   }
@@ -183,11 +194,11 @@ export class CensorBotApi {
     })
   }
 
-  public async getSelf(): Promise<User | false> {
+  public async getSelf(reload = false): Promise<User | false> {
     await this.ws.waitForConnection()
-    if (this.user) return this.user
+    if (this.user && !reload) return this.user
 
-    return this.ws.request('AUTHORIZE', { token: this.token }).catch(() => false as false)
+    return this.ws.request('AUTHORIZE', { token: this.token, customer: reload }).catch(() => false as false)
   }
 
   public async getGuilds(): Promise<ShortGuild[] | false> {

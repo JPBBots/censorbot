@@ -52,14 +52,16 @@ export class ApiManager {
 
   async extendUser (user: User): Promise<User> {
     user.admin = await this.interface.api.isAdmin(user.id)
-    const isPremium = await this.chargebee.getAmount(user.id)
+    const prem = await this.chargebee.getAmount(user.id)
 
     const premium = {
       count: 0,
-      guilds: []
+      guilds: [],
+      customer: false
     }
-    if (isPremium) {
-      premium.count = isPremium
+    if (prem) {
+      premium.count = prem.amount
+      premium.customer = prem.customer
 
       let premiumUser = await this.db.collection('premium_users').findOne({ id: user.id })
       if (!premiumUser) {

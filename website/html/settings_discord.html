@@ -66,7 +66,7 @@
       <input placeholder="Add Words" hidden>
     </Setting>
     <Setting:matchExact Match Exact>
-      <Tooltip href="'javascript:void(0);'">
+      <Tooltip>
         Will make your server filter only match if the text is exactly as it shows (can be inaccurate)
       </Tooltip>
       <Switch>
@@ -79,7 +79,7 @@
       <Switch>
     </PremiumSetting>
     <PremiumSetting:images Anti-NSFW Images>
-      <Tooltip href="https://twitter.com/Link90355556">
+      <Tooltip href="https://twitter.com/Link90355556" target="_blank">
         Made possible by Link#0069
       </Tooltip>
       <Switch>
@@ -89,7 +89,7 @@
   <section class="other">
     <h1>Other</h1>
     <Setting:antiHoist Anti-Hoist>
-      <Tooltip href=";">
+      <Tooltip>
         Automatically detects when a user has a hoisting character in their name and adds a dehoisting character in front.
       </Tooltip>
       <Switch>
@@ -105,7 +105,7 @@
         Deletes after <Number placeholder="Never" min="0" max="120"> seconds
       </li>
     </ul>
-    <h2>Resend <Star> <Tooltip href="javascript:void(0);">
+    <h2>Resend <Star> <Tooltip>
       Resends a users message via a webhook, with the same username and profile picture, but with the curses blocked out.
     </Tooltip></h2>
     <PremiumSetting:webhook.enabled Enabled>
@@ -127,17 +127,19 @@
     <h1>Punishments</h1>
     <ul>
       <li id="punishment.amount">
-        If a user curses <Number min="1" max="50"> times
+        <p>If a user curses </p> <Number min="1" max="50">
+        <p>times</p>
       </li>
       <li id="punishment.expires">
-        Within <Duration Forever>
+        <p>Within</p> <Duration Forever>
       </li>
       <li id="punishment.type">
-        Then
+        <p>Then</p>
         <select onchange="
           const role = document.getElementById('punishment.role'); 
-          const time = document.getElementById('punishment.time'); 
-          (this.value == 1 ? role.removeAttribute('hidden') : role.setAttribute('hidden', ''));
+          const time = document.getElementById('punishment.time');
+          const retainRoles = document.getElementById('punishment.retainRoles');
+          (this.value == 1 ? [role.removeAttribute('hidden'), retainRoles.removeAttribute('hidden')] : [role.setAttribute('hidden', ''), retainRoles.setAttribute('hidden', '')]);
           (['1', '3'].includes(this.value) ? time.removeAttribute('hidden') : time.setAttribute('hidden', ''))
         ">
           <option value="0">Do nothing</option>
@@ -147,10 +149,17 @@
         </select>
       </li>
       <li id="punishment.role" hidden>
-        Role: <select></select>
+        <p>Role:</p> <select></select>
+      </li>
+      <li id="punishment.retainRoles" hidden>
+        <p>Retain Roles: <Star>
+          <Tooltip>
+            Removes all roles when muting somebody, and gives them back after they've been unmuted.
+          </Tooltip>
+        </p> <Switch>
       </li>
       <li id="punishment.time" hidden>
-        And undo it after <Duration Never>
+        <p>And undo it after</p> <Duration Never>
       </li>
     </ul>
   </section>

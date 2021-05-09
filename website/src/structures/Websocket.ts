@@ -126,7 +126,8 @@ export class CensorBotWs {
     const data: Incoming<'frontend'> = JSON.parse(dat)
 
     if (window.dev) {
-      this.log(`${data.e}: ${JSON.stringify(data.d, null, 2)} / ${data.i}`)
+      this.log(`${data.e} / ${data.i}`)
+      console.log(data.d)
     }
 
     if (data.e === 'RETURN') {
@@ -155,10 +156,15 @@ export class CensorBotWs {
       this.meta = data.d.$meta
 
       if (this.api.loader.currentPage && this.api.loader.currentPage.onConnect) this.api.loader.currentPage.onConnect()
-
       this.hbInterval = window.setInterval(() => {
         void this._heartbeat()
       }, data.d.interval)
+    }
+
+    if (data.e === 'UPDATE_USER') {
+      this.api.user = data.d
+      this.api.handleUser()
+      Utils.reloadPage()
     }
 
     if (this.api.loader.currentPage instanceof DiscordSettings) {

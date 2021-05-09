@@ -16,13 +16,16 @@ import { e404 } from './errors/404'
 
 export const Pages = [
   Landing,
-  e404,
-  Test,
-  DiscordSettings,
+
   Premium,
   Payment,
+
+  Test,
+  Tickets,
   DashboardTwitch,
   DashboardGuilded,
   DashboardDiscord,
-  Tickets
+
+  DiscordSettings,
+  e404
 ]

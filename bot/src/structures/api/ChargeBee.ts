@@ -8,6 +8,7 @@ import { Snowflake } from 'discord-api-types'
 
 import { ApiManager } from '../../managers/Api'
 import { PremiumTypes, RegisterResponse } from 'typings'
+import { Cache } from '@jpbberry/cache'
 
 const chargebee = chargebeeC as Chargebee.ChargeBee
 
@@ -22,13 +23,25 @@ interface CustomerSchema {
   customer: string
 }
 
+export interface AmountObject {
+  amount: number
+  customer: boolean
+}
+
+const NONE: AmountObject = {
+  amount: 0,
+  customer: false
+}
+
 export class ChargeBee {
   chargebee: Chargebee.ChargeBee = chargebee
+
+  cache: Cache<Snowflake, AmountObject> = new Cache(this.manager.config.dashboardOptions.wipeTimeout)
 
   constructor (private readonly manager: ApiManager) {
     this.chargebee.configure({
       site: 'censorbot-test',
-      api_key: this.manager.config.chargebeeKey
+      api_key: this.manager.config.chargebee.key
     })
   }
 
@@ -50,7 +63,7 @@ export class ChargeBee {
 
         if (data.list.length > 0) {
           sub = data.list
-            .filter(x => x.subscription.status === 'active')[0].subscription
+            .filter(x => x.subscription.status === 'active')?.[0]?.subscription
         }
 
         if (!sub) reject(new Error('Couldn\'t find subscription'))
@@ -60,16 +73,26 @@ export class ChargeBee {
     })
   }
 
-  async getAmount (id: Snowflake): Promise<number> {
+  async getAmount (id: Snowflake): Promise<AmountObject> {
+    const cached = this.cache.get(id)
+    if (cached) return cached
+
     const user = await this.collection.findOne({ id })
-    if (!user || !user.customer) return 0
-    try {
-      const sub = await this.getCustomerSub(user.customer)
-      if (!sub) return 0
-      return this.manager.config.premiumAmounts[sub.plan_id] || 0
-    } catch (err) {
-      return 0
-    }
+    const res = await (async (): Promise<AmountObject> => {
+      if (!user || !user.customer) return NONE
+      try {
+        const sub = await this.getCustomerSub(user.customer)
+        if (!sub) return NONE
+        return {
+          amount: this.manager.config.premiumAmounts[sub.plan_id] || 0,
+          customer: true
+        }
+      } catch (err) {
+        return NONE
+      }
+    })()
+    this.cache.set(id, res)
+    return res
   }
 
   async register (id: Snowflake, customer: string): Promise<RegisterResponse> {

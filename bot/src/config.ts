@@ -18,7 +18,10 @@ export const Config = {
     password: process.env.DB_PASSWORD as string
   },
 
-  chargebeeKey: process.env.CHARGEBEE as string,
+  chargebee: {
+    key: process.env.CHARGEBEE as string,
+    webhook: process.env.CHARGEBEE_WEBHOOK as string
+  },
 
   premiumAmounts: {
     premium: 3,

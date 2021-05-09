@@ -50,6 +50,7 @@ export interface WebSocketEventMap {
   AUTHORIZE: {
     receive: {
       token: string
+      customer: boolean
     }
     send: User
   }
@@ -81,6 +82,10 @@ export interface WebSocketEventMap {
       guilds: Snowflake[]
     }
     send: true
+  }
+  UPDATE_USER: {
+    receive: User
+    send: null
   }
   ERROR: {
     receive: {

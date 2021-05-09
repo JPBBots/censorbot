@@ -99,6 +99,10 @@ export interface GuildDB {
      * How long the amount has to expire
      */
     expires: number|null
+    /**
+     * Whether or not to retain a users role over a mute
+     */
+    retainRoles: boolean
   }
   /**
    * Webhook options
@@ -153,6 +157,10 @@ export interface User {
      * Guilds that are premium for this users
      */
     guilds: Snowflake[]
+    /**
+     * Whether or not a user is a customer or a patron
+     */
+    customer: boolean
   }
   /**
    * Whether or not user is admin

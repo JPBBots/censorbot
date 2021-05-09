@@ -67,7 +67,7 @@ function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB,
         break
     }
 
-    void worker.punishments.punish(message.guild_id, message.author.id)
+    void worker.punishments.punish(message.guild_id, message.author.id, message.member?.roles)
   }
 }
 

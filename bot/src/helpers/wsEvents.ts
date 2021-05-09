@@ -11,16 +11,24 @@ export const Events = {
     con.userId = undefined
   },
   AUTHORIZE: async (con, data, resolve) => {
+    let newUser: User
     if (!con.db) {
       const user = await con.socket.manager.db.collection('users').findOne({ token: data?.token }) as User
       if (!user) throw new Error('Invalid Token')
 
       con.userId = user.id
-      con.socket.cachedUsers.set(user.id, user)
+      newUser = user
+    } else {
+      newUser = con.db
     }
-    if (!con.db) return
+    if (!newUser) return
 
-    resolve?.({ ...await con.socket.manager.extendUser(con.db), _id: undefined, bearer: undefined })
+    if (data?.customer) con.socket.manager.chargebee.cache.delete(newUser.id)
+
+    const user = await con.socket.manager.extendUser(newUser)
+    con.socket.cachedUsers.set(newUser.id, user)
+
+    resolve?.({ ...user, _id: undefined, bearer: undefined })
   },
   GET_GUILDS: async (con, data, resolve) => {
     resolve?.(await con.getGuilds())
