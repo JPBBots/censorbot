@@ -4,7 +4,8 @@ import { FilterResponse } from '../structures/Filter'
 
 import { Snowflake, GatewayMessageCreateDispatchData, GatewayMessageUpdateDispatchData } from 'discord-api-types'
 
-import { Cache } from 'discord-rose/dist/utils/Cache'
+import { Cache } from '@jpbberry/cache'
+
 import { CensorMethods, GuildDB, PunishmentType } from 'typings/api'
 
 interface MultiLine {
@@ -24,7 +25,7 @@ const replaces = {
 type EventData = GatewayMessageCreateDispatchData | GatewayMessageUpdateDispatchData
 
 function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB, response: FilterResponse): void {
-  if (!message.guild_id || !message.content || !message.author || !message.member) return
+  if (!message.guild_id || !message.author || !message.member) return
 
   if (!worker.hasPerms(message.guild_id, 'sendMessages', message.channel_id)) return
   if (!worker.hasPerms(message.guild_id, 'embed', message.channel_id)) {
@@ -40,12 +41,12 @@ function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB,
   if (multi) multiLineStore.delete(message.channel_id)
 
   if (db.log && worker.channels.has(db.log)) {
-    void worker.responses.log(CensorMethods.Messages, message.content, message, response, db.log)
+    void worker.responses.log(CensorMethods.Messages, message.content ?? 'No Content', message, response, db.log)
   }
 
   if (db.msg.content !== false) worker.actions.popup(message.channel_id, message.author.id, db)
 
-  if (response.ranges.length > 0 && db.webhook.enabled) {
+  if (response.ranges.length > 0 && db.webhook.enabled && message.content) {
     let content = worker.filter.surround(message.content, response.ranges, '||')
 
     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -73,7 +74,7 @@ function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB,
 
 export async function MessageHandler (worker: WorkerManager, message: EventData): Promise<void> {
   const channel = worker.channels.get(message.channel_id)
-  if (!message.guild_id || !message.content || !message.author || !channel || !message.member) return
+  if (!message.guild_id || !message.author || !channel || !message.member) return
 
   let multiline = multiLineStore.get(message.channel_id)
   if (multiline && multiline.author !== message.author.id) multiLineStore.delete(message.channel_id)
@@ -81,6 +82,8 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
   if (message.author.bot) return
 
   const db = await worker.db.config(message.guild_id)
+
+  if (message.content?.startsWith(`${db.prefix}ticket`)) return void worker.api.messages.delete(message.channel_id, message.id)
 
   if ((db.censor & CensorMethods.Messages) === 0) return
 
@@ -91,7 +94,7 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
     db.channels.includes(message.channel_id)
   ) return
 
-  let content = message.content
+  let content = message.content as string
 
   if (db.invites) {
     if (content.match(/discord((app)?\.com\/invite|\.gg)\/([-\w]{2,32})/i)) {
@@ -116,6 +119,26 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
         ranges: [],
         percentage: prediction.percent
       })
+    }
+  }
+
+  if (db.images) {
+    const urls: string[] = []
+    if (message.attachments) urls.push(...message.attachments.map(x => x.proxy_url))
+    if (message.embeds) urls.push(...message.embeds.map(x => x.thumbnail?.proxy_url).filter(x => x) as string[])
+
+    for (const url of urls) {
+      const res = await worker.images.test(url)
+      if (res.bad) {
+        return handleDeletion(worker, message, db, {
+          censor: true,
+          filters: ['images'],
+          places: [],
+          ranges: [],
+          percentage: res.percent
+        })
+      }
+      continue
     }
   }
 

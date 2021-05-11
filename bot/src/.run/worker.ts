@@ -1,5 +1,5 @@
-import { GuildDB } from 'typings/api'
 import { WorkerManager } from '../managers/Worker'
+import { CommandContext as CM } from '../structures/CommandContext'
 
 new WorkerManager()
 
@@ -8,9 +8,7 @@ declare module 'discord-rose/dist/typings/lib' {
   interface CommandOptions {
     description: string
   }
-  interface CommandContext {
-    db: GuildDB
-  }
+  interface CommandContext extends CM {}
 }
 
 import adminMiddleware from '@discord-rose/admin-middleware'

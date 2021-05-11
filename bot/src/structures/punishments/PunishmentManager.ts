@@ -84,7 +84,7 @@ export class PunishmentManager {
 
   async mute (guild: Snowflake, user: Snowflake, roles?: Snowflake[]): Promise<void> {
     const db = await this.config(guild)
-    if (!db.punishment.role) throw new Error('No muted role has been set')
+    if (!db.punishment.role || !this.worker.guildRoles.get(guild)?.has(db.punishment.role)) throw new Error('No muted role has been set')
 
     if (db.punishment.retainRoles) {
       await this.members.edit(guild, user, {

@@ -27,7 +27,10 @@ export class ApiManager {
   region: Region = 'na'
 
   thread = new Thread()
-  rest = new RestManager(Config.token)
+  rest = new RestManager(Config.token, {
+    version: 9
+  })
+
   filter = new Filter()
   chargebee = new ChargeBee(this)
 

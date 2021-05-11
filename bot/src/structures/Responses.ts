@@ -50,10 +50,15 @@ export class Responses {
         })`)
     }
 
-    return await embed
+    embed
       .field('Content', this.worker.filter.surround(content, response.ranges, '__'), true)
       .field('Filter(s)', response.filters.map(x => this.worker.filter.masks[x]).join(', '), true)
-      .send()
+
+    if (response.percentage) {
+      embed.field('Prediction', response.percentage, true)
+    }
+
+    return await embed.send()
   }
 
   async errorLog (log: Snowflake, message: string): Promise<APIMessage> {

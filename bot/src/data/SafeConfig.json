@@ -15,6 +15,7 @@
       "amount": 3,
       "role": null,
       "time": null,
+      "retainRoles": false,
       "expires": null
   },
   "webhook": {

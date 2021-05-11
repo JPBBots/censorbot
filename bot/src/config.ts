@@ -2,6 +2,7 @@ import DotEnv from 'dotenv'
 import path from 'path'
 import fs from 'fs'
 import { PermissionsUtils } from 'discord-rose'
+import { OAuth2Scopes, Snowflake } from 'discord-api-types'
 
 if (!process.env.BOT_TOKEN) {
   const env = DotEnv.parse(fs.readFileSync(path.resolve(__dirname, '../../.env')))
@@ -10,12 +11,33 @@ if (!process.env.BOT_TOKEN) {
   })
 }
 
+const staging = Boolean(process.env.STAGING)
+
+function generateWebhook (wh: string): { id: Snowflake, token: string } {
+  const [id, token] = process.env[`WH_${wh.toUpperCase()}`]?.split(',') as [Snowflake, string]
+
+  return { id, token }
+}
+
 export const Config = {
   id: process.env.ID as string,
   token: process.env.BOT_TOKEN as string,
   db: {
     username: process.env.DB_USERNAME as string,
     password: process.env.DB_PASSWORD as string
+  },
+
+  channels: staging
+    ? {
+        tickets: '841417190635732992'
+      }
+    : {
+        tickets: '691690998115467274'
+      },
+
+  emojis: {
+    yes: '466027045021941761',
+    no: '466027079536738304'
   },
 
   chargebee: {
@@ -91,17 +113,22 @@ export const Config = {
     invite: 'https://censor.bot/invite',
     dashboard: 'https://dash.censor.bot',
     support: 'https://discord.gg/CRAbk4w',
-    patreon: 'https://patreon.com/censorbot'
+    premium: 'https://censor.bot/premium'
   },
 
   defaultMessage: "You're not allowed to say that.",
+
+  webhooks: {
+    tickets: generateWebhook('tickets'),
+    ticketLog: generateWebhook('ticketLog')
+  },
 
   actionRetention: 3,
 
   dashboardOptions: {
     wipeTimeout: 15 * 60 * 1000, // 15 minutes
     requiredPermission: 'manageGuild' as keyof typeof PermissionsUtils.bits,
-    scopes: ['identify', 'guilds'],
+    scopes: [OAuth2Scopes.Identify, OAuth2Scopes.Guilds],
     port: Number(process.env.PORT)
   },
 

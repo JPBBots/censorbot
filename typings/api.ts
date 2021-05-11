@@ -235,13 +235,18 @@ export type AdminResponse = {
   shards: Shard[]
 }[]
 
-export type SmallID = string
+/**
+ * 3 character temporary identifier
+ */
+ export type ShortID = `${string}${string}${string}`
 
 export interface Ticket {
-  id: SmallID
+  id: ShortID
   word: string
   user: Snowflake
-  admin: Snowflake
+  admin?: Snowflake
+  msg?: Snowflake
+  accepted: boolean
 }
 
 export interface TicketTest {

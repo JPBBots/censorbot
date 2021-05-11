@@ -1,11 +1,10 @@
-import { Master } from 'discord-rose'
+import { Master, Cluster } from 'discord-rose'
 
 import path from 'path'
 import { Config } from '../config'
 import { Database } from '../structures/Database'
 
 import { addHandlers } from '../helpers/masterEvents'
-import { Cluster } from 'discord-rose/dist/clustering/master/Cluster'
 
 export class MasterManager extends Master {
   config = Config
@@ -22,7 +21,10 @@ export class MasterManager extends Master {
       },
       intents: ['GUILD_MESSAGES', 'GUILDS', 'GUILD_MESSAGE_REACTIONS', 'GUILD_MEMBERS'],
       shards: 2,
-      shardsPerCluster: 1
+      shardsPerCluster: 1,
+      rest: {
+        version: 9
+      }
     })
 
     addHandlers(this)

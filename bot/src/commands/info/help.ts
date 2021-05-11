@@ -8,7 +8,7 @@ export default {
     const links = ctx.worker.config.links
     void ctx.embed
       .description(`Change the bot here: ${links.dashboard}`)
-      .field('Helpful links', `[Dashboard](${links.dashboard}) | [Support](${links.support}) | [Invite](${links.invite})\n[Website](${links.site}) | [Patreon](${links.patreon})`)
+      .field('Helpful links', `[Dashboard](${links.dashboard}) | [Support](${links.support}) | [Invite](${links.invite})\n[Website](${links.site}) | [Premium](${links.premium})`)
       .field('Commands', `${ctx.worker.commands.commands?.filter(x => !x.admin).map(x => `__${ctx.prefix}${String(x.command)}__: ${x.description}`).join('\n')}`)
       .send()
   }

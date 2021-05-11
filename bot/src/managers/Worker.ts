@@ -1,10 +1,12 @@
-import { Worker, PermissionsUtils, CachedGuild } from 'discord-rose'
+import { Worker, PermissionsUtils, CachedGuild, Embed } from 'discord-rose'
 import { Config } from '../config'
 
 import { Database } from '../structures/Database'
 import { Filter } from '../structures/Filter'
 import { ActionBucket } from '../structures/ActionBucket'
 import { Responses } from '../structures/Responses'
+import { CommandContext } from '../structures/CommandContext'
+import { TicketManager } from '../structures/TicketManager'
 
 import { PerspectiveApi } from '../structures/ai/PerspectiveApi'
 import { AntiNSFW } from '../structures/ai/AntiNSFW'
@@ -31,6 +33,7 @@ export class WorkerManager extends Worker {
 
   actions = new ActionBucket(this)
   responses = new Responses(this)
+  tickets = new TicketManager(this)
 
   perspective = new PerspectiveApi()
   images = new AntiNSFW()
@@ -59,6 +62,7 @@ export class WorkerManager extends Worker {
 
         return true
       })
+    this.commands.CommandContext = CommandContext
 
     addHandlers(this)
     setupFilters(this)
@@ -89,5 +93,12 @@ export class WorkerManager extends Worker {
       roleList: this.guildRoles.get(id) as Collection<Snowflake, APIRole>,
       overwrites: channel ? this.channels.get(channel)?.permission_overwrites : undefined
     }), perms)
+  }
+
+  webhook (wh: keyof typeof Config.webhooks): Embed {
+    const webhook = this.config.webhooks[wh]
+    return new Embed(async (embed) => {
+      return await this.comms.sendWebhook(webhook.id, webhook.token, embed)
+    })
   }
 }

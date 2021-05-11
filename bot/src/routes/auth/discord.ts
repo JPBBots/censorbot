@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { ApiManager } from '../../managers/Api'
 
 import qs from 'querystring'
+import { OAuth2Scopes } from 'discord-api-types'
 
 export default function (this: ApiManager, r: Router): void {
   r
@@ -11,7 +12,7 @@ export default function (this: ApiManager, r: Router): void {
         redirect_uri: `https://${req.headers.host}/api/auth/discord/callback`,
         response_type: 'code',
         prompt: 'none',
-        scope: this.config.dashboardOptions.scopes.concat(req.query.email === 'true' ? ['email'] : []).join(' ')
+        scope: this.config.dashboardOptions.scopes.concat(req.query.email === 'true' ? [OAuth2Scopes.Email] : []).join(' ')
       }))
     })
 

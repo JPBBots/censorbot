@@ -25,7 +25,7 @@ export interface FilterResponse {
   ranges: Range[]
   filters: filterName[]
   places: JPBExp[]
-  percentage?: `${number}%`
+  percentage?: string
 }
 
 const removeRegex = /\x1D|\x1F/
@@ -226,7 +226,7 @@ export class Filter {
     return res
   }
 
-  test (text: string, db: GuildDB): FilterResponse {
+  test (text: string, db: Pick<GuildDB, 'matchExact' | 'filter' | 'filters' | 'uncensor'>): FilterResponse {
     const content = this.resolve(text)
 
     const res: FilterResponse = {
