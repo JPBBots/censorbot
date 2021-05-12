@@ -138,6 +138,17 @@ class PresenceManager {
   limit () {
     this.status('WATCHING', 'Limit being a dumby', 'online')
   }
+  
+   /**
+   * Limit
+   */
+    limitstream () {
+        this.status('STREAMING', 'Streaming with Limit', 'online', 'https://twitch.tv/no_limitrb')
+      }
+      
 }
+
+
+
 
 module.exports = PresenceManager
