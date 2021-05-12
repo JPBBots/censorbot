@@ -6,7 +6,7 @@ new WorkerManager()
 declare module 'discord-rose/dist/typings/lib' {
   type worker = WorkerManager
   interface CommandOptions {
-    description: string
+    description?: string
   }
   interface CommandContext extends CM {}
 }

@@ -24,8 +24,8 @@ export class Responses {
       .send()
   }
 
-  async popup (channel: Snowflake, user: Snowflake, message: string): Promise<APIMessage> {
-    return await this.embed(channel)
+  async popup (channel: Snowflake, user: Snowflake, message: string, dm: boolean): Promise<APIMessage> {
+    return await this.embed(dm ? await this.worker.api.users.createDM(user).then(x => x.id) : channel)
       .color(this.color)
       .description(`<@${user}> ${message}`)
       .send()

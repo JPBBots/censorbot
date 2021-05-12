@@ -19,7 +19,7 @@
   "dependencies": {
     "@discord-rose/admin-middleware": "^1.1.0",
     "@discord-rose/flags-middleware": "^1.0.2",
-    "@discord-rose/permissions-middleware": "^1.1.0",
+    "@discord-rose/permissions-middleware": "^1.2.0",
     "@jpbberry/cache": "^1.0.4",
     "@jpbberry/load-routes": "^1.0.3",
     "chargebee": "^2.6.5",

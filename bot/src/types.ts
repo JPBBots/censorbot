@@ -1,4 +1,5 @@
 import { Snowflake } from 'discord-api-types'
+import { ShortID } from 'typings'
 
 export const Reloaders = ['COMMANDS', 'FILTER', 'CACHE'] as const
 
@@ -17,6 +18,14 @@ declare module 'discord-rose/dist/clustering/ThreadComms' {
     RELOAD_WEBSOCKETS: {
       send: null
       receive: null
+    }
+    CREATE_HELPME: {
+      send: { id: Snowflake }
+      receive: ShortID
+    }
+    GET_HELPME: {
+      send: { code: ShortID }
+      receive: Snowflake
     }
   }
 }
