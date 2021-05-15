@@ -6,8 +6,8 @@ import { GatewayGuildMemberUpdateDispatchData, GatewayGuildMemberAddDispatchData
 
 import { CensorMethods, GuildDB, PunishmentType } from 'typings/api'
 
-const inappName = 'Innapropriate name'
-const deHoist = String.fromCharCode(848)
+const inappName = 'Innapropriate Name'
+const deHoist = String.fromCharCode(856)
 
 type EventData = GatewayGuildMemberUpdateDispatchData | GatewayGuildMemberAddDispatchData
 
@@ -25,9 +25,11 @@ function handleCensor (worker: WorkerManager, member: EventData, db: GuildDB, re
   if (!worker.hasPerms(member.guild_id, 'manageNicknames') && db.log) {
     return void worker.responses.errorLog(db.log, 'Missing permissions to Manage Nicknames')
   }
+
   if (db.log && worker.channels.has(db.log)) {
     void worker.responses.log(CensorMethods.Names, member.nick ?? member.user.username, member, response, db.log)
   }
+
   void worker.api.members.setNickname(member.guild_id, member.user.id, member.nick ? null : inappName)
 
   if (db.punishment.type !== PunishmentType.Nothing) {

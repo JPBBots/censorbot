@@ -4,7 +4,7 @@ import { Logger } from './Logger'
 import { CensorBotWs } from './Websocket'
 
 import { E } from './Elements'
-import { AdminResponse, GuildData, GuildDB, ShortGuild, SmallID, Ticket, TicketTest, User } from '@typings/api'
+import { AdminResponse, GuildData, GuildDB, ShortGuild, ShortID, Ticket, TicketTest, User } from '@typings/api'
 import { Snowflake } from 'discord-api-types'
 import { Loader } from '../Loader'
 
@@ -337,15 +337,15 @@ export class CensorBotApi {
     return response
   }
 
-  public async testTicket(id: SmallID): Promise<TicketTest> {
+  public async testTicket(id: ShortID): Promise<TicketTest> {
     if (this.user.admin) return this.request('Fetching ticket', 'GET', '/admin/tickets/' + id)
   }
 
-  public async acceptTicket(id: SmallID): Promise<{ success: boolean }> {
+  public async acceptTicket(id: ShortID): Promise<{ success: boolean }> {
     if (this.user.admin) return this.request('Accepting ticket', 'POST', '/admin/tickets/' + id)
   }
 
-  public async denyTicket(id: SmallID): Promise<{ success: boolean }> {
+  public async denyTicket(id: ShortID): Promise<{ success: boolean }> {
     if (this.user.admin) return this.request('Denying ticket', 'DELETE', '/admin/tickets/' + id)
   }
 }

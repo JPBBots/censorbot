@@ -431,13 +431,14 @@ input, select {
 
 .tooltip {
   position: relative;
-  display: block;
+  display: contents;
   cursor: pointer;
 }
 
 .tooltip .tooltiptext {
   visibility: hidden;
   width: fit-content;
+  max-width: 20vw;
   font-size: 15px;
   background-color: var(--footer);
   color: var(--different);

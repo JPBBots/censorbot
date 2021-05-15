@@ -4,6 +4,7 @@ import { WorkerManager } from '../managers/Worker'
 import Collection from '@discordjs/collection'
 
 import { APIGuildMember, APIRole, Snowflake } from 'discord-api-types'
+import { PunishmentType } from 'typings'
 
 const unavailables = new Set()
 
@@ -54,5 +55,33 @@ export function setupDiscord (worker: WorkerManager): void {
     if (worker.config.custom.allowedGuilds && !worker.config.custom.allowedGuilds.includes(guild.id)) {
       void worker.api.guilds.leave(guild.id)
     }
+  })
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  worker.on('GUILD_MEMBER_UPDATE', async (member) => {
+    if (!member.user) return
+
+    const db = await worker.db.config(member.guild_id)
+
+    if (!db.punishment.role || db.punishment.type !== PunishmentType.Mute) return
+
+    if (member.roles.includes(db.punishment.role)) return
+
+    const punishment = await worker.punishments.timeouts.db.findOne({ guild: member.guild_id, user: member.user.id })
+    if (!punishment) return
+
+    void worker.punishments.unmute(member.guild_id, member.user.id, true, punishment.roles)
+  })
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  worker.on('GUILD_MEMBER_ADD', async (member) => {
+    if (!member.user) return
+
+    const db = await worker.db.config(member.guild_id)
+
+    if (!db.punishment.role || db.punishment.type !== PunishmentType.Mute) return
+
+    const punishment = await worker.punishments.timeouts.db.findOne({ guild: member.guild_id, user: member.user.id })
+    if (!punishment) return
+
+    void worker.api.members.addRole(member.guild_id, member.user.id, db.punishment.role)
   })
 }

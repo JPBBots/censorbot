@@ -6,8 +6,6 @@ export default function (this: ApiManager, r: Router): void {
   r.get<{
     id: Snowflake
   }>('/:id', async (req, res) => {
-    res.json({
-      amount: await this.chargebee.getAmount(req.params.id)
-    })
+    res.json(await this.chargebee.getAmount(req.params.id))
   })
 }

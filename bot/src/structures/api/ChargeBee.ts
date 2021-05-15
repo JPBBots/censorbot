@@ -7,7 +7,7 @@ import { Collection } from 'mongodb'
 import { Snowflake } from 'discord-api-types'
 
 import { ApiManager } from '../../managers/Api'
-import { PremiumTypes, RegisterResponse } from 'typings'
+import { PremiumTypes, RegisterResponse, User } from 'typings'
 import { Cache } from '@jpbberry/cache'
 
 const chargebee = chargebeeC as Chargebee.ChargeBee
@@ -40,7 +40,7 @@ export class ChargeBee {
 
   constructor (private readonly manager: ApiManager) {
     this.chargebee.configure({
-      site: 'censorbot-test',
+      site: `censorbot${manager.config.staging ? '-test' : ''}`,
       api_key: this.manager.config.chargebee.key
     })
   }
@@ -79,7 +79,15 @@ export class ChargeBee {
 
     const user = await this.collection.findOne({ id })
     const res = await (async (): Promise<AmountObject> => {
-      if (!user || !user.customer) return NONE
+      if (!user || !user.customer) {
+        const prem = await this.manager.interface.api.getPremium(id)
+        if (prem) {
+          return {
+            amount: prem,
+            customer: false
+          }
+        } else return NONE
+      }
       try {
         const sub = await this.getCustomerSub(user.customer)
         if (!sub) return NONE
@@ -122,6 +130,21 @@ export class ChargeBee {
       sub: sub.plan_id as PremiumTypes,
       amount: this.manager.config.premiumAmounts[sub.plan_id] || 0,
       endDate: sub.next_billing_at * 1000
+    }
+  }
+
+  async handleDelete (user: User): Promise<void> {
+    await this.manager.db.premium.deleteOne({ id: user.id })
+
+    if (user.premium) {
+      for (const guild of user.premium?.guilds ?? []) {
+        try {
+          this.manager.socket.guilds.cache.delete(guild)
+          await this.manager.socket.guilds.set(guild)
+        } catch (err) {
+          await this.manager.db.collection('guild_data').deleteOne({ id: guild })
+        }
+      }
     }
   }
 }

@@ -10,6 +10,7 @@ import SafeConfig from '../data/SafeConfig.json'
 import { schema } from '../data/ConfigSchema'
 
 import { Database as Db } from 'interface/dist/Database'
+import { Collection } from 'mongodb'
 
 export class Database extends Db {
   configCache: Cache<Snowflake, GuildDB> = new Cache(5 * 60 * 1000)
@@ -54,8 +55,15 @@ export class Database extends Db {
     return db
   }
 
+  get premium (): Collection<{
+    id: Snowflake
+    guilds: Snowflake[]
+  }> {
+    return this.collection('premium_users')
+  }
+
   async guildPremium (id: Snowflake): Promise<boolean> {
-    const response = await this.collection('premium_users').find({
+    const response = await this.premium.find({
       guilds: {
         $elemMatch: { $eq: id }
       }

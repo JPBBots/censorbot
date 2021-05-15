@@ -11,7 +11,8 @@ const changeEvents = [
   'subscription_deleted',
   'subscription_resumed',
   'payment_failed',
-  'payment_refunded'
+  'payment_refunded',
+  'customer_deleted'
 ]
 
 export default function (this: ApiManager, r: Router): void {
@@ -31,6 +32,8 @@ export default function (this: ApiManager, r: Router): void {
 
       res.sendStatus(204)
 
+      console.log(req.body?.event_type)
+
       if (!changeEvents.includes(req.body?.event_type)) return
 
       const customer: string = req.body?.content?.customer?.id
@@ -44,6 +47,14 @@ export default function (this: ApiManager, r: Router): void {
       const current = this.socket.cachedUsers.get(user.id)
       if (current) {
         const newUser = await this.extendUser(current)
+
+        console.log(newUser)
+
+        if ((newUser.premium?.count ?? 0) < 1) {
+          await this.chargebee.handleDelete(newUser)
+          if (newUser.premium) newUser.premium.guilds = []
+        }
+
         this.socket.cachedUsers.set(user.id, newUser)
         this.socket.connections.forEach(con => {
           if (con.userId === newUser.id) con.sendEvent('UPDATE_USER', newUser)

@@ -65,8 +65,10 @@ export class GuildHandler {
     this.subs.get(id)?.delete(con)
   }
 
-  async set (id: Snowflake, db: GuildDB): Promise<void> {
+  async set (id: Snowflake, db?: GuildDB): Promise<void> {
     const guild = await this.get(id)
+
+    if (!db) db = guild.db
 
     if (guild.db.notInDb) {
       guild.db.notInDb = false

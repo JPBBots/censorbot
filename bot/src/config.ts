@@ -27,6 +27,8 @@ export const Config = {
     password: process.env.DB_PASSWORD as string
   },
 
+  staging,
+
   channels: staging
     ? {
         tickets: '841417190635732992'

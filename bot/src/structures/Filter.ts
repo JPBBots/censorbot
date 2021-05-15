@@ -62,7 +62,10 @@ export class Filter {
   }, filtObj)
 
   surround (text: string, ranges: Range[], sur: string): string {
-    text = text.replace(removeRegex, '')
+    text = text
+      .replace(removeRegex, '')
+      .replace(/<a?:(\w+):(\d+)>/g, '$1') // emojis
+
     let links: string[] = []
     let splitText: string | string[] = text
       .replace(filter.bothRegex, (text) => {
