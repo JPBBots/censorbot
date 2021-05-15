@@ -7,6 +7,7 @@
   --topbaralt: #1a212b;
   --background: #333b52;
   --gold: #c2973a;
+  --footer: #303134;
 
   --duration: 0.4s
 }
@@ -48,20 +49,26 @@ body {
   color: var(--different);
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
+  display: grid;
+  grid-template-columns: 2;
+  grid-template-rows: 1;
+  grid-template-areas:
+    "root"
+    "footer"
 }
 
 #root {
-  position: relative;
-  top: 50px;
+  grid-area: root;
+  // position: relative;
+  padding-top: 50px;
   z-index: 1;
-  width: 100vw;
-  overflow-x: hidden;
-  padding-bottom: 10px;
+  min-height: 95vh;
 }
 
 nav {
   top: 0px;
-  height: 50px;
+  min-height: 50px;
+  height: 5vh;
   width: 100%;
   background-color: var(--topbar);
   position: fixed;
@@ -109,7 +116,7 @@ nav {
   min-width: 160px;
   overflow: auto;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  z-index: 5;
   overflow: hidden;
   right: -10px;
 
@@ -182,19 +189,6 @@ nav {
   }
 }
 
-#root {
-  transition: 0.5s;
-  &.loading {
-    transition: 0.5s;
-    opacity: 0;
-    position: fixed;
-  }
-  &.loader {
-    filter: url("data:image/svg+xml;utf9,<svg%20version='1.1'%20xmlns='http://www.w3.org/2000/svg'><filter%20id='blur'><feGaussianBlur%20stdDeviation='10'%20/></filter></svg>#blur");
-    -webkit-filter: blur(20px);
-  }
-}
-
 #toast {
   position: fixed;
   bottom: 10px;
@@ -263,6 +257,47 @@ small {
       animation-duration: 1.5s;
       animation-iteration-count: infinite;
       animation-timing-function: ease-in-out;
+    }
+  }
+}
+
+#connection {
+  width: 100px;
+  animation-name: spin;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  z-index: 5;
+}
+
+footer {
+  grid-area: footer;
+  background-color: var(--topbar);
+  min-height: 7vw;
+  padding: 50px 10vw;
+  z-index: 2;
+
+
+  #copyright {
+    float: left;
+    h1 {
+      margin: 0px;
+      font-size: 2em;
+      font-weight: bolder;
+    }
+    p {
+      font-size: 1em
+    }
+  }
+  #links {
+    display: inline-grid;
+    float: right;
+    padding-top: 11px;
+    a {
+      text-decoration: none;
     }
   }
 }
@@ -392,4 +427,28 @@ input, select {
   &.premium:checked ~ .checkmark > svg {
     background: var(--gold) !important;
   }
+}
+
+.tooltip {
+  position: relative;
+  display: contents;
+  cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: fit-content;
+  max-width: 20vw;
+  font-size: 15px;
+  background-color: var(--footer);
+  color: var(--different);
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }

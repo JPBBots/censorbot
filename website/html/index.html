@@ -7,7 +7,7 @@
     <style id="css"></style>
     <style id="css2"></style>
 
-    <meta property="og:image" content="https://branding.jt3ch.net/censorbot.png">
+    <meta property="og:image" content="https://branding.jt3ch.net/censorbot.svg">
     <meta name="theme-color" content="#ff3d00">
     <meta property="og:title" content="Censor Bot">
     <meta property="og:description" content="Easy to use advanced content filtering for your Discord server(s)!">
@@ -18,12 +18,14 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
     </script>
+    <script src="https://js.chargebee.com/v2/chargebee.js"></script>
 
-    <link rel="icon" href="https://branding.jt3ch.net/censorbot.png">
+    <link rel="icon" href="https://branding.jt3ch.net/censorbot.svg">
 
     <script>{JS}</script>
   </head>
   <body>
+    <div id="devcommands" style="z-index: 10; top: 54px; position: fixed; width: 30vw" hidden></div>
     <noscript>
       <br>
       <br>
@@ -34,10 +36,11 @@
     </noscript>
     <div id="loader" hidden>
       <center>
-        <img src="https://branding.jt3ch.net/censorbotalt.png">
+        <img src="https://branding.jt3ch.net/censorbot.svg">
         <h2 id="loadtext">Loading...</h2>
       </center>
     </div>
+    <img id="connection" src="https://branding.jt3ch.net/censorbot.svg">
     <nav>
       <h3 href="/">
       Censor Bot
@@ -50,13 +53,26 @@
             <a href="/dashboard">Dashboard</a>
             <a href="/support" target="_blank">Support</a>
             <a href="/premium">Premium</a>
-            <a href="/admin" class="adminshow" hidden>Admin</a>
+            <a id="portal" function hidden>Portal</a>
             <a id="logout" function>Logout</a>
           </div>
         </div>
       </span>
     </nav>
-    <div id="root"></div>
+    <div id="root">
+      <div style="height:100vh"></div>
+    </div>
+    <footer>
+      <div id="copyright">
+        <h1>Censor Bot</h1>
+        <p>Copyright &copy; 2021 JPBBots</p>
+      </div>
+      <div id="links">
+        <a href="/support" target="_blank">Get Help</a> <br>
+        <a href="/terms" target="_blank">Terms</a> <br>
+        <a href="/privacy" target="_blank">Privacy Policy</a>
+      </div>
+    </footer>
     <div id="toast" onclick="this.setAttribute('gone', '')" gone></div>
   </body>
 </html>

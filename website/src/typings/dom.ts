@@ -11,6 +11,7 @@ declare global {
     dev: boolean
     discordOAuthExtra?: string
     loadTime: number
+    Chargebee: any
   }
   
   interface WebData {

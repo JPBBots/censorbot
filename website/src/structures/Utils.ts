@@ -9,28 +9,10 @@ export class Utils {
   static scroll (query: string): Promise<void> {
     const doc = document.querySelector(query)
     if (!doc) return
-    return new Promise(resolve => {
-      const top = doc.getBoundingClientRect().top - 50
-      const scrolled = () => window.pageYOffset > top - 60 && window.pageYOffset < top + 60
-      if (scrolled()) return resolve()
-      const timeout = setTimeout(() => {
-        window.scrollTo(0, top)
-        resolve()
-        events.removeEventListener('util', 'scroll')
-      }, 2000)
-      events.addEventListener('util', 'scroll', () => {
-        if (scrolled()) {
-          clearTimeout(timeout)
-          events.removeEventListener('util', 'scroll')
-          window.scrollTo(0, top)
-          resolve()
-        }
-      })
-      window.scroll({
-        behavior: 'smooth',
-        left: 0,
-        top
-      })
+    window.scroll({
+      behavior: 'smooth',
+      left: 0,
+      top: doc.getBoundingClientRect().top - 50
     })
   }
 
@@ -117,7 +99,8 @@ export class Utils {
       document.getElementById('loadtext').appendChild(msg)
     }
     this.disableScroll()
-    document.getElementById('root').classList.add('loader')
+    document.getElementById('root').setAttribute('hidden', '')
+    document.querySelector('footer').setAttribute('hidden', '')
     document.getElementById('loader').removeAttribute('hidden')
   }
 
@@ -146,7 +129,8 @@ export class Utils {
     this.enableScroll()
     document.getElementById('loadtext').innerText = 'Loading...'
     document.getElementById('loader').setAttribute('hidden', '')
-    document.getElementById('root').classList.remove('loader')
+    document.getElementById('root').removeAttribute('hidden')
+    document.querySelector('footer').removeAttribute('hidden')
   }
 
   /**
@@ -208,7 +192,10 @@ export class Utils {
     } else {
       const multiples: HTMLOptionElement[] = []
       for (let i = 0; i < select.children.length - 1; i++) multiples.push(select.children[i] as HTMLOptionElement)
-      const currentTime = multiples.slice(1).reduce((a, b) => (Number((a as HTMLOptionElement).value) * Number(inp.max)) < value ? b : a, multiples[0]) as HTMLOptionElement
+      const currentTime = multiples.slice(1).reduce<HTMLOptionElement>((a, b) => {
+        if (Number(b.value) / value === 1) return b
+        return (Number(a.value) * Number(inp.max)) < value ? b : a 
+      }, multiples[0])
       select.value = currentTime.value
       inp.value = String(value / Number(currentTime.value))
     }
@@ -252,5 +239,24 @@ export class Utils {
     }
   
     document.getElementById('menu').appendChild(a)
+  }
+
+  /**
+   * Patches two objects together
+   */
+  static patch (obj: any, ..._: any[]): any {
+    for (let i = 1; i < arguments.length; i++) {
+      for (const prop in arguments[i]) {
+        const val = arguments[i][prop]
+        if (obj[prop] === undefined) {
+          obj[prop] = val
+        } else if (typeof val === 'object' && !Array.isArray(val)) {
+          this.patch(obj[prop], val)
+        } else {
+          obj[prop] = val
+        }
+      }
+    }
+    return obj
   }
 }

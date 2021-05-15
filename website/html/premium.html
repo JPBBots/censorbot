@@ -1,25 +1,25 @@
 <center>
   <h1><Star>Censor Bot Premium<Star></h1>
 
-  <section id="premium">
+  <section id="premium-section">
     <div>
-      <h3>Supporter</h3>
+      <h3>Premium</h3>
       <h4>$5/month</h4>
       <ul>
         <li>3 Premium Servers</li>
         <li>Premium Support</li>
       </ul>
-      <Button="https://www.patreon.com/join/censorbot/checkout?rid=3106140" target="_blank" id="supporter" special>Join</Button>
+      <Button="javascript:void(0)" id="premium" function special>Buy</Button>
     </div>
     <div>
-      <h3>Super Supporter</h3>
+      <h3>Super Premium</h3>
       <h4>$10/month</h4>
       <ul>
         <li>6 Premium Servers</li>
         <li>Premium Support</li>
         <li>Beta Access</li>
       </ul>
-      <Button="https://www.patreon.com/join/censorbot/checkout?rid=3106142" target="_blank" id="super_supporter" special>Join</Button>
+      <Button="javascript:void(0)" id="super-premium" function special>Buy</Button>
     </div>
     <div>
       <h3>Own Instance</h3>
@@ -29,10 +29,9 @@
         <li>Custom avatar/username</li>
         <li>Extra feature requests allowed!</li>
       </ul>
-      <Button="https://www.patreon.com/join/censorbot/checkout?rid=6590243" target="_blank" id="own_instance" special>Join</Button>
+      <Button="javascript:void(0)" id="own-instance" function special>Buy</Button>
     </div>
   </section>
-  <small style="grid-column: span 3">All transactions and subscriptions are handled through patreon.</small>
 </center>
 <div class="sep"></div>
 <section>
@@ -50,12 +49,20 @@
       <p>This combines a line of messages from the same user to create one full message, this removes the ability to bypass the bot using multiple messages.</p>
     </div>
     <div>
-      <h3>Font Recognition</h3>
-      <p>Heavily maintained and accurate font recognition, removing a users ability to bypass curses using character lookalikes.</p>
+      <h3>Anti-NSFW Images</h3>
+      <p>Discords built in anti-nsfw images leaves some to be desired, but we've added a custom AI filter which runs it through another check that's more stringent!</p>
     </div>
     <div>
-      <h3>Ignore Channels</h3>
-      <p>Gives you the ability to set a list of channels to completely ignore curses from, rather than requiring you to set them to NSFW.</p>
+      <h3>Remove Roles</h3>
+      <p>In a server with complicated role hierarchy, it can be nice for when a user is muted to remove all of their roles, this is what it does! And gives them back once they've been unmuted.</p>
+    </div>
+    <div>
+      <h3>Toxicity Filter</h3>
+      <p>Using advanced AI, we scan every message for anything remotely toxic, this can be very strict but great for only-positive communities.</p>
+    </div>
+    <div>
+      <h3>DM</h3>
+      <p>Replaces all situations where a user would be responded to, such as commands, and pop messages, with a DM rather than sending in a public channel.</p>
     </div>
     <div>
       <h3>Increased Maximums</h3>
@@ -65,6 +72,8 @@
           <li>Uncensor List: Maximum words from 150 to 1500</li>
           <li>Pop Message: Delete after time from 120 seconds to 600</li>
           <li>Pop message: Max content size from 200 characters to 1000</li>
+          <li>Ignored Channels: Max amount from 5 to infinite</li>
+          <li>Ignoreed Roles: Max amount from 4 to infinite</li>
         </ul>
       </p>
     </div>

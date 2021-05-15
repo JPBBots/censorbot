@@ -14,18 +14,21 @@ module.exports = {
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
-        exclude: /node_modules/,
+        exclude: /node_modules/
       }
-    ],
+    ]
   },
   resolve: {
-    extensions: [ '.tsx', '.ts' ],
+    extensions: ['.tsx', '.ts'],
+    alias: {
+      "@typings": path.resolve(__dirname, '../typings')
+    }
   },
   optimization: {
     minimizer: [
       new TerserPlugin({
         terserOptions: {
-          ecma: 5,
+          ecma: 4,
           sourceMap: true,
           mangle: {
             module: true,

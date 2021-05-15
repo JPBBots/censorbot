@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 
-#premium {
+#premium-section {
   display: grid;
   padding-top: 20px;
   grid-template-columns: repeat(3, minmax(100px, 1fr));
@@ -31,6 +31,8 @@
     padding-top: 0px;
     margin-bottom: 20px;
     text-align: center;
+
+    min-width: 220px;
 
     &:hover {
       transform: translateY(-10px);
@@ -93,7 +95,7 @@
   border: 1px #ea545526 solid;
 }
 
-#premium > div:hover, #perks > div:hover {
+#premium-section > div:hover, #perks > div:hover {
   transition: 0.5s;
   cursor: default;
 }
@@ -107,7 +109,7 @@
 }
 
 @media (max-width: 750px) {
-  #premium {
+  #premium-section {
     grid-template-columns: repeat(1, 1fr);
     grid-template-rows: repeat(1, 1fr);
   }

@@ -1,23 +1,31 @@
 import { Landing } from "./Landing";
-import { e404 } from "./404"
-import { Test } from './Test'
-import { DashboardHome } from './DashboardHome'
-import { GuildSettings } from './GuildSettings'
-import { Premium } from './Premium'
-import { DashboardTwitch } from './DashboardTwitch'
-import { Admin } from './Admin'
-import { Tickets } from './Tickets'
-import { Terms } from './Terms'
+
+import { Premium } from './premium/Premium'
+import { Payment } from './premium/Payment'
+
+import { Test } from './admin/Test'
+import { Tickets } from './admin/Tickets'
+
+import { DashboardGuilded } from './dashboards/Guilded'
+import { DashboardDiscord } from './dashboards/Discord'
+import { DashboardTwitch } from './dashboards/Twitch'
+
+import { DiscordSettings } from './dashboards/settings/Discord'
+
+import { e404 } from './errors/404'
 
 export const Pages = [
   Landing,
-  e404,
-  Test,
-  DashboardHome,
-  GuildSettings,
+
   Premium,
-  DashboardTwitch,
-  Admin,
+  Payment,
+
+  Test,
   Tickets,
-  Terms
+  DashboardTwitch,
+  DashboardGuilded,
+  DashboardDiscord,
+
+  DiscordSettings,
+  e404
 ]

@@ -1,6 +1,12 @@
 const Express = require('express')
 const Path = require('path')
 
+const { Config } = require('../bot/dist/config')
+
+const { PermissionsUtils } = require('discord-rose')
+
+const qs = require('querystring')
+
 const { exec } = require('child_process')
 
 /**
@@ -73,30 +79,52 @@ app.get('/sitemap.xml', (req, res) => {
 `)
 })
 
-app.get('/support', (req, res) => {
-  res.redirect('https://discord.gg/v3r2rKP')
-})
+const generateOauth = (invite, data, disc, email = false) => {
+  const base = `https://${disc ? `${disc}.` : ''}discord.com/oauth2/authorize?${qs.stringify({
+    client_id: Config.id
+  })}&`
 
-app.get('/review', (req, res) => {
-  res.redirect('https://top.gg/bot/394019914157129728#reviews')
-})
+  if (!invite) {
+    const scopes = [...Config.dashboardOptions.scopes]
+    if (email) scopes.push('email')
 
-app.get('/stats', (req, res) => {
-  res.redirect('https://p.datadoghq.com/sb/iib7eqa83t2bea4n-3c71c6e3122e2ad6ad1b7546bb4ee491?from_ts=1611093578306&live=true&theme=dark&to_ts=1611179978306&tpl_var_var=%2A&tv_mode=false')
-})
-
-app.get('/servers*', (req, res) => {
-  res.redirect('/dashboard')
-})
+    return base + qs.stringify({
+      redirect_uri: `https://${data}/callback`,
+      response_type: 'code',
+      prompt: 'none',
+      scope: scopes.join(' ')
+    })
+  } else {
+    return base + qs.stringify({
+      permissions: Config.requiredPermissions.reduce((a, b) => a | PermissionsUtils.bits[b.permission], 0),
+      scope: 'bot',
+      guild_id: data
+    })
+  }
+}
 
 app.get('/invite', (req, res) => {
-  res.redirect('/api/invite')
+  res.redirect(generateOauth(true, req.query.id))
+})
+
+const links = {
+  support: 'https://discord.gg/v3r2rKP',
+  review: 'https://top.gg/bot/394019914157129728#reviews',
+  'servers*': '/dashboard',
+  terms: 'https://www.iubenda.com/terms-and-conditions/23592172',
+  privacy: 'https://www.iubenda.com/privacy-policy/23592172/full-legal'
+}
+
+Object.keys(links).forEach(link => {
+  app.get(`/${link}`, (req, res) => {
+    res.redirect(links[link])
+  })
 })
 
 app.use((req, res) => {
   res.sendFile(Path.resolve(__dirname, 'site.html'))
 })
 
-app.listen(8534, () => {
+app.listen(process.argv.includes('-b') ? 8535 : 8534, () => {
   console.log('Started')
 })

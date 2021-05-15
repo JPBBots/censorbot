@@ -20,6 +20,13 @@ export class Logger {
       currentTimeout = null
     }, 5000) as unknown as number
   }
+
+  static connectionStatus (connected: boolean) {
+    const elm = document.getElementById('connection')
+
+    if (connected) elm.setAttribute('hidden', '')
+    else elm.removeAttribute('hidden')
+  }
 }
 
 window.LOGGER = Logger

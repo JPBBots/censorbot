@@ -6,17 +6,7 @@ services:
       - ./src:/app
       - ./node_modules:/node_modules
     env_file:
-      - censorbot.env
+      - .env
     restart: unless-stopped
     ports:
       - "1234:1234"
-  testing:
-    build: .
-    volumes:
-      - ./src:/app
-      - ./node_modules:/node_modules
-    env_file:
-      - censorbottesting.env
-    restart: "no"
-    ports:
-      - "1235:1234"
