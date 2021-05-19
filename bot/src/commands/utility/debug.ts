@@ -3,6 +3,10 @@ import { CommandOptions } from 'discord-rose'
 export default {
   command: 'debug',
   aliases: ['permissions'],
+  interaction: {
+    name: 'debug',
+    description: 'Debug permissions and more'
+  },
   description: 'Debug permissions and more',
   exec: (ctx) => {
     if (!ctx.myPerms('sendMessages')) return ctx.dm('I don\'t have permission to speak in this channel so therefore I cannot debug')

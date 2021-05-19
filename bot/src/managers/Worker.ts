@@ -5,7 +5,7 @@ import { Database } from '../structures/Database'
 import { Filter } from '../structures/Filter'
 import { ActionBucket } from '../structures/ActionBucket'
 import { Responses } from '../structures/Responses'
-import { CommandContext } from '../structures/CommandContext'
+import { CommandContext, SlashCommandContext } from '../structures/CommandContext'
 import { TicketManager } from '../structures/TicketManager'
 
 import { PerspectiveApi } from '../structures/ai/PerspectiveApi'
@@ -50,6 +50,9 @@ export class WorkerManager extends Worker {
     this.setStatus(this.config.custom.status?.[0] ?? 'watching', this.config.custom.status?.[1] ?? 'For Bad Words')
 
     this.commands
+      .options({
+        interactionGuild: this.config.staging ? '569907007465848842' : undefined
+      })
       .prefix(async (msg): Promise<string | string[]> => {
         const prefix = await this.db.config(msg.guild_id as Snowflake).then(x => x.prefix)
         // @ts-expect-error
@@ -63,6 +66,7 @@ export class WorkerManager extends Worker {
         return true
       })
     this.commands.CommandContext = CommandContext
+    this.commands.SlashCommandContext = SlashCommandContext
 
     addHandlers(this)
     setupFilters(this)

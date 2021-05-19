@@ -1,15 +1,26 @@
+import { ApplicationCommandOptionType } from 'discord-api-types'
 import { CommandOptions } from 'discord-rose'
 
 export default {
   command: 'ticket',
   aliases: [],
+  interaction: {
+    name: 'ticket',
+    description: 'Sends a ticket for words that should be uncensored.',
+    options: [{
+      name: 'word',
+      description: 'The word or phrase that shouldn\'t be censored',
+      type: ApplicationCommandOptionType.STRING,
+      required: true
+    }]
+  },
   description: 'Sends a ticket for words that should be uncensored.',
   exec: async (ctx) => {
     if (!ctx.args[0]) {
       return void ctx.embed
         .title('Tickets')
         .description('For when words shouldn\'t be censored by the base filter but they are.\n\n' +
-        'Format: `+ticket [word / phrase]`')
+        `Format: \`${ctx.prefix}ticket [word / phrase]\``)
         .footer(`${ctx.author.username}#${ctx.author.discriminator}`)
         .send(false)
     }
@@ -21,6 +32,6 @@ export default {
       .title(`Ticket submitted (${id})`)
       .description('We\'ll get back to you soon on our decision! Hang tight.')
       .footer(`${ctx.author.username}#${ctx.author.discriminator}`)
-      .send(false)
+      .send(true, false, true)
   }
 } as CommandOptions

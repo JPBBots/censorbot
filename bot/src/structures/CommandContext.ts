@@ -1,5 +1,5 @@
 import { APIMessage } from 'discord-api-types'
-import { CommandContext as cm, MessageTypes } from 'discord-rose'
+import { CommandContext as cm, SlashCommandContext as scm, MessageTypes } from 'discord-rose'
 import { GuildDB } from 'typings/api'
 
 export class CommandContext extends cm {
@@ -12,7 +12,7 @@ export class CommandContext extends cm {
     return await super.send(data)
   }
 
-  async reply (data: MessageTypes, mention?: boolean): Promise<APIMessage> {
+  async reply (data: MessageTypes, mention = false, ephermal: boolean = false): Promise<APIMessage> {
     if (this.db?.dm) return await this.dm(data)
 
     return await super.reply(data, mention)
@@ -21,5 +21,17 @@ export class CommandContext extends cm {
   async dm (data: MessageTypes): Promise<APIMessage> {
     void this.react('📬')
     return await super.dm(data)
+  }
+}
+
+export class SlashCommandContext extends scm {
+  db: GuildDB
+
+  async send (data: MessageTypes, ephermal: boolean = false): Promise<null> {
+    return super.send(data, this.db?.dm || ephermal)
+  }
+
+  async reply (data: MessageTypes, mention: boolean = false, ephermal: boolean = false): Promise<null> {
+    return super.send(data, this.db?.dm || ephermal)
   }
 }

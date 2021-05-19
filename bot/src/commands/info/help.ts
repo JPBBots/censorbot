@@ -3,6 +3,10 @@ import { CommandOptions } from 'discord-rose'
 export default {
   command: 'help',
   aliases: ['h', 'ayuda', 'hilfe', 'помощь', 'links'],
+  interaction: {
+    name: 'help',
+    description: 'Shows a list of commands and useful links'
+  },
   description: 'Shows a list of commands and useful links',
   exec: (ctx) => {
     const links = ctx.worker.config.links

@@ -3,6 +3,10 @@ import { CommandOptions } from 'discord-rose'
 export default {
   command: 'helpme',
   aliases: [],
+  interaction: {
+    name: 'helpme',
+    description: 'Creates an easy code to give to helpers'
+  },
   description: 'Creates an easy code to give to helpers',
   exec: async (ctx) => {
     if (!ctx.guild) return
