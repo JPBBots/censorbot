@@ -91,7 +91,7 @@ export class PunishmentManager {
         roles: [db.punishment.role]
       })
     } else {
-      await this.members.addRole(guild, user, db.punishment.role)
+      await this.members.addRole(guild, user, db.punishment.role).catch(() => {})
     }
 
     await this.sendLog(false, guild, user, 'Muted', `Received <@&${db.punishment.role}>${db.punishment.time ? `\nWill be unmuted in ${(db.punishment.time / 60000).toLocaleString()} minutes` : ''}`)
@@ -113,9 +113,9 @@ export class PunishmentManager {
 
       await this.worker.api.members.edit(guild, user, {
         roles: Array.from(new Set(roles.concat(current.roles))).filter(x => x !== db.punishment.role)
-      })
+      }).catch(() => {})
     } else {
-      await this.members.removeRole(guild, user, db.punishment.role)
+      await this.members.removeRole(guild, user, db.punishment.role).catch(() => {})
     }
 
     await this.timeouts.remove(guild, user)
@@ -146,7 +146,7 @@ export class PunishmentManager {
   async unban (guild: Snowflake, user: Snowflake): Promise<void> {
     const db = await this.config(guild)
 
-    await this.members.unban(guild, user)
+    await this.members.unban(guild, user).catch(() => {})
 
     await this.timeouts.remove(guild, user)
 

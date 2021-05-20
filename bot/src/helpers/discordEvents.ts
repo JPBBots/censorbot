@@ -38,7 +38,7 @@ export function setupDiscord (worker: WorkerManager): void {
     }
   })
   worker.on('GUILD_UNAVAILABLE', (guild) => {
-    unavailables.add(guild.id)
+    unavailables.add(guild?.id)
   })
   worker.on('READY', () => {
     void worker.punishments.timeouts.checkTimeouts()

@@ -38,7 +38,7 @@ export class Database extends Db {
       // @ts-expect-error Updating database
       if (db.censor.msg) bit |= CensorMethods.Messages
       // @ts-expect-error Updating database
-      if (db.censor.nick) bit |= CensorMethods.Nicknames
+      if (db.censor.nick) bit |= CensorMethods.Names
       // @ts-expect-error Updating database
       if (db.censor.react) bit |= CensorMethods.Reactions
 

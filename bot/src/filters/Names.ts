@@ -22,7 +22,10 @@ const isHoisting = (name: string): boolean => {
 function handleCensor (worker: WorkerManager, member: EventData, db: GuildDB, response: FilterResponse): void {
   if (!member.user) return
 
-  if (!worker.hasPerms(member.guild_id, 'manageNicknames') && db.log) {
+  const guild = worker.guilds.get(member.guild_id)
+  if (!guild) return
+
+  if ((guild.owner_id === member.user.id || !worker.hasPerms(member.guild_id, 'manageNicknames')) && db.log) {
     return void worker.responses.errorLog(db.log, 'Missing permissions to Manage Nicknames')
   }
 
@@ -30,7 +33,7 @@ function handleCensor (worker: WorkerManager, member: EventData, db: GuildDB, re
     void worker.responses.log(CensorMethods.Names, member.nick ?? member.user.username, member, response, db.log)
   }
 
-  void worker.api.members.setNickname(member.guild_id, member.user.id, member.nick ? null : inappName)
+  void worker.api.members.setNickname(member.guild_id, member.user.id, member.nick ? null : inappName).catch(() => {})
 
   if (db.punishment.type !== PunishmentType.Nothing) {
     switch (db.punishment.type) {
@@ -61,7 +64,7 @@ export async function NameHandler (worker: WorkerManager, member: EventData): Pr
   const name = member.nick ?? member.user.username
 
   if (db.antiHoist && isHoisting(name)) {
-    void worker.api.members.setNickname(member.guild_id, member.user.id, `${deHoist}${name}`)
+    void worker.api.members.setNickname(member.guild_id, member.user.id, `${deHoist}${name}`).catch(() => {})
   }
 
   if (
