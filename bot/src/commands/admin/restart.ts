@@ -9,7 +9,7 @@ export default {
       return
     }
 
-    await ctx.worker.comms.restartCluster(ctx.args[0].toUpperCase())
+    await ctx.worker.comms.restartCluster(String(ctx.args[0]).toUpperCase())
 
     void ctx.reply('Restarted')
   }
