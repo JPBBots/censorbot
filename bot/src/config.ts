@@ -21,6 +21,7 @@ function generateWebhook (wh: string): { id: Snowflake, token: string } {
 
 export const Config = {
   id: process.env.ID as string,
+  dbl: process.env.DBL_TOKEN as string,
   token: process.env.BOT_TOKEN as string,
   db: {
     username: process.env.DB_USERNAME as string,

@@ -30,11 +30,12 @@
     "interface": "github:jpbbots/interface",
     "mongodb": "^3.6.3",
     "node-fetch": "^2.6.1",
+    "topgg-autoposter": "^1.1.10",
     "validate": "^5.1.0",
     "ws": "^7.4.4"
   },
   "devDependencies": {
-    "@types/mongodb": "^3.6.9",
+    "@types/mongodb": "^3.6.14",
     "@types/node-fetch": "^2.5.8",
     "@types/ws": "^7.4.1",
     "@typescript-eslint/eslint-plugin": "^4.18.0",

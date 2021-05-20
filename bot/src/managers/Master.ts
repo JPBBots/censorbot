@@ -8,6 +8,12 @@ import { addHandlers } from '../helpers/masterEvents'
 import { Cache } from '@jpbberry/cache'
 import { ShortID } from 'typings'
 
+import { Interface } from 'interface'
+
+const int = new Interface()
+
+import AutoPoster from 'topgg-autoposter'
+
 export class MasterManager extends Master {
   config = Config
   db = new Database()
@@ -24,12 +30,14 @@ export class MasterManager extends Master {
         roles: ['managed', 'permissions', 'name']
       },
       intents: ['GUILD_MESSAGES', 'GUILDS', 'GUILD_MESSAGE_REACTIONS', 'GUILD_MEMBERS'],
-      shards: 2,
-      shardsPerCluster: 1,
       rest: {
         version: 9
       }
     })
+
+    int.setupMaster(this, 'censorbot')
+
+    AutoPoster(Config.dbl, this)
 
     addHandlers(this)
 
