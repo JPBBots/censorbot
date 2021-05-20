@@ -35,9 +35,11 @@ export class MasterManager extends Master {
       }
     })
 
-    int.setupMaster(this, 'censorbot')
+    if (!this.config.staging) {
+      int.setupMaster(this, 'censorbot')
 
-    AutoPoster(Config.dbl, this)
+      AutoPoster(Config.dbl, this)
+    }
 
     addHandlers(this)
 

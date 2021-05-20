@@ -77,7 +77,12 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
   if (!message.guild_id || !message.author || !channel || !message.member) return
 
   let multiline = multiLineStore.get(message.channel_id)
-  if (multiline && multiline.author !== message.author.id) multiLineStore.delete(message.channel_id)
+  if (multiline && multiline.author !== message.author.id) {
+    multiline = undefined
+    multiLineStore.delete(message.channel_id)
+  }
+
+  console.debug(multiline)
 
   if (message.author.bot) return
 
