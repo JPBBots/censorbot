@@ -51,7 +51,7 @@ export class Responses {
     }
 
     embed
-      .field('Content', this.worker.filter.surround(content, response.ranges, '__'), true)
+      .field('Content', this.worker.filter.surround(content, response.ranges, '__') || 'None', true)
       .field('Filter(s)', response.filters.map(x => this.worker.filter.masks[x]).join(', '), true)
 
     if (response.percentage) {

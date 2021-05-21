@@ -5,7 +5,7 @@ import fetch from 'node-fetch'
 export class PerspectiveApi extends BaseAI {
   public async test (text: string): Promise<Test> {
     const tested = this.cache.get(text)
-    if (typeof tested === 'boolean') return tested
+    if (tested) return tested
 
     const fetched = await fetch(`https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=${this.ai.perspectiveKey}`, {
       method: 'POST',

@@ -1,28 +1,24 @@
 import { BaseAI, Test } from './Base'
 
-import fetch from 'node-fetch'
+import deepai from 'deepai'
+import { WorkerManager } from '../../managers/Worker'
 
 export class AntiNSFW extends BaseAI {
+  constructor (worker: WorkerManager) {
+    super(worker)
+
+    deepai.setApiKey(worker.config.ai.antiNsfwKey)
+  }
+
   public async test (text: string): Promise<Test> {
     const tested = this.cache.get(text)
-    if (typeof tested === 'boolean') return tested
+    if (tested) return tested
 
-    const fetched = await fetch('https://no.kinky.zone/scan', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        token: this.ai.antiNsfwKey,
-        url: text
-      })
-    }).then(async (x) => await x.json())
+    const fetched = await deepai.callStandardApi('nsfw-detector', {
+      image: text
+    })
 
-    const num: number = fetched.predictions.reduce((a, b) => {
-      if (!['Hentai', 'Porn'].includes(b.className)) return a
-      if (b.probability > a) return b.probability
-      return a
-    }, 0)
+    const num: number = fetched.output.nsfw_score
 
     const test: Test = {
       bad: num >= this.ai.predictionMin,

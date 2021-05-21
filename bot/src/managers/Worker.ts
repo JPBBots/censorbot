@@ -39,8 +39,8 @@ export class WorkerManager extends Worker {
   responses = new Responses(this)
   tickets = new TicketManager(this)
 
-  perspective = new PerspectiveApi()
-  images = new AntiNSFW()
+  perspective = new PerspectiveApi(this)
+  images = new AntiNSFW(this)
 
   punishments = new PunishmentManager(this)
 
