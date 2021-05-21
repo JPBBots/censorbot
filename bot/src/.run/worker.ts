@@ -16,5 +16,6 @@ import flagsMiddleware from '@discord-rose/flags-middleware'
 import permissionsMiddleware from '@discord-rose/permissions-middleware'
 
 process.on('unhandledRejection', (err) => {
+  console.error(err)
   worker.logError(err as Error)
 })

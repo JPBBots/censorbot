@@ -137,7 +137,7 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
     for (const url of urls) {
       const res = await worker.images.test(url)
       if (res.bad) {
-        return handleDeletion(worker, { ...message, content: `${message.content || 'No message content'} + [image](${url})` }, db, {
+        return handleDeletion(worker, { ...message, content: `${message.content ?? 'No message content'} + [image](${url})` }, db, {
           censor: true,
           filters: ['images'],
           places: [],

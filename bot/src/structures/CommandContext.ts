@@ -28,10 +28,10 @@ export class SlashCommandContext extends scm {
   db: GuildDB
 
   async send (data: MessageTypes, ephermal: boolean = false): Promise<null> {
-    return super.send(data, this.db?.dm || ephermal)
+    return await super.send(data, this.db?.dm || ephermal)
   }
 
   async reply (data: MessageTypes, mention: boolean = false, ephermal: boolean = false): Promise<null> {
-    return super.send(data, this.db?.dm || ephermal)
+    return await super.send(data, this.db?.dm || ephermal)
   }
 }

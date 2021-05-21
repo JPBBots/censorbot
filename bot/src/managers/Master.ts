@@ -8,11 +8,11 @@ import { addHandlers } from '../helpers/masterEvents'
 import { Cache } from '@jpbberry/cache'
 import { ShortID } from 'typings'
 
+import AutoPoster from 'topgg-autoposter'
+
 import { Interface } from 'interface'
 
 const int = new Interface()
-
-import AutoPoster from 'topgg-autoposter'
 
 export class MasterManager extends Master {
   config = Config
