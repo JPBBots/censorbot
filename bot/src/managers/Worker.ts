@@ -19,6 +19,10 @@ import { addHandlers } from '../helpers/clusterEvents'
 import { setupFilters } from '../helpers/setupFilters'
 import { setupDiscord } from '../helpers/discordEvents'
 
+import { MessageHandler } from '../filters/Messages'
+import { NameHandler } from '../filters/Names'
+import { ReactionHandler } from '../filters/Reactions'
+
 import { Interface } from 'interface'
 
 import fetch from 'node-fetch'
@@ -41,6 +45,12 @@ export class WorkerManager extends Worker {
   punishments = new PunishmentManager(this)
 
   interface = new Interface()
+
+  methods = {
+    msg: MessageHandler,
+    names: NameHandler,
+    react: ReactionHandler
+  }
 
   constructor () {
     super()

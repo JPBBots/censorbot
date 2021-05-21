@@ -47,12 +47,16 @@ function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB,
   if (db.msg.content !== false) worker.actions.popup(message.channel_id, message.author.id, db)
 
   if (response.ranges.length > 0 && db.webhook.enabled && message.content) {
-    let content = worker.filter.surround(message.content, response.ranges, '||')
+    if (!worker.hasPerms(message.guild_id, 'webhooks')) {
+      void worker.responses.missingPermissions(message.channel_id, 'Manage Webhooks')
+    } else {
+      let content = worker.filter.surround(message.content, response.ranges, '||')
 
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-    if (db.webhook.replace !== 0) content = content.split(/\|\|/g).reduce((a, b) => [(a[0] + (a[1] === 1 ? replaces[db.webhook.replace].repeat(b.length) : b)), ((a[1] as number) * -1)], ['', -1])[0]
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+      if (db.webhook.replace !== 0) content = content.split(/\|\|/g).reduce((a, b) => [(a[0] + (a[1] === 1 ? replaces[db.webhook.replace].repeat(b.length) : b)), ((a[1] as number) * -1)], ['', -1])[0]
 
-    void worker.actions.sendAs(message.channel_id, message.author, message.member?.nick ?? message.author.username, content)
+      void worker.actions.sendAs(message.channel_id, message.author, message.member?.nick ?? message.author.username, content)
+    }
   }
 
   if (db.punishment.type !== PunishmentType.Nothing) {

@@ -11,6 +11,12 @@ export default {
   exec: async (ctx) => {
     if (!ctx.guild) return
 
+    if (ctx.guild.id === '399688888739692552') {
+      return await ctx.embed
+        .description('Run +helpme in your server, not here!')
+        .send()
+    }
+
     if (!ctx.args[0]) {
       const code = await ctx.worker.comms.sendCommand('CREATE_HELPME', { id: ctx.guild.id })
 

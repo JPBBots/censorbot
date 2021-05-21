@@ -1,7 +1,7 @@
 import { Snowflake } from 'discord-api-types'
 import { ShortID } from 'typings'
 
-export const Reloaders = ['COMMANDS', 'FILTER', 'CACHE'] as const
+export const Reloaders = ['COMMANDS', 'FILTER', 'CACHE', 'FILTERS'] as const
 
 type ReloadNames = typeof Reloaders[number]
 
