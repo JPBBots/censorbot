@@ -77,7 +77,8 @@ export const config = {
     deleteAfter: {
       type: Number,
       size: { min: 1, max: 600e3 }
-    }
+    },
+    dm: simple(Boolean)
   },
   punishment: {
     properties: {

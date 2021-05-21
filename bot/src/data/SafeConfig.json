@@ -8,7 +8,8 @@
   "matchExact": false,
   "msg": {
       "content": false,
-      "deleteAfter": 3000
+      "deleteAfter": 3000,
+      "dm": false
   },
   "punishment": {
       "type": 0,

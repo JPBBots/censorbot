@@ -106,6 +106,10 @@ export class GuildHandler {
       db.toxicity = false
       db.images = false
       db.dm = false
+      if (db.msg) {
+        db.msg.dm = false
+      }
+
       if (db.punishment) {
         db.punishment.retainRoles = false
       }

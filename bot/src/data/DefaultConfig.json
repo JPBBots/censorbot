@@ -12,7 +12,8 @@
   "matchExact": false,
   "msg": {
       "content": null,
-      "deleteAfter": 3000
+      "deleteAfter": 3000,
+      "dm": false
   },
   "punishment": {
       "type": 0,

@@ -32,8 +32,6 @@ export default function (this: ApiManager, r: Router): void {
 
       res.sendStatus(204)
 
-      console.log(req.body?.event_type)
-
       if (!changeEvents.includes(req.body?.event_type)) return
 
       const customer: string = req.body?.content?.customer?.id
@@ -47,8 +45,6 @@ export default function (this: ApiManager, r: Router): void {
       const current = this.socket.cachedUsers.get(user.id)
       if (current) {
         const newUser = await this.extendUser(current)
-
-        console.log(newUser)
 
         if ((newUser.premium?.count ?? 0) < 1) {
           await this.chargebee.handleDelete(newUser)

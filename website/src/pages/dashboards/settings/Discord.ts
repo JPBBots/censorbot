@@ -73,6 +73,7 @@ const settings = [
   'punishment.retainRoles',
   'msg.deleteAfter',
   'msg.content',
+  'msg.dm',
   'webhook.enabled',
   'webhook.separate',
   'webhook.replace',
@@ -114,7 +115,7 @@ export class DiscordSettings extends Page implements PageInterface {
     bools: [
       'dm', 'nsfw', 'multi', 'invites', 'toxicity', 'images',
       'webhook.enabled', 'webhook.separate', 'matchExact', 'antiHoist',
-      'punishment.retainRoles'
+      'punishment.retainRoles', 'msg.dm'
     ],
     select: ['log', 'punishment.role'],
     duration: ['punishment.expires', 'punishment.time'],

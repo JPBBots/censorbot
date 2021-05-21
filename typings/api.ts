@@ -74,6 +74,10 @@ export interface GuildDB {
      * Delete after x ms
      */
     deleteAfter?: number
+    /**
+     * Whether or not to DM popup messages
+     */
+    dm: boolean
   }
   /**
    * Punishment settings
