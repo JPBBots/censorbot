@@ -51,7 +51,6 @@ export class Timeouts {
   }
 
   private _create (timeout: TimeoutSchema): void {
-    console.debug(`Setting ${timeout.user}-${timeout.guild}`)
     this.timeouts.set(`${timeout.user}-${timeout.guild}`, setTimeout(() => {
       void this.execute(timeout.guild, timeout.user, timeout.type, timeout.roles)
     }, timeout.at - Date.now()))

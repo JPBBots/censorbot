@@ -97,7 +97,7 @@ const generateOauth = (invite, data, disc, email = false) => {
   } else {
     return base + qs.stringify({
       permissions: Config.requiredPermissions.reduce((a, b) => a | PermissionsUtils.bits[b.permission], 0),
-      scope: 'bot',
+      scope: 'bot applications.commands',
       guild_id: data
     })
   }

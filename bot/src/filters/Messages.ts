@@ -82,8 +82,6 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
     multiLineStore.delete(message.channel_id)
   }
 
-  console.debug(multiline)
-
   if (message.author.bot) return
 
   const db = await worker.db.config(message.guild_id)
