@@ -17,10 +17,10 @@ interface TicketBanSchema {
 
 export class TicketManager {
   constructor (private readonly worker: WorkerManager) {
-    this.worker.on('MESSAGE_CREATE', (msg) => {
+    this.worker.on('MESSAGE_CREATE', async (msg) => {
       if (msg.channel_id === this.worker.config.channels.tickets && msg.webhook_id === this.worker.config.webhooks.tickets.id) {
-        void worker.api.messages.react(msg.channel_id, msg.id, this.worker.config.emojis.yes)
-        void worker.api.messages.react(msg.channel_id, msg.id, this.worker.config.emojis.no)
+        void await worker.api.messages.react(msg.channel_id, msg.id, this.worker.config.emojis.yes)
+        void await worker.api.messages.react(msg.channel_id, msg.id, this.worker.config.emojis.no)
       }
     })
 
