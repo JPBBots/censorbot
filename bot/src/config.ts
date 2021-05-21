@@ -123,7 +123,8 @@ export const Config = {
 
   webhooks: {
     tickets: generateWebhook('tickets'),
-    ticketLog: generateWebhook('ticketLog')
+    ticketLog: generateWebhook('ticketLog'),
+    errors: generateWebhook('errors')
   },
 
   actionRetention: 3,

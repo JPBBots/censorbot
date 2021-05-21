@@ -1,4 +1,4 @@
-import { Worker, PermissionsUtils, CachedGuild, Embed } from 'discord-rose'
+import { Worker, PermissionsUtils, Embed, CommandType } from 'discord-rose'
 import { Config } from '../config'
 
 import { Database } from '../structures/Database'
@@ -13,7 +13,7 @@ import { AntiNSFW } from '../structures/ai/AntiNSFW'
 
 import { PunishmentManager } from '../structures/punishments/PunishmentManager'
 
-import { APIRole, GatewayGuildMemberAddDispatchData, Snowflake } from 'discord-api-types'
+import { Snowflake } from 'discord-api-types'
 
 import { addHandlers } from '../helpers/clusterEvents'
 import { setupFilters } from '../helpers/setupFilters'
@@ -27,8 +27,6 @@ import { Interface } from 'interface'
 
 import fetch from 'node-fetch'
 import path from 'path'
-
-import Collection from '@discordjs/collection'
 
 export class WorkerManager extends Worker {
   config = Config
@@ -62,6 +60,25 @@ export class WorkerManager extends Worker {
     this.commands
       .options({
         interactionGuild: this.config.staging ? '569907007465848842' : undefined
+      })
+      .error((ctx, err) => {
+        if (ctx.myPerms('sendMessages')) {
+          if (ctx.isInteraction || ctx.myPerms('embed')) {
+            ctx.embed
+              .color(0xFF0000)
+              .title('An Error Occured')
+              .description(`\`\`\`xl\n${err.message}\`\`\``)
+              .send(true, false, true).catch(console.error)
+          } else {
+            ctx
+              .send(`An Error Occured\n\`\`\`xl\n${err.message}\`\`\``)
+              .catch(() => { })
+          }
+        }
+
+        if (err.nonFatal) return
+
+        this.logError(err, ctx.command.command)
       })
       .prefix(async (msg): Promise<string | string[]> => {
         const prefix = await this.db.config(msg.guild_id as Snowflake).then(x => x.prefix)
@@ -102,9 +119,9 @@ export class WorkerManager extends Worker {
 
   hasPerms (id: Snowflake, perms: keyof typeof PermissionsUtils.bits, channel?: Snowflake): boolean {
     return PermissionsUtils.has(PermissionsUtils.combine({
-      guild: this.guilds.get(id) as CachedGuild,
-      member: this.selfMember.get(id) as GatewayGuildMemberAddDispatchData,
-      roleList: this.guildRoles.get(id) as Collection<Snowflake, APIRole>,
+      guild: this.guilds.get(id),
+      member: this.selfMember.get(id),
+      roleList: this.guildRoles.get(id),
       overwrites: channel ? this.channels.get(channel)?.permission_overwrites : undefined
     }), perms)
   }
@@ -114,5 +131,15 @@ export class WorkerManager extends Worker {
     return new Embed(async (embed) => {
       return await this.comms.sendWebhook(webhook.id, webhook.token, embed)
     })
+  }
+
+  logError (error: Error, command?: CommandType): void {
+    const embed = this.webhook('errors')
+      .title(`Error: ${error.name}`)
+      .description(error.message)
+
+    if (command) embed.field('Command', `${command}`, true)
+
+    void embed.send()
   }
 }
