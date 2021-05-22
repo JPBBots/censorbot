@@ -2,7 +2,7 @@ import { WorkerManager } from '../managers/Worker'
 
 import { FilterResponse } from '../structures/Filter'
 
-import { Snowflake, GatewayMessageCreateDispatchData, GatewayMessageUpdateDispatchData } from 'discord-api-types'
+import { Snowflake, GatewayMessageCreateDispatchData, GatewayMessageUpdateDispatchData, MessageType } from 'discord-api-types'
 
 import { Cache } from '@jpbberry/cache'
 
@@ -95,7 +95,7 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
   if ((db.censor & CensorMethods.Messages) === 0) return
 
   if (
-    message.type !== 0 ||
+    ![MessageType.DEFAULT, MessageType.REPLY].includes(message.type as MessageType) ||
     channel.type !== 0 ||
     message.member.roles.some(role => db.role?.includes(role)) ||
     db.channels.includes(message.channel_id)
