@@ -2,7 +2,7 @@ import { WorkerManager } from '../managers/Worker'
 
 import { GatewayMessageReactionAddDispatchData } from 'discord-api-types'
 
-import { CensorMethods, PunishmentType } from 'typings/api'
+import { CensorMethods } from 'typings/api'
 
 export async function ReactionHandler (worker: WorkerManager, reaction: GatewayMessageReactionAddDispatchData): Promise<void> {
   if (
@@ -23,23 +23,13 @@ export async function ReactionHandler (worker: WorkerManager, reaction: GatewayM
 
   if (!res.censor) return
 
+  if (!worker.hasPerms(reaction.guild_id, 'manageMessages', reaction.channel_id)) return
+
   await worker.api.messages.deleteAllReactions(reaction.channel_id, reaction.message_id, reaction.emoji.id ?? reaction.emoji.name ?? '')
 
-  if (db.log) void worker.responses.log(CensorMethods.Reactions, reaction.emoji.name ?? '', reaction, res, db.log)
+  void worker.responses.log(CensorMethods.Reactions, reaction.emoji.name ?? '', reaction, res, db)
 
-  if (db.punishment.type !== PunishmentType.Nothing) {
-    switch (db.punishment.type) {
-      case PunishmentType.Mute:
-        if (!worker.hasPerms(reaction.guild_id, 'manageRoles')) return
-        break
-      case PunishmentType.Kick:
-        if (!worker.hasPerms(reaction.guild_id, 'kick')) return
-        break
-      case PunishmentType.Ban:
-        if (!worker.hasPerms(reaction.guild_id, 'ban')) return
-        break
-    }
+  if (!worker.punishments.checkPerms(reaction.guild_id, db)) {
+    void worker.punishments.punish(reaction.guild_id, reaction.member.user.id, reaction.member.roles)
   }
-
-  void worker.punishments.punish(reaction.guild_id, reaction.member.user.id, reaction.member.roles)
 }

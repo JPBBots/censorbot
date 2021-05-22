@@ -14,8 +14,11 @@ declare module 'discord-rose/dist/typings/lib' {
 import adminMiddleware from '@discord-rose/admin-middleware'
 import flagsMiddleware from '@discord-rose/flags-middleware'
 import permissionsMiddleware from '@discord-rose/permissions-middleware'
+import { CommandError } from 'discord-rose'
 
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', (err: CommandError|Error) => {
+  if ((err as CommandError).nonFatal) return
+
   console.error(err)
   worker.logError(err as Error)
 })

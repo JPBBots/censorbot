@@ -5,6 +5,8 @@ import { filters, Ticket } from 'typings/api'
 import { APIUser, Snowflake } from 'discord-api-types'
 
 import GenerateID from '../utils/GenerateID'
+import { NonFatalError } from '../utils/NonFatalError'
+
 import { Embed } from 'discord-rose'
 
 interface TicketBanSchema {
@@ -55,7 +57,7 @@ export class TicketManager {
 
   async create (word: string, user: Snowflake): Promise<string> {
     const ban = await this.bans.findOne({ id: user })
-    if (ban?.banned) throw new Error(`User is banned for \`${ban.reason}\``)
+    if (ban?.banned) throw new NonFatalError(`User is banned for \`${ban.reason}\``)
 
     const res = this.worker.filter.test(word, {
       filter: [],
@@ -63,7 +65,7 @@ export class TicketManager {
       matchExact: false,
       filters: [...filters]
     })
-    if (!res.censor) throw new Error('Phrase is not censored by the base filter.')
+    if (!res.censor) throw new NonFatalError('Phrase is not censored by the base filter.')
 
     const tickets = await this.db.find({}).toArray()
     const id = GenerateID(tickets.map(x => x.id))

@@ -3,7 +3,7 @@ import { WorkerManager } from '../managers/Worker'
 
 import { Embed } from 'discord-rose'
 import { FilterResponse } from './Filter'
-import { CensorMethods } from 'typings'
+import { CensorMethods, GuildDB } from 'typings'
 
 export class Responses {
   color = 0xea5455
@@ -31,8 +31,10 @@ export class Responses {
       .send()
   }
 
-  async log (type: CensorMethods, content: string, data: any, response: FilterResponse, log: Snowflake): Promise<APIMessage> {
-    const embed = this.embed(log)
+  async log (type: CensorMethods, content: string, data: any, response: FilterResponse, db: GuildDB): Promise<void> {
+    if (!db.log || !db.id || !this.worker.hasPerms(db.id, 'sendMessages', db.log)) return
+
+    const embed = this.embed(db.log)
       .color(this.color)
       .timestamp()
       .footer(this.worker.config.links.site)
@@ -58,7 +60,7 @@ export class Responses {
       embed.field('Prediction', response.percentage, true)
     }
 
-    return await embed.send()
+    await embed.send()
   }
 
   async errorLog (log: Snowflake, message: string): Promise<APIMessage> {

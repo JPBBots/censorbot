@@ -3,6 +3,7 @@ import { Embed, MembersResource } from 'discord-rose'
 import { Collection } from 'mongodb'
 import { GuildDB, PunishmentType } from 'typings'
 import { WorkerManager } from '../../managers/Worker'
+import { NonFatalError } from '../../utils/NonFatalError'
 
 import { Timeouts } from './Timeouts'
 
@@ -27,6 +28,24 @@ export class PunishmentManager {
 
   async config (id: Snowflake): Promise<GuildDB> {
     return await this.worker.db.config(id)
+  }
+
+  public checkPerms (guildId: Snowflake, db: GuildDB): boolean|string {
+    if (db.punishment.type !== PunishmentType.Nothing) {
+      switch (db.punishment.type) {
+        case PunishmentType.Mute:
+          if (!this.worker.hasPerms(guildId, 'manageRoles')) return 'Manage Roles'
+          break
+        case PunishmentType.Kick:
+          if (!this.worker.hasPerms(guildId, 'kick')) return 'Kick Members'
+          break
+        case PunishmentType.Ban:
+          if (!this.worker.hasPerms(guildId, 'ban')) return 'Ban Members'
+          break
+      }
+      return false
+    }
+    return true
   }
 
   async punish (guild: Snowflake, user: Snowflake, roles?: Snowflake[]): Promise<void> {
@@ -84,7 +103,7 @@ export class PunishmentManager {
 
   async mute (guild: Snowflake, user: Snowflake, roles?: Snowflake[]): Promise<void> {
     const db = await this.config(guild)
-    if (!db.punishment.role || !this.worker.guildRoles.get(guild)?.has(db.punishment.role)) throw new Error('No muted role has been set')
+    if (!db.punishment.role || !this.worker.guildRoles.get(guild)?.has(db.punishment.role)) throw new NonFatalError('No muted role has been set')
 
     if (db.punishment.retainRoles) {
       await this.members.edit(guild, user, {

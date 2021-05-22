@@ -16,13 +16,15 @@ export class AntiNSFW extends BaseAI {
 
     const fetched = await deepai.callStandardApi('nsfw-detector', {
       image: text
-    })
+    }).catch(() => false)
+
+    if (!fetched) return { bad: false, percent: '0%' }
 
     const num: number = fetched.output.nsfw_score
 
     const test: Test = {
       bad: num >= this.ai.predictionMin,
-      percent: `${(num * 100).toFixed(0)}%` as `${number}%`
+      percent: `${Number((num * 100).toFixed(0))}%` as `${number}%`
     }
 
     this.cache.set(text, test)

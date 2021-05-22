@@ -4,7 +4,7 @@ import { FilterResponse } from '../structures/Filter'
 
 import { GatewayGuildMemberUpdateDispatchData, GatewayGuildMemberAddDispatchData } from 'discord-api-types'
 
-import { CensorMethods, GuildDB, PunishmentType } from 'typings/api'
+import { CensorMethods, GuildDB } from 'typings/api'
 
 const inappName = 'Innapropriate Name'
 const deHoist = String.fromCharCode(856)
@@ -29,25 +29,11 @@ function handleCensor (worker: WorkerManager, member: EventData, db: GuildDB, re
     return void worker.responses.errorLog(db.log, 'Missing permissions to Manage Nicknames')
   }
 
-  if (db.log && worker.channels.has(db.log)) {
-    void worker.responses.log(CensorMethods.Names, member.nick ?? member.user.username, member, response, db.log)
-  }
+  void worker.responses.log(CensorMethods.Names, member.nick ?? member.user.username, member, response, db)
 
   void worker.api.members.setNickname(member.guild_id, member.user.id, member.nick ? null : inappName).catch(() => {})
 
-  if (db.punishment.type !== PunishmentType.Nothing) {
-    switch (db.punishment.type) {
-      case PunishmentType.Mute:
-        if (!worker.hasPerms(member.guild_id, 'manageRoles')) return
-        break
-      case PunishmentType.Kick:
-        if (!worker.hasPerms(member.guild_id, 'kick')) return
-        break
-      case PunishmentType.Ban:
-        if (!worker.hasPerms(member.guild_id, 'ban')) return
-        break
-    }
-
+  if (!worker.punishments.checkPerms(member.guild_id, db)) {
     void worker.punishments.punish(member.guild_id, member.user.id, member.roles)
   }
 }

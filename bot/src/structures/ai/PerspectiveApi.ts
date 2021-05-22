@@ -17,7 +17,9 @@ export class PerspectiveApi extends BaseAI {
         languages: ['en'],
         requestedAttributes: { TOXICITY: {} }
       })
-    }).then(async (x) => await x.json())
+    }).then(async (x) => await x.json()).catch(() => false)
+
+    if (!fetched) return { bad: false, percent: '0%' }
 
     const num: number = fetched.attributeScores.TOXICITY.summaryScore.value
 

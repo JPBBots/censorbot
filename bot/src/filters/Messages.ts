@@ -6,7 +6,7 @@ import { Snowflake, GatewayMessageCreateDispatchData, GatewayMessageUpdateDispat
 
 import { Cache } from '@jpbberry/cache'
 
-import { CensorMethods, GuildDB, PunishmentType } from 'typings/api'
+import { CensorMethods, GuildDB } from 'typings/api'
 
 interface MultiLine {
   author: Snowflake
@@ -40,9 +40,7 @@ function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB,
 
   if (multi) multiLineStore.delete(message.channel_id)
 
-  if (db.log && worker.channels.has(db.log)) {
-    void worker.responses.log(CensorMethods.Messages, message.content ?? 'No Content', message, response, db.log)
-  }
+  void worker.responses.log(CensorMethods.Messages, message.content ?? 'No Content', message, response, db)
 
   if (db.msg.content !== false) worker.actions.popup(message.channel_id, message.author.id, db)
 
@@ -59,21 +57,9 @@ function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB,
     }
   }
 
-  if (db.punishment.type !== PunishmentType.Nothing) {
-    switch (db.punishment.type) {
-      case PunishmentType.Mute:
-        if (!worker.hasPerms(message.guild_id, 'manageRoles')) return void worker.responses.missingPermissions(message.channel_id, 'Manage Roles')
-        break
-      case PunishmentType.Kick:
-        if (!worker.hasPerms(message.guild_id, 'kick')) return void worker.responses.missingPermissions(message.channel_id, 'Kick Members')
-        break
-      case PunishmentType.Ban:
-        if (!worker.hasPerms(message.guild_id, 'ban')) return void worker.responses.missingPermissions(message.channel_id, 'Ban Members')
-        break
-    }
-
-    void worker.punishments.punish(message.guild_id, message.author.id, message.member?.roles)
-  }
+  const perms = worker.punishments.checkPerms(message.guild_id, db)
+  if (typeof perms === 'string') return void worker.responses.missingPermissions(message.channel_id, perms)
+  if (!perms) void worker.punishments.punish(message.guild_id, message.author.id, message.member.roles)
 }
 
 export async function MessageHandler (worker: WorkerManager, message: EventData): Promise<void> {

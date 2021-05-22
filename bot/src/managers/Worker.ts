@@ -1,4 +1,4 @@
-import { Worker, PermissionsUtils, Embed, CommandType, CachedGuild } from 'discord-rose'
+import { Worker, PermissionsUtils, Embed, CommandType } from 'discord-rose'
 import { Config } from '../config'
 
 import { Database } from '../structures/Database'
@@ -13,7 +13,7 @@ import { AntiNSFW } from '../structures/ai/AntiNSFW'
 
 import { PunishmentManager } from '../structures/punishments/PunishmentManager'
 
-import { GatewayGuildMemberAddDispatchData, Snowflake } from 'discord-api-types'
+import { Snowflake } from 'discord-api-types'
 
 import { addHandlers } from '../helpers/clusterEvents'
 import { setupFilters } from '../helpers/setupFilters'
@@ -118,11 +118,23 @@ export class WorkerManager extends Worker {
   }
 
   hasPerms (id: Snowflake, perms: keyof typeof PermissionsUtils.bits, channel?: Snowflake): boolean {
+    const guild = this.guilds.get(id)
+    const member = this.selfMember.get(id)
+    const roleList = this.guildRoles.get(id)
+    let overwrites
+    if (channel) {
+      const c = this.channels.get(channel)
+      if (!c) return false
+      overwrites = c.permission_overwrites
+    }
+
+    if (!guild || !member || !roleList) return false
+
     return PermissionsUtils.has(PermissionsUtils.combine({
-      guild: this.guilds.get(id) as CachedGuild,
-      member: this.selfMember.get(id) as GatewayGuildMemberAddDispatchData,
-      roleList: this.guildRoles.get(id),
-      overwrites: channel ? this.channels.get(channel)?.permission_overwrites : undefined
+      guild,
+      member,
+      roleList,
+      overwrites
     }), perms)
   }
 
