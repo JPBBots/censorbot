@@ -32,6 +32,6 @@ export default {
       .title(`Ticket submitted (${id})`)
       .description('We\'ll get back to you soon on our decision! Hang tight.')
       .footer(`${ctx.author.username}#${ctx.author.discriminator}`)
-      .send(true, false, true)
+      .send(false, false, true)
   }
 } as CommandOptions
