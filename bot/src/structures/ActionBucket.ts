@@ -38,7 +38,7 @@ export class ActionBucket {
     }
 
     if (bucket.amount <= this.worker.config.actionRetention) {
-      await this.worker.api.messages.bulkDelete(channel, message)
+      this.worker.api.messages.bulkDelete(channel, message)
         .catch(() => {})
 
       bucket.amount++
@@ -46,7 +46,7 @@ export class ActionBucket {
         this.messages.delete(channel)
       }, 15000)
 
-      this.messages.set(channel, bucket)
+      return void this.messages.set(channel, bucket)
     }
 
     if (Array.isArray(message)) {
