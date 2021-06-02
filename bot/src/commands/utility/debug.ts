@@ -18,7 +18,7 @@ export default {
       .color(ctx.worker.responses.color)
       .timestamp()
 
-    embed.field('Permissions', ctx.worker.config.requiredPermissions.map(perm => `${ctx.myPerms(perm.permission) ? ':white_check_mark:' : ':x:'}  ${perm.vital ? ':exclamation:' : ''} __${perm.name}__: ${perm.why}`).join('\n') + '\n\n:exclamation: means the permission is vital')
+    embed.field('Permissions', `${ctx.worker.config.requiredPermissions.map(perm => `${ctx.myPerms(perm.permission) ? ':white_check_mark:' : ':x:'}  ${perm.vital ? ':exclamation:' : ''} __${perm.name}__: ${perm.why}`).join('\n')} \n\n:exclamation: means the permission is vital`)
 
     void embed.send()
   }
