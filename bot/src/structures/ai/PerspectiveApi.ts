@@ -21,7 +21,7 @@ export class PerspectiveApi extends BaseAI {
 
     if (!fetched) return { bad: false, percent: '0%' }
 
-    const num: number = fetched.attributeScores.TOXICITY.summaryScore.value
+    const num: number = fetched.attributeScores?.TOXICITY?.summaryScore.value
 
     const test: Test = {
       bad: num >= this.ai.predictionMin,

@@ -1,4 +1,4 @@
-import { APIMessage, Snowflake } from 'discord-api-types'
+import { APIMessage, ChannelType, Snowflake } from 'discord-api-types'
 import { WorkerManager } from '../managers/Worker'
 
 import { Embed } from 'discord-rose'
@@ -32,7 +32,10 @@ export class Responses {
   }
 
   async log (type: CensorMethods, content: string, data: any, response: FilterResponse, db: GuildDB): Promise<void> {
-    if (!db.log || !db.id || !this.worker.hasPerms(db.id, 'sendMessages', db.log)) return
+    if (!db.log || !db.id || !this.worker.hasPerms(db.id, ['sendMessages', 'viewChannel', 'embed'], db.log)) return
+
+    const log = this.worker.channels.get(db.log)
+    if (!log || log.type !== ChannelType.GUILD_TEXT) return
 
     const embed = this.embed(db.log)
       .color(this.color)

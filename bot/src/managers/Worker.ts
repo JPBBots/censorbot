@@ -117,7 +117,7 @@ export class WorkerManager extends Worker {
     this.commands.load(path.resolve(__dirname, '../commands'))
   }
 
-  hasPerms (id: Snowflake, perms: keyof typeof PermissionsUtils.bits, channel?: Snowflake): boolean {
+  hasPerms (id: Snowflake, perms: keyof typeof PermissionsUtils.bits | Array<keyof typeof PermissionsUtils.bits>, channel?: Snowflake): boolean {
     const guild = this.guilds.get(id)
     const member = this.selfMember.get(id)
     const roleList = this.guildRoles.get(id)
@@ -130,12 +130,16 @@ export class WorkerManager extends Worker {
 
     if (!guild || !member || !roleList) return false
 
-    return PermissionsUtils.has(PermissionsUtils.combine({
+    const p = Array.isArray(perms) ? perms : [perms]
+    
+    const current = PermissionsUtils.combine({
       guild,
       member,
       roleList,
       overwrites
-    }), perms)
+    })
+
+    return p.every(x => PermissionsUtils.has(current, x))
   }
 
   webhook (wh: keyof typeof Config.webhooks): Embed {

@@ -34,4 +34,8 @@ export class SlashCommandContext extends scm {
   async reply (data: MessageTypes, mention: boolean = false, ephermal: boolean = false): Promise<null> {
     return await super.send(data, this.db?.dm || ephermal)
   }
+
+  async dm (data: MessageTypes): Promise<any> {
+    return await super.send(data, true)
+  }
 }
