@@ -142,6 +142,27 @@ export class WorkerManager extends Worker {
     return p.every(x => PermissionsUtils.has(current, x))
   }
 
+  isManageable (guildId: Snowflake, user: Snowflake, userRoleIds: Snowflake[], ownerMatters = true): boolean {
+    const guild = this.guilds.get(guildId)
+    if (!guild) return false
+
+    if (ownerMatters && guild.owner_id === user) return false
+
+    const roles = this.guildRoles.get(guildId)
+    if (!roles) return false
+
+    const highestRole = roles.filter(x => userRoleIds.includes(x.id)).sort((a, b) => b.position - a.position).first()
+    if (!highestRole) return true
+
+    const self = this.selfMember.get(guildId)
+    if (!self) return false
+
+    const myHighestRole = roles.filter(x => self.roles.includes(x.id)).sort((a, b) => b.position - a.position).first()
+    if (!myHighestRole) return false
+
+    return myHighestRole.position > highestRole.position
+  }
+
   webhook (wh: keyof typeof Config.webhooks): Embed {
     const webhook = this.config.webhooks[wh]
     return new Embed(async (embed) => {

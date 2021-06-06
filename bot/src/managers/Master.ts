@@ -27,7 +27,7 @@ export class MasterManager extends Master {
       cacheControl: {
         guilds: ['name', 'icon', 'owner_id', 'region', 'unavailable', 'member_count'],
         channels: ['type', 'name', 'nsfw', 'permission_overwrites'],
-        roles: ['managed', 'permissions', 'name']
+        roles: ['managed', 'permissions', 'name', 'position']
       },
       intents: ['GUILD_MESSAGES', 'GUILDS', 'GUILD_MESSAGE_REACTIONS', 'GUILD_MEMBERS'],
       rest: {
