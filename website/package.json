@@ -23,7 +23,8 @@
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "mongodb": "^3.6.2",
-    "querystring": "^0.2.1"
+    "querystring": "^0.2.1",
+    "regenerator-runtime": "^0.13.7"
   },
   "devDependencies": {
     "@yaireo/tagify": "^3.22.0",

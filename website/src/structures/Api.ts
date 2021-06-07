@@ -320,32 +320,20 @@ export class CensorBotApi {
 
   public async getTickets(): Promise<Ticket[] | false> {
     if (!this.token && !await this.auth(true)) return false
-    let response
-    if (this.user.admin) {
-      response = await this.request('Fetching tickets', 'GET', '/admin/tickets', null, 401)
-      if (!response) return false
-    }
-
-    if (!this.user.admin || response.error === 'Unauthorized') {
-      Logger.tell('You are not authorized to access this location.')
-      setTimeout(() => {
-        Utils.setPath()
-      }, 1000)
-      return false
-    }
-
-    return response
+    if (!this.user.admin) return false
+    
+    return await this.ws.request('GET_TICKETS')
   }
 
   public async testTicket(id: ShortID): Promise<TicketTest> {
-    if (this.user.admin) return this.request('Fetching ticket', 'GET', '/admin/tickets/' + id)
+    if (this.user.admin) return this.ws.request('TEST_TICKET', { id })
   }
 
   public async acceptTicket(id: ShortID): Promise<{ success: boolean }> {
-    if (this.user.admin) return this.request('Accepting ticket', 'POST', '/admin/tickets/' + id)
+    if (this.user.admin) return this.ws.request('ACCEPT_TICKET', { id })
   }
 
   public async denyTicket(id: ShortID): Promise<{ success: boolean }> {
-    if (this.user.admin) return this.request('Denying ticket', 'DELETE', '/admin/tickets/' + id)
+    if (this.user.admin) return this.ws.request('DENY_TICKET', { id })
   }
 }

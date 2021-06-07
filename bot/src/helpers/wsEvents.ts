@@ -1,7 +1,23 @@
-import { User } from 'typings/api'
+import { Embed } from 'discord-rose'
+import { filters, User } from 'typings/api'
 import { WebSocketEventMap } from 'typings/websocket'
 
 import { Connection } from '../structures/api/Connection'
+import { FilterResponse } from '../structures/Filter'
+
+function test (str: string): FilterResponse {
+  delete require.cache[require.resolve('../structures/Filter')]
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { Filter } = require('../structures/Filter')
+  const filt = new Filter()
+
+  return filt.test(str, {
+    matchExact: false,
+    filter: [],
+    uncensor: [],
+    filters
+  })
+}
 
 export const Events = {
   HEARTBEAT: (con, data, resolve) => {
@@ -99,6 +115,68 @@ export const Events = {
 
     con.db.premium.guilds = data.guilds
     resolve?.(true)
+  },
+  GET_TICKETS: async (con, data, resolve) => {
+    if (!con.db?.admin) return resolve?.({ error: 'Not Admin' })
+
+    resolve?.(await con.socket.manager.db.collection('tickets').find({ accepted: true }).toArray())
+  },
+  TEST_TICKET: async (con, data, resolve) => {
+    if (!con.db?.admin) return resolve?.({ error: 'Not Admin' })
+
+    const ticket = await con.socket.manager.db.collection('tickets').findOne({ id: data?.id })
+
+    if (!ticket) return resolve?.({ error: 'Invalid Ticket' })
+
+    const res = test(ticket.word)
+
+    resolve?.({
+      censored: res.censor,
+      places: res.places.map(x => x.toJSON())
+    })
+  },
+  ACCEPT_TICKET: async (con, data, resolve) => {
+    if (!con.db?.admin) return resolve?.({ error: 'Not Admin' })
+
+    const ticket = await con.socket.manager.db.collection('tickets').findOne({ id: data?.id })
+
+    if (!ticket) return resolve?.({ error: 'Invalid Ticket' })
+
+    const res = test(ticket.word)
+
+    if (res.censor) return resolve?.({ error: 'Ticket still censored' })
+
+    con.socket.manager.rest.users.dm(ticket.user, new Embed()
+      .title('Ticket finished')
+      .description(ticket.id)
+    )
+
+    await con.socket.manager.db.collection('tickets').deleteOne({ id: ticket.id })
+
+    resolve?.({
+      success: true
+    })
+
+    con.socket.manager.thread.tell('RELOAD', 'FILTER')
+  },
+  DENY_TICKET: async (con, data, resolve) => {
+    if (!con.db?.admin) return resolve?.({ error: 'Not Admin' })
+
+    const ticket = await con.socket.manager.db.collection('tickets').findOne({ id: data?.id })
+
+    if (!ticket) return resolve?.({ error: 'Invalid Ticket' })
+
+    con.socket.manager.rest.users.dm(ticket.user, new Embed()
+      .title('After further review, your ticket was denied.')
+      .description(ticket.id)
+      .footer('Reminder that you can always add words to your uncensor list to stop it in your server specifically.')
+    )
+
+    await con.socket.manager.db.collection('tickets').deleteOne({ id: ticket.id })
+
+    resolve?.({
+      success: true
+    })
   }
 } as {
   [key in keyof WebSocketEventMap]?: (con: Connection, data?: WebSocketEventMap[key]['receive'], resolve?: (data?: WebSocketEventMap[key]['send'] | { error: string }) => void) => void

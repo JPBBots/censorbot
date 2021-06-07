@@ -1,4 +1,4 @@
-import { GuildData, ShortGuild, User } from "./api";
+import { GuildData, ShortGuild, ShortID, Ticket, TicketTest, User } from "./api";
 
 import { Snowflake } from 'discord-api-types'
 
@@ -92,5 +92,28 @@ export interface WebSocketEventMap {
       error: string
     }
     send: null
+  }
+  // tickets
+  GET_TICKETS: {
+    receive: null
+    send: Ticket[]
+  },
+  TEST_TICKET: {
+    receive: {
+      id: ShortID
+    }
+    send: TicketTest
+  }
+  ACCEPT_TICKET: {
+    receive: {
+      id: ShortID
+    }
+    send: { success: true }
+  },
+  DENY_TICKET: {
+    receive: {
+      id: ShortID
+    },
+    send: { success: true }
   }
 }
