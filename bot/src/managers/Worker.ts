@@ -59,7 +59,10 @@ export class WorkerManager extends Worker {
 
     this.commands
       .options({
-        interactionGuild: this.config.staging ? '569907007465848842' : undefined
+        interactionGuild: this.config.staging ? '569907007465848842' : undefined,
+        default: {
+          myPerms: ['viewChannel', 'sendMessages', 'embed']
+        }
       })
       .error((ctx, err) => {
         if (ctx.myPerms('sendMessages')) {

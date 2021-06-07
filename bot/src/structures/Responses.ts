@@ -31,11 +31,17 @@ export class Responses {
       .send()
   }
 
-  async log (type: CensorMethods, content: string, data: any, response: FilterResponse, db: GuildDB): Promise<void> {
-    if (!db.log || !db.id || !this.worker.hasPerms(db.id, ['sendMessages', 'viewChannel', 'embed'], db.log)) return
+  canLog (guildId: Snowflake, logId: Snowflake): boolean {
+    if (!this.worker.hasPerms(guildId, ['sendMessages', 'viewChannel', 'embed'], logId)) return false
 
-    const log = this.worker.channels.get(db.log)
-    if (!log || log.type !== ChannelType.GUILD_TEXT) return
+    const log = this.worker.channels.get(logId)
+    if (!log || log.guild_id !== guildId || log.type !== ChannelType.GUILD_TEXT) return false
+
+    return true
+  }
+
+  async log (type: CensorMethods, content: string, data: any, response: FilterResponse, db: GuildDB): Promise<void> {
+    if (!db.log || !db.id || !this.canLog(db.id, db.log)) return
 
     const embed = this.embed(db.log)
       .color(this.color)
@@ -57,17 +63,19 @@ export class Responses {
 
     embed
       .field('Content', this.worker.filter.surround(content, response.ranges, '__') || 'None', true)
-      .field('Filter(s)', response.filters.map(x => this.worker.filter.masks[x]).join(', '), true)
+      .field('Filter(s)', response.filters.map(x => this.worker.filter.masks[x]).join(', ') || 'None', true)
 
     if (response.percentage) {
-      embed.field('Prediction', response.percentage, true)
+      embed.field('Prediction', response.percentage || '0%', true)
     }
 
     await embed.send()
   }
 
-  async errorLog (log: Snowflake, message: string): Promise<APIMessage> {
-    return await this.embed(log)
+  async errorLog (db: GuildDB, message: string): Promise<APIMessage|false> {
+    if (!db.log || !db.id || !this.canLog(db.id, db.log)) return false
+    
+    return await this.embed(db.log)
       .color(this.color)
       .title('Error occured')
       .description(message)

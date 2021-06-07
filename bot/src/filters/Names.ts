@@ -26,7 +26,7 @@ function handleCensor (worker: WorkerManager, member: EventData, db: GuildDB, re
   if (!guild) return
 
   if ((guild.owner_id === member.user.id || !worker.hasPerms(member.guild_id, 'manageNicknames')) && db.log) {
-    return void worker.responses.errorLog(db.log, 'Missing permissions to Manage Nicknames')
+    return void worker.responses.errorLog(db, 'Missing permissions to Manage Nicknames')
   }
 
   void worker.responses.log(CensorMethods.Names, member.nick ?? member.user.username, member, response, db)

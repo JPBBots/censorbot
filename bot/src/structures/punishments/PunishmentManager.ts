@@ -91,10 +91,7 @@ export class PunishmentManager {
 
   async sendLog (positive: boolean, guild: Snowflake, user: Snowflake, type: string, extra?: string): Promise<void> {
     const db = await this.config(guild)
-    if (!db.log || !db.id || !this.worker.hasPerms(db.id, ['sendMessages', 'viewChannel', 'embed'], db.log)) return
-
-    const log = this.worker.channels.get(db.log)
-    if (!log || log.type !== ChannelType.GUILD_TEXT) return
+    if (!db.log || !db.id || !this.worker.responses.canLog(db.id, db.log)) return
 
     await this.worker.api.messages.send(db.log, new Embed()
       .color(positive ? 0x2ECC71 : 0xE74C3C)
