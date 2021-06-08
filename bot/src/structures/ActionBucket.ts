@@ -1,8 +1,6 @@
 import Collection from '@discordjs/collection'
 import { Cache } from '@jpbberry/cache'
 
-import fetch from 'node-fetch'
-
 import { AllowedMentionsTypes, APIUser, APIWebhook, Snowflake } from 'discord-api-types'
 
 import { GuildDB } from 'typings/api'
@@ -21,7 +19,7 @@ interface DeleteBucket {
 export class ActionBucket {
   messages: Collection<Snowflake, DeleteBucket> = new Collection()
   popups: Collection<string, true> = new Collection()
-  webhooks: Cache<string, APIWebhook> = new Cache(30e3)
+  webhooks: Cache<Snowflake, APIWebhook> = new Cache(30e3)
 
   constructor (public worker: WorkerManager) {}
 
@@ -95,17 +93,13 @@ export class ActionBucket {
   }
 
   public async sendAs (channel: Snowflake, user: APIUser, name: string, content: string): Promise<void> {
-    let webhook = this.webhooks.get(`${channel}-${user.id}`)
+    let webhook = this.webhooks.get(channel)
     if (!webhook) {
-      const avatar = await fetch(`https://cdn.discordapp.com/${user.avatar ? `avatars/${user.id}/${user.avatar}` : `embed/avatars/${Number(user.discriminator) % 5}`}.png`)
-        .then(async (x) => await x.buffer())
-        .then(x => `data:image/png;base64,${x.toString('base64')}`)
-
       webhook = await this.worker.api.webhooks.create(channel, {
-        name,
-        avatar
+        name: 'Censor Bot Resend Webhook'
       })
-      this.webhooks.set(`${channel}-${user.id}`, webhook, () => {
+
+      this.webhooks.set(channel, webhook, () => {
         if (!webhook) return {}
         void this.worker.api.webhooks.delete(webhook.id, webhook.token)
         return {}
@@ -114,6 +108,8 @@ export class ActionBucket {
 
     await this.worker.api.webhooks.send(webhook.id, webhook.token as string, {
       content,
+      username: name,
+      avatar_url: `https://cdn.discordapp.com/${user.avatar ? `avatars/${user.id}/${user.avatar}` : `embed/avatars/${Number(user.discriminator) % 5}`}.png`,
       allowed_mentions: {
         parse: [AllowedMentionsTypes.User]
       }
