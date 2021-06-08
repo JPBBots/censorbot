@@ -23,8 +23,7 @@
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "mongodb": "^3.6.2",
-    "querystring": "^0.2.1",
-    "regenerator-runtime": "^0.13.7"
+    "querystring": "^0.2.1"
   },
   "devDependencies": {
     "@yaireo/tagify": "^3.22.0",
@@ -33,6 +32,7 @@
     "memory-fs": "^0.5.0",
     "minify": "^7.0.1",
     "postcss": "^8.2.8",
+    "regenerator-runtime": "^0.13.7",
     "sass": "^1.32.8",
     "smoothscroll-polyfill": "^0.4.4",
     "tagify": "^0.1.1",
