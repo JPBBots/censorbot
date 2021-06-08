@@ -25,6 +25,7 @@ import { ReactionHandler } from '../filters/Reactions'
 
 import { Interface } from 'interface'
 
+import util from 'util'
 import fetch from 'node-fetch'
 import path from 'path'
 
@@ -134,7 +135,7 @@ export class WorkerManager extends Worker {
     if (!guild || !member || !roleList) return false
 
     const p = Array.isArray(perms) ? perms : [perms]
-    
+
     const current = PermissionsUtils.combine({
       guild,
       member,
@@ -175,8 +176,7 @@ export class WorkerManager extends Worker {
 
   logError (error: Error, command?: CommandType): void {
     const embed = this.webhook('errors')
-      .title(`Error: ${error.name}`)
-      .description(error.message)
+      .description(`\`\`\`xl\n${util.inspect(error)}\`\`\``)
 
     if (command) embed.field('Command', `${command}`, true)
 
