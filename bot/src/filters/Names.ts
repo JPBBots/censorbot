@@ -6,7 +6,7 @@ import { GatewayGuildMemberUpdateDispatchData, GatewayGuildMemberAddDispatchData
 
 import { CensorMethods, GuildDB } from 'typings/api'
 
-const inappName = 'Innapropriate Name'
+const inappName = 'Inappropriate Name'
 const deHoist = String.fromCharCode(856)
 
 type EventData = GatewayGuildMemberUpdateDispatchData | GatewayGuildMemberAddDispatchData
