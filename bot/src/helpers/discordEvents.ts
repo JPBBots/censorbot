@@ -1,31 +1,26 @@
-import { Embed, PermissionsUtils } from 'discord-rose'
+import { Embed } from 'discord-rose'
 import { WorkerManager } from '../managers/Worker'
 
 import Collection from '@discordjs/collection'
 
 import { APIGuildMember, APIRole, Snowflake } from 'discord-api-types'
 import { PunishmentType } from 'typings'
+import Wait from '../utils/Wait'
 
 const unavailables = new Set()
 
 export function setupDiscord (worker: WorkerManager): void {
-  worker.on('GUILD_CREATE', (guild) => {
+  worker.on('GUILD_CREATE', async (guild) => {
     if (unavailables.has(guild.id)) return unavailables.delete(guild.id)
 
-    const roles: Collection<Snowflake, APIRole> = new Collection()
-    guild.roles.forEach(x => {
-      roles.set(x.id, x)
-    })
-    const hasPerms = (perm: keyof typeof PermissionsUtils.bits): boolean => {
-      return PermissionsUtils.calculate(guild.members?.find(x => x.user?.id === worker.user.id) as APIGuildMember, guild, roles, perm)
-    }
+    await Wait(2000)
 
     const links = worker.config.links
     if (guild.system_channel_id) {
-      if (!hasPerms('sendMessages')) return
-      if (!hasPerms('embed')) return void worker.api.messages.send(guild.system_channel_id, 'Missing `Embed Links` permission. This will likely cause issues with the functionality of the bot.')
+      if (!worker.hasPerms(guild.id, 'sendMessages', guild.system_channel_id)) return
+      if (!worker.hasPerms(guild.id, 'embed', guild.system_channel_id)) return void worker.api.messages.send(guild.system_channel_id, 'Missing `Embed Links` permission. This will likely cause issues with the functionality of the bot.')
 
-      const perms = worker.config.requiredPermissions.filter(x => x.vital && !hasPerms(x.permission))
+      const perms = worker.config.requiredPermissions.filter(x => x.vital && !worker.hasPerms(guild.id, x.permission))
       const embed = new Embed()
         .color(worker.responses.color)
         .title('Thanks for inviting Censor Bot!')
