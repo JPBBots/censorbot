@@ -1,9 +1,6 @@
 import { Embed } from 'discord-rose'
 import { WorkerManager } from '../managers/Worker'
 
-import Collection from '@discordjs/collection'
-
-import { APIGuildMember, APIRole, Snowflake } from 'discord-api-types'
 import { PunishmentType } from 'typings'
 import Wait from '../utils/Wait'
 
