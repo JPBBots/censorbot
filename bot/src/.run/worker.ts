@@ -22,3 +22,5 @@ process.on('unhandledRejection', (err: CommandError|Error) => {
   console.error(err)
   worker.logError(err as Error)
 })
+
+global.ROSE_DEFAULT_EMBED.color = 0xea5455

@@ -10,6 +10,8 @@ export function setupDiscord (worker: WorkerManager): void {
   worker.on('GUILD_CREATE', async (guild) => {
     if (unavailables.has(guild.id)) return unavailables.delete(guild.id)
 
+    worker.log(`Guild added ${guild.id}`)
+
     await Wait(2000)
 
     const links = worker.config.links
@@ -31,6 +33,13 @@ export function setupDiscord (worker: WorkerManager): void {
   })
   worker.on('GUILD_UNAVAILABLE', (guild) => {
     unavailables.add(guild?.id)
+
+    worker.log(`Guild unavailable ${guild}`)
+  })
+  worker.on('GUILD_DELETE', (guild) => {
+    if (guild.unavailable) return
+
+    worker.log(`Guild removed ${guild.id}`)
   })
   worker.on('READY', () => {
     void worker.punishments.timeouts.checkTimeouts()
