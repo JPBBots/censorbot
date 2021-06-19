@@ -50,8 +50,8 @@ body {
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   display: grid;
-  grid-template-columns: 2;
-  grid-template-rows: 1;
+  grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: repeat(1, 1fr);
   grid-template-areas:
     "root"
     "footer"
