@@ -124,6 +124,12 @@ export class ChargeBee {
       user.premium.count = this.manager.config.premiumAmounts[sub.plan_id] || 0
 
       this.manager.socket.cachedUsers.set(id, user)
+
+      if (user.premium.count > 0) {
+        this.manager.interface.api._request('POST', '/premium/webhook/add', {
+          Authorization: process.env.JPBBOT_PREMIUM_UPDATES
+        }, { id: user.id })
+      }
     }
 
     return {
@@ -146,5 +152,9 @@ export class ChargeBee {
         }
       }
     }
+
+    this.manager.interface.api._request('POST', '/premium/webhook/remove', {
+      Authorization: process.env.JPBBOT_PREMIUM_UPDATES
+    }, { id: user.id })
   }
 }
