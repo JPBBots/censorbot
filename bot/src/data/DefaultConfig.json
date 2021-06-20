@@ -35,6 +35,7 @@
   "invites": false,
   "toxicity": false,
   "images": false,
+  "ocr": false,
   "dm": false,
   "antiHoist": false,
 

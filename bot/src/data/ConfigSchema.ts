@@ -128,6 +128,7 @@ export const config = {
   invites: simple(Boolean),
   toxicity: simple(Boolean),
   images: simple(Boolean),
+  ocr: simple(Boolean),
   dm: simple(Boolean),
   antiHoist: simple(Boolean)
 } as SchemaDefinition

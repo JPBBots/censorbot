@@ -107,7 +107,7 @@ export class ActionBucket {
     }
 
     await this.worker.api.webhooks.send(webhook.id, webhook.token as string, {
-      content,
+      content: content.slice(0, 2048),
       username: name,
       avatar_url: `https://cdn.discordapp.com/${user.avatar ? `avatars/${user.id}/${user.avatar}` : `embed/avatars/${Number(user.discriminator) % 5}`}.png`,
       allowed_mentions: {

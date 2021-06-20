@@ -74,6 +74,13 @@ export class Filter {
       .split(filter.replaceSpots.spaces)
       .join(' ')
 
+    while (splitText.startsWith(' ') || splitText.startsWith('\n')) {
+      splitText = splitText.slice(1)
+    }
+    while (text.startsWith(' ') || text.startsWith('\n')) {
+      text = text.slice(1)
+    }
+
     for (const i in links) {
       splitText = splitText.replace('\x1D' + i, links[i])
     }
@@ -130,6 +137,10 @@ export class Filter {
         return `${link[2]}`.replace(filter.replaceSpots.spaces, '')
       })
       .replace(/(\w)\1{2,}/g, '$1$1') // multiple characters only come up once
+
+    while (content.startsWith(' ') || content.startsWith('\n')) {
+      content = content.slice(1)
+    }
 
     content = filter.converter(content) as string
 

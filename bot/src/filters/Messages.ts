@@ -115,11 +115,11 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
     }
   }
 
-  if (db.images) {
-    const urls: string[] = []
-    if (message.attachments) urls.push(...message.attachments.map(x => x.proxy_url))
-    if (message.embeds) urls.push(...message.embeds.map(x => x.thumbnail?.proxy_url).filter(x => x) as string[])
+  const urls: string[] = []
+  if (message.attachments) urls.push(...message.attachments.map(x => x.proxy_url))
+  if (message.embeds) urls.push(...message.embeds.map(x => x.thumbnail?.proxy_url).filter(x => x) as string[])
 
+  if (db.images) {
     for (const url of urls) {
       const res = await worker.images.test(url)
       if (res.bad) {
@@ -148,6 +148,21 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
     multiLineStore.set(message.channel_id, multiline)
 
     content = Object.values(multiline.messages).sort((a, b) => new Date(a.timestamp as string).getTime() - new Date(b.timestamp as string).getTime()).map(x => x.content).join('\n')
+  }
+
+  if (db.ocr) {
+    for (const url of urls) {
+      const scanned = await worker.ocr.resolve(url)
+      if (scanned) {
+        content += `\n${scanned}`
+        content = content.replace(url, '')
+        const possible = message.embeds?.find(x => x.thumbnail?.proxy_url === url)
+
+        if (possible?.thumbnail?.url) {
+          content = content.replace(possible.thumbnail.url, '')
+        }
+      }
+    }
   }
 
   const response = worker.filter.test(content, db)

@@ -60,6 +60,7 @@ const settings = [
   'multi',
   'toxicity',
   'images',
+  'ocr',
   'filters',
   'filter',
   'uncensor',
@@ -113,7 +114,7 @@ export class DiscordSettings extends Page implements PageInterface {
     [key in keyof SettingType]: Array<typeof settings[number]>
   } = {
     bools: [
-      'dm', 'nsfw', 'multi', 'invites', 'toxicity', 'images',
+      'dm', 'nsfw', 'multi', 'invites', 'toxicity', 'images', 'ocr',
       'webhook.enabled', 'webhook.separate', 'matchExact', 'antiHoist',
       'punishment.retainRoles', 'msg.dm'
     ],

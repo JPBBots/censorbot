@@ -1,4 +1,4 @@
-import { ChannelType, Snowflake } from 'discord-api-types'
+import { Snowflake } from 'discord-api-types'
 import { Embed, MembersResource } from 'discord-rose'
 import { Collection } from 'mongodb'
 import { GuildDB, PunishmentType } from 'typings'
@@ -115,7 +115,7 @@ export class PunishmentManager {
       }
 
       await this.sendLog(false, guild, user, 'Muted', `Received <@&${db.punishment.role}>${db.punishment.time ? `\nWill be unmuted in ${(db.punishment.time / 60000).toLocaleString()} minutes` : ''}`)
-    
+
       if (db.punishment.time) {
         await this.timeouts.add(guild, user, PunishmentType.Mute, Date.now() + db.punishment.time,
           db.punishment.retainRoles ? roles?.filter(x => x !== db.punishment.role) : undefined

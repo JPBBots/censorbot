@@ -5,6 +5,9 @@ import { Embed } from 'discord-rose'
 import { FilterResponse } from './Filter'
 import { CensorMethods, GuildDB } from 'typings'
 
+const LENGTH_MESSAGE = '- messsage too long'
+const DESCRIPTION_MAX_LENGTH = 2048
+
 export class Responses {
   color = 0xea5455
 
@@ -50,19 +53,27 @@ export class Responses {
 
     switch (type) {
       case CensorMethods.Messages:
-        embed.title('Deleted Message').description(`From <@${data.author.id}> in <#${data.channel_id}>`)
+        embed.title('Deleted Message')
+          .field('User', `<@${data.author.id}>`, true)
+          .field('Channel', `<#${data.channel_id}>`, true)
         break
       case CensorMethods.Names:
-        embed.title('Removed Name').description(`User <@${data.user.id}>`)
+        embed.title('Removed Name')
+          .field('User', `<@${data.user.id}>`, true)
         break
       case CensorMethods.Reactions:
-        embed.title('Removed Reaction').description(`User <@${data.user_id}> on [this message](${
+        embed.title('Removed Reaction').field('Info', `User <@${data.user_id}> on [this message](${
           `https://discord.com/channels/${data.guild_id}/${data.channel_id}/${data.message_id}`
-        })`)
+        })`, true)
+    }
+
+    content = this.worker.filter.surround(content, response.ranges, '__')
+    if (content.length > DESCRIPTION_MAX_LENGTH) {
+      content = content.slice(0, DESCRIPTION_MAX_LENGTH - LENGTH_MESSAGE.length) + LENGTH_MESSAGE
     }
 
     embed
-      .field('Content', this.worker.filter.surround(content, response.ranges, '__') || 'None', true)
+      .description(`${content || 'None'}`)
       .field('Filter(s)', response.filters.map(x => this.worker.filter.masks[x]).join(', ') || 'None', true)
 
     if (response.percentage) {
@@ -74,7 +85,7 @@ export class Responses {
 
   async errorLog (db: GuildDB, message: string): Promise<APIMessage|false> {
     if (!db.log || !db.id || !this.canLog(db.id, db.log)) return false
-    
+
     return await this.embed(db.log)
       .color(this.color)
       .title('Error occured')

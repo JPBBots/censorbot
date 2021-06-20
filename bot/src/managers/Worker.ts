@@ -10,6 +10,7 @@ import { TicketManager } from '../structures/TicketManager'
 
 import { PerspectiveApi } from '../structures/ai/PerspectiveApi'
 import { AntiNSFW } from '../structures/ai/AntiNSFW'
+import { Ocr } from '../structures/ai/Ocr'
 
 import { PunishmentManager } from '../structures/punishments/PunishmentManager'
 
@@ -40,6 +41,7 @@ export class WorkerManager extends Worker {
 
   perspective = new PerspectiveApi(this)
   images = new AntiNSFW(this)
+  ocr = new Ocr(this)
 
   punishments = new PunishmentManager(this)
 

@@ -147,6 +147,7 @@ export const Config = {
     predictionMin: 0.85, // 85%
     cacheWipe: 10 * 60 * 100, // 10 minutes
     perspectiveKey: process.env.PERSPECTIVE_KEY,
-    antiNsfwKey: process.env.ANTI_NSFW_KEY
+    antiNsfwKey: process.env.ANTI_NSFW_KEY,
+    ocrToken: process.env.OCR_KEY as string
   }
 }

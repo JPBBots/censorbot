@@ -125,6 +125,7 @@ export interface GuildDB {
 
   toxicity: boolean
   images: boolean
+  ocr: boolean
 
   /**
    * Whether or not the entry is in the database or not

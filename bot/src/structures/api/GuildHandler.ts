@@ -105,6 +105,7 @@ export class GuildHandler {
       db.multi = false
       db.toxicity = false
       db.images = false
+      db.ocr = false
       db.dm = false
       if (db.msg) {
         db.msg.dm = false
