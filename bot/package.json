@@ -4,7 +4,8 @@
   "description": "Anti-swear bot for Discord",
   "main": "./dist/.run/master.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm -rf ./dist && tsc"
   },
   "repository": {
     "type": "git",
