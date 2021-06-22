@@ -31,7 +31,7 @@ const app = Express()
 app.use('/static', Express.static(Path.resolve(__dirname, './static')))
 
 app.delete('/', (req, res) => {
-  sh('npm run buildsite').then(() => res.send('e'))
+  sh('npm run build').then(() => res.send('e'))
 })
 
 app.get('/robots.txt', (req, res) => {

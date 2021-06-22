@@ -184,6 +184,7 @@ export class DiscordSettings extends Page implements PageInterface {
       return elm.value
     },
     number: (elm) => {
+      if (elm.value === '') return null
       return Number(elm.value)
     },
     select: (elm) => {
@@ -271,7 +272,7 @@ export class DiscordSettings extends Page implements PageInterface {
 
     let value = this.getters[type](this._elementFromType(type, setting))
 
-    if (setting === 'msg.deleteAfter') (value as number) *= 1000
+    if (setting === 'msg.deleteAfter' && typeof value === 'number') value *= 1000
 
     return value
   }
