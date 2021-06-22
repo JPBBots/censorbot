@@ -150,6 +150,7 @@ export class DiscordSettings extends Page implements PageInterface {
       elm.value = value
     },
     number: (value, elm) => {
+      if (value === null) return elm.value = ''
       elm.value = String(value)
     },
     select: (value, elm) => {
@@ -305,7 +306,7 @@ export class DiscordSettings extends Page implements PageInterface {
 
       let value = pieces[piece]
 
-      if (piece === 'msg.deleteAfter') value /= 1000
+      if (piece === 'msg.deleteAfter' && typeof value === 'number') value /= 1000
 
       this.setters[type](value as never, this._elementFromType(type, piece))
     })
