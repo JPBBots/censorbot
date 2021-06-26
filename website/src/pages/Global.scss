@@ -1,0 +1,25 @@
+// @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100&display=swap');
+
+:root {
+  --brand: #ea5455;
+  --main: #161e2e;
+  --secondary: #252f3f;
+  --interaction: #65696f;
+
+  color: white;
+}
+
+body {
+  margin: 0px;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--main)
+}
+
+#__next {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#swal2-title {
+  color: white;
+}

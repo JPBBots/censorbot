@@ -1,0 +1,7 @@
+.section {
+  display: flex;
+  align-items: center;
+  > .second {
+    margin-left: 20px
+  }
+}

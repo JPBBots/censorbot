@@ -4,5 +4,14 @@
   },
   "env": {
     "es6": true
+  },
+  "rules": {
+    "@typescript-eslint/consistent-type-assertions": "off",
+    "@typescript-eslint/no-for-in-array": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/no-dynamic-delete": "off",
+    "no-void": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/no-unnecessary-type-assertion": "off"
   }
 }
