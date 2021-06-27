@@ -10,6 +10,12 @@
     background-color: var(--interaction);
   }
 
+  &:not(.special) {
+    @media (max-width: 400px) {
+      display: none;
+    }
+  }
+
   transition: 0.3s;
   &:hover {
     transition: 0.2s;

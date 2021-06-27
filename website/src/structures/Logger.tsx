@@ -10,6 +10,8 @@ const Toast = Swal.mixin({
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class Logger {
+  static setLoading (loading: boolean) {}
+
   static log (from: string, message: string) {
     console.log(`%c[${from}]%c ${message}`, 'color: purple; font-weight: bold', '')
   }

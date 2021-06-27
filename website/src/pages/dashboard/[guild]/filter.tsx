@@ -1,4 +1,4 @@
-import { SettingsSection, SettingsSectionElement } from '~/SettingsSection/SettingsSection'
+import { SettingsSection, SettingsSectionElement } from '~/settings/SettingsSection'
 
 export default class FilterSection extends SettingsSection {
   render () {

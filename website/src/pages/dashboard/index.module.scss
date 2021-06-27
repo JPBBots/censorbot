@@ -1,0 +1,12 @@
+.guilds {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  grid-gap: 20px;
+}
+
+.headerDiv {
+  text-align: center;
+}

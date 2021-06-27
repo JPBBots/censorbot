@@ -7,49 +7,61 @@ import Navbar from '~/navbar/Navbar'
 import { Logo } from '~/logo'
 import { Header } from '~/Header'
 
-import { ApiData, DataContext, Api } from '../structures/Api'
+import { ApiData, DataContext, Api, LoggingInState } from '../structures/Api'
+
+import './fix.css'
 
 import './Global.scss'
 import styles from './_app.module.scss'
+import { Logger } from 'structures/Logger'
 
 export const api = new Api()
 global.api = api
 
-api.ws.start()
-
-export default function MyApp ({ Component, pageProps }: AppProps) {
-  const [data, setData] = React.useState({} as ApiData)
-
-  Object.defineProperty(api, 'data', {
-    get: () => {
-      return data
-    },
-    configurable: true
-  })
-
-  api.setData = (data) => {
-    setData(data)
+export default class MyApp extends React.Component<AppProps, ApiData & { loading: boolean }> {
+  state = {
+    loggingIn: LoggingInState.Loading,
+    loading: true
   }
 
-  const [loading, setLoading] = React.useState(false)
+  componentDidMount () {
+    api.ws.start()
 
-  Router.events.on('routeChangeStart', () => {
-    setLoading(true)
-  })
-  Router.events.on('routeChangeComplete', () => {
-    setLoading(false)
-  })
+    Object.defineProperty(api, 'data', {
+      get: () => {
+        return this.state
+      },
+      configurable: true
+    })
 
-  return (
-    <DataContext.Provider value={ data }>
-      <Header />
-      <Navbar />
-      <div className={styles.root} >
-        <Component {...pageProps} />
-      </div>
-      <Logo className={styles.loader} style={{
-        display: loading ? 'unset' : 'none'
-      }}/>
-    </DataContext.Provider>
-  )
+    api.setData = (data) => {
+      this.setState({ ...api.data, ...data })
+    }
+
+    Logger.setLoading = (loading) => {
+      this.setState({ loading })
+    }
+
+    Router.events.on('routeChangeStart', () => {
+      this.setState({ loading: true })
+    })
+    Router.events.on('routeChangeComplete', () => {
+      this.setState({ loading: false })
+    })
+  }
+
+  render () {
+    return (
+      <DataContext.Provider value={this.state}>
+        <Header />
+        <Navbar />
+        <div className={styles.root} >
+          <this.props.Component {...this.props.pageProps} />
+        </div>
+        <Logo className={styles.loader} style={{
+          display: this.state.loading ? 'unset' : 'none'
+        }} />
+      </DataContext.Provider>
+    )
+  }
 }

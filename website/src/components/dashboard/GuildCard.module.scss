@@ -1,0 +1,23 @@
+.card {
+  background-color: var(--secondary);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  grid-gap: 10px;
+  padding-top: 20px;
+  width: 180px;
+  height: 180px;
+  border-radius: 6px;
+  box-shadow: 9px 9px rgb(0 0 0 / 15%);
+
+  &:hover {
+    transition: 0.2s;
+    filter: brightness(80%);
+  }
+
+  > h1 {
+    margin: 3px;
+    user-select: none;
+  }
+}

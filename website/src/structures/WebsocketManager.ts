@@ -11,7 +11,7 @@ export class WebsocketManager {
   private ws?: WebSocket
 
   private readonly promises: Map<number, (data: any) => void> = new Map()
-  private readonly queue: Array<[string, any, number|undefined]> = []
+  private queue: Array<[string, any, number|undefined]> = []
 
   public sequence = 1
   public reconnecting = false
@@ -36,6 +36,8 @@ export class WebsocketManager {
   }
 
   public start () {
+    if (this.ws && this.open) this.ws.close()
+
     try {
       this.ws = new WebSocket(`wss://${location.host}/ws`)
     } catch (err) {
@@ -68,6 +70,7 @@ export class WebsocketManager {
 
   public async request <K extends keyof WebSocketEventMap> (event: K, data?: WebSocketEventMap[K]['receive']): Promise<WebSocketEventMap[K]['send']> {
     return await new Promise((resolve, reject) => {
+      if (event !== 'HEARTBEAT') Logger.setLoading(true)
       const id = this.sequence++
 
       const timeout = setTimeout(() => {
@@ -76,20 +79,26 @@ export class WebsocketManager {
           Logger.error('Error occured in request')
 
           this.promises.delete(id)
+          Logger.setLoading(false)
         }
       }, 30e3)
 
       this.promises.set(id, (data) => {
         clearTimeout(timeout)
-        this.promises.delete(id)
 
-        if (data?.closed) return reject(new Error('ABORTED'))
+        if (data?.closed) {
+          this.queue.push([event, data, id])
+          return
+        }
+
+        this.promises.delete(id)
         if (data?.error) {
           Logger.error(data.error)
 
           return reject(data.error)
         }
         resolve(data)
+        Logger.setLoading(false)
       })
 
       this.send(event, data, id)
@@ -120,17 +129,23 @@ export class WebsocketManager {
         void this._heartbeat()
       }, data.d.interval)
 
-      await Utils.wait(1e3)
-
-      this.api.handleOpen()
+      if (this.api.data.user) {
+        await this.request('AUTHORIZE', { token: this.api.data.user.token, customer: false })
+      }
 
       this.queue.forEach(q => {
         this.send(...q)
       })
+      this.queue = []
+
+      Logger.setLoading(false)
+
+      this.api.handleOpen()
     }
   }
 
   async _handleClose () {
+    Logger.setLoading(true)
     this.sequence = 1
 
     this.api.handleClose()

@@ -1,9 +1,41 @@
-import Link from 'next/link'
+import { api } from 'pages/_app'
+import React from 'react'
+import { DataContext, LoggingInState } from 'structures/Api'
+import { MainButton } from '~/button/MainButton'
+import { GuildCard } from '~/dashboard/GuildCard'
 
-export default function Dashboard () {
-  return (
-    <h1>b
-      <Link href="/dashboard/123">yes</Link>
-    </h1>
-  )
+import styles from './index.module.scss'
+
+export default class DashboardHome extends React.Component {
+  context!: React.ContextType<typeof DataContext>
+
+  componentDidMount () {
+    if (!this.context.guilds) void api.updateGuilds()
+  }
+
+  render () {
+    const login = !this.context.guilds
+      ? this.context.loggingIn === LoggingInState.Loading || this.context.loggingIn === LoggingInState.LoggingIn
+        ? <h1>Logging in...</h1>
+        : <MainButton onClick={(() => {
+          void api.login()
+        })}>Login</MainButton>
+      : null
+
+    return (
+      <div>
+        <div className={styles.headerDiv}>
+          <h1>Discord Dashboard</h1>
+          <br />
+          {login}
+        </div>
+        <div className={styles.guilds}>
+          {
+            this.context.guilds?.map(x => <GuildCard key={x.i} {...x} />)
+          }
+        </div>
+      </div>
+    )
+  }
 }
+DashboardHome.contextType = DataContext

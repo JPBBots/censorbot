@@ -15,8 +15,7 @@ export class Utils {
       const win = window.open(url, 'window', 'width=600,height=1000')
       if (!win) {
         void Swal.fire({
-          icon: 'question',
-          title: text ?? 'Open',
+          text: text ?? 'Open',
           showConfirmButton: true,
           showCancelButton: true
         }).then(res => {

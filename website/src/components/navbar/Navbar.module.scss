@@ -12,16 +12,7 @@
   width: -webkit-fill-available;
   position: fixed;
 
-  > h3 {
-    text-align: center;
-    margin: 0px;
-    font-weight: 800;
-    font-size: 1.3rem;
-    width: fit-content;
-    display: inline-block;
-    cursor: pointer;
-  }
-
+  
   > div {
     display: flex;
     justify-content: space-between;
@@ -29,6 +20,16 @@
     transition: 0.3s;
     width: 1200px;
 
+    > .left > h3 {
+      text-align: center;
+      margin: 0px;
+      font-weight: 800;
+      font-size: 1.3rem;
+      width: fit-content;
+      display: inline-block;
+      cursor: pointer;
+    }
+    
     > .left .right {
       max-width: 1200px;
     }
