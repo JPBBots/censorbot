@@ -1,7 +1,8 @@
 import { api } from 'pages/_app'
 import React from 'react'
-import { DataContext, LoggingInState } from 'structures/Api'
-import { MainButton } from '~/button/MainButton'
+import { DataContext, LoginState } from 'structures/Api'
+
+import { LoginButton } from '~/button/LoginButton'
 import { GuildCard } from '~/dashboard/GuildCard'
 
 import styles from './index.module.scss'
@@ -15,11 +16,9 @@ export default class DashboardHome extends React.Component {
 
   render () {
     const login = !this.context.guilds
-      ? this.context.loggingIn === LoggingInState.Loading || this.context.loggingIn === LoggingInState.LoggingIn
+      ? this.context.login === LoginState.Loading || this.context.login === LoginState.LoggingIn
         ? <h1>Logging in...</h1>
-        : <MainButton onClick={(() => {
-          void api.login()
-        })}>Login</MainButton>
+        : <LoginButton />
       : null
 
     return (

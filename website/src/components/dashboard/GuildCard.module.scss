@@ -20,4 +20,8 @@
     margin: 3px;
     user-select: none;
   }
+
+  @media (max-width: 475px) {
+    width: 80vw;
+  }
 }

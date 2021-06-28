@@ -7,8 +7,9 @@ import { WebsocketManager } from './WebsocketManager'
 
 import Router from 'next/router'
 
-export enum LoggingInState {
+export enum LoginState {
   Loading = 0,
+  LoggedOut,
   LoggingIn,
   LoggedIn
 }
@@ -16,7 +17,7 @@ export enum LoggingInState {
 export interface ApiData {
   user?: User
   guilds?: ShortGuild[]
-  loggingIn: LoggingInState
+  login: LoginState
 }
 
 export const DataContext = React.createContext({} as ApiData)
@@ -24,7 +25,7 @@ export const DataContext = React.createContext({} as ApiData)
 export class Api {
   logger = Logger
 
-  get data (): ApiData { return { loggingIn: LoggingInState.Loading } }
+  get data (): ApiData { return { login: LoginState.Loading } }
   public setData (data: Partial<ApiData>) {}
 
   private readonly waitingUser: Array<(user: User | undefined) => void> = []
@@ -64,7 +65,7 @@ export class Api {
     this.setData({
       user: undefined,
       guilds: undefined,
-      loggingIn: LoggingInState.Loading
+      login: LoginState.LoggedOut
     })
 
     if (Router.pathname.includes('dashboard')) void Router.push('/')
@@ -73,7 +74,7 @@ export class Api {
   handleOpen () {
     if (this.token) {
       void this.updateUser()
-    } else this.setData({ loggingIn: LoggingInState.Loading })
+    } else this.setData({ login: LoginState.LoggedOut })
   }
 
   handleClose () {
@@ -82,10 +83,10 @@ export class Api {
 
   async updateUser (): Promise<User | undefined> {
     return await new Promise(resolve => {
-      if (this.data.loggingIn === LoggingInState.LoggingIn) {
+      if (this.data.login === LoginState.LoggingIn) {
         return this.waitingUser.push(resolve)
       }
-      this.setData({ loggingIn: LoggingInState.LoggingIn })
+      this.setData({ login: LoginState.LoggingIn })
 
       void this.getUser()
         .then((user) => {
@@ -93,7 +94,7 @@ export class Api {
           this.waitingUser.forEach(req => {
             req(user)
           })
-          this.setData({ loggingIn: LoggingInState.LoggingIn })
+          this.setData({ login: LoginState.LoggedIn })
 
           if (Router.pathname.includes('dashboard')) void this.updateGuilds()
         })

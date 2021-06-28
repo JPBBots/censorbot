@@ -7,7 +7,7 @@ import Navbar from '~/navbar/Navbar'
 import { Logo } from '~/logo'
 import { Header } from '~/Header'
 
-import { ApiData, DataContext, Api, LoggingInState } from '../structures/Api'
+import { ApiData, DataContext, Api, LoginState } from '../structures/Api'
 
 import './fix.css'
 
@@ -20,7 +20,7 @@ global.api = api
 
 export default class MyApp extends React.Component<AppProps, ApiData & { loading: boolean }> {
   state = {
-    loggingIn: LoggingInState.Loading,
+    login: LoginState.Loading,
     loading: true
   }
 
