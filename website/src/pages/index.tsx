@@ -12,6 +12,7 @@ import { LandingSection } from '~/landing/LandingSection'
 import Aos from 'aos'
 import 'aos/dist/aos.css'
 import { MidContainer } from '~/styling/MidContainer'
+import { LandingExample } from '~/landing/LandingExample'
 
 export default function Landing () {
   React.useEffect(() => {
@@ -29,8 +30,7 @@ export default function Landing () {
           <small>Used in more than {(50000).toLocaleString()} servers!</small>
         </div>
 
-        {/* <LandingExample href="/invite" example="https://static.jpbbots.org/cheesetouch_example1.gif" align='right' /> */}
-        <img src={BRANDING.logo}></img>
+        <LandingExample href="/invite" example={BRANDING.mainImage} align='right' />
       </div>
       <div>
         {

@@ -14,9 +14,6 @@ body {
 }
 
 #root {
-  @media (min-width: 1200px) {
-    padding-top: 5vh;
-  }
   background-color: var(--main);
   min-height: 95vh;
   width: -webkit-fill-available;

@@ -14,6 +14,7 @@ import './fix.css'
 import './Global.scss'
 import styles from './_app.module.scss'
 import { Logger } from 'structures/Logger'
+import { stats } from 'structures/StatsManager'
 
 export const api = new Api()
 global.api = api
@@ -48,6 +49,10 @@ export default class MyApp extends React.Component<AppProps, ApiData & { loading
     Router.events.on('routeChangeComplete', () => {
       this.setState({ loading: false })
     })
+
+    window.onbeforeunload = () => {
+      stats.win?.close()
+    }
   }
 
   render () {

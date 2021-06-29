@@ -1,13 +1,13 @@
-import Example1 from './images/example1.gif'
-
 import Accuracy from './images/accuracy.gif'
 import Coverage from './images/coverage.gif'
+import Placeholder from './images/placeholder.gif'
 
 export default {
   name: 'Censor Bot',
   logo: 'https://static.jpbbots.org/censorbot.svg',
   title: 'The bot that keeps your server clean.',
   title2: 'Accurately remove any content with premade filters, gone are the days of filling 100s of boxes.',
+  mainImage: Placeholder.src,
 
   examples: [
     {
@@ -23,7 +23,7 @@ export default {
     {
       title: 'Customizability',
       description: 'Pick and choose what kinds of things you want to censor. You can cover all swears, only slurs, or just add your own words, it\'s all changeable to fit your server and it\'s needs perfectly.',
-      example: Example1.src
+      example: Placeholder.src
     }
   ] as Array<{ title: string, description: string, example: string }>
 }

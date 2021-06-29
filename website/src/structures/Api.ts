@@ -34,6 +34,14 @@ export class Api {
 
   ws = new WebsocketManager(this)
 
+  constructor () {
+    Router.events.on('routeChangeComplete', () => {
+      if (!this.data.currentGuild) return
+
+      if (!Router.pathname.includes(this.data.currentGuild.guild.i)) this.setData({ currentGuild: undefined })
+    })
+  }
+
   get token () {
     const name = 'token='
     const ca = document.cookie.split(';')
@@ -128,9 +136,13 @@ export class Api {
     if (!this.data.guilds) return
 
     const guild = await this.ws.request('SUBSCRIBE', id)
-    console.log(guild)
-    if (!guild) return
 
     this.setData({ currentGuild: guild })
+  }
+
+  async unsubscribe (id: Snowflake) {
+    void this.ws.request('UNSUBSCRIBE', id)
+
+    this.setData({ currentGuild: undefined })
   }
 }

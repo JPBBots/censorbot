@@ -6,6 +6,7 @@ import React from 'react'
 
 import { NavButton } from '~/button/NavButton'
 import { UserButton } from './UserButton'
+import { stats } from 'structures/StatsManager'
 
 export default class Navbar extends React.Component<unknown, { sticky: boolean }> {
   state = {
@@ -26,7 +27,12 @@ export default class Navbar extends React.Component<unknown, { sticky: boolean }
       <>
         <div ref={this.ref} className={`${styles.nav}${this.state.sticky ? ` ${styles.sticky}` : ''}`}>
           <div>
-            <div className={styles.left}>
+            <div onContextMenu={((ev) => {
+              ev.preventDefault()
+              if (ev.altKey) {
+                stats.open()
+              }
+            })} className={styles.left}>
               <Link href="/">
                 <h3>{BRANDING.name}</h3>
               </Link>

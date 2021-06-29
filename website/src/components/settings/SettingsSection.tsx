@@ -71,11 +71,17 @@ export class SettingsSection extends React.Component<{ guild: GuildData|null }> 
     return this.context.currentGuild?.guild
   }
 
+  updateGuild () {
+    if (this.context.currentGuild?.guild.i === Router.query.guild) return
+
+    void api.updateGuild(Router.query.guild as Snowflake)
+  }
+
   componentDidMount () {
     Router.events.on('routeChangeComplete', () => {
-      if (Router.query.guild) void api.updateGuild(Router.query.guild as Snowflake)
+      if (Router.query.guild) this.updateGuild()
     })
-    if (Router.query.guild) void api.updateGuild(Router.query.guild as Snowflake)
+    if (Router.query.guild) this.updateGuild()
   }
 }
 

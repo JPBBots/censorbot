@@ -128,6 +128,7 @@ export class WebsocketManager {
       this.hbInterval = window?.setInterval(() => {
         void this._heartbeat()
       }, data.d.interval)
+      void this._heartbeat()
 
       if (this.api.data.user) {
         await this.request('AUTHORIZE', { token: this.api.data.user.token, customer: false })
