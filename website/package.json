@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/aos": "^3.0.3",
+    "aos": "^2.3.4",
     "next": "11.0.1",
     "next-images": "^1.8.1",
     "react": "17.0.2",

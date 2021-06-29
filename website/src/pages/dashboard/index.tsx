@@ -4,6 +4,7 @@ import { DataContext, LoginState } from 'structures/Api'
 
 import { LoginButton } from '~/button/LoginButton'
 import { GuildCard } from '~/dashboard/GuildCard'
+import { MidContainer } from '~/styling/MidContainer'
 
 import styles from './index.module.scss'
 
@@ -22,7 +23,7 @@ export default class DashboardHome extends React.Component {
       : null
 
     return (
-      <div>
+      <MidContainer>
         <div className={styles.headerDiv}>
           <h1>Discord Dashboard</h1>
           <br />
@@ -33,7 +34,7 @@ export default class DashboardHome extends React.Component {
             this.context.guilds?.map(x => <GuildCard key={x.i} {...x} />)
           }
         </div>
-      </div>
+      </MidContainer>
     )
   }
 }

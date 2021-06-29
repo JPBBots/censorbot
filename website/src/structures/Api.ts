@@ -1,11 +1,12 @@
 import React from 'react'
 
-import { ShortGuild, User } from 'typings'
+import { GuildData, ShortGuild, User } from 'typings'
 import { Utils } from 'utils/Utils'
 import { Logger } from './Logger'
 import { WebsocketManager } from './WebsocketManager'
 
 import Router from 'next/router'
+import { Snowflake } from 'discord-api-types'
 
 export enum LoginState {
   Loading = 0,
@@ -18,6 +19,7 @@ export interface ApiData {
   user?: User
   guilds?: ShortGuild[]
   login: LoginState
+  currentGuild?: GuildData
 }
 
 export const DataContext = React.createContext({} as ApiData)
@@ -119,5 +121,16 @@ export class Api {
     if (!guilds) return
 
     this.setData({ guilds })
+  }
+
+  async updateGuild (id: Snowflake) {
+    if (!this.data.guilds) await this.updateGuilds()
+    if (!this.data.guilds) return
+
+    const guild = await this.ws.request('SUBSCRIBE', id)
+    console.log(guild)
+    if (!guild) return
+
+    this.setData({ currentGuild: guild })
   }
 }

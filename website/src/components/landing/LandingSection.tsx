@@ -1,7 +1,7 @@
 import { LandingExample } from './LandingExample'
 import styles from './LandingSection.module.scss'
 
-export function LandingSection (props: { children: string, example: string, href?: string, title: string, align: 'left' | 'right' }) {
+export function LandingSection (props: { ind: number, children: string, example: string, href?: string, title: string, align: 'left' | 'right' }) {
   const example = <div className={props.align === 'right' ? styles.second : ''}>
     <LandingExample href={props.href} example={props.example} align={props.align} />
   </div>
@@ -13,7 +13,7 @@ export function LandingSection (props: { children: string, example: string, href
   </div>
 
   return (
-    <section className={styles.section}>
+    <section data-aos="fade-up" className={styles.section}>
       {
         props.align === 'left'
           ? <>

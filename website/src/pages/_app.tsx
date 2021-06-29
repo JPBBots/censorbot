@@ -55,7 +55,7 @@ export default class MyApp extends React.Component<AppProps, ApiData & { loading
       <DataContext.Provider value={this.state}>
         <Header />
         <Navbar />
-        <div className={styles.root} >
+        <div id="root" >
           <this.props.Component {...this.props.pageProps} />
         </div>
         <Logo className={styles.loader} style={{

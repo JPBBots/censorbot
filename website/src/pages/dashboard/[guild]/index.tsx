@@ -3,8 +3,10 @@ import { SettingsSection, SettingsSectionElement } from '~/settings/SettingsSect
 export default class GeneralSection extends SettingsSection {
   render () {
     return (
-      <SettingsSectionElement>
+      <SettingsSectionElement ctx={this.context}>
         <h1>General</h1>
+
+        {JSON.stringify(this.db)}
       </SettingsSectionElement>
     )
   }

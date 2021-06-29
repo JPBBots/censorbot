@@ -50,7 +50,7 @@ export async function NameHandler (worker: WorkerManager, member: EventData): Pr
   const name = member.nick ?? member.user.username
 
   if (db.antiHoist && isHoisting(name)) {
-    void worker.api.members.setNickname(member.guild_id, member.user.id, `${deHoist}${name}`).catch(() => {})
+    return void worker.api.members.setNickname(member.guild_id, member.user.id, `${deHoist}${name}`).catch(() => {})
   }
 
   if (

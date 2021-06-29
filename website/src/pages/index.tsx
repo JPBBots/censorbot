@@ -2,18 +2,23 @@ import React from 'react'
 
 import BRANDING from 'BRANDING'
 
-import Example1 from '../images/example1.gif'
+// import Example1 from '../images/JsEzHiZkM4.png'
 
 import styles from './index.module.scss'
 
 import { MainButton } from '~/button/MainButton'
-
-import { LandingExample } from '~/landing/LandingExample'
 import { LandingSection } from '~/landing/LandingSection'
 
+import Aos from 'aos'
+import 'aos/dist/aos.css'
+import { MidContainer } from '~/styling/MidContainer'
+
 export default function Landing () {
+  React.useEffect(() => {
+    Aos.init({ duration: 400 })
+  })
   return (
-    <>
+    <MidContainer>
       <div className={styles.main}>
         <div className={styles.left}>
           <h1>{BRANDING.title}</h1>
@@ -24,13 +29,19 @@ export default function Landing () {
           <small>Used in more than {(50000).toLocaleString()} servers!</small>
         </div>
 
-        <LandingExample href="/invite" example={Example1.src} align='right' />
+        {/* <LandingExample href="/invite" example="https://static.jpbbots.org/cheesetouch_example1.gif" align='right' /> */}
+        <img src={BRANDING.logo}></img>
       </div>
       <div>
         {
-          BRANDING.examples.map((x, ind) => <LandingSection key={ind} href="/" example={x.example} title={x.title} align={(ind % 2) ? 'right' : 'left'}>
-            {x.description}
-          </LandingSection>)
+          BRANDING.examples.map((x, ind) => <>
+            <LandingSection ind={ind} key={ind} href="/" example={x.example} title={x.title} align={(ind % 2) ? 'right' : 'left'}>
+              {x.description}
+            </LandingSection>
+            <div style={{
+              height: '50px'
+            }}></div>
+          </>)
         }
 
         <br />
@@ -47,6 +58,6 @@ export default function Landing () {
         <br />
         <br />
       </div>
-    </>
+    </MidContainer>
   )
 }

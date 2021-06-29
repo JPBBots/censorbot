@@ -3,7 +3,7 @@ import { SettingsSection, SettingsSectionElement } from '~/settings/SettingsSect
 export default class FilterSection extends SettingsSection {
   render () {
     return (
-      <SettingsSectionElement>
+      <SettingsSectionElement ctx={this.context}>
         <h1>Filter</h1>
       </SettingsSectionElement>
     )

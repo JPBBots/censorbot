@@ -1,6 +1,7 @@
 import Example1 from './images/example1.gif'
 
-const PLACEHOLDER = 'hello '.repeat(150)
+import Accuracy from './images/accuracy.gif'
+import Coverage from './images/coverage.gif'
 
 export default {
   name: 'Censor Bot',
@@ -11,17 +12,17 @@ export default {
   examples: [
     {
       title: 'Accuracy',
-      description: PLACEHOLDER,
-      example: Example1.src
+      description: 'Censor Bot comes equipped with an advanced text resolution system, which allows for simple words like "test", to be applied to so many possibilities. It doesn\'t matter if the word is separated with spaces, .\'s, made of strange characters, even repeated letters.',
+      example: Accuracy.src
     },
     {
       title: 'Coverage',
-      description: PLACEHOLDER,
-      example: Example1.src
+      description: 'Censor Bot can cover nearly every bit of content that makes it\'s way into your server. It covers messages of course, but it also covers reaction, and nicknames, even usernames!',
+      example: Coverage.src
     },
     {
       title: 'Customizability',
-      description: PLACEHOLDER,
+      description: 'Pick and choose what kinds of things you want to censor. You can cover all swears, only slurs, or just add your own words, it\'s all changeable to fit your server and it\'s needs perfectly.',
       example: Example1.src
     }
   ] as Array<{ title: string, description: string, example: string }>
