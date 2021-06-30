@@ -1,6 +1,6 @@
 const Pieces = {
   generate: (obj: any): any => {
-    const pieces = {}
+    const pieces: Record<string, any> = {}
     function generatePiece (toObj: any, key: string, working?: string): void {
       const val = key ? toObj[key] : toObj
       if (!val || val.constructor !== Object) {
@@ -14,7 +14,7 @@ const Pieces = {
     return pieces
   },
   normalize: (obj: any): any => {
-    const res = {}
+    const res: Record<any, any> = {}
     Object.keys(obj).forEach(piece => {
       const split = piece.split('.')
       let objToBe = res
@@ -24,7 +24,7 @@ const Pieces = {
       }
       objToBe[split[split.length - 1]] = obj[piece]
     })
-  
+
     return res
   }
 }

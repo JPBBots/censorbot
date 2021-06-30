@@ -7,6 +7,9 @@ import { WebsocketManager } from './WebsocketManager'
 
 import Router from 'next/router'
 import { Snowflake } from 'discord-api-types'
+import { WebSocketEventMap } from 'typings/websocket'
+import { updateObject } from 'utils/updateObject'
+import Pieces from 'utils/Pieces'
 
 export enum LoginState {
   Loading = 0,
@@ -43,17 +46,7 @@ export class Api {
   }
 
   get token () {
-    const name = 'token='
-    const ca = document.cookie.split(';')
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i]
-      while (c.charAt(0) === ' ') {
-        c = c.substring(1)
-      }
-      if (c.indexOf(name) === 0) {
-        return c.substring(name.length, c.length)
-      }
-    }
+    return Utils.getCookie('token')
   }
 
   public async login (required: boolean = false) {
@@ -138,6 +131,58 @@ export class Api {
     const guild = await this.ws.request('SUBSCRIBE', id)
 
     this.setData({ currentGuild: guild })
+  }
+
+  _createUpdatedGuild (current: GuildData, newDb: any) {
+    const obj = Object.assign({}, current)
+    obj.db = updateObject(obj.db, Pieces.normalize(newDb))
+
+    return obj
+  }
+
+  _handleGuildUpdate (data: WebSocketEventMap['CHANGE_SETTING']['receive']) {
+    if (!this.data.currentGuild) return
+
+    if (data.id !== this.data.currentGuild.guild.i) return
+
+    this.setData({ currentGuild: this._createUpdatedGuild(this.data.currentGuild, data.data) })
+  }
+
+  waiting?: any
+  timeout?: number
+  resolve?: () => void
+
+  async changeSettings (id: Snowflake, data: any) {
+    Logger.setLoading(true)
+
+    if (!this.waiting) this.waiting = data
+    else {
+      this.waiting = updateObject(this.waiting, data)
+      clearTimeout(this.timeout)
+
+      this.timeout = window.setTimeout(() => {
+        this.resolve?.()
+      }, 1000)
+
+      return
+    }
+
+    this.timeout = window.setTimeout(() => {
+      this.resolve?.()
+    }, 1000)
+
+    await new Promise<void>(resolve => {
+      this.resolve = resolve
+    })
+
+    data = this.waiting
+    this.waiting = undefined
+    this.resolve = undefined
+
+    console.debug('posting')
+
+    await this.ws.request('CHANGE_SETTING', { id, data })
+    Logger.setLoading(false)
   }
 
   async unsubscribe (id: Snowflake) {

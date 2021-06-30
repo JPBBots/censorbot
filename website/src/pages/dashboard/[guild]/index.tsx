@@ -6,7 +6,9 @@ export default class GeneralSection extends SettingsSection {
       <SettingsSectionElement ctx={this.context}>
         <h1>General</h1>
 
-        {JSON.stringify(this.db)}
+        <div>
+
+        </div>
       </SettingsSectionElement>
     )
   }

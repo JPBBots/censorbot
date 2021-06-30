@@ -3,12 +3,15 @@ import { Utils } from 'utils/Utils'
 import { Api } from './Api'
 import { Logger } from './Logger'
 
+import headlessHandlers from './headlessHandler'
+import { stats } from './StatsManager'
+
 type Partial<T> = {
   [P in keyof T]?: T[P]
 }
 
 export class WebsocketManager {
-  private ws?: WebSocket
+  public ws?: WebSocket
 
   private readonly promises: Map<number, (data: any) => void> = new Map()
   private queue: Array<[string, any, number|undefined]> = []
@@ -28,6 +31,8 @@ export class WebsocketManager {
   constructor (private readonly api: Api) {}
 
   get open () {
+    if (stats.headless) return true
+
     return this.ws?.readyState === WebSocket.OPEN
   }
 
@@ -38,6 +43,11 @@ export class WebsocketManager {
   public start () {
     if (this.ws && this.open) this.ws.close()
 
+    if (stats.headless) {
+      this.api.handleOpen()
+      return
+    }
+
     try {
       this.ws = new WebSocket(`wss://${location.host}/ws`)
     } catch (err) {
@@ -46,7 +56,7 @@ export class WebsocketManager {
     }
 
     this.ws.onmessage = (data) => {
-      void this._handleMessage(data.data)
+      void this._handleMessage(JSON.parse(data.data))
     }
     this.ws.onclose = (ev) => {
       this.log(`Closed with code: ${ev.code} / ${ev.reason}`)
@@ -70,6 +80,9 @@ export class WebsocketManager {
 
   public async request <K extends keyof WebSocketEventMap> (event: K, data?: WebSocketEventMap[K]['receive']): Promise<WebSocketEventMap[K]['send']> {
     return await new Promise((resolve, reject) => {
+      if (stats.headless) {
+        if (headlessHandlers[event]) resolve(headlessHandlers[event]?.(data) as any)
+      }
       if (event !== 'HEARTBEAT') Logger.setLoading(true)
       const id = this.sequence++
 
@@ -105,9 +118,7 @@ export class WebsocketManager {
     })
   }
 
-  private async _handleMessage (dat: string) {
-    const data: Incoming<'frontend'> = JSON.parse(dat)
-
+  async _handleMessage (data: Incoming<'frontend'>) {
     if (data.e === 'RETURN' && data.i) {
       const res = this.promises.get(data.i)
       if (res) res(data.d)
@@ -141,8 +152,10 @@ export class WebsocketManager {
 
       Logger.setLoading(false)
 
-      this.api.handleOpen()
+      return this.api.handleOpen()
     }
+
+    if (data.e === 'CHANGE_SETTING') return this.api._handleGuildUpdate(data.d)
   }
 
   async _handleClose () {

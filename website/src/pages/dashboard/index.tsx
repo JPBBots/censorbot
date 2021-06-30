@@ -19,7 +19,9 @@ export default class DashboardHome extends React.Component {
     const login = !this.context.guilds
       ? this.context.login === LoginState.Loading || this.context.login === LoginState.LoggingIn
         ? <h1>Logging in...</h1>
-        : <LoginButton />
+        : this.context.login === LoginState.LoggedIn
+          ? <h1>Loading...</h1>
+          : <LoginButton />
       : null
 
     return (

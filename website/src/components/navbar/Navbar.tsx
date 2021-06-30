@@ -16,10 +16,10 @@ export default class Navbar extends React.Component<unknown, { sticky: boolean }
   ref = React.createRef<HTMLDivElement>()
 
   componentDidMount () {
-    window.addEventListener('scroll', () => {
-      if (global.scrollY < 2) this.setState({ sticky: false })
-      else this.setState({ sticky: true })
-    })
+    // window.addEventListener('scroll', () => {
+    //   if (global.scrollY < 2) this.setState({ sticky: false })
+    //   else this.setState({ sticky: true })
+    // })
   }
 
   render () {

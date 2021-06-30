@@ -1,6 +1,7 @@
 import Accuracy from './images/accuracy.gif'
 import Coverage from './images/coverage.gif'
 import Placeholder from './images/placeholder.gif'
+import Punishments from './images/punishments.gif'
 
 export default {
   name: 'Censor Bot',
@@ -24,6 +25,11 @@ export default {
       title: 'Customizability',
       description: 'Pick and choose what kinds of things you want to censor. You can cover all swears, only slurs, or just add your own words, it\'s all changeable to fit your server and it\'s needs perfectly.',
       example: Placeholder.src
+    },
+    {
+      title: 'Punishments',
+      description: 'Stop bad actors in their tracks with advanced punishments. Pick and choose how many times a user can swear in a certain amount of time, and if they go over it, choose to give them a role, kick, or ban them.',
+      example: Punishments.src
     }
   ] as Array<{ title: string, description: string, example: string }>
 }

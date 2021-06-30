@@ -34,14 +34,14 @@ export default function Landing () {
       </div>
       <div>
         {
-          BRANDING.examples.map((x, ind) => <>
-            <LandingSection ind={ind} key={ind} href="/" example={x.example} title={x.title} align={(ind % 2) ? 'right' : 'left'}>
+          BRANDING.examples.map((x, ind) => <div key={ind}>
+            <LandingSection ind={ind} href="/" example={x.example} title={x.title} align={(ind % 2) ? 'right' : 'left'}>
               {x.description}
             </LandingSection>
             <div style={{
               height: '50px'
             }}></div>
-          </>)
+          </div>)
         }
 
         <br />
