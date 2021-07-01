@@ -10,6 +10,7 @@ import { Snowflake } from 'discord-api-types'
 import { WebSocketEventMap } from 'typings/websocket'
 import { updateObject } from 'utils/updateObject'
 import Pieces from 'utils/Pieces'
+import { stats } from './StatsManager'
 
 export enum LoginState {
   Loading = 0,
@@ -29,6 +30,8 @@ export const DataContext = React.createContext({} as ApiData)
 
 export class Api {
   logger = Logger
+
+  stats = stats
 
   get data (): ApiData { return { login: LoginState.Loading } }
   public setData (data: Partial<ApiData>) {}

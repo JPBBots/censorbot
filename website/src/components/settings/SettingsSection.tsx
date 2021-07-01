@@ -12,7 +12,8 @@ import styles from './SettingsSection.module.scss'
 export function SettingsSectionElement ({ children, ctx }: PropsWithChildren<{ ctx: React.ContextType<typeof DataContext> }>) {
   const sections = {
     General: '/',
-    Filter: '/filter'
+    Filter: '/filter',
+    Punishments: '/punishments'
   } as const
 
   if (ctx.login === LoginState.LoggedOut) {
@@ -41,7 +42,7 @@ export function SettingsSectionElement ({ children, ctx }: PropsWithChildren<{ c
         </div>
         <div className={styles.sections}>
           {Object.keys(sections).map((section) => (
-            <Link href={{
+            <Link key={section} href={{
               pathname: `/dashboard/[guild]${sections[section as keyof typeof sections]}`,
               query: useRouter().query
             }}>

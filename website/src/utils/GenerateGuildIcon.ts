@@ -2,24 +2,19 @@ export function generateGuildIcon (name: string, canvas: HTMLCanvasElement) {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
 
-  const canvasHeight = canvas.height
-  const canvasWidth = canvas.width
+  const text = name
+    .split(' ')
+    .map(e => e[0])
+    .join('')
 
-  const nameArr = name.split(' ')
-  const letterArr = nameArr.map(e => e[0])
-  const text = letterArr.join('')
-
-  const height = (canvasHeight / 2) - (10 * text.length)
+  ctx.textBaseline = 'middle'
+  ctx.textAlign = 'center'
 
   ctx.fillStyle = '#36393f'
-  ctx.fillRect(0, 0, canvasHeight, canvasWidth)
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
 
   ctx.fillStyle = 'white'
-  ctx.font = `${height}px Arial`
+  ctx.font = `${(canvas.height / 2) - (10 * text.length)}px Arial`
 
-  ctx.fillText(
-    text,
-    (canvasHeight - ctx.measureText(text).width) / 2,
-    (canvasHeight / 2) - (canvasHeight / 15) + (height / 2)
-  )
+  ctx.fillText(text, canvas.width / 2, canvas.height / 2)
 }

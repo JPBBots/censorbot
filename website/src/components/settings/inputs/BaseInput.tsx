@@ -4,8 +4,14 @@ import React from 'react'
 import Router from 'next/router'
 import { Snowflake } from 'discord-api-types'
 
-export class BaseInput <Value extends any> extends React.Component<{ setting: string, value: Value, customGet?: (elm: React.RefObject<HTMLElement>) => any, extra?: any }> {
-  elm!: React.RefObject<HTMLElement>
+export class BaseInput <Value extends any, Element extends HTMLElement> extends React.Component<{
+  children?: React.ReactNode[]
+  setting: string
+  value: Value
+  customGet?: (elm: React.RefObject<Element>) => any
+  extra?: any
+}> {
+  elm: React.RefObject<Element> = React.createRef()
 
   componentDidMount () {
     if (this.elm.current) {

@@ -5,11 +5,12 @@
   flex-direction: column;
   align-items: center;
   grid-gap: 10px;
-  padding-top: 20px;
+  padding: 20px 10px;
   width: 180px;
   height: 180px;
   border-radius: 6px;
   box-shadow: 9px 9px rgb(0 0 0 / 15%);
+  text-align: center;
 
   &:hover {
     transition: 0.2s;
