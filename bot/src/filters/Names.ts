@@ -25,8 +25,10 @@ function handleCensor (worker: WorkerManager, member: EventData, db: GuildDB, re
   const guild = worker.guilds.get(member.guild_id)
   if (!guild) return
 
-  if ((guild.owner_id === member.user.id || !worker.hasPerms(member.guild_id, 'manageNicknames')) && db.log) {
-    return void worker.responses.errorLog(db, 'Missing permissions to Manage Nicknames')
+  if (!worker.hasPerms(member.guild_id, 'manageNicknames') || !worker.isManageable(member.guild_id, member.user.id, member.roles, true)) {
+    if (db.log) void worker.responses.errorLog(db, 'Missing permissions to Manage Nicknames')
+
+    return
   }
 
   void worker.responses.log(CensorMethods.Names, member.nick ?? member.user.username, member, response, db)
@@ -49,8 +51,8 @@ export async function NameHandler (worker: WorkerManager, member: EventData): Pr
 
   const name = member.nick ?? member.user.username
 
-  if (db.antiHoist && isHoisting(name)) {
-    void worker.api.members.setNickname(member.guild_id, member.user.id, `${deHoist}${name}`).catch(() => {})
+  if (db.antiHoist && isHoisting(name) && worker.hasPerms(member.guild_id, 'manageNicknames') && worker.isManageable(member.guild_id, member.user.id, member.roles, true)) {
+    await worker.api.members.setNickname(member.guild_id, member.user.id, `${deHoist}${name}`).catch(() => {})
   }
 
   if (
