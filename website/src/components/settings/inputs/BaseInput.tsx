@@ -4,19 +4,26 @@ import React from 'react'
 import Router from 'next/router'
 import { Snowflake } from 'discord-api-types'
 
-export class BaseInput <Value extends any, Element extends HTMLElement> extends React.Component<{
+export interface InputProps<Value extends any, Element extends HTMLElement> {
   children?: React.ReactNode[]
   setting: string
   value: Value
   customGet?: (elm: React.RefObject<Element>) => any
-  extra?: any
-}> {
+}
+
+export class BaseInput <Value extends any, Element extends HTMLElement, Extra = any> extends React.Component<InputProps<Value, Element> & Extra> {
   elm: React.RefObject<Element> = React.createRef()
+  inputType!: Readonly<InputProps<Value, HTMLInputElement> & Extra>
 
   componentDidMount () {
     if (this.elm.current) {
-      this.elm.current.setAttribute('data-setting', this.props.setting)
-      this.elm.current.setAttribute('data-extra', this.props.extra)
+      this.elm.current.setAttribute('data-setting', this.props.setting);
+
+      (Object.keys(this.props) as Array<keyof this['inputType']>).forEach(prop => {
+        if (prop.toString().startsWith('data-')) {
+          this.elm.current?.setAttribute(prop.toString(), String((this.props as this['inputType'])[prop]))
+        }
+      })
     }
   }
 

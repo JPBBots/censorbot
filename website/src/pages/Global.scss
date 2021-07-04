@@ -27,3 +27,42 @@ body {
 #swal2-title {
   color: white;
 }
+
+// tagify
+
+.tagify {
+  color: white;
+  background-color: var(--secondary);
+  text-align: left;
+  border: 2px var(--secondary) solid !important;
+
+  --tag-bg: var(--main) !important;
+  --tag-hover: var(--secondary) !important;
+  --tag-text-color: white !important;
+
+  box-shadow: 0 0 10px rgba(0,0,0,0.325);
+}
+
+.tagify__input {
+  user-select: text;
+  -webkit-user-modify: read-write;
+
+  &::before {
+    color: white !important;
+  }
+}
+
+.tagify__tag > div > [contenteditable] {
+  user-select: text;
+  -webkit-user-modify: read-write;
+}
+
+.tagify__dropdown__wrapper {
+  background: var(--main) !important;
+  border: 1px solid var(--secondary) !important;
+  overflow-y: scroll !important;
+}
+
+.tagify__dropdown__item--active {
+  background: var(--secondary) !important;
+}

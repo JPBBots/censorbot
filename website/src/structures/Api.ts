@@ -133,6 +133,8 @@ export class Api {
 
     const guild = await this.ws.request('SUBSCRIBE', id)
 
+    console.debug(guild.db.msg)
+
     this.setData({ currentGuild: guild })
   }
 
@@ -182,7 +184,7 @@ export class Api {
     this.waiting = undefined
     this.resolve = undefined
 
-    console.debug('posting')
+    console.debug('posting', data)
 
     await this.ws.request('CHANGE_SETTING', { id, data })
     Logger.setLoading(false)

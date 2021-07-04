@@ -13,7 +13,8 @@ export function SettingsSectionElement ({ children, ctx }: PropsWithChildren<{ c
   const sections = {
     General: '/',
     Filter: '/filter',
-    Punishments: '/punishments'
+    Punishments: '/punishments',
+    Other: '/other'
   } as const
 
   if (ctx.login === LoginState.LoggedOut) {
@@ -70,6 +71,10 @@ export class SettingsSection extends React.Component<{ guild: GuildData|null }> 
 
   get guild () {
     return this.context.currentGuild?.guild
+  }
+
+  get premium () {
+    return this.context.currentGuild?.premium ?? false
   }
 
   updateGuild () {

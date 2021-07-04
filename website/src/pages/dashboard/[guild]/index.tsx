@@ -1,3 +1,4 @@
+import { Logger } from 'structures/Logger'
 import { List } from '~/settings/inputs/List'
 import { Tags } from '~/settings/inputs/Tags'
 import { Text } from '~/settings/inputs/Text'
@@ -15,7 +16,7 @@ export default class GeneralSection extends SettingsSection {
 
         <div>
           <Setting title="Prefix" description="The bots prefix ontop of mentioning the bot">
-            <Text setting="prefix" value={this.db.prefix} extra="None" />
+            <Text setting="prefix" value={this.db.prefix} whenNull="None" />
           </Setting>
           <Setting title="Log Channel" description="Channel to log censored content and punishments">
             <List setting="log" value={this.db.log}>
@@ -28,10 +29,34 @@ export default class GeneralSection extends SettingsSection {
             <Toggle setting="dm" value={this.db.dm} />
           </Setting>
           <Setting title="Ignored Roles" description="Roles to ignore curses from">
-            <Tags setting="role" value={this.db.role} />
+            <Tags setting="role" value={this.db.role} settings={{
+              whitelist: this.guild?.r.map(x => ({ value: `@${x.name}`, id: x.id })),
+              enforceWhitelist: true,
+              callbacks: {
+                invalid: (e) => {
+                  if ((e.detail.message as unknown as string) === 'number of tags exceeded') Logger.error('You need premium to add more roles')
+                }
+              },
+              dropdown: {
+                enabled: 0,
+                maxItems: this.guild?.r.length
+              }
+            }} />
           </Setting>
           <Setting title="Ignored Channels" description="Channels to ignore curses from">
-            <Tags setting="channels" value={this.db.channels} />
+            <Tags setting="channels" value={this.db.channels} extra={{
+              whitelist: this.guild?.c.map(x => ({ value: `#${x.name}`, id: x.id })),
+              enforceWhitelist: true,
+              callbacks: {
+                invalid: (e) => {
+                  if ((e.detail.message as unknown as string) === 'number of tags exceeded') Logger.error('You need premium to add more channels')
+                }
+              },
+              dropdown: {
+                enabled: 0,
+                maxItems: this.guild?.c.length
+              }
+            }} />
           </Setting>
         </div>
       </SettingsSectionElement>
