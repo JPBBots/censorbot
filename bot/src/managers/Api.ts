@@ -54,7 +54,7 @@ export class ApiManager {
   }
 
   async extendUser (user: User): Promise<User> {
-    user.admin = await this.interface.api.isAdmin(user.id)
+    user.admin = false // await this.interface.api.isAdmin(user.id)
     const prem = await this.chargebee.getAmount(user.id)
 
     const premium = {

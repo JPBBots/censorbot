@@ -240,7 +240,7 @@ export class Filter {
     return res
   }
 
-  test (text: string, db: Pick<GuildDB, 'matchExact' | 'filter' | 'filters' | 'uncensor'>): FilterResponse {
+  test (text: string, db: Pick<GuildDB, 'phrases' | 'filter' | 'filters' | 'uncensor'>): FilterResponse {
     const content = this.resolve(text)
 
     const res: FilterResponse = {
@@ -253,11 +253,10 @@ export class Filter {
     const scanFor: {
       [key in filterName]?: JPBExp[]
     } = {}
+    scanFor.server = db.filter.map(x => new JPBExp(x))
 
-    if (!db.matchExact) {
-      scanFor.server = db.filter.map(x => new JPBExp(x))
-    } else {
-      if (db.filter.some(x =>
+    if (db.phrases) {
+      if (db.phrases.some(x =>
         text.toLowerCase().includes(x)
       )) {
         return {

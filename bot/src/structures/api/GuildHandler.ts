@@ -82,6 +82,7 @@ export class GuildHandler {
 
     if (!guild.premium) {
       if (db.filter) db.filter = db.filter.slice(0, 150)
+      if (db.phrases) db.phrases = db.phrases.slice(0, 150)
       if (db.uncensor) db.uncensor = db.uncensor.slice(0, 150)
 
       if (typeof db.msg?.content === 'string') {
@@ -116,9 +117,8 @@ export class GuildHandler {
       }
     }
 
-    if (Object.keys(db).includes('matchExact') ? !db.matchExact : !guild.db.matchExact) {
-      db.filter = (db.filter || guild.db.filter).map(x => this.socket.manager.filter.resolve(x)[0]?.t).filter(x => x)
-    }
+    db.filter = (db.filter || guild.db.filter).map(x => this.socket.manager.filter.resolve(x)[0]?.t).filter(x => x)
+
     if (db.uncensor) {
       db.uncensor = db.uncensor.map(x => this.socket.manager.filter.resolve(x)[0]?.t).filter(x => x)
     }

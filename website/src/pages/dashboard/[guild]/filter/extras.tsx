@@ -5,7 +5,7 @@ import { SettingsSection, SettingsSectionElement } from '~/settings/SettingsSect
 
 export default class FilterSection extends SettingsSection {
   render () {
-    if (!this.db) return 'err'
+    if (!this.db) return <div></div>
 
     return (
       <SettingsSectionElement ctx={this.context}>
@@ -20,6 +20,9 @@ export default class FilterSection extends SettingsSection {
           </Setting>
           <Setting title="Ignore NSFW Channels" description="Whether or not to ignore channels marked as NSFW">
             <Toggle setting="nsfw" value={this.db.nsfw} />
+          </Setting>
+          <Setting title="Anti-Hoist" description="Stops users from hoisting with special characters to get on top of the members list">
+            <Toggle setting="antiHoist" value={this.db.antiHoist} />
           </Setting>
         </div>
       </SettingsSectionElement>

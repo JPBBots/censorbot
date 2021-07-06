@@ -5,7 +5,7 @@
   "role": [],
   "filter": [],
   "uncensor": [],
-  "matchExact": false,
+  "phrases": [],
   "msg": {
       "content": false,
       "deleteAfter": 3000,

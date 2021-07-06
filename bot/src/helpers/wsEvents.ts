@@ -4,6 +4,7 @@ import { WebSocketEventMap } from 'typings/websocket'
 
 import { Connection } from '../structures/api/Connection'
 import { FilterResponse } from '../structures/Filter'
+import Pieces from '../utils/Pieces'
 
 function test (str: string): FilterResponse {
   delete require.cache[require.resolve('../structures/Filter')]
@@ -74,7 +75,7 @@ export const Events = {
 
     if (!await con.access(data.id)) return resolve?.({ error: 'You cannot do this' })
 
-    await con.socket.guilds.set(data.id, data.data)
+    await con.socket.guilds.set(data.id, Pieces.normalize(data.data))
 
     resolve?.(true)
   },
@@ -146,7 +147,7 @@ export const Events = {
 
     if (res.censor) return resolve?.({ error: 'Ticket still censored' })
 
-    con.socket.manager.rest.users.dm(ticket.user, new Embed()
+    void con.socket.manager.rest.users.dm(ticket.user, new Embed()
       .title('Ticket finished')
       .description(ticket.id)
     )
@@ -166,7 +167,7 @@ export const Events = {
 
     if (!ticket) return resolve?.({ error: 'Invalid Ticket' })
 
-    con.socket.manager.rest.users.dm(ticket.user, new Embed()
+    void con.socket.manager.rest.users.dm(ticket.user, new Embed()
       .title('After further review, your ticket was denied.')
       .description(ticket.id)
       .footer('Reminder that you can always add words to your uncensor list to stop it in your server specifically.')

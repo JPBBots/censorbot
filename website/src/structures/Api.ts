@@ -11,6 +11,7 @@ import { WebSocketEventMap } from 'typings/websocket'
 import { updateObject } from 'utils/updateObject'
 import Pieces from 'utils/Pieces'
 import { stats } from './StatsManager'
+import Swal from 'sweetalert2'
 
 export enum LoginState {
   Loading = 0,
@@ -44,8 +45,12 @@ export class Api {
     Router.events.on('routeChangeComplete', () => {
       if (!this.data.currentGuild) return
 
-      if (!Router.pathname.includes(this.data.currentGuild.guild.i)) this.setData({ currentGuild: undefined })
+      if (!Router.asPath.includes(this.data.currentGuild.guild.i)) void this.unsubscribe(this.data.currentGuild.guild.i)
     })
+  }
+
+  private log (msg: string) {
+    Logger.log('API', msg)
   }
 
   get token () {
@@ -109,6 +114,8 @@ export class Api {
 
   private async getUser () {
     if (!this.token) return undefined
+    this.log('Retrieving user')
+
     const user = await this.ws.request('AUTHORIZE', { token: this.token, customer: false })
 
     if (user) this.setData({ user })
@@ -119,6 +126,9 @@ export class Api {
   async updateGuilds () {
     if (!this.data.user) await this.login(true)
     if (!this.data.user) return
+    this.log('Retrieving guilds')
+
+    if (this.data.guilds) return
 
     const guilds = await this.ws.request('GET_GUILDS').catch(() => null)
 
@@ -130,10 +140,38 @@ export class Api {
   async updateGuild (id: Snowflake) {
     if (!this.data.guilds) await this.updateGuilds()
     if (!this.data.guilds) return
+    if (this.data.currentGuild?.guild.i === id) return
+
+    this.log(`Subscribing to ${id}`)
 
     const guild = await this.ws.request('SUBSCRIBE', id)
+      .catch(err => {
+        if (err === 'Not In Guild') {
+          return Swal.fire({
+            text: 'Censor Bot is not in this server yet!',
+            showConfirmButton: true,
+            showCancelButton: true,
+            imageUrl: 'https://static.jpbbots.org/censorbot.svg',
+            imageWidth: 116,
+            confirmButtonText: 'Invite'
+          }).then(res => {
+            if (res.isConfirmed) {
+              return Utils.openWindow('/invite?id=' + id)
+                .then(async () => {
+                  return await this.updateGuild(id)
+                })
+            } else {
+              void Router.push('/dashboard')
+            }
+          })
+        } else if (err === 'Unauthorized') {
+          Logger.error('You don\'t have access to this server')
+          void Router.push('/dashboard')
+        }
+        return null
+      })
 
-    console.debug(guild.db.msg)
+    if (!guild) return
 
     this.setData({ currentGuild: guild })
   }
@@ -191,7 +229,9 @@ export class Api {
   }
 
   async unsubscribe (id: Snowflake) {
-    void this.ws.request('UNSUBSCRIBE', id)
+    this.log(`Unsubscribing from ${id}`)
+
+    this.ws.tell('UNSUBSCRIBE', id)
 
     this.setData({ currentGuild: undefined })
   }

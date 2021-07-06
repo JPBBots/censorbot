@@ -9,7 +9,7 @@
   "role": [],
   "filter": [],
   "uncensor": [],
-  "matchExact": false,
+  "phrases": [],
   "msg": {
       "content": null,
       "deleteAfter": 3000,

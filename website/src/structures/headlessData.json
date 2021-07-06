@@ -185,7 +185,7 @@
         "images": true,
         "invites": true,
         "log": "708128670992171009",
-        "matchExact": false,
+        "phrases": ["hello world"],
         "msg": {
           "content": null,
           "deleteAfter": 3000,
@@ -205,7 +205,7 @@
         },
         "role": [],
         "toxicity": false,
-        "uncensor": [],
+        "uncensor": ["stinky"],
         "webhook": {
           "enabled": true,
           "replace": 0,

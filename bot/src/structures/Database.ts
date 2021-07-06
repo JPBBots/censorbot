@@ -45,6 +45,23 @@ export class Database extends Db {
       db.censor = bit
     }
 
+    // @ts-expect-error Updating database
+    if (db.matchExact) {
+      if (!db.phrases) db.phrases = [...db.filter]
+      db.filter = []
+
+      // @ts-expect-error Updating database
+      delete db.matchExact
+
+      await this.db.collection('guild_data').updateOne({ id: db.id }, {
+        $unset: {
+          matchExact: ''
+        },
+        $set: db
+      })
+    }
+    if (!db.phrases) db.phrases = []
+
     if (!Array.isArray(db.role)) {
       if (db.role) db.role = []
       else db.role = [db.role]

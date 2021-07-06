@@ -13,7 +13,7 @@ type Partial<T> = {
 export class WebsocketManager {
   public ws?: WebSocket
 
-  private readonly promises: Map<number, (data: any) => void> = new Map()
+  private readonly promises: Map<number, (data: any) => Promise<void>> = new Map()
   private queue: Array<[string, any, number|undefined]> = []
 
   public sequence = 1
@@ -96,21 +96,35 @@ export class WebsocketManager {
         }
       }, 30e3)
 
-      this.promises.set(id, (data) => {
+      this.promises.set(id, async (res) => {
         clearTimeout(timeout)
 
-        if (data?.closed) {
+        if (res?.closed) {
           this.queue.push([event, data, id])
           return
         }
 
-        this.promises.delete(id)
-        if (data?.error) {
-          Logger.error(data.error)
+        if (res?.error) {
+          this.log(`Error on ${event}: ${res.error}`)
+          if (res.error === 'Not authorized' && this.api.token && !this.api.data.user) {
+            const res = await this.api.updateUser()
+              .then(() => {
+                this.send(event, data, id)
 
-          return reject(data.error)
+                return true
+              })
+              .catch(() => false)
+
+            if (res) return
+          }
+
+          Logger.error(res.error)
+
+          reject(res.error)
         }
-        resolve(data)
+        this.promises.delete(id)
+
+        if (!data?.error) resolve(res)
         Logger.setLoading(false)
       })
 
@@ -121,7 +135,7 @@ export class WebsocketManager {
   async _handleMessage (data: Incoming<'frontend'>) {
     if (data.e === 'RETURN' && data.i) {
       const res = this.promises.get(data.i)
-      if (res) res(data.d)
+      if (res) void res(data.d)
       return
     }
 
@@ -165,7 +179,7 @@ export class WebsocketManager {
     this.api.handleClose()
 
     if (this.hbInterval) clearInterval(this.hbInterval)
-    this.promises.forEach(x => x({ closed: true }))
+    this.promises.forEach(x => void x({ closed: true }))
 
     this.promises.clear()
 

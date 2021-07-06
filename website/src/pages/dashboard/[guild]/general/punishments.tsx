@@ -21,7 +21,7 @@ export default class FilterSection extends SettingsSection {
   }
 
   render () {
-    if (!this.db) return 'err'
+    if (!this.db) return <div></div>
 
     return (
       <SettingsSectionElement ctx={this.context}>

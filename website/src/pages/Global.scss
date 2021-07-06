@@ -24,8 +24,15 @@ body {
   flex-wrap: wrap;
 }
 
-#swal2-title {
-  color: white;
+#swal2-title, .swal2-html-container {
+  color: white !important;
+}
+.swal2-modal {
+  background-color: var(--secondary) !important;
+}
+.swal2-popup.swal2-toast {
+  background: var(--secondary) !important;
+  box-shadow: 0 0 0.625em var(--secondary) !important;
 }
 
 // tagify

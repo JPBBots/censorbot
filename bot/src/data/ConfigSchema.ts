@@ -68,7 +68,7 @@ export const config = {
   },
   filter: ListValid,
   uncensor: ListValid,
-  matchExact: simple(Boolean),
+  phrases: ListValid,
   msg: {
     content: {
       length: { max: 1000 },

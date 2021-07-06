@@ -62,7 +62,7 @@ export class TicketManager {
     const res = this.worker.filter.test(word, {
       filter: [],
       uncensor: [],
-      matchExact: false,
+      phrases: [],
       filters: [...filters]
     })
     if (!res.censor) throw new NonFatalError('Phrase is not censored by the base filter.')

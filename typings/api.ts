@@ -60,7 +60,13 @@ export interface GuildDB {
    * List of words to uncensor
    */
   uncensor: string[]
-  matchExact: boolean
+  /**
+   * List of phrases to filter
+   */
+  phrases: string[]
+  /**
+   * Whether to antihoist users
+   */
   antiHoist: boolean
   /**
    * Popup message options

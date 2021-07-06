@@ -19,8 +19,7 @@ export class Logger {
   static error (msg: string) {
     void Toast.fire({
       icon: 'error',
-      title: msg,
-      background: 'var(--secondary)'
+      title: msg
     })
   }
 }

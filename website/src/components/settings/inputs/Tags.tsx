@@ -5,7 +5,7 @@ import Tagify, { TagData } from '@yaireo/tagify'
 import '@yaireo/tagify/dist/tagify.css'
 
 // TODO
-export class Tags extends BaseInput<string[], HTMLInputElement, { settings: Tagify.TagifySettings }> {
+export class Tags extends BaseInput<string[], HTMLInputElement, { settings: Tagify.TagifySettings, placeholder: string }> {
   tag?: Tagify
   settingTag = false
 
@@ -63,7 +63,7 @@ export class Tags extends BaseInput<string[], HTMLInputElement, { settings: Tagi
 
   render () {
     return (
-      <input ref={this.elm} defaultValue={this.props.value}></input>
+      <input placeholder={this.props.placeholder} ref={this.elm} defaultValue={this.props.value}></input>
     )
   }
 }

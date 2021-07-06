@@ -1,4 +1,4 @@
-import Router, { useRouter } from 'next/router'
+import Router from 'next/router'
 import React, { PropsWithChildren } from 'react'
 import Link from 'next/link'
 import { DataContext, LoginState } from 'structures/Api'
@@ -9,13 +9,41 @@ import { Snowflake } from 'discord-api-types'
 
 import styles from './SettingsSection.module.scss'
 
+interface Section {
+  name: string
+  href?: string
+  icon?: string
+  premium?: boolean
+  miniText?: string
+  sections?: Section[]
+}
+
 export function SettingsSectionElement ({ children, ctx }: PropsWithChildren<{ ctx: React.ContextType<typeof DataContext> }>) {
-  const sections = {
-    General: '/',
-    Filter: '/filter',
-    Punishments: '/punishments',
-    Other: '/other'
-  } as const
+  const sections: Section[] = [
+    {
+      name: 'Filter',
+      sections: [
+        { name: 'General', href: '/filter', icon: '' },
+        { name: 'Exceptions', href: '/filter/exceptions', icon: '' },
+        { name: 'Extras', href: '/filter/extras', icon: '' },
+        { name: 'AI', href: '/filter/ai', icon: '', premium: true }
+      ]
+    },
+    {
+      name: 'General',
+      sections: [
+        { name: 'Punishments', href: '/general/punishments', icon: '' },
+        { name: 'Bot', href: '/general/bot', icon: '' }
+      ]
+    },
+    {
+      name: 'Other',
+      sections: [
+        { name: 'Resend', href: '/other/resend', icon: '', premium: true },
+        { name: 'Response', href: '/other/response', icon: '', miniText: 'Popup' }
+      ]
+    }
+  ]
 
   if (ctx.login === LoginState.LoggedOut) {
     return <div style={{ textAlign: 'center' }}>
@@ -42,15 +70,18 @@ export function SettingsSectionElement ({ children, ctx }: PropsWithChildren<{ c
           <h1>{ctx.currentGuild.guild.n}</h1>
         </div>
         <div className={styles.sections}>
-          {Object.keys(sections).map((section) => (
-            <Link key={section} href={{
-              pathname: `/dashboard/[guild]${sections[section as keyof typeof sections]}`,
-              query: useRouter().query
-            }}>
-              <div className={styles.section}>
-                {section}
-              </div>
-            </Link>
+          {sections.map(category => (
+            <div key={category.name}>
+              <h1>{category.name}</h1>
+              {category.sections?.map(section => (
+                <Link key={section.name} href={{
+                  pathname: `/dashboard/[guild]${section.href}`,
+                  query: Router.query
+                }}>
+                  <h5>{section.name}</h5>
+                </Link>
+              ))}
+            </div>
           ))}
         </div>
       </div>

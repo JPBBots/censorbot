@@ -13,7 +13,7 @@ export function UserButton () {
 
   if (user) {
     return (
-      <NavButton href="/me" special="on">
+      <NavButton href="/" special="on">
         {user.tag}
       </NavButton>
     )
