@@ -19,7 +19,7 @@ export default {
       '**Moral Support**: [Peter2469](https://www.peternokes.co.uk)\n'
       )
       .field('__**Support Team**__',
-        '_Darkell#1866, Egyptian_Lobster#9080, nevy#4883'
+        '_Darkell#1866, Egyptian_Lobster#9080, nevy#4883, R0SE#2908'
       )
       .field('__**Translators**__',
         '**English**: Literally everyone\n' +
