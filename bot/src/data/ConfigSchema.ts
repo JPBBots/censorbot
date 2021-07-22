@@ -104,6 +104,13 @@ export const config = {
         type: Number,
         size: { min: 1, max: 5184000000 }
       },
+      ignored: {
+        type: Array,
+        each: {
+          type: String,
+          use: { Snowflake }
+        }
+      },
       retainRoles: simple(Boolean)
     }
   },
@@ -113,6 +120,13 @@ export const config = {
     replace: {
       type: Number,
       enum: [WebhookReplace.Hashtags, WebhookReplace.Spoilers, WebhookReplace.Stars]
+    },
+    ignored: {
+      type: Array,
+      each: {
+        type: String,
+        use: { Snowflake }
+      }
     }
   },
   multi: simple(Boolean),

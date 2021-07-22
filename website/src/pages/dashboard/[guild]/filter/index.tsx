@@ -1,9 +1,14 @@
-import { TagifySettings } from '@yaireo/tagify'
 import React from 'react'
+
+import { TagifySettings } from '@yaireo/tagify'
+
 import { Logger } from 'structures/Logger'
+
 import { CensorMethods } from 'typings'
+
 import { Tags } from '~/settings/inputs/Tags'
 import { Toggle } from '~/settings/inputs/Toggle'
+
 import { Setting } from '~/settings/Setting'
 import { SettingsSection, SettingsSectionElement } from '~/settings/SettingsSection'
 
@@ -13,8 +18,8 @@ const baseListSettings = {
   callbacks: {
     invalid: (e) => {
       console.log(e)
-      if ((e.detail.message as unknown as string) === 'pattern mismatch') Logger.error('Word cannot be over 20 characters long.')
-      if ((e.detail.message as unknown as string) === 'number of tags exceeded') Logger.error('Reached max words. Get premium to get up to 1500!')
+      if (e.detail.message === 'pattern mismatch') Logger.error('Word cannot be over 20 characters long.')
+      if (e.detail.message === 'number of tags exceeded') Logger.error('Reached max words. Get premium to get up to 1500!')
     }
   }
 } as TagifySettings

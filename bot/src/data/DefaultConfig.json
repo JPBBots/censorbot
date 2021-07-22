@@ -21,12 +21,14 @@
       "role": null,
       "time": null,
       "retainRoles": false,
-      "expires": null
+      "expires": null,
+      "ignored": []
   },
   "webhook": {
       "enabled": false,
       "replace": 0,
-      "separate": true
+      "separate": true,
+      "ignored": []
   },
   "channels": [],
   "nsfw": true,

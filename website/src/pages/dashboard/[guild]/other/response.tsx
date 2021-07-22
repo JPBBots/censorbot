@@ -2,6 +2,7 @@
 import { Amount } from '~/settings/inputs/Amount'
 import { Text } from '~/settings/inputs/Text'
 import { Toggle } from '~/settings/inputs/Toggle'
+
 import { Setting } from '~/settings/Setting'
 import { SettingsSection, SettingsSectionElement } from '~/settings/SettingsSection'
 

@@ -1,6 +1,11 @@
 import React from 'react'
+import { Logger } from 'structures/Logger'
+
 import { Amount } from '~/settings/inputs/Amount'
 import { List } from '~/settings/inputs/List'
+import { Tags } from '~/settings/inputs/Tags'
+
+import { Setting } from '~/settings/Setting'
 import { SettingsSection, SettingsSectionElement } from '~/settings/SettingsSection'
 
 export default class FilterSection extends SettingsSection {
@@ -41,6 +46,22 @@ export default class FilterSection extends SettingsSection {
             <option value="3">Ban them</option>
           </List>
         </div>
+
+        <Setting title="Punishment Exempt Roles" description="Roles to not distribute punishments to">
+            <Tags setting="punishment.ignored" value={this.db.punishment.ignored} placeholder="Add roles" settings={{
+              whitelist: this.guild?.r.map(x => ({ value: `@${x.name}`, id: x.id })),
+              enforceWhitelist: true,
+              callbacks: {
+                invalid: (e) => {
+                  if (e.detail.message === 'number of tags exceeded') Logger.error('You need premium to add more roles')
+                }
+              },
+              dropdown: {
+                enabled: 0,
+                maxItems: this.guild?.r.length
+              }
+            }} />
+          </Setting>
       </SettingsSectionElement>
     )
   }

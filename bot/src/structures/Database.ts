@@ -30,37 +30,8 @@ export class Database extends Db {
     const cached = this.configCache.get(id)
     if (cached != null) return cached
 
-    const db = (await this.collection('guild_data').findOne({ id }) as GuildDB) || Object.assign({ id }, DefaultConfig)
-
-    if (typeof db.censor === 'object') {
-      let bit = 0
-
-      // @ts-expect-error Updating database
-      if (db.censor.msg) bit |= CensorMethods.Messages
-      // @ts-expect-error Updating database
-      if (db.censor.nick) bit |= CensorMethods.Names
-      // @ts-expect-error Updating database
-      if (db.censor.react) bit |= CensorMethods.Reactions
-
-      db.censor = bit
-    }
-
-    // @ts-expect-error Updating database
-    if (db.matchExact) {
-      if (!db.phrases) db.phrases = [...db.filter]
-      db.filter = []
-
-      // @ts-expect-error Updating database
-      delete db.matchExact
-
-      await this.db.collection('guild_data').updateOne({ id: db.id }, {
-        $unset: {
-          matchExact: ''
-        },
-        $set: db
-      })
-    }
-    if (!db.phrases) db.phrases = []
+    let db = (await this.collection('guild_data').findOne({ id }) as GuildDB) || Object.assign({ id }, DefaultConfig)
+    db = await this._checkForUpdates(db)
 
     if (!Array.isArray(db.role)) {
       if (db.role) db.role = []
@@ -68,6 +39,39 @@ export class Database extends Db {
     }
 
     this.configCache.set(id, db)
+
+    return db
+  }
+
+  private async _checkForUpdates (db: any): Promise<GuildDB> {
+    if (typeof db.censor === 'object') {
+      let bit = 0
+
+      if (db.censor.msg) bit |= CensorMethods.Messages
+      if (db.censor.nick) bit |= CensorMethods.Names
+      if (db.censor.react) bit |= CensorMethods.Reactions
+
+      db.censor = bit
+    }
+
+    if (db.matchExact) {
+      if (!db.phrases) db.phrases = [...db.filter]
+      db.filter = []
+
+      delete db.matchExact
+
+      await this.db?.collection('guild_data').updateOne({ id: db.id }, {
+        $unset: {
+          matchExact: ''
+        },
+        $set: db
+      })
+    }
+
+    if (!db.phrases) db.phrases = []
+
+    if (!db.punishment.ignored) db.punishment.ignored = []
+    if (!db.webhook.ignored) db.webhook.ignored = []
 
     return db
   }

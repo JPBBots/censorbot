@@ -1,5 +1,7 @@
 import React from 'react'
+
 import { Toggle } from '~/settings/inputs/Toggle'
+
 import { Setting } from '~/settings/Setting'
 import { SettingsSection, SettingsSectionElement } from '~/settings/SettingsSection'
 

@@ -1,6 +1,11 @@
+import { Logger } from 'structures/Logger'
+
 import { WebhookReplace } from 'typings'
+
 import { List } from '~/settings/inputs/List'
+import { Tags } from '~/settings/inputs/Tags'
 import { Toggle } from '~/settings/inputs/Toggle'
+
 import { Setting } from '~/settings/Setting'
 import { SettingsSection, SettingsSectionElement } from '~/settings/SettingsSection'
 
@@ -26,6 +31,21 @@ export default class OtherSection extends SettingsSection {
               <option value={WebhookReplace.Hashtags}>Hashtags</option>
               <option value={WebhookReplace.Stars}>Stars</option>
             </List>
+          </Setting>
+          <Setting title="Resend Ignored Roles" description="Roles to not send resend messages about">
+            <Tags setting="webhook.ignored" value={this.db.webhook.ignored} placeholder="Add roles" settings={{
+              whitelist: this.guild?.r.map(x => ({ value: `@${x.name}`, id: x.id })),
+              enforceWhitelist: true,
+              callbacks: {
+                invalid: (e) => {
+                  if (e.detail.message === 'number of tags exceeded') Logger.error('You need premium to add more roles')
+                }
+              },
+              dropdown: {
+                enabled: 0,
+                maxItems: this.guild?.r.length
+              }
+            }} />
           </Setting>
         </div>
       </SettingsSectionElement>

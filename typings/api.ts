@@ -90,6 +90,10 @@ export interface GuildDB {
    */
   punishment: {
     /**
+     * Roles that are exempt from punishments
+     */
+    ignored: Snowflake[],
+    /**
      * Type of punishment
      */
     type: PunishmentType
@@ -120,6 +124,7 @@ export interface GuildDB {
   webhook: {
     enabled: boolean
     separate: boolean
+    ignored: Snowflake[]
     replace: WebhookReplace
   }
   multi: boolean

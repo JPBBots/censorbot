@@ -1,5 +1,7 @@
 import { Logger } from 'structures/Logger'
+
 import { Tags } from '~/settings/inputs/Tags'
+
 import { Setting } from '~/settings/Setting'
 import { SettingsSection, SettingsSectionElement } from '~/settings/SettingsSection'
 
@@ -18,7 +20,7 @@ export default class GeneralSection extends SettingsSection {
               enforceWhitelist: true,
               callbacks: {
                 invalid: (e) => {
-                  if ((e.detail.message as unknown as string) === 'number of tags exceeded') Logger.error('You need premium to add more roles')
+                  if (e.detail.message === 'number of tags exceeded') Logger.error('You need premium to add more roles')
                 }
               },
               dropdown: {
@@ -33,7 +35,7 @@ export default class GeneralSection extends SettingsSection {
               enforceWhitelist: true,
               callbacks: {
                 invalid: (e) => {
-                  if ((e.detail.message as unknown as string) === 'number of tags exceeded') Logger.error('You need premium to add more channels')
+                  if (e.detail.message === 'number of tags exceeded') Logger.error('You need premium to add more channels')
                 }
               },
               dropdown: {

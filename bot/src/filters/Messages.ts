@@ -44,7 +44,7 @@ function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB,
 
   if (db.msg.content !== false) worker.actions.popup(message.channel_id, message.author.id, db)
 
-  if (response.ranges.length > 0 && db.webhook.enabled && message.content) {
+  if (response.ranges.length > 0 && db.webhook.enabled && message.content && !db.webhook.ignored.some(x => message.member?.roles.includes(x))) {
     if (!worker.hasPerms(message.guild_id, 'webhooks')) {
       void worker.responses.missingPermissions(message.channel_id, 'Manage Webhooks')
     } else {
@@ -57,9 +57,11 @@ function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB,
     }
   }
 
-  const perms = worker.punishments.checkPerms(message.guild_id, db)
-  if (typeof perms === 'string') return void worker.responses.missingPermissions(message.channel_id, perms)
-  if (!perms) void worker.punishments.punish(message.guild_id, message.author.id, message.member.roles)
+  if (!db.punishment.ignored.some(x => message.member?.roles.includes(x))) {
+    const perms = worker.punishments.checkPerms(message.guild_id, db)
+    if (typeof perms === 'string') return void worker.responses.missingPermissions(message.channel_id, perms)
+    if (!perms) void worker.punishments.punish(message.guild_id, message.author.id, message.member.roles)
+  }
 }
 
 export async function MessageHandler (worker: WorkerManager, message: EventData): Promise<void> {

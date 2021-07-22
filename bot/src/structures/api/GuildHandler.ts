@@ -100,6 +100,7 @@ export class GuildHandler {
       db.webhook = {
         enabled: false,
         separate: true,
+        ignored: [],
         replace: WebhookReplace.Spoilers
       }
 

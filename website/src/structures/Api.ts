@@ -109,6 +109,9 @@ export class Api {
 
           if (Router.pathname.includes('dashboard')) void this.updateGuilds()
         })
+        .catch(() => {
+          this.logout()
+        })
     })
   }
 
