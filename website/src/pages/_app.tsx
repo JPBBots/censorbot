@@ -16,6 +16,8 @@ import styles from './_app.module.scss'
 import { Logger } from 'structures/Logger'
 import { stats } from 'structures/StatsManager'
 
+import { CCProvider } from '@jpbbots/censorbot-components'
+
 export const api = new Api()
 global.api = api
 
@@ -57,16 +59,26 @@ export default class MyApp extends React.Component<AppProps, ApiData & { loading
 
   render () {
     return (
-      <DataContext.Provider value={this.state}>
-        <Header />
-        <Navbar />
-        <div id="root" >
-          <this.props.Component {...this.props.pageProps} />
-        </div>
-        <Logo className={styles.loader} style={{
-          display: this.state.loading ? 'unset' : 'none'
-        }} />
-      </DataContext.Provider>
+      <CCProvider useCssReset useGlobalStyle cookies={this.props.pageProps.cookies}>
+        <DataContext.Provider value={this.state}>
+          <Header />
+          <Navbar />
+          <div id="root" >
+            <this.props.Component {...this.props.pageProps} data={this.state} />
+          </div>
+          <Logo className={styles.loader} style={{
+            display: this.state.loading ? 'unset' : 'none'
+          }} />
+        </DataContext.Provider>
+      </CCProvider>
     )
+  }
+}
+
+export function getServerSideProps ({ req }: any) {
+  return {
+    props: {
+      cookies: req.headers.cookie ?? ''
+    }
   }
 }

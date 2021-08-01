@@ -2,15 +2,16 @@
   top: 0px;
   transition: 0.1s;
   z-index: 1;
-  height: 70px;
+  height: 7vh;
   
   display: flex;
   justify-content: center;
+  margin: auto;
 
   padding: 0px 10px;
 
   width: -webkit-fill-available;
-  position: fixed;
+  // position: fixed;
 
   
   > div {
@@ -19,6 +20,10 @@
     align-items: center;
     transition: 0.3s;
     width: 1200px;
+
+    @media (max-width: 1200px) {
+      width: 80vw;
+    }
 
     > .left > h3 {
       text-align: center;

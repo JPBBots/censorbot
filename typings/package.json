@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord-api-types": "^0.18.1"
+    "discord-api-types": "^0.18.1",
+    "yup": "^0.32.9"
   }
 }

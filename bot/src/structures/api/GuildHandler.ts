@@ -1,7 +1,7 @@
 import { Cache } from '@jpbberry/cache'
 import { Snowflake } from 'discord-api-types'
 import { Collection } from 'mongodb'
-import { GuildData, GuildDB, WebhookReplace } from 'typings'
+import { GuildData, GuildDB } from 'typings'
 
 import patch from '../../utils/Patch'
 import pieces from '../../utils/Pieces'
@@ -77,52 +77,10 @@ export class GuildHandler {
       }, { upsert: true })
     }
 
-    const valid = this.socket.manager.db.schema.validate(db, { strip: true })
-    if (valid.length > 0) throw valid[0] as unknown as Error
+    const valid = this.socket.manager.db.schemas[guild.premium ? 'premium' : 'normal'].validate(db)
+    if (valid.error) throw valid.error
 
-    if (!guild.premium) {
-      if (db.filter) db.filter = db.filter.slice(0, 150)
-      if (db.phrases) db.phrases = db.phrases.slice(0, 150)
-      if (db.uncensor) db.uncensor = db.uncensor.slice(0, 150)
-
-      if (typeof db.msg?.content === 'string') {
-        db.msg.content = db.msg.content.slice(0, 200)
-      }
-
-      if (Array.isArray(db.channels)) {
-        db.channels = db.channels.slice(0, 5)
-      }
-
-      if (typeof db.msg?.deleteAfter === 'number' && db.msg.deleteAfter > 120e3) {
-        db.msg.deleteAfter = 120e3
-      }
-
-      db.webhook = {
-        enabled: false,
-        separate: true,
-        ignored: [],
-        replace: WebhookReplace.Spoilers
-      }
-
-      db.multi = false
-      db.toxicity = false
-      db.images = false
-      db.ocr = false
-      db.dm = false
-      if (db.msg) {
-        db.msg.dm = false
-      }
-
-      if (db.punishment) {
-        db.punishment.retainRoles = false
-      }
-    }
-
-    db.filter = (db.filter || guild.db.filter).map(x => this.socket.manager.filter.resolve(x)[0]?.t).filter(x => x)
-
-    if (db.uncensor) {
-      db.uncensor = db.uncensor.map(x => this.socket.manager.filter.resolve(x)[0]?.t).filter(x => x)
-    }
+    db.id = id
 
     await this.socket.manager.db.collection('guild_data').updateOne({
       id

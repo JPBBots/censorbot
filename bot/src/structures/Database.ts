@@ -7,10 +7,12 @@ import { Snowflake } from 'discord-api-types'
 import DefaultConfig from '../data/DefaultConfig.json'
 import SafeConfig from '../data/SafeConfig.json'
 
-import { schema } from '../data/ConfigSchema'
+import { settingSchema, premiumSchema } from '../data/SettingsSchema'
 
 import { Database as Db } from 'interface/dist/Database'
 import { Collection } from 'mongodb'
+
+export * from '../data/SettingsSchema'
 
 export class Database extends Db {
   configCache: Cache<Snowflake, GuildDB> = new Cache(5 * 60 * 1000)
@@ -18,7 +20,10 @@ export class Database extends Db {
   defaultConfig = DefaultConfig
   safeConfig = SafeConfig
 
-  schema = schema
+  schemas = {
+    normal: settingSchema,
+    premium: premiumSchema
+  }
 
   constructor () {
     super('localhost', Config.db.username, Config.db.password)

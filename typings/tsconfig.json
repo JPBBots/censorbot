@@ -1,6 +1,7 @@
 {
   "include": ["./*.ts"],
   "compilerOptions": {
-    "declaration": true
+    "declaration": true,
+    "lib": ["ES2017"]
   }
 }

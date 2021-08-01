@@ -9,6 +9,9 @@ export function Header () {
         content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
       <title>Censor Bot</title>
 
+      <link rel="prefetch" href={BRANDING.mainImage} />
+      <link rel="prefetch" href={BRANDING.examples[0].example} />
+
       <meta property="og:image" content={BRANDING.logo} />
       <meta name="theme-color" content="#ea5455" />
       <meta property="og:title" content={BRANDING.name} />

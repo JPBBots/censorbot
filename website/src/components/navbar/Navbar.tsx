@@ -44,12 +44,12 @@ export default class Navbar extends React.Component<unknown, { sticky: boolean }
             </div>
           </div>
         </div>
-        <div className={styles.formatter} style={{
+        {/* <div className={styles.formatter} style={{
           height: `${this.ref.current?.offsetHeight}px`,
           margin: 'auto',
           padding: '2px'
         }}>
-        </div>
+        </div> */}
       </>
     )
   }

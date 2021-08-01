@@ -1,3 +1,4 @@
+import { List } from '~/settings/inputs/List'
 import { Text } from '~/settings/inputs/Text'
 import { Toggle } from '~/settings/inputs/Toggle'
 
@@ -18,6 +19,13 @@ export default class GeneralSection extends SettingsSection {
           </Setting>
           <Setting premium={true} title="DM Commands" description="Respond to commands in users DMs rather than publicly">
             <Toggle setting="dm" value={this.db.dm} />
+          </Setting>
+          <Setting title="Log Channel" description="Channel to log all curses and punishments">
+            <List setting="log" value={this.db.log}>
+              {
+                this.guild?.c.map(x => <option key={x.id} value={x.id}>#{x.name}</option>)
+              }
+            </List>
           </Setting>
         </div>
       </SettingsSectionElement>

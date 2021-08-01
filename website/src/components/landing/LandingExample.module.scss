@@ -3,11 +3,12 @@
 
   img {
     width: 40vw;
+    min-width: 340px;
     -webkit-user-drag: none;
     z-index: 0;
     box-shadow: 20px 20px 25px 0 rgb(17 17 17 / 50%);
     position: relative;
-    top: 3rem;
+    // top: 3rem;
     border-radius: 4px;
     // cursor: pointer;
   }
@@ -23,9 +24,5 @@
 
   > small {
     z-index: 1
-  }
-
-  @media (max-width: 820px) {
-    display: none;
   }
 }

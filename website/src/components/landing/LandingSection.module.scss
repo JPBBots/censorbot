@@ -1,6 +1,12 @@
 .section {
   display: flex;
   align-items: center;
+  margin: 20px 0px;
+  
+  @media (max-width: 820px) {
+    flex-direction: column;
+  }
+
   > .second {
     margin-left: 20px
   }

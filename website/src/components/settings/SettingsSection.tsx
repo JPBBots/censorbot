@@ -9,6 +9,8 @@ import { Snowflake } from 'discord-api-types'
 
 import styles from './SettingsSection.module.scss'
 
+import { HStack, VStack, Text } from '@chakra-ui/react'
+
 interface Section {
   name: string
   href?: string
@@ -18,32 +20,34 @@ interface Section {
   sections?: Section[]
 }
 
+const sections: Section[] = [
+  {
+    name: 'Filter',
+    sections: [
+      { name: 'General', href: '/filter', icon: '' },
+      { name: 'Exceptions', href: '/filter/exceptions', icon: '' },
+      { name: 'Extras', href: '/filter/extras', icon: '' },
+      { name: 'AI', href: '/filter/ai', icon: '', premium: true }
+    ]
+  },
+  {
+    name: 'General',
+    sections: [
+      { name: 'Punishments', href: '/general/punishments', icon: '' },
+      { name: 'Bot', href: '/general/bot', icon: '' }
+    ]
+  },
+  {
+    name: 'Other',
+    sections: [
+      { name: 'Resend', href: '/other/resend', icon: '', premium: true },
+      { name: 'Response', href: '/other/response', icon: '', miniText: 'Popup' }
+    ]
+  }
+]
+
 export function SettingsSectionElement ({ children, ctx }: PropsWithChildren<{ ctx: React.ContextType<typeof DataContext> }>) {
-  const sections: Section[] = [
-    {
-      name: 'Filter',
-      sections: [
-        { name: 'General', href: '/filter', icon: '' },
-        { name: 'Exceptions', href: '/filter/exceptions', icon: '' },
-        { name: 'Extras', href: '/filter/extras', icon: '' },
-        { name: 'AI', href: '/filter/ai', icon: '', premium: true }
-      ]
-    },
-    {
-      name: 'General',
-      sections: [
-        { name: 'Punishments', href: '/general/punishments', icon: '' },
-        { name: 'Bot', href: '/general/bot', icon: '' }
-      ]
-    },
-    {
-      name: 'Other',
-      sections: [
-        { name: 'Resend', href: '/other/resend', icon: '', premium: true },
-        { name: 'Response', href: '/other/response', icon: '', miniText: 'Popup' }
-      ]
-    }
-  ]
+  const currentSection = sections.map(x => x.sections).flat().find(x => x?.href && location.href.endsWith(x.href))
 
   if (ctx.login === LoginState.LoggedOut) {
     return <div style={{ textAlign: 'center' }}>
@@ -65,30 +69,32 @@ export function SettingsSectionElement ({ children, ctx }: PropsWithChildren<{ c
 
   return (
     <div>
-      <div className={styles.menu}>
-        <div className={styles.info}>
-          <h1>{ctx.currentGuild.guild.n}</h1>
+      <HStack>
+        <div className={styles.menu}>
+          <div className={styles.info}>
+            <h1>{ctx.currentGuild.guild.n}</h1>
+          </div>
+          <div className={styles.sections}>
+            {sections.map(category => (
+              <div key={category.name}>
+                <h1>{category.name}</h1>
+                {category.sections?.map(section => (
+                  <Link key={section.name} href={{
+                    pathname: `/dashboard/[guild]${section.href}`,
+                    query: Router.query
+                  }}>
+                    <h5>{section.name}</h5>
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
-        <div className={styles.sections}>
-          {sections.map(category => (
-            <div key={category.name}>
-              <h1>{category.name}</h1>
-              {category.sections?.map(section => (
-                <Link key={section.name} href={{
-                  pathname: `/dashboard/[guild]${section.href}`,
-                  query: Router.query
-                }}>
-                  <h5>{section.name}</h5>
-                </Link>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        {children}
-      </div>
+        <VStack padding="20px" alignSelf="end" w="full">
+          <Text textStyle="heading.xl">{currentSection?.name}</Text>
+          {children}
+        </VStack>
+      </HStack>
     </div>
   )
 }

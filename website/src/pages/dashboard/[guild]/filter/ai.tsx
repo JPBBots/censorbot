@@ -1,30 +1,64 @@
+import { Formik } from 'formik'
 import React from 'react'
 
-import { Toggle } from '~/settings/inputs/Toggle'
+import { Section } from '@jpbbots/censorbot-components'
+import { FormControl, VStack } from '@chakra-ui/react'
+import { api } from 'pages/_app'
 
-import { Setting } from '~/settings/Setting'
-import { SettingsSection, SettingsSectionElement } from '~/settings/SettingsSection'
+import Router from 'next/router'
+import { Snowflake } from 'discord-api-types'
+import { Option } from '~/functional/Option'
 
-export default class FilterSection extends SettingsSection {
-  render () {
-    if (!this.db) return <div></div>
+import { SettingSection } from '~/SettingSection'
 
-    return (
-      <SettingsSectionElement ctx={this.context}>
-        <h1>AI</h1>
+export default function Ai () {
+  return (
+    <SettingSection section="AI">
+      {
+        (db) => (
+          <Formik initialValues={{
+            toxicity: db.toxicity,
+            ocr: db.ocr,
+            images: db.images
+          }} onSubmit={(value, helpers) => {
+            console.log(value)
 
-        <div>
-          <Setting premium={true} title="Toxicity Filter" description="Filter out toxic messages with AI">
-            <Toggle setting="toxicity" value={this.db.toxicity} />
-          </Setting>
-          <Setting premium={true} title="Anti-NSFW Images" description="Improve upon Discord's built in image moderation, with a more aggressive AI">
-            <Toggle setting="images" value={this.db.images} />
-          </Setting>
-          <Setting premium={true} title="OCR" description="Optical Character Recognition, which takes an image and scans the text in it">
-            <Toggle setting="ocr" value={this.db.ocr} />
-          </Setting>
-        </div>
-      </SettingsSectionElement>
-    )
-  }
+            const old = { ...db }
+
+            if (!api.data.currentGuild) return
+            api.setData({ currentGuild: api._createUpdatedGuild(api.data.currentGuild, value) })
+
+            void api.changeSettings(Router.query.guild as Snowflake, value).catch(() => {
+              if (!api.data.currentGuild) return
+
+              api.setData({ currentGuild: api._createUpdatedGuild(api.data.currentGuild, old) })
+              for (const key in value) {
+                value[key as keyof typeof value] = api.data.currentGuild.db[key as keyof typeof value]
+              }
+              helpers.setValues(value)
+            })
+          }}>
+            {({
+              handleSubmit,
+              handleChange
+            }) =>
+              <FormControl w="full" onChange={handleSubmit as any}>
+                <VStack spacing="sm">
+                  <Section title="Toxicity Filter">
+                    <Option name="toxicity" isChecked={db.toxicity} onChange={handleChange} label="Filter out toxic messages with AI" isPremium />
+                  </Section>
+                  <Section title="Anti-NSFW Images">
+                    <Option name="images" isChecked={db.images} onChange={handleChange} label="Improve Discord’s built-in image moderation with a more agressive AI" isPremium />
+                  </Section>
+                  <Section title="OCR - Optical Character Recognition">
+                    <Option name="ocr" isChecked={db.ocr} onChange={handleChange} label="Scan and filter images with text" isPremium />
+                  </Section>
+                </VStack>
+              </FormControl>
+            }
+          </Formik>
+        )
+      }
+    </SettingSection>
+  )
 }

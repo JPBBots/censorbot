@@ -7,8 +7,7 @@ module.exports = {
   async rewrites () {
     return [
       { source: '/invite:path*', destination: '/api/invite' },
-      { source: '/servers/:path*', destination: '/dashboard/:path*' },
-      { source: '/dashboard/', destination: '/dashboard/filter' }
+      { source: '/servers/:path*', destination: '/dashboard/:path*' }
     ]
   }
 }
