@@ -1,10 +1,12 @@
 import { TagData } from '@yaireo/tagify'
 import Tags from '@yaireo/tagify/dist/react.tagify'
+import { FieldHelperProps } from 'formik'
 
 import React from 'react'
 
 interface TagifyProps extends Tags.TagifyBaseReactProps {
-  onChange: (value: any) => void
+  onChange?: (value: any) => void
+  helper?: FieldHelperProps<any>
   value: string[]
 }
 
@@ -20,7 +22,7 @@ function generateProper (value: TagifyProps['value'], settings: TagifyProps['set
   return val
 }
 
-export function Tagify ({ onChange, value, ...props }: TagifyProps) {
+export function Tagify ({ onChange, helper, value, ...props }: TagifyProps) {
   const [values, setValues] = React.useState([] as string[])
 
   React.useEffect(() => {
@@ -29,8 +31,11 @@ export function Tagify ({ onChange, value, ...props }: TagifyProps) {
 
   return (
     <Tags onChange={(val) => {
-      onChange(val.detail.tagify.value
-        .reduce<string[]>((a, b) => a.concat([b.id || b.value]), []))
+      const newVal = val.detail.tagify.value
+        .reduce<string[]>((a, b) => a.concat([b.id || b.value]), [])
+
+      console.log(newVal)
+      helper ? helper.setValue(newVal) : onChange?.(newVal)
     }} value={values} {...props} />
   )
 }

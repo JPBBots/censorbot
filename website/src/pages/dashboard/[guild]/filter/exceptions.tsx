@@ -21,17 +21,12 @@ export default function Exceptions () {
           }} onSubmit={handleFormikSubmit}>
             {({
               handleSubmit,
-              handleChange,
-              setValues,
-              values
+              getFieldHelpers
             }) =>
             <FormControl w="full" onChange={handleSubmit as any}>
                 <VStack spacing="sm">
                   <Section title="Ignored Roles" description="Roles that are excepted from filtered words and phrases" icon={<Icon as={FaAt} />}>
-                    <Tagify value={db.role} onChange={(val: any) => {
-                      console.log(val)
-                      setValues({ ...values, role: val })
-                    }} placeholder="Add roles" settings={{
+                    <Tagify value={db.role} helper={getFieldHelpers('role')} placeholder="Add roles" settings={{
                       whitelist: guild?.r.map(x => ({ value: `@${x.name}`, id: x.id })),
                       enforceWhitelist: true,
                       callbacks: {
@@ -46,9 +41,7 @@ export default function Exceptions () {
                     }} />
                   </Section>
                   <Section title="Ignored Channels" description="Channels that are excepted from filtered words and phrases" icon={<Icon as={FaHashtag} />}>
-                    <Tagify value={db.channels} onChange={(val: any) => {
-                      setValues({ ...values, channels: val })
-                    }} placeholder="Add roles" settings={{
+                    <Tagify value={db.channels} helper={getFieldHelpers('channels')} placeholder="Add roles" settings={{
                       whitelist: guild?.c.map(x => ({ value: `#${x.name}`, id: x.id })),
                       enforceWhitelist: true,
                       callbacks: {

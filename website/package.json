@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@jpbbots/censorbot-components": "^1.1.27",
+    "@jpbbots/censorbot-components": "^1.1.28",
     "@types/aos": "^3.0.3",
     "@yaireo/tagify": "^4.4.0",
     "aos": "^2.3.4",

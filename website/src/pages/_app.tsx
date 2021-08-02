@@ -56,16 +56,22 @@ export default class MyApp extends React.Component<AppProps, ApiData & { loading
     window.onbeforeunload = () => {
       stats.win?.close()
     }
+    window.onkeydown = () => {
+      console.log('a')
+      void api._resetTimer()
+    }
   }
 
   render () {
+    const { Component } = this.props
+
     return (
       <CCProvider useCssReset useGlobalStyle cookies={this.props.pageProps.cookies}>
         <DataContext.Provider value={this.state}>
           <Header />
           <Navbar />
           <div id="root" >
-            <this.props.Component {...this.props.pageProps} data={this.state} />
+            <Component {...this.props.pageProps} data={this.state} />
           </div>
           <Logo className={styles.loader} style={{
             display: this.state.loading ? 'unset' : 'none'

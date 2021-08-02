@@ -4,7 +4,7 @@ import _headlessData from './headlessData.json'
 import { WebSocketEventMap } from 'typings/websocket'
 import { api } from 'pages/_app'
 
-const headlessData = _headlessData as ApiData
+const headlessData = _headlessData as unknown as ApiData
 
 export default {
   AUTHORIZE: () => headlessData.user,

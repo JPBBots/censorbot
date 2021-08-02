@@ -17,9 +17,9 @@ export class Tags extends BaseInput<string[], HTMLInputElement, { settings: Tagi
     this.tag?.on?.('change', () => {
       if (this.settingTag) return
 
-      if (!this.elm.current || this.elm.current.value === '') return this.props.onChange([])
+      if (!this.elm.current || this.elm.current.value === '') return this.changeSetting([])
 
-      this.props.onChange((JSON.parse(this.elm.current.value) as TagData[])
+      this.changeSetting((JSON.parse(this.elm.current.value) as TagData[])
         .reduce<string[]>((a, b: TagData) => a.concat([b.id || b.value]), [])
       )
     })

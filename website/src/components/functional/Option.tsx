@@ -7,7 +7,6 @@ import { Logger } from 'structures/Logger'
 export function Option ({ onChange, name, ...props }: OptionProps) {
   return (
     <CCOption name={name} {...props} onChange={(ev) => {
-      window.router = Router
       console.log('a', props.isPremium && api.data.currentGuild && !api.data.currentGuild.premium)
       if (props.isPremium && api.data.currentGuild && !api.data.currentGuild.premium) {
         Logger.error('This is premium only!')

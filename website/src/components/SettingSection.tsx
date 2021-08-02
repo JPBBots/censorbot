@@ -7,11 +7,8 @@ import { Snowflake } from 'discord-api-types'
 import { HStack, VStack, Text, Divider } from '@chakra-ui/react'
 import { Sidebar, sections, SectionName } from './settings/Sidebar'
 import { LoginButton } from './button/LoginButton'
-import { GuildData, GuildDB } from 'typings'
+import { GuildData } from 'typings'
 import { FormikHelpers } from 'formik'
-
-import Tags, { TagifyBaseReactProps } from '@yaireo/tagify/dist/react.tagify'
-import { TagData } from '@yaireo/tagify'
 
 export const handleFormikSubmit = (value: any, helpers: FormikHelpers<any>) => {
   if (!api.data.currentGuild) return
@@ -76,7 +73,7 @@ export class SettingSection extends React.Component<{ children: (guild: GuildDat
       <div>
         <HStack alignItems="start">
           <Sidebar selected={currentSection?.name} />
-          <VStack padding="30px" alignSelf="end" w="full" h="93vh">
+          <VStack padding="8px 20px" alignSelf="end" w="full" h="93vh">
             <Text textStyle="heading.xl" alignSelf="start">{currentSection?.name}</Text>
             <Divider color="lighter.5" />
             <VStack w="full" overflowY="scroll">

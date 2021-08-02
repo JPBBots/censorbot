@@ -12,23 +12,6 @@ import { CensorMethods } from 'typings'
 // import { Setting } from '~/settings/Setting'
 // import { SettingsSection, SettingsSectionElement } from '~/settings/SettingsSection'
 
-// const baseListSettings = {
-//   delimiters: /,/g,
-//   pattern: /^.{1,20}$/,
-//   callbacks: {
-//     invalid: (e) => {
-//       console.log(e)
-//       if (e.detail.message === 'pattern mismatch') Logger.error('Word cannot be over 20 characters long.')
-//       if (e.detail.message === 'number of tags exceeded') Logger.error('Reached max words. Get premium to get up to 1500!')
-//     }
-//   }
-// } as TagifySettings
-
-// const listSettings = {
-//   ...baseListSettings,
-//   delimiters: /,|\s/g
-// } as TagifySettings
-
 import { Formik, FormikHelpers } from 'formik'
 import React from 'react'
 
@@ -39,6 +22,9 @@ import { Option } from '~/functional/Option'
 
 import { handleFormikSubmit, SettingSection } from '~/SettingSection'
 import { api } from 'pages/_app'
+import { Tagify } from '~/settings/Tagify'
+import { TagifySettings } from '@yaireo/tagify'
+import { Logger } from 'structures/Logger'
 
 const handleCensorChange = (values: any, setValues: FormikHelpers<any>['setValues'], method: CensorMethods) => {
   return (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,25 +38,69 @@ const handleCensorChange = (values: any, setValues: FormikHelpers<any>['setValue
   }
 }
 
-export default function General () {
+export default function General ({ data }: CB.Props) {
+  const baseListSettings: TagifySettings = {
+    delimiters: /,/g,
+    pattern: /^.{1,20}$/,
+    maxTags: data.currentGuild?.premium ? 1500 : 150,
+    callbacks: {
+      invalid: (e) => {
+        console.log(e)
+        if (e.detail.message === 'pattern mismatch') Logger.error('Word cannot be over 20 characters long.')
+        if (e.detail.message === 'number of tags exceeded') Logger.error('Reached max words. Get premium to get up to 1500!')
+      }
+    }
+  }
+
+  const listSettings = {
+    ...baseListSettings,
+    delimiters: /,|\s/g
+  } as TagifySettings
+
   return (
     <SettingSection section="General">
       {
         ({ db }) => (
           <Formik initialValues={{
-            censor: db.censor
+            censor: db.censor,
+            filters: db.filters,
+            filter: db.filter,
+            phrases: db.phrases,
+            uncensor: db.uncensor
           }} onSubmit={handleFormikSubmit}>
             {({
               handleSubmit,
               handleChange,
+              getFieldHelpers,
               values,
               setValues
             }) =>
               <FormControl w="full" onChange={handleSubmit as any}>
                 <VStack spacing="sm">
-                  <Section title="Anti-NSFW Images">
+                  <Section title="Pre-made Filters" description="Pick pre-made filters that apply for your needs">
+                    <Tagify value={db.filters} helper={getFieldHelpers('filters')} placeholder="Add filters" settings={{
+                      whitelist: [
+                        { id: 'en', value: 'English' },
+                        { id: 'es', value: 'Spanish' },
+                        { id: 'off', value: 'Offensive' },
+                        { id: 'de', value: 'German' },
+                        { id: 'ru', value: 'Russian' }
+                      ],
+                      enforceWhitelist: true,
+                      callbacks: {},
+                      dropdown: {
+                        enabled: 0
+                      }
+                    }} />
                   </Section>
-                  <Section title="OCR - Optical Character Recognition">
+                  <Section title="Server Filter" description="Simple words to resolve that add onto your servers' filter">
+                    <Tagify value={db.filter} helper={getFieldHelpers('filter')} placeholder="Add words" settings={listSettings} />
+                  </Section>
+                  <Section title="Phrase Filters" description="Words to remove that contain any character, including spaces">
+                    <Tagify value={db.phrases} helper={getFieldHelpers('phrases')} placeholder="Add phrases" settings={baseListSettings} />
+                  </Section>
+                  <Section title="Uncensor List" description="Words to ignore when they’re matched against a filter">
+                    <Tagify value={db.uncensor} helper={getFieldHelpers('uncensor')} placeholder="Add words" settings={listSettings} />
                   </Section>
                   <Section title="Censor Methods">
                     <Option name="censor.0" isChecked={(db.censor & CensorMethods.Messages) !== 0} onChange={handleCensorChange(values, setValues, CensorMethods.Messages)} label="Filter sent and edited messages" />
@@ -86,7 +116,6 @@ export default function General () {
     </SettingSection>
   )
 }
-
 
 // export default class FilterSection extends SettingsSection {
 //   censorSetting (elm: React.RefObject<HTMLElement>) {
@@ -115,18 +144,18 @@ export default function General () {
 //         <div>
 //           <Setting title="Pre-built Filters" description="Pick and choose which filters you want">
 //             <Tags setting="filters" value={this.db.filters} placeholder="Add filters" settings={{
-//               whitelist: [
-//                 { id: 'en', value: 'English' },
-//                 { id: 'es', value: 'Spanish' },
-//                 { id: 'off', value: 'Offensive' },
-//                 { id: 'de', value: 'German' },
-//                 { id: 'ru', value: 'Russian' }
-//               ],
-//               enforceWhitelist: true,
-//               callbacks: {},
-//               dropdown: {
-//                 enabled: 0
-//               }
+// whitelist: [
+//   { id: 'en', value: 'English' },
+//   { id: 'es', value: 'Spanish' },
+//   { id: 'off', value: 'Offensive' },
+//   { id: 'de', value: 'German' },
+//   { id: 'ru', value: 'Russian' }
+// ],
+// enforceWhitelist: true,
+// callbacks: {},
+// dropdown: {
+//   enabled: 0
+// }
 //             }}></Tags>
 //           </Setting>
 //           <Setting title="Server Filter" description="Custom words for just your server">

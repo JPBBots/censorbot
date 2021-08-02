@@ -198,17 +198,23 @@ export class Api {
   timeout?: number
   resolve?: () => void
 
+  _resetTimer () {
+    if (!this.timeout) return
+    console.log('resetting timer')
+    clearTimeout(this.timeout)
+
+    this.timeout = window.setTimeout(() => {
+      this.resolve?.()
+    }, 1000)
+  }
+
   async changeSettings (id: Snowflake, data: any) {
     Logger.setLoading(true)
 
     if (!this.waiting) this.waiting = data
     else {
       this.waiting = updateObject(this.waiting, data)
-      clearTimeout(this.timeout)
-
-      this.timeout = window.setTimeout(() => {
-        this.resolve?.()
-      }, 1000)
+      this._resetTimer()
 
       return
     }
@@ -224,6 +230,7 @@ export class Api {
     data = this.waiting
     this.waiting = undefined
     this.resolve = undefined
+    this.timeout = undefined
 
     console.debug('posting', data)
 
