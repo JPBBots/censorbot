@@ -17,6 +17,7 @@ import { Logger } from 'structures/Logger'
 import { stats } from 'structures/StatsManager'
 
 import { CCProvider } from '@jpbbots/censorbot-components'
+import '@yaireo/tagify/dist/tagify.css'
 
 export const api = new Api()
 global.api = api

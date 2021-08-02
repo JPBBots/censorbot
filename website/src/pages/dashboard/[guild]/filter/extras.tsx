@@ -3,42 +3,22 @@ import React from 'react'
 
 import { Section } from '@jpbbots/censorbot-components'
 import { FormControl, VStack } from '@chakra-ui/react'
-import { api } from 'pages/_app'
 
-import Router from 'next/router'
-import { Snowflake } from 'discord-api-types'
 import { Option } from '~/functional/Option'
 
-import { SettingSection } from '~/SettingSection'
+import { handleFormikSubmit, SettingSection } from '~/SettingSection'
 
 export default function Filter () {
   return (
     <SettingSection section="Extras">
       {
-        (db) => (
+        ({ db }) => (
           <Formik initialValues={{
             invites: db.invites,
             multi: db.multi,
             nsfw: db.nsfw,
             antiHoist: db.antiHoist
-          }} onSubmit={(value, helpers) => {
-            console.log(value)
-
-            const old = { ...db }
-
-            if (!api.data.currentGuild) return
-            api.setData({ currentGuild: api._createUpdatedGuild(api.data.currentGuild, value) })
-
-            void api.changeSettings(Router.query.guild as Snowflake, value).catch(() => {
-              if (!api.data.currentGuild) return
-
-              api.setData({ currentGuild: api._createUpdatedGuild(api.data.currentGuild, old) })
-              for (const key in value) {
-                value[key as keyof typeof value] = api.data.currentGuild.db[key as keyof typeof value]
-              }
-              helpers.setValues(value)
-            })
-          }}>
+          }} onSubmit={handleFormikSubmit}>
             {({
               handleSubmit,
               handleChange

@@ -7,9 +7,34 @@ import { Snowflake } from 'discord-api-types'
 import { HStack, VStack, Text, Divider } from '@chakra-ui/react'
 import { Sidebar, sections, SectionName } from './settings/Sidebar'
 import { LoginButton } from './button/LoginButton'
-import { GuildDB } from 'typings'
+import { GuildData, GuildDB } from 'typings'
+import { FormikHelpers } from 'formik'
 
-export class SettingSection extends React.Component<{ children: (db: GuildDB) => JSX.Element, section: SectionName}> {
+import Tags, { TagifyBaseReactProps } from '@yaireo/tagify/dist/react.tagify'
+import { TagData } from '@yaireo/tagify'
+
+export const handleFormikSubmit = (value: any, helpers: FormikHelpers<any>) => {
+  if (!api.data.currentGuild) return
+
+  const db = api.data.currentGuild?.db
+  if (!db) return
+
+  const old = { ...db }
+
+  api.setData({ currentGuild: api._createUpdatedGuild(api.data.currentGuild, value) })
+
+  void api.changeSettings(Router.query.guild as Snowflake, value).catch(() => {
+    if (!api.data.currentGuild) return
+
+    api.setData({ currentGuild: api._createUpdatedGuild(api.data.currentGuild, old) })
+    for (const key in value) {
+      value[key] = api.data.currentGuild.db[key as keyof CB.Data['currentGuild']]
+    }
+    helpers.setValues(value)
+  })
+}
+
+export class SettingSection extends React.Component<{ children: (guild: GuildData) => JSX.Element, section: SectionName}> {
   context!: CB.Context
 
   updateGuild () {
@@ -55,7 +80,7 @@ export class SettingSection extends React.Component<{ children: (db: GuildDB) =>
             <Text textStyle="heading.xl" alignSelf="start">{currentSection?.name}</Text>
             <Divider color="lighter.5" />
             <VStack w="full" overflowY="scroll">
-              {this.props.children(data.currentGuild.db)}
+              {this.props.children(data.currentGuild)}
             </VStack>
           </VStack>
         </HStack>
