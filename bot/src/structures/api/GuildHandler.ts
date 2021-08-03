@@ -82,6 +82,8 @@ export class GuildHandler {
 
     db.id = id
 
+    db.filter = (db.filter || guild.db.filter).map(x => this.socket.manager.filter.resolve(x)[0]?.t).filter(x => x)
+
     await this.socket.manager.db.collection('guild_data').updateOne({
       id
     }, {

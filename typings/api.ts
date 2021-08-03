@@ -144,6 +144,21 @@ export interface GuildDB {
   notInDb?: boolean
 }
 
+export interface UserPremium {
+  /**
+   * Amount of premium servers this user has
+   */
+  count: number
+  /**
+   * Guilds that are premium for this users
+   */
+  guilds: Snowflake[]
+  /**
+   * Whether or not a user is a customer or a patron
+   */
+  customer: boolean
+}
+
 export interface User {
   /**
    * Censor Bot API Token
@@ -164,20 +179,7 @@ export interface User {
   /**
    * Premium data
    */
-  premium?: {
-    /**
-     * Amount of premium servers this user has
-     */
-    count: number
-    /**
-     * Guilds that are premium for this users
-     */
-    guilds: Snowflake[]
-    /**
-     * Whether or not a user is a customer or a patron
-     */
-    customer: boolean
-  }
+  premium?: UserPremium
   /**
    * Whether or not user is admin
    */

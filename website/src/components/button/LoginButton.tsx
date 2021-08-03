@@ -1,10 +1,12 @@
-import { api } from 'pages/_app'
+import { useUser } from 'hooks/useAuth'
 import { MainButton } from './MainButton'
 
 export function LoginButton ({ name = 'Login' }: { name?: string }) {
+  const [, login] = useUser(false)
+
   return (
     <MainButton onClick={(() => {
-      void api.login()
+      void login()
     })}>{name}</MainButton>
   )
 }

@@ -1,15 +1,16 @@
-import { api } from 'pages/_app'
+import { useLoginState, useUser } from 'hooks/useAuth'
 
 import React from 'react'
 
-import { DataContext, LoginState } from 'structures/Api'
+import { LoginState } from 'structures/Api'
 
 import { NavButton } from '~/button/NavButton'
 
 export function UserButton () {
-  const { user, login } = React.useContext(DataContext)
+  const [user, login] = useUser(false)
+  const [loginState] = useLoginState()
 
-  if (login === LoginState.Loading || login === LoginState.LoggingIn) return (<></>)
+  if (loginState === LoginState.Loading || loginState === LoginState.LoggingIn) return (<></>)
 
   if (user) {
     return (
@@ -21,7 +22,7 @@ export function UserButton () {
 
   return (
     <NavButton onClick={(() => {
-      void api.login()
+      void login()
     })}
     special="on">Login</NavButton>
   )

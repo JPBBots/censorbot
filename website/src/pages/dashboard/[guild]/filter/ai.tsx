@@ -6,13 +6,13 @@ import { FormControl, VStack } from '@chakra-ui/react'
 
 import { Option } from '~/functional/Option'
 
-import { handleFormikSubmit, SettingSection } from '~/SettingSection'
+import { SettingSection } from '~/SettingSection'
 
 export default function Ai () {
   return (
     <SettingSection section="AI">
       {
-        ({ db }) => (
+        ({ db }, _, handleFormikSubmit) => (
           <Formik initialValues={{
             toxicity: db.toxicity,
             ocr: db.ocr,

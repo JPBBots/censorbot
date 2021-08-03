@@ -20,16 +20,14 @@ import { FormControl, VStack } from '@chakra-ui/react'
 
 import { Option } from '~/functional/Option'
 
-import { handleFormikSubmit, SettingSection } from '~/SettingSection'
-import { api } from 'pages/_app'
+import { SettingSection } from '~/SettingSection'
 import { Tagify } from '~/settings/Tagify'
 import { TagifySettings } from '@yaireo/tagify'
 import { Logger } from 'structures/Logger'
+import { useGuild } from 'hooks/useGuilds'
 
 const handleCensorChange = (values: any, setValues: FormikHelpers<any>['setValues'], method: CensorMethods) => {
   return (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!api.data.currentGuild) return
-
     if (event.target.checked) {
       setValues({ ...values, censor: values.censor | method })
     } else {
@@ -39,10 +37,12 @@ const handleCensorChange = (values: any, setValues: FormikHelpers<any>['setValue
 }
 
 export default function General ({ data }: CB.Props) {
+  const [guild] = useGuild()
+
   const baseListSettings: TagifySettings = {
     delimiters: /,/g,
     pattern: /^.{1,20}$/,
-    maxTags: data.currentGuild?.premium ? 1500 : 150,
+    maxTags: guild?.premium ? 1500 : 150,
     callbacks: {
       invalid: (e) => {
         console.log(e)
@@ -60,7 +60,7 @@ export default function General ({ data }: CB.Props) {
   return (
     <SettingSection section="General">
       {
-        ({ db }) => (
+        ({ db }, _, handleFormikSubmit) => (
           <Formik initialValues={{
             censor: db.censor,
             filters: db.filters,

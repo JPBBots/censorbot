@@ -6,13 +6,13 @@ import { FormControl, VStack, Input, Select } from '@chakra-ui/react'
 
 import { Option } from '~/functional/Option'
 
-import { handleFormikSubmit, SettingSection } from '~/SettingSection'
+import { SettingSection } from '~/SettingSection'
 
 export default function Bot () {
   return (
     <SettingSection section="Bot">
       {
-        ({ db, guild }) => (
+        ({ db, guild }, _, handleFormikSubmit) => (
           <Formik initialValues={{
             prefix: db.prefix,
             dm: db.dm

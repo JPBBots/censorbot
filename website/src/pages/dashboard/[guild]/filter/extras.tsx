@@ -6,13 +6,13 @@ import { FormControl, VStack } from '@chakra-ui/react'
 
 import { Option } from '~/functional/Option'
 
-import { handleFormikSubmit, SettingSection } from '~/SettingSection'
+import { SettingSection } from '~/SettingSection'
 
 export default function Filter () {
   return (
     <SettingSection section="Extras">
       {
-        ({ db }) => (
+        ({ db }, _setDb, handleFormikSubmit) => (
           <Formik initialValues={{
             invites: db.invites,
             multi: db.multi,

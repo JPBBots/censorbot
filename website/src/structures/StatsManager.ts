@@ -1,7 +1,7 @@
 import { Utils } from '../utils/Utils'
 import Router from 'next/router'
-import { api } from 'pages/_app'
-import { LoginState } from './Api'
+import { Api, LoginState } from './NewApi'
+import { store } from 'store'
 
 function swap (json: any) {
   const ret = {} as Record<any, any>
@@ -59,13 +59,13 @@ class StatsManager {
 
   get info () {
     return {
-      connected: api.ws.open,
+      connected: Api.ws.open,
       hashRandom: this.runnerHash,
-      ping: `${api.ws.ping}ms`,
+      ping: `${Api.ws.ping}ms`,
       staging: this.staging,
       headless: this.headless,
-      meta: api.ws.meta,
-      loginState: `${api.data.login} (${swap(LoginState)[api.data.login]})`,
+      meta: Api.ws.meta,
+      loginState: `${store.getState().auth.loginState} (${swap(LoginState)[store.getState().auth.loginState]})`,
       build: window.__NEXT_DATA__.buildId,
       page: Router.pathname,
       query: Router.query
@@ -90,7 +90,7 @@ class StatsManager {
         break
       }
       case 'RESTART_SOCKET': {
-        void api.ws.ws?.close()
+        void Api.ws.ws?.close()
         break
       }
     }

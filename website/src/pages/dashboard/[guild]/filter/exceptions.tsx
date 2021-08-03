@@ -6,7 +6,7 @@ import { FormControl, VStack, Icon } from '@chakra-ui/react'
 
 import { FaAt, FaHashtag } from 'react-icons/fa'
 
-import { handleFormikSubmit, SettingSection } from '~/SettingSection'
+import { SettingSection } from '~/SettingSection'
 import { Logger } from 'structures/Logger'
 import { Tagify } from '~/settings/Tagify'
 
@@ -14,7 +14,7 @@ export default function Exceptions () {
   return (
     <SettingSection section="Exceptions">
       {
-        ({ db, guild }) => (
+        ({ db, guild }, _, handleFormikSubmit) => (
           <Formik initialValues={{
             role: db.role,
             channels: db.channels

@@ -1,14 +1,16 @@
 import { OptionProps, Option as CCOption } from '@jpbbots/censorbot-components'
-import { api } from 'pages/_app'
+import { useGuild } from 'hooks/useGuilds'
 
 import Router from 'next/router'
 import { Logger } from 'structures/Logger'
 
 export function Option ({ onChange, name, ...props }: OptionProps) {
+  const [currentGuild] = useGuild()
+
   return (
     <CCOption name={name} {...props} onChange={(ev) => {
-      console.log('a', props.isPremium && api.data.currentGuild && !api.data.currentGuild.premium)
-      if (props.isPremium && api.data.currentGuild && !api.data.currentGuild.premium) {
+      console.log('a', props.isPremium && currentGuild && !currentGuild.premium)
+      if (props.isPremium && currentGuild && !currentGuild.premium) {
         Logger.error('This is premium only!')
         ev.preventDefault()
 

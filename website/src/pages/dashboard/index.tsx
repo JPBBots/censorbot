@@ -1,4 +1,5 @@
-import { api } from 'pages/_app'
+import { useLoginState, useUser } from 'hooks/useAuth'
+import { useGuilds } from 'hooks/useGuilds'
 import React from 'react'
 import { DataContext, LoginState } from 'structures/Api'
 
@@ -8,23 +9,20 @@ import { MidContainer } from '~/styling/MidContainer'
 
 import styles from './index.module.scss'
 
-export default class DashboardHome extends React.Component {
-  context!: React.ContextType<typeof DataContext>
+export default function DashboardHome () {
+  useUser(true)
+  const [loginState] = useLoginState()
+  const [guilds] = useGuilds()
 
-  componentDidMount () {
-    if (!this.context.guilds) void api.updateGuilds()
-  }
+  const login = !guilds
+    ? loginState === LoginState.Loading || loginState === LoginState.LoggingIn
+      ? <h1>Logging in...</h1>
+      : loginState === LoginState.LoggedIn
+        ? <h1>Loading...</h1>
+        : <LoginButton />
+    : null
 
-  render () {
-    const login = !this.context.guilds
-      ? this.context.login === LoginState.Loading || this.context.login === LoginState.LoggingIn
-        ? <h1>Logging in...</h1>
-        : this.context.login === LoginState.LoggedIn
-          ? <h1>Loading...</h1>
-          : <LoginButton />
-      : null
-
-    return (
+  return (
       <MidContainer>
         <div className={styles.headerDiv}>
           <h1>Discord Dashboard</h1>
@@ -33,11 +31,9 @@ export default class DashboardHome extends React.Component {
         </div>
         <div className={styles.guilds}>
           {
-            this.context.guilds?.map(x => <GuildCard key={x.i} {...x} />)
+            guilds?.map(x => <GuildCard key={x.i} {...x} />)
           }
         </div>
       </MidContainer>
-    )
-  }
+  )
 }
-DashboardHome.contextType = DataContext
