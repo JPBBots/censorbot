@@ -1,5 +1,6 @@
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Api } from 'structures/NewApi'
+import { Api } from 'structures/Api'
 import { User } from 'typings'
 import { RootState } from '../store'
 
@@ -10,6 +11,10 @@ export const useAuthState = (): RootState['auth'] => useSelector((state: RootSta
 export const useUser = (needsUser: boolean) => {
   const dispatch = useDispatch()
   const { user, loginState } = useAuthState()
+
+  useEffect(() => {
+    void goUser(needsUser)
+  }, [])
 
   const goUser = async (ret: boolean = false): Promise<User|undefined> => {
     if (user) return user
@@ -22,8 +27,7 @@ export const useUser = (needsUser: boolean) => {
     if (loginState !== LoginState.LoggingIn) {
       dispatch(setLoginState(LoginState.LoggingIn))
 
-      return await (Api.token ? Api.getUser() : Api.login()).then(user => {
-        console.log({ user })
+      return await (Api.token ? Api.getUser() : Api.login(needsUser)).then(user => {
         if (!user) throw new Error()
 
         dispatch(setUser(user))
@@ -33,17 +37,11 @@ export const useUser = (needsUser: boolean) => {
       }).catch(() => {
         if (needsUser) return goUser()
 
-        console.log('no user')
-
         dispatch(setLoginState(LoginState.LoggedOut))
 
         return undefined
       })
     }
-  }
-
-  if ('window' in global && !user) {
-    void goUser()
   }
 
   return [

@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { HStack, VStack, Text, Divider } from '@chakra-ui/react'
-import { Sidebar, sections, SectionName } from './settings/Sidebar'
-import { LoginButton } from './button/LoginButton'
+import { Sidebar, sections, SectionName } from './Sidebar'
+import { LoginButton } from '../button/LoginButton'
 import { GuildData, GuildDB } from 'typings'
 import { useLoginState, useUser } from 'hooks/useAuth'
 import { useGuild } from 'hooks/useGuilds'

@@ -1,7 +1,7 @@
 import { useLoginState, useUser } from 'hooks/useAuth'
 import { useGuilds } from 'hooks/useGuilds'
 import React from 'react'
-import { DataContext, LoginState } from 'structures/Api'
+import { LoginState } from 'structures/Api'
 
 import { LoginButton } from '~/button/LoginButton'
 import { GuildCard } from '~/dashboard/GuildCard'

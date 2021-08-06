@@ -1,8 +1,7 @@
-import { ApiData } from './Api'
+import { Api, ApiData } from './Api'
 import _headlessData from './headlessData.json'
 
 import { WebSocketEventMap } from 'typings/websocket'
-import { api } from 'pages/_app'
 
 const headlessData = _headlessData as unknown as ApiData
 
@@ -15,9 +14,9 @@ export default {
     console.log(data)
     if (!headlessData.currentGuild) return
 
-    headlessData.currentGuild = api._createUpdatedGuild(headlessData.currentGuild, data?.data)
+    headlessData.currentGuild = Api._createUpdatedGuild(headlessData.currentGuild, data?.data)
 
-    void api.ws._handleMessage({
+    void Api.ws._handleMessage({
       e: 'CHANGE_SETTING',
       d: data
     } as any)

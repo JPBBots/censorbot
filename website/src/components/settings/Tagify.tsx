@@ -24,20 +24,17 @@ function generateProper (value: TagifyProps['value'], settings: TagifyProps['set
 
 export function Tagify ({ onChange, helper, value, ...props }: TagifyProps) {
   const [values, setValues] = React.useState([] as string[])
-  const [first, setFirst] = React.useState(true)
 
   React.useEffect(() => {
     if (value) setValues(generateProper(value, props.settings))
-
-    setFirst(false)
   }, [value])
 
   return (
     <Tags onChange={(val) => {
-      if (first) return setFirst(false)
-      console.log({ posting: props.placeholder })
       const newVal = val.detail.tagify.value
         .reduce<string[]>((a, b) => a.concat([b.id || b.value]), [])
+
+      console.log(newVal)
 
       helper ? helper.setValue(newVal) : onChange?.(newVal)
     }} value={values} {...props} />

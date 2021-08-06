@@ -5,7 +5,7 @@ export function updateObject (obj: any, ..._: any[]): any {
       if (obj[prop] === undefined) {
         obj[prop] = val
       } else if (typeof val === 'object' && !Array.isArray(val) && val !== null) {
-        updateObject(obj[prop], val)
+        obj[prop] = updateObject(Object.assign({}, obj[prop]), val)
       } else {
         obj[prop] = val
       }

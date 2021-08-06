@@ -7,13 +7,9 @@ import { WebsocketManager } from './WebsocketManager'
 
 import Router from 'next/router'
 import { Snowflake } from 'discord-api-types'
-import { WebSocketEventMap } from 'typings/websocket'
 import { updateObject } from 'utils/updateObject'
 import Pieces from 'utils/Pieces'
-import { stats } from './StatsManager'
 import Swal from 'sweetalert2'
-import { store } from 'store'
-import { setUser } from 'store/reducers/auth.reducer'
 
 export enum LoginState {
   Loading = 0,
@@ -32,118 +28,71 @@ export interface ApiData {
 export const DataContext = React.createContext({} as ApiData)
 
 export class Api {
-  logger = Logger
-  get data (): ApiData { return { login: LoginState.Loading } }
-  public setData (data: Partial<ApiData>) {}
+  static logger = Logger
 
   private readonly waitingUser: Array<(user: User | undefined) => void> = []
 
-  ws = new WebsocketManager(this)
+  static ws = new WebsocketManager()
 
-  constructor () {
-    Router.events.on('routeChangeComplete', () => {
-      if (!this.data.currentGuild) return
-
-      if (!Router.asPath.includes(this.data.currentGuild.guild.i)) void this.unsubscribe(this.data.currentGuild.guild.i)
-    })
-  }
-
-  private log (msg: string) {
+  static log (msg: string) {
     Logger.log('API', msg)
   }
 
-  get token () {
+  static get guildId () {
+    if (!('window' in global)) return undefined
+
+    return location.href.split('/')[4]?.match(/[0-9]{5,}/)?.[0] as Snowflake | undefined
+  }
+
+  static get token () {
     return Utils.getCookie('token')
   }
 
-  public async login (required: boolean = false) {
-    if (this.token) return await this.updateUser()
-
+  static async login (required: boolean = false) {
     const user = await Utils.openWindow('/api/auth/discord', 'Login')
-      .then(async () => await this.updateUser())
+      .then(async () => await this.getUser())
 
     if (!user) {
       Logger.error('Failed to authorize')
       if (required) void Router.push('/')
     }
+
+    return user
   }
 
-  public logout () {
+  static logout () {
     this.ws.tell('LOGOUT')
 
     document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-    this.setData({
-      user: undefined,
-      guilds: undefined,
-      login: LoginState.LoggedOut
-    })
 
     if (Router.pathname.includes('dashboard')) void Router.push('/')
   }
 
-  handleOpen () {
-    if (this.token) {
-      void this.updateUser()
-    } else this.setData({ login: LoginState.LoggedOut })
-  }
+  // handleOpen () {
+  //   if (this.token) {
+  //     void this.updateUser()
+  //   } else this.setData({ login: LoginState.LoggedOut })
+  // }
 
-  handleClose () {
-
-  }
-
-  async updateUser (): Promise<User | undefined> {
-    return await new Promise(resolve => {
-      if (this.data.login === LoginState.LoggingIn) {
-        return this.waitingUser.push(resolve)
-      }
-      this.setData({ login: LoginState.LoggingIn })
-
-      void this.getUser()
-        .then((user) => {
-          resolve(user)
-          this.waitingUser.forEach(req => {
-            req(user)
-          })
-          store.dispatch(setUser({  }))
-
-          if (Router.pathname.includes('dashboard')) void this.updateGuilds()
-        })
-        .catch(() => {
-          this.logout()
-        })
-    })
-  }
-
-  private async getUser () {
+  static async getUser () {
     if (!this.token) return undefined
     this.log('Retrieving user')
 
     const user = await this.ws.request('AUTHORIZE', { token: this.token, customer: false })
 
-    if (user) this.setData({ user })
-
     return user
   }
 
-  async updateGuilds () {
-    if (!this.data.user) await this.login(true)
-    if (!this.data.user) return
+  static async getGuilds () {
     this.log('Retrieving guilds')
-
-    if (this.data.guilds) return
-
     const guilds = await this.ws.request('GET_GUILDS').catch(() => null)
 
     if (!guilds) return
 
-    this.setData({ guilds })
+    return guilds
   }
 
-  async updateGuild (id: Snowflake) {
-    if (!this.data.guilds) await this.updateGuilds()
-    if (!this.data.guilds) return
-    if (this.data.currentGuild?.guild.i === id) return
-
+  static async getGuild (id: Snowflake): Promise<GuildData|undefined> {
     this.log(`Subscribing to ${id}`)
 
     const guild = await this.ws.request('SUBSCRIBE', id)
@@ -160,7 +109,7 @@ export class Api {
             if (res.isConfirmed) {
               return Utils.openWindow('/invite?id=' + id)
                 .then(async () => {
-                  return await this.updateGuild(id)
+                  return await this.getGuild(id)
                 })
             } else {
               void Router.push('/dashboard')
@@ -175,29 +124,21 @@ export class Api {
 
     if (!guild) return
 
-    this.setData({ currentGuild: guild })
+    return guild
   }
 
-  _createUpdatedGuild (current: GuildData, newDb: any) {
+  static _createUpdatedGuild (current: GuildData, newDb: any) {
     const obj = Object.assign({}, current)
     obj.db = updateObject(obj.db, Pieces.normalize(newDb))
 
     return obj
   }
 
-  _handleGuildUpdate (data: WebSocketEventMap['CHANGE_SETTING']['receive']) {
-    if (!this.data.currentGuild) return
+  static waiting?: any
+  static timeout?: number
+  static resolve?: () => void
 
-    if (data.id !== this.data.currentGuild.guild.i) return
-
-    this.setData({ currentGuild: this._createUpdatedGuild(this.data.currentGuild, data.data) })
-  }
-
-  waiting?: any
-  timeout?: number
-  resolve?: () => void
-
-  _resetTimer () {
+  static _resetTimer () {
     if (!this.timeout) return
     console.log('resetting timer')
     clearTimeout(this.timeout)
@@ -207,7 +148,7 @@ export class Api {
     }, 1000)
   }
 
-  async changeSettings (id: Snowflake, data: any) {
+  static async changeSettings (id: Snowflake, data: any) {
     Logger.setLoading(true)
 
     if (!this.waiting) this.waiting = data
@@ -236,11 +177,13 @@ export class Api {
     Logger.setLoading(false)
   }
 
-  async unsubscribe (id: Snowflake) {
+  static async unsubscribe (id: Snowflake) {
     this.log(`Unsubscribing from ${id}`)
 
     this.ws.tell('UNSUBSCRIBE', id)
-
-    this.setData({ currentGuild: undefined })
   }
+}
+
+if ('window' in global) {
+  window.api = Api
 }

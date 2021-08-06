@@ -8,9 +8,6 @@ import { Header } from '~/Header'
 import './fix.css'
 
 import './Global.scss'
-import styles from './_app.module.scss'
-import { Logger } from 'structures/Logger'
-import { stats } from 'structures/StatsManager'
 
 import { CCProvider } from '@jpbbots/censorbot-components'
 import '@yaireo/tagify/dist/tagify.css'
@@ -18,7 +15,8 @@ import '@yaireo/tagify/dist/tagify.css'
 import { Provider } from 'react-redux'
 import { store } from 'store'
 
-import { Api } from '../structures/NewApi'
+import { Api } from '../structures/Api'
+import { Loader } from '~/Loader'
 
 export default function App (props: AppProps) {
   const { Component } = props
@@ -35,9 +33,7 @@ export default function App (props: AppProps) {
         <div id="root" >
           <Component {...props.pageProps} />
         </div>
-        {/* <Logo className={styles.loader} style={{
-          display: this.state.loading ? 'unset' : 'none'
-        }} /> */}
+        <Loader />
       </Provider>
     </CCProvider>
   )

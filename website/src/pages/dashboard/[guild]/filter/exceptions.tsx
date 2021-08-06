@@ -6,7 +6,7 @@ import { FormControl, VStack, Icon } from '@chakra-ui/react'
 
 import { FaAt, FaHashtag } from 'react-icons/fa'
 
-import { SettingSection } from '~/SettingSection'
+import { SettingSection } from '~/settings/SettingSection'
 import { Logger } from 'structures/Logger'
 import { Tagify } from '~/settings/Tagify'
 

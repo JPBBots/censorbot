@@ -1,3 +1,5 @@
+import { store } from 'store'
+import { setLoading } from 'store/reducers/loading.reducer'
 import Swal from 'sweetalert2'
 
 const Toast = Swal.mixin({
@@ -10,7 +12,9 @@ const Toast = Swal.mixin({
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class Logger {
-  static setLoading (loading: boolean) {}
+  static setLoading (loading: boolean) {
+    store.dispatch(setLoading(loading))
+  }
 
   static log (from: string, message: string) {
     console.log(`%c[${from}]%c ${message}`, 'color: purple; font-weight: bold', '')

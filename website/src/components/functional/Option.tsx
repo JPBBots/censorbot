@@ -9,7 +9,6 @@ export function Option ({ onChange, name, ...props }: OptionProps) {
 
   return (
     <CCOption name={name} {...props} onChange={(ev) => {
-      console.log('a', props.isPremium && currentGuild && !currentGuild.premium)
       if (props.isPremium && currentGuild && !currentGuild.premium) {
         Logger.error('This is premium only!')
         ev.preventDefault()

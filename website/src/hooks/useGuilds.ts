@@ -2,7 +2,7 @@ import { Snowflake } from 'discord-api-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { DeepPartial } from 'redux'
 import { setCurrentGuild, setGuilds } from 'store/reducers/guilds.reducer'
-import { Api } from 'structures/NewApi'
+import { Api } from 'structures/Api'
 import { GuildDB } from 'typings'
 import { RootState } from '../store'
 
@@ -49,11 +49,10 @@ export const useGuild = () => {
   const [id, setId] = useState<Snowflake|undefined>(undefined)
 
   useEffect(() => {
-    setId(router.query.guild as Snowflake)
+    setId(Api.guildId)
   }, [router.query])
 
   if (id && loginState === LoginState.LoggedIn && selectedGuild !== id && 'window' in global) {
-    console.log({ selectedGuild, id })
     if (selectedGuild) void Api.unsubscribe(selectedGuild)
     selectedGuild = id
 
@@ -67,7 +66,11 @@ export const useGuild = () => {
   const setGuildSettings = (db: DeepPartial<GuildDB>, old: boolean) => {
     if (!currentGuild || !id) return
 
-    dispatch(setDb(updateObject(Object.apply({}, currentGuild.db as any), db)))
+    console.log(db)
+
+    dispatch(setDb(
+      updateObject(Object.assign({}, currentGuild.db as any), db)
+    ))
 
     if (!old) return Api.changeSettings(id, db)
   }
@@ -78,6 +81,7 @@ export const useGuild = () => {
       void setGuildSettings(db, false)
     },
     async (value: any, helpers: FormikHelpers<any>) => {
+      console.log(value)
       if (!currentGuild) return
 
       const old = { ...currentGuild.db }

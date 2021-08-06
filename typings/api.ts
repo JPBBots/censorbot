@@ -79,7 +79,7 @@ export interface GuildDB {
     /**
      * Delete after x ms
      */
-    deleteAfter?: number
+    deleteAfter: number|false
     /**
      * Whether or not to DM popup messages
      */

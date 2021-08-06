@@ -6,7 +6,7 @@ import { FormControl, VStack } from '@chakra-ui/react'
 
 import { Option } from '~/functional/Option'
 
-import { SettingSection } from '~/SettingSection'
+import { SettingSection } from '~/settings/SettingSection'
 
 export default function Ai () {
   return (

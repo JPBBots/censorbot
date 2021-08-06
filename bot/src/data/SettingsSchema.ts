@@ -77,8 +77,8 @@ export const settingSchema = Joi.object<GuildDB>({
       .allow(null, false),
 
     deleteAfter: Joi.number()
-      .allow(null, false)
-      .max(120),
+      .allow(false)
+      .max(120e3),
 
     dm: PremiumOnly(false)
   }),
@@ -88,7 +88,8 @@ export const settingSchema = Joi.object<GuildDB>({
   webhook: Joi.object({
     enabled: PremiumOnly(false),
     separate: PremiumOnly(true),
-    replace: PremiumOnly(WebhookReplace.Spoilers)
+    replace: PremiumOnly(WebhookReplace.Spoilers),
+    ignored: Joi.array().items(SnowflakeString).max(0)
   }),
 
   multi: PremiumOnly(false),
@@ -121,7 +122,8 @@ export const premiumSchema = settingSchema.concat(Joi.object({
   webhook: Joi.object({
     enabled: boolOverride,
     separate: boolOverride,
-    replace: Joi.valid(Joi.override, WebhookReplace.Spoilers, WebhookReplace.Hashtags, WebhookReplace.Stars)
+    replace: Joi.valid(Joi.override, WebhookReplace.Spoilers, WebhookReplace.Hashtags, WebhookReplace.Stars),
+    ignored: Joi.array().max(Number.MAX_SAFE_INTEGER)
   }),
 
   punishment: Joi.object({
@@ -131,7 +133,7 @@ export const premiumSchema = settingSchema.concat(Joi.object({
   msg: Joi.object({
     content: Joi.string().max(1000),
 
-    deleteAfter: Joi.number().max(600),
+    deleteAfter: Joi.number().max(600e3),
 
     dm: boolOverride
   }),

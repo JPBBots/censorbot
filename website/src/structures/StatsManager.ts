@@ -1,6 +1,6 @@
 import { Utils } from '../utils/Utils'
 import Router from 'next/router'
-import { Api, LoginState } from './NewApi'
+import { Api, LoginState } from './Api'
 import { store } from 'store'
 
 function swap (json: any) {

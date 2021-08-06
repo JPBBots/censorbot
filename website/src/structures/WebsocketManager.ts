@@ -1,16 +1,21 @@
 import { Incoming, MetaObject, WebSocketEventMap } from 'typings/websocket'
 import { Utils } from 'utils/Utils'
-import { Api } from './Api'
 import { Logger } from './Logger'
 
 import headlessHandlers from './headlessHandler'
 import { stats } from './StatsManager'
 
+import { EventEmitter } from '@jpbberry/typed-emitter'
+import { store } from 'store'
+import { setDb } from 'store/reducers/guilds.reducer'
+import { updateObject } from 'utils/updateObject'
+import { Api } from './Api'
+
 type Partial<T> = {
   [P in keyof T]?: T[P]
 }
 
-export class WebsocketManager {
+export class WebsocketManager extends EventEmitter<{}> {
   public ws?: WebSocket
 
   private readonly promises: Map<number, (data: any) => Promise<void>> = new Map()
@@ -28,8 +33,6 @@ export class WebsocketManager {
 
   private hbInterval?: number
 
-  constructor (private readonly api: Api) {}
-
   get open () {
     if (stats.headless) return true
 
@@ -43,10 +46,10 @@ export class WebsocketManager {
   public start () {
     if (this.ws && this.open) this.ws.close()
 
-    if (stats.headless) {
-      this.api.handleOpen()
-      return
-    }
+    // if (stats.headless) {
+    //   this.api.handleOpen()
+    //   return
+    // }
 
     try {
       this.ws = new WebSocket(`wss://${location.host}/ws`)
@@ -106,8 +109,8 @@ export class WebsocketManager {
 
         if (res?.error) {
           this.log(`Error on ${event}: ${res.error}`)
-          if (res.error === 'Not authorized' && this.api.token && !this.api.data.user) {
-            const res = await this.api.updateUser()
+          if (res.error === 'Not authorized' && Api.token) {
+            const res = await Api.getUser()
               .then(() => {
                 this.send(event, data, id)
 
@@ -155,9 +158,9 @@ export class WebsocketManager {
       }, data.d.interval)
       void this._heartbeat()
 
-      if (this.api.data.user) {
-        await this.request('AUTHORIZE', { token: this.api.data.user.token, customer: false })
-      }
+      // if (this.api.data.user) {
+      //   await this.request('AUTHORIZE', { token: this.api.data.user.token, customer: false })
+      // }
 
       this.queue.forEach(q => {
         this.send(...q)
@@ -166,17 +169,22 @@ export class WebsocketManager {
 
       Logger.setLoading(false)
 
-      return this.api.handleOpen()
+      // return this.api.handleOpen()
     }
 
-    if (data.e === 'CHANGE_SETTING') return this.api._handleGuildUpdate(data.d)
+    if (data.e === 'CHANGE_SETTING') {
+      const currentGuild = store.getState().guilds.currentGuild
+      if (!currentGuild || currentGuild.guild.i !== data.d.id) return
+
+      store.dispatch(setDb(updateObject(Object.assign({}, currentGuild.db as any), data.d.data)))
+    }
   }
 
   async _handleClose () {
     Logger.setLoading(true)
     this.sequence = 1
 
-    this.api.handleClose()
+    // this.api.handleClose()
 
     if (this.hbInterval) clearInterval(this.hbInterval)
     this.promises.forEach(x => void x({ closed: true }))

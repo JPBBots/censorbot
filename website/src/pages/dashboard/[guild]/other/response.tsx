@@ -1,32 +1,85 @@
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-import { Amount } from '~/settings/inputs/Amount'
-import { Text } from '~/settings/inputs/Text'
-import { Toggle } from '~/settings/inputs/Toggle'
+import { Formik } from 'formik'
+import React from 'react'
 
-import { Setting } from '~/settings/Setting'
-import { SettingsSection, SettingsSectionElement } from '~/settings/SettingsSection'
+import { Section } from '@jpbbots/censorbot-components'
+import { FormControl, VStack, Input, Button, Divider, Text } from '@chakra-ui/react'
 
-export default class OtherSection extends SettingsSection {
-  render () {
-    if (!this.db) return <div></div>
+import { Option } from '~/functional/Option'
 
-    return (
-      <SettingsSectionElement ctx={this.context}>
-      <h1>Popup message</h1>
-      <h2>Message that comes up after a user has sworn</h2>
+import { SettingSection } from '~/settings/SettingSection'
 
-        <div>
-          <Setting title="Message Content" description="What the message will say">
-            <Text setting="msg.content" value={this.db.msg.content || ''} whenNull="TODO" />
-          </Setting>
-          <Setting title="Delete After" description="Time in seconds it takes until the popup message is deleted">
-            <Amount setting="msg.deleteAfter" value={this.db.msg.deleteAfter ?? 0} />
-          </Setting>
-          <Setting title="DM" description="Whether or not to DM the popup message" premium={true}>
-            <Toggle setting="msg.dm" value={this.db.msg.dm} />
-          </Setting>
-        </div>
-      </SettingsSectionElement>
-    )
-  }
+export default function Response () {
+  return (
+    <SettingSection section="Response">
+      {
+        ({ db }, _, handleFormikSubmit) => (<>
+          <Text textAlign="left">Message that appears after a filter is triggered</Text>
+          <Divider color="lighter.5" />
+          <Formik initialValues={{
+            msg: {
+              content: db.msg.content,
+              deleteAfter: db.msg.deleteAfter,
+              dm: db.msg.dm
+            }
+          }} onSubmit={handleFormikSubmit}>
+            {({
+              handleSubmit,
+              getFieldHelpers,
+              handleChange
+            }) =>
+              db.msg.content === false
+                ? <>
+                  <Button onClick={() => {
+                    getFieldHelpers('msg.content').setValue('You\'re not allowed to say that!')
+                    handleSubmit()
+                  }}>Enable</Button>
+                </>
+                : <FormControl w="full" onChange={handleSubmit as any}>
+                    <VStack spacing="sm">
+                      <Button onClick={() => {
+                        getFieldHelpers('msg.content').setValue(false)
+                        handleSubmit()
+                      }}>Disable</Button>
+                      <Section title="Message Content" description="What the message will say">
+                        <Input name="msg.content" value={db.msg.content ?? 'You\'re not allowed to say that!'} onChange={handleChange} />
+                      </Section>
+                      <Section title="Delete After" description="Time in seconds it will take until the response is automatically deleted">
+                        {
+                          db.msg.deleteAfter
+                            ? <>
+                              {/* <NumberInput>
+                                <NumberInputField name="msg.deleteAfter" value={db.msg.deleteAfter} onChange={handleChange} />
+                                <NumberInputStepper>
+                                  <NumberIncrementStepper />
+                                  <NumberDecrementStepper />
+                                </NumberInputStepper>
+                              </NumberInput> */}
+                              <Input name="msg.deleteAfter" type="number" value={db.msg.deleteAfter / 1000} onChange={({ target }) => {
+                                getFieldHelpers('msg.deleteAfter').setValue(Number(target.value) * 1000)
+                                handleSubmit()
+                              }} />
+                              <Button onClick={() => {
+                                getFieldHelpers('msg.deleteAfter').setValue(false)
+                                handleSubmit()
+                              }}>Never</Button>
+                            </>
+                            : <>
+                              <Button onClick={() => {
+                                getFieldHelpers('msg.deleteAfter').setValue(3000)
+                                handleSubmit()
+                              }}>Enable</Button>
+                            </>
+                        }
+                      </Section>
+                      <Section title="Direct Message">
+                        <Option name="msg.dm" isChecked={db.msg.dm} onChange={handleChange} label="Send response to triggering user’s Direct Messages" isPremium />
+                      </Section>
+                    </VStack>
+                  </FormControl>
+            }
+          </Formik>
+        </>)
+      }
+    </SettingSection>
+  )
 }
