@@ -129,7 +129,7 @@ export class Filter {
     content = (content as string)
       .toLowerCase()
       .replace(removeRegex, '')
-      .replace(/<#?@?!?&?(\d+)>/g, '') // mentions
+      .replace(/<#?@?!?&?(\d+)>/g, '!') // mentions
       .replace(/<a?:(\w+):(\d+)>/g, '$1') // emojis
       .replace(filter.emailRegex, (...email: string[]) => {
         return `${email[1]}${email[2]}${email[6]}`.replace(filter.replaceSpots.spaces, '')
