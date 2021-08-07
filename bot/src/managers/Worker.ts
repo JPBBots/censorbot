@@ -14,7 +14,8 @@ import { Ocr } from '../structures/ai/Ocr'
 
 import { PunishmentManager } from '../structures/punishments/PunishmentManager'
 
-import { Snowflake } from 'discord-api-types'
+import { APIChannel, Snowflake } from 'discord-api-types'
+import { Collection } from '@discordjs/collection'
 
 import { addHandlers } from '../helpers/clusterEvents'
 import { setupFilters } from '../helpers/setupFilters'
@@ -24,11 +25,17 @@ import { MessageHandler } from '../filters/Messages'
 import { NameHandler } from '../filters/Names'
 import { ReactionHandler } from '../filters/Reactions'
 
-import { Interface } from 'interface'
+import { Interface } from '@jpbbots/interface'
 
 import util from 'util'
 import fetch from 'node-fetch'
 import path from 'path'
+
+interface CachedThread {
+  id: Snowflake
+  parentId: Snowflake
+  guildId: Snowflake
+}
 
 export class WorkerManager extends Worker {
   config = Config
@@ -44,6 +51,8 @@ export class WorkerManager extends Worker {
   ocr = new Ocr(this)
 
   punishments = new PunishmentManager(this)
+
+  threads: Collection<Snowflake, CachedThread> = new Collection()
 
   interface = new Interface()
 
@@ -123,13 +132,20 @@ export class WorkerManager extends Worker {
     this.commands.load(path.resolve(__dirname, '../commands'))
   }
 
-  hasPerms (id: Snowflake, perms: keyof typeof PermissionsUtils.bits | Array<keyof typeof PermissionsUtils.bits>, channel?: Snowflake): boolean {
-    const guild = this.guilds.get(id)
-    const member = this.selfMember.get(id)
-    const roleList = this.guildRoles.get(id)
+  getThreadParent (guildId: Snowflake, threadId: Snowflake): APIChannel | undefined {
+    const thread = this.threads.get(`${guildId}-${threadId}`)
+    if (!thread) return undefined
+
+    return this.channels.get(thread.parentId)
+  }
+
+  hasPerms (guildId: Snowflake, perms: keyof typeof PermissionsUtils.bits | Array<keyof typeof PermissionsUtils.bits>, channel?: Snowflake): boolean {
+    const guild = this.guilds.get(guildId)
+    const member = this.selfMember.get(guildId)
+    const roleList = this.guildRoles.get(guildId)
     let overwrites
     if (channel) {
-      const c = this.channels.get(channel)
+      const c = this.channels.get(channel) ?? this.getThreadParent(guildId, channel)
       if (!c) return false
       overwrites = c.permission_overwrites
     }

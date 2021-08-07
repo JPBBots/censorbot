@@ -10,7 +10,7 @@ import { ShortID } from 'typings'
 
 import AutoPoster from 'topgg-autoposter'
 
-import { Interface } from 'interface'
+import { Interface } from '@jpbbots/interface'
 
 const int = new Interface()
 
@@ -25,7 +25,7 @@ export class MasterManager extends Master {
     super(path.resolve(__dirname, '../.run/worker.js'), {
       token: Config.token,
       cacheControl: {
-        guilds: ['name', 'icon', 'owner_id', 'region', 'unavailable', 'member_count'],
+        guilds: ['name', 'icon', 'owner_id', 'region', 'unavailable', 'member_count', 'threads'],
         channels: ['type', 'name', 'nsfw', 'permission_overwrites'],
         roles: ['managed', 'permissions', 'name', 'position']
       },

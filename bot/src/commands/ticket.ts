@@ -10,7 +10,7 @@ export default {
     options: [{
       name: 'word',
       description: 'The word or phrase that shouldn\'t be censored',
-      type: ApplicationCommandOptionType.STRING,
+      type: ApplicationCommandOptionType.String,
       required: true
     }]
   },

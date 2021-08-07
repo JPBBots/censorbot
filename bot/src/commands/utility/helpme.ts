@@ -10,7 +10,7 @@ export default {
     options: [{
       name: 'code',
       description: 'HelpME Code, (helper use only)',
-      type: ApplicationCommandOptionType.STRING
+      type: ApplicationCommandOptionType.String
     }]
   },
   description: 'Creates an easy code to give to helpers',

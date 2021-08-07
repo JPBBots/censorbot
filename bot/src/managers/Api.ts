@@ -9,7 +9,7 @@ import { OAuth2 } from '../structures/api/OAuth2'
 import { RouterManager } from '../structures/api/RouterManager'
 import { ChargeBee } from '../structures/api/ChargeBee'
 
-import { Interface } from 'interface'
+import { Interface } from '@jpbbots/interface'
 
 import { User } from 'typings/api'
 import { Region } from 'typings/websocket'

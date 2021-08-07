@@ -65,7 +65,7 @@ function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB,
 }
 
 export async function MessageHandler (worker: WorkerManager, message: EventData): Promise<void> {
-  const channel = worker.channels.get(message.channel_id)
+  const channel = worker.channels.get(message.channel_id) ?? (message.guild_id ? worker.getThreadParent(message.guild_id, message.channel_id) : undefined)
   if (!message.guild_id || !message.author || !channel || !message.member) return
 
   let multiline = multiLineStore.get(message.channel_id)
@@ -83,7 +83,7 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
   if ((db.censor & CensorMethods.Messages) === 0) return
 
   if (
-    ![MessageType.DEFAULT, MessageType.REPLY].includes(message.type as MessageType) ||
+    ![MessageType.Default, MessageType.Reply].includes(message.type as MessageType) ||
     channel.type !== 0 ||
     message.member.roles.some(role => db.role?.includes(role)) ||
     db.channels.includes(message.channel_id)

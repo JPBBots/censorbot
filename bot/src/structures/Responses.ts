@@ -38,7 +38,7 @@ export class Responses {
     if (!this.worker.hasPerms(guildId, ['sendMessages', 'viewChannel', 'embed'], logId)) return false
 
     const log = this.worker.channels.get(logId)
-    if (!log || log.guild_id !== guildId || log.type !== ChannelType.GUILD_TEXT) return false
+    if (!log || log.guild_id !== guildId || log.type !== ChannelType.GuildText) return false
 
     return true
   }

@@ -10,8 +10,6 @@ export function setupDiscord (worker: WorkerManager): void {
   worker.on('GUILD_CREATE', async (guild) => {
     if (unavailables.has(guild.id)) return unavailables.delete(guild.id)
 
-    worker.log(`Guild added ${guild.id}`)
-
     await Wait(2000)
 
     const links = worker.config.links
@@ -31,15 +29,51 @@ export function setupDiscord (worker: WorkerManager): void {
       void worker.api.messages.send(guild.system_channel_id, embed)
     }
   })
+
+  worker.comms.on('START', () => {
+    worker.cacheManager.on('GUILD_CREATE', (guild) => {
+      if (guild.threads) {
+        guild.threads.forEach(thread => {
+          if (!thread.guild_id || !thread.parent_id) return
+
+          worker.threads.set(`${thread.guild_id}-${thread.id}`, {
+            id: thread.id,
+            guildId: thread.guild_id,
+            parentId: thread.parent_id
+          })
+        })
+      }
+    })
+  })
+
+  worker.on('THREAD_CREATE', (thread) => {
+    if (!thread.guild_id || !thread.parent_id) return
+
+    worker.threads.set(`${thread.guild_id}-${thread.id}`, {
+      id: thread.id,
+      guildId: thread.guild_id,
+      parentId: thread.parent_id
+    })
+  })
+  worker.on('THREAD_DELETE', (thread) => {
+    if (!thread.guild_id || !thread.parent_id) return
+
+    worker.threads.delete(`${thread.guild_id}-${thread.id}`)
+  })
+  worker.on('THREAD_LIST_SYNC', (threads) => {
+    threads.threads.forEach(thread => {
+      if (!thread.parent_id) return
+
+      worker.threads.set(`${threads.guild_id}-${thread.id}`, {
+        id: thread.id,
+        guildId: threads.guild_id,
+        parentId: thread.parent_id
+      })
+    })
+  })
+
   worker.on('GUILD_UNAVAILABLE', (guild) => {
     unavailables.add(guild?.id)
-
-    worker.log(`Guild unavailable ${guild}`)
-  })
-  worker.on('GUILD_DELETE', (guild) => {
-    if (guild.unavailable) return
-
-    worker.log(`Guild removed ${guild.id}`)
   })
   worker.on('READY', () => {
     void worker.punishments.timeouts.checkTimeouts()

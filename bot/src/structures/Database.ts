@@ -9,7 +9,7 @@ import SafeConfig from '../data/SafeConfig.json'
 
 import { settingSchema, premiumSchema } from '../data/SettingsSchema'
 
-import { Database as Db } from 'interface/dist/Database'
+import { Database as Db } from '@jpbbots/interface/dist/Database'
 import { Collection } from 'mongodb'
 
 export * from '../data/SettingsSchema'
