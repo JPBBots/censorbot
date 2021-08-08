@@ -2,7 +2,7 @@ import { Formik } from 'formik'
 import React from 'react'
 
 import { Section } from '@jpbbots/censorbot-components'
-import { FormControl, VStack, Input, Button, Divider, Text } from '@chakra-ui/react'
+import { FormControl, VStack, Input, Button, Divider, Text, NumberInput, Textarea, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper } from '@chakra-ui/react'
 
 import { Option } from '~/functional/Option'
 
@@ -25,6 +25,7 @@ export default function Response () {
             {({
               handleSubmit,
               getFieldHelpers,
+              values,
               handleChange
             }) =>
               db.msg.content === false
@@ -41,23 +42,35 @@ export default function Response () {
                         handleSubmit()
                       }}>Disable</Button>
                       <Section title="Message Content" description="What the message will say">
-                        <Input name="msg.content" value={db.msg.content ?? 'You\'re not allowed to say that!'} onChange={handleChange} />
+                        <Textarea name="msg.content" value={db.msg.content ?? 'You\'re not allowed to say that!'} onChange={handleChange} />
                       </Section>
                       <Section title="Delete After" description="Time in seconds it will take until the response is automatically deleted">
                         {
                           db.msg.deleteAfter
                             ? <>
-                              {/* <NumberInput>
-                                <NumberInputField name="msg.deleteAfter" value={db.msg.deleteAfter} onChange={handleChange} />
+                              {/* <NumberInput name="msg.deleteAfter" onChange={handleChange}>
+                                <NumberInputField value={db.msg.deleteAfter} />
                                 <NumberInputStepper>
                                   <NumberIncrementStepper />
                                   <NumberDecrementStepper />
                                 </NumberInputStepper>
                               </NumberInput> */}
+                              <NumberInput>
                               <Input name="msg.deleteAfter" type="number" value={db.msg.deleteAfter / 1000} onChange={({ target }) => {
                                 getFieldHelpers('msg.deleteAfter').setValue(Number(target.value) * 1000)
                                 handleSubmit()
-                              }} />
+                              }}>
+                              </Input>
+                                <NumberInputStepper>
+                                  <NumberIncrementStepper onClick={() => {
+                                    getFieldHelpers('msg.deleteAfter').setValue(Number(values.msg.deleteAfter) + 1000)
+                                    handleSubmit()
+                                  }} />
+                                  <NumberDecrementStepper onClick={() => {
+                                    getFieldHelpers('msg.deleteAfter').setValue(Number(values.msg.deleteAfter) - 1000)
+                                    handleSubmit()
+                                  }} />
+                                </NumberInputStepper></NumberInput>
                               <Button onClick={() => {
                                 getFieldHelpers('msg.deleteAfter').setValue(false)
                                 handleSubmit()
