@@ -41,7 +41,7 @@ export default function Exceptions () {
                     }} />
                   </Section>
                   <Section title="Ignored Channels" description="Channels that are excepted from filtered words and phrases" icon={<Icon as={FaHashtag} />}>
-                    <Tagify value={db.channels} helper={getFieldHelpers('channels')} placeholder="Add roles" settings={{
+                    <Tagify value={db.channels} helper={getFieldHelpers('channels')} placeholder="Add channels" settings={{
                       whitelist: guild?.c.map(x => ({ value: `#${x.name}`, id: x.id })),
                       enforceWhitelist: true,
                       callbacks: {

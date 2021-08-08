@@ -20,7 +20,7 @@ const slice = createSlice({
   name: 'auth',
   initialState: initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<User>) => {
+    setUser: (state, action: PayloadAction<User|undefined>) => {
       state.user = action.payload
     },
     setPremiumGuilds: (state, action: PayloadAction<Snowflake[]>) => {

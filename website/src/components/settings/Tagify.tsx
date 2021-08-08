@@ -4,7 +4,7 @@ import { FieldHelperProps } from 'formik'
 
 import React from 'react'
 
-interface TagifyProps extends Tags.TagifyBaseReactProps {
+export interface TagifyProps extends Tags.TagifyBaseReactProps {
   onChange?: (value: any) => void
   helper?: FieldHelperProps<any>
   value: string[]
@@ -28,6 +28,8 @@ export function Tagify ({ onChange, helper, value, ...props }: TagifyProps) {
   React.useEffect(() => {
     if (value) setValues(generateProper(value, props.settings))
   }, [value])
+
+  console.log(props.settings)
 
   return (
     <Tags onChange={(val) => {

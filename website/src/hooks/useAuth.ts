@@ -48,6 +48,10 @@ export const useUser = (needsUser: boolean) => {
     user,
     () => {
       void goUser(true)
+    },
+    () => {
+      Api.logout()
+      dispatch(setUser(undefined))
     }
   ] as const
 }

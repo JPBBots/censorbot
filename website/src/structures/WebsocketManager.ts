@@ -44,7 +44,7 @@ export class WebsocketManager extends EventEmitter<{}> {
   }
 
   public start () {
-    if (this.ws && this.open) this.ws.close()
+    if (this.ws && this.open) return
 
     // if (stats.headless) {
     //   this.api.handleOpen()
