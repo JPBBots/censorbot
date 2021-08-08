@@ -12,7 +12,7 @@ export function NavBar () {
     <HStack
       justify="space-between"
       w="full"
-      h="6vh"
+      flexShrink={1}
       borderBottomWidth="1px"
       borderBottomStyle="solid"
       borderBottomColor="lighter.5">

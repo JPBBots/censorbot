@@ -5,8 +5,6 @@ import React from 'react'
 import { NavBar } from '~/navbar/Navbar'
 import { Header } from '~/Header'
 
-import './fix.css'
-
 import './Global.scss'
 
 import { CCProvider } from '@jpbbots/censorbot-components'
@@ -17,6 +15,7 @@ import { store } from 'store'
 
 import { Api } from '../structures/Api'
 import { Loader } from '~/Loader'
+import { Box, VStack } from '@chakra-ui/layout'
 
 export default function App (props: AppProps) {
   const { Component } = props
@@ -29,20 +28,21 @@ export default function App (props: AppProps) {
     <CCProvider useCssReset useGlobalStyle cookies={props.pageProps.cookies}>
       <Provider store={store}>
         <Header />
-        <NavBar />
-        <div id="root" >
-          <Component {...props.pageProps} />
-        </div>
+        <VStack
+          h="100%"
+          minH="100%"
+          w="100%"
+          spacing={0}
+        >
+          <NavBar />
+          <Box id="root" flexGrow={1} w="100%">
+            <Box maxH="100%" h="100%">
+              <Component {...props.pageProps} />
+            </Box>
+          </Box>
+        </VStack>
         <Loader />
       </Provider>
     </CCProvider>
   )
 }
-
-// export function getServerSideProps ({ req }: any) {
-//   return {
-//     props: {
-//       cookies: req.headers.cookie ?? ''
-//     }
-//   }
-// }

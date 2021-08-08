@@ -1,3 +1,4 @@
+import { InputProps } from '@chakra-ui/input'
 import type { OptionProps } from '@jpbbots/censorbot-components'
 import type { TagifySettings } from '@yaireo/tagify'
 import { FaAt, FaHashtag } from 'react-icons/fa'
@@ -13,7 +14,8 @@ export enum OptionType {
   Input,
   Tagify,
   BitBool,
-  Select
+  Select,
+  Number
 }
 
 const baseListSettings: TagifySettings = {
@@ -260,11 +262,16 @@ export const settings: ISetting[] = [
     title: 'Prefix',
     description: 'A customized prefix that the bot will respond to',
     section: 'Bot',
+    disable: {
+      property: 'prefix',
+      disableValue: null,
+      enableValue: '+'
+    },
     options: [
       {
         name: 'prefix',
         type: OptionType.Input,
-        allowNone: true
+        noneDisable: true
       }
     ]
   },
@@ -360,6 +367,55 @@ export const settings: ISetting[] = [
         placeholder: 'Add roles'
       }
     ]
+  },
+
+  {
+    title: 'Message Content',
+    description: 'What the message will say',
+    section: 'Response',
+    disable: {
+      property: 'msg.content',
+      disableValue: false,
+      enableValue: 'You\'re not allowed to say that!'
+    },
+    options: [
+      {
+        name: 'msg.content',
+        type: OptionType.Input,
+        noneDisable: true,
+        textarea: true
+      }
+    ]
+  },
+  {
+    title: 'Delete After',
+    description: 'Time in seconds it will take until the response is automatically deleted',
+    section: 'Response',
+    disable: {
+      property: 'msg.deleteAfter',
+      disableButton: 'Never',
+      disableValue: false,
+      enableValue: 3000
+    },
+    options: [
+      {
+        name: 'msg.deleteAfter',
+        type: OptionType.Number,
+        multiplier: 1000
+      }
+    ]
+  },
+  {
+    title: 'Direct Message',
+    section: 'Response',
+    options: [
+      {
+        name: 'msg.dm',
+        label: 'Send response to triggering user’s Direct Messages',
+        type: OptionType.Boolean,
+        premium: true
+      }
+    ]
   }
 ]
 
@@ -373,7 +429,9 @@ type DataOption<T extends OptionType, P extends {}, E = {}> = {
 export type IOption =
   DataOption<OptionType.Boolean, OptionProps, { premium?: boolean, label: string }> |
   DataOption<OptionType.Input, JSX.IntrinsicElements['input'], {
-    allowNone?: boolean
+    noneDisable?: boolean
+    textarea?: boolean
+    default?: string
   }> |
   DataOption<OptionType.Tagify, TagifyProps, {
     settings: (guild: GuildData) => TagifySettings
@@ -384,6 +442,9 @@ export type IOption =
     allowNone?: boolean
     number?: boolean
     options: (guild: GuildData) => Array<{ value: string | number, name: string }>
+  }> |
+  DataOption<OptionType.Number, InputProps, {
+    multiplier?: number
   }>
 
 export interface ISetting {
@@ -393,4 +454,12 @@ export interface ISetting {
   premium?: boolean
   icon?: IconType
   options: IOption[]
+
+  disable?: {
+    property: string
+    disableButton?: string
+    enableButton?: string
+    disableValue: any
+    enableValue: any
+  }
 }
