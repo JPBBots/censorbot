@@ -3,19 +3,19 @@ import { MenuItem } from '@chakra-ui/menu'
 import { Header, NavActions } from '@jpbbots/censorbot-components'
 import { useUser } from 'hooks/useAuth'
 import { useRouter } from 'next/router'
+import { Box } from '@chakra-ui/react'
 
 export function NavBar () {
   const [user, login, logout] = useUser(false)
   const router = useRouter()
 
   return (
-    <HStack
-      justify="space-between"
+    <Box
       w="full"
-      flexShrink={1}
       borderBottomWidth="1px"
       borderBottomStyle="solid"
-      borderBottomColor="lighter.5">
+      borderBottomColor="lighter.5"
+    >
       <Header title="Censor Bot">
         <NavActions actions={[
           {
@@ -40,6 +40,6 @@ export function NavBar () {
             }}>Logout</MenuItem>
           </NavActions>
       </Header>
-    </HStack>
+    </Box>
   )
 }
