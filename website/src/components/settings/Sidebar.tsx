@@ -47,12 +47,12 @@ export function Sidebar ({ selected }: { selected?: string}) {
   return (
     <VStack
       backgroundColor="darker.20"
-      padding="sm"
+      padding={2}
       h="93vh"
       >
       <VStack
         w="308px"
-        spacing="sm"
+        spacing={2}
       >
         <CategoryOption
           icon={<PremiumIcon />}

@@ -23,7 +23,7 @@ export default function Bot () {
               handleChange
             }) =>
               <FormControl w="full" onChange={handleSubmit as any}>
-                <VStack spacing="sm">
+                <VStack spacing={2}>
                   <Section title="Prefix" description="A customized prefix that the bot will respond to">
                     <Input value={db.prefix ?? ''} placeholder="None" name="prefix" onChange={(ev) => {
                       getFieldHelpers('prefix').setValue(ev.target.value === '' ? null : ev.target.value)

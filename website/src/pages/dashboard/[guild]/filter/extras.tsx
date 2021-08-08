@@ -24,7 +24,7 @@ export default function Filter () {
               handleChange
             }) =>
               <FormControl w="full" onChange={handleSubmit as any}>
-                <VStack spacing="sm">
+                <VStack spacing={2}>
                   <Section title="Multi-Line">
                     <Option name="multi" isChecked={db.multi} onChange={handleChange} label="Recognize text over multiple messages" isPremium />
                   </Section>

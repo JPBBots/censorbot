@@ -24,7 +24,7 @@ export default function Exceptions () {
               getFieldHelpers
             }) =>
             <FormControl w="full" onChange={handleSubmit as any}>
-                <VStack spacing="sm">
+                <VStack spacing={2}>
                   <Section title="Ignored Roles" description="Roles that are excepted from filtered words and phrases" icon={<Icon as={FaAt} />}>
                     <Tagify value={db.role} helper={getFieldHelpers('role')} placeholder="Add roles" settings={{
                       whitelist: guild?.r.map(x => ({ value: `@${x.name}`, id: x.id })),

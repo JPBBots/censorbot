@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@jpbberry/typed-emitter": "^1.0.1",
-    "@jpbbots/censorbot-components": "^1.1.28",
+    "@jpbbots/censorbot-components": "^2.0.0",
     "@reduxjs/toolkit": "^1.6.1",
     "@types/aos": "^3.0.3",
     "@yaireo/tagify": "^4.4.0",

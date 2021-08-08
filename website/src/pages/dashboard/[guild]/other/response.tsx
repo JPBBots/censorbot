@@ -35,7 +35,7 @@ export default function Response () {
                   }}>Enable</Button>
                 </>
                 : <FormControl w="full" onChange={handleSubmit as any}>
-                    <VStack spacing="sm">
+                    <VStack spacing={2}>
                       <Button onClick={() => {
                         getFieldHelpers('msg.content').setValue(false)
                         handleSubmit()

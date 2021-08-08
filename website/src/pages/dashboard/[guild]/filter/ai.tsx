@@ -23,7 +23,7 @@ export default function Ai () {
               handleChange
             }) =>
               <FormControl w="full" onChange={handleSubmit as any}>
-                <VStack spacing="sm">
+                <VStack spacing={2}>
                   <Section title="Toxicity Filter">
                     <Option name="toxicity" isChecked={db.toxicity} onChange={handleChange} label="Filter out toxic messages with AI" isPremium />
                   </Section>

@@ -30,7 +30,7 @@ export default function Resend () {
               getFieldHelpers
             }) =>
               <FormControl w="full" onChange={handleSubmit as any}>
-                <VStack spacing="sm">
+                <VStack spacing={2}>
                   <Section>
                     <Option name="webhook.enabled" isChecked={db.webhook.enabled} onChange={handleChange} label="Enable resending deleted messages" isPremium />
                   </Section>

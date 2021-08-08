@@ -75,7 +75,7 @@ export default function General ({ data }: CB.Props) {
               setValues
             }) =>
               <FormControl w="full" onChange={handleSubmit as any}>
-                <VStack spacing="sm">
+                <VStack spacing={2}>
                   <Section title="Pre-made Filters" description="Pick pre-made filters that apply for your needs">
                     <Tagify value={db.filters} helper={getFieldHelpers('filters')} placeholder="Add filters" settings={{
                       whitelist: [
