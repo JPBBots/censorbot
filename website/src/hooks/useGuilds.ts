@@ -66,7 +66,7 @@ export const useGuild = () => {
     currentGuild,
     volatileDb,
     (key: string, value: any) => {
-      if (!currentGuild || !id) return
+      if (!currentGuild) return
 
       let obj: Record<any, any> = {}
       obj[key] = value
@@ -75,7 +75,7 @@ export const useGuild = () => {
 
       dispatch(setVolatileDb(obj))
 
-      Api.changeSettings(id, obj).catch(() => {
+      Api.changeSettings(currentGuild.guild.i, obj).catch(() => {
         dispatch(setVolatileDb(currentGuild.db))
       })
     }

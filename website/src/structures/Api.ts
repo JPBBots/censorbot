@@ -10,6 +10,8 @@ import { Snowflake } from 'discord-api-types'
 import { updateObject } from 'utils/updateObject'
 import Pieces from 'utils/Pieces'
 import Swal from 'sweetalert2'
+import { store } from 'store'
+import { setCurrentGuild } from 'store/reducers/guilds.reducer'
 
 export enum LoginState {
   Loading = 0,
