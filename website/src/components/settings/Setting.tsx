@@ -1,5 +1,5 @@
 import { useGuild } from 'hooks/useGuilds'
-import { IOption, ISetting, OptionType } from './settings'
+import { IOption, ISetting, OptionType, settings } from './settings'
 
 import { Section } from '@jpbbots/censorbot-components'
 
@@ -7,16 +7,17 @@ import { Option as CCOption } from '~/functional/Option'
 
 import { Tagify } from './Tagify'
 import { updateObject } from 'utils/updateObject'
-import type { FieldHelperProps } from 'formik'
 
-import { Button, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputStepper, Select, Textarea } from '@chakra-ui/react'
+import { Button, Icon, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputStepper, Select, Textarea } from '@chakra-ui/react'
 import Pieces from 'utils/Pieces'
 import { GuildData } from 'typings'
-import { useEffect, useState } from 'react'
+import { SectionName } from './Sidebar'
 
-export function Option ({ helper, guild, pieces, disable, option }: {
+import TextareaResizer from 'react-textarea-autosize'
+
+export function Option ({ setValue, guild, pieces, disable, option }: {
   option: IOption
-  helper: FieldHelperProps<any>
+  setValue: (value: any) => void
   guild: GuildData
   disable: () => void
   pieces: any
@@ -39,23 +40,28 @@ export function Option ({ helper, guild, pieces, disable, option }: {
       isChecked={value}
       label={option.label}
       onChange={({ target }) => {
-        helper.setValue(target.checked)
+        setValue(target.checked)
       }}
       isPremium={option.premium} />
   }
 
   if (option.type === OptionType.Input) {
     const Component = option.textarea ? Textarea : Input
-    return <Component {...props} value={value ?? (option.default ?? '')} placeholder="None" onChange={({ target }: { target: HTMLInputElement|HTMLTextAreaElement }) => {
-      if (!option.noneDisable && target.value === '') return disable()
+    return <Component {...props}
+      as={option.textarea ? TextareaResizer : undefined}
+      resize="none"
+      value={value ?? (option.default ?? '')}
+      placeholder="None"
+      onChange={({ target }: { target: HTMLInputElement|HTMLTextAreaElement }) => {
+        if (!option.noneDisable && target.value === '') return disable()
 
-      helper.setValue(target.value === '' ? null : target.value)
-    }} />
+        setValue(target.value === '' ? null : target.value)
+      }} />
   }
 
   if (option.type === OptionType.Select) {
     return <Select {...props} onChange={({ target }) => {
-      helper.setValue(target.value === 'none' && option.allowNone
+      setValue(target.value === 'none' && option.allowNone
         ? null
         : option.number
           ? Number(target.value)
@@ -80,7 +86,7 @@ export function Option ({ helper, guild, pieces, disable, option }: {
           }
         : { enabled: false }
     }} placeholder={option.placeholder}
-       helper={helper}
+       onChange={(val) => setValue(val)}
        value={value} />
   }
 
@@ -89,27 +95,26 @@ export function Option ({ helper, guild, pieces, disable, option }: {
 
     return <NumberInput>
       <Input {...props} type="number" value={value / multiplier} onChange={({ target }) => {
-        helper.setValue(Number(target.value) * multiplier)
+        setValue(Number(target.value) * multiplier)
       }} />
       <NumberInputStepper>
         <NumberIncrementStepper onClick={() => {
-          helper.setValue(Number(value) + multiplier)
+          setValue(Number(value) + multiplier)
         }} />
         <NumberDecrementStepper onClick={() => {
-          helper.setValue(Number(value) - multiplier)
+          setValue(Number(value) - multiplier)
         }} />
       </NumberInputStepper>
     </NumberInput>
   }
 
   if (option.type === OptionType.BitBool) {
-    console.log(option)
     return <CCOption onChange={({ target }) => {
       console.log(value, target.checked, option)
       if (target.checked) {
-        helper.setValue(value | option.bit)
+        setValue(value | option.bit)
       } else {
-        helper.setValue(value & ~option.bit)
+        setValue(value & ~option.bit)
       }
     }} {...props}
       name={`${option.name}.${option.bit}`}
@@ -121,41 +126,32 @@ export function Option ({ helper, guild, pieces, disable, option }: {
 }
 
 export function Setting (setting: ISetting) {
-  const [guild] = useGuild()
-  const [value, setValue] = useState(guild?.db)
-
-  useEffect(() => {
-    setValue(guild?.db)
-  }, [guild])
-
-  const createHelper = (thing: string) => {
-    return {
-      setValue: (a: any) => {
-        console.log(thing, a)
-        const obj: any = {}
-        obj[thing] = a
-        setValue(updateObject(value, Pieces.normalize(obj)))
-      }
-    }
-  }
+  const [guild, volatileDb, setValue] = useGuild()
 
   if (!guild) return null
 
-  const pieces = Pieces.generate(value)
+  const pieces = Pieces.generate(volatileDb)
 
   const disabled = setting.disable && pieces[setting.disable.property] === setting.disable.disableValue
 
   return (
-    <Section title={setting.title} description={setting.description}>
+    <Section
+      title={setting.title}
+      description={setting.description}
+      isPremium={setting.premium}
+      icon={setting.icon && <Icon as={setting.icon} />}
+      >
       {!disabled && setting.options.map((opt, i) =>
         <Option key={i}
           option={opt}
-          helper={createHelper(opt.name)}
+          setValue={(value) => {
+            setValue(opt.name, value)
+          }}
           guild={guild}
           pieces={pieces}
           disable={() => {
             if (!setting.disable) return
-            createHelper(setting.disable.property).setValue(setting.disable?.enableValue)
+            setValue(setting.disable.property, setting.disable.enableValue)
           }} />
       )}
       {
@@ -165,16 +161,24 @@ export function Setting (setting: ISetting) {
             ? <Button
               onClick={() => {
                 if (!setting.disable) return
-                createHelper(setting.disable.property).setValue(setting.disable?.enableValue)
+                setValue(setting.disable.property, setting.disable.enableValue)
               }}
             >{setting.disable.enableButton ?? 'Enable'}</Button>
             : <Button
             onClick={() => {
               if (!setting.disable) return
-              createHelper(setting.disable.property).setValue(setting.disable?.disableValue)
+              setValue(setting.disable.property, setting.disable.disableValue)
             }}>{setting.disable.disableButton ?? 'Disable'}</Button>
         )
       }
     </Section>
   )
+}
+
+export const sectionSettings = (section: SectionName) => {
+  const selected = settings.filter(x => x.section === section)
+
+  return <>
+      {selected.map(x => <Setting key={x.title ?? x.options[0].name} {...x} />)}
+    </>
 }

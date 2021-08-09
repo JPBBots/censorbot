@@ -71,9 +71,9 @@ export const Events = {
     con.socket.guilds.unsubscribe(con, con.subscribed)
   },
   CHANGE_SETTING: async (con, data, resolve) => {
-    if (!con.authorized || !data || !data.data || !data.id) return resolve?.({ error: 'Invalid Payload' })
+    if (!data || !data.data || !data.id) return resolve?.({ error: 'Invalid Payload' })
 
-    if (!await con.access(data.id)) return resolve?.({ error: 'You cannot do this' })
+    if (!await con.access(data.id)) return resolve?.({ error: 'Unauthorized' })
 
     await con.socket.guilds.set(data.id, Pieces.normalize(data.data))
 

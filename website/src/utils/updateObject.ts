@@ -1,5 +1,5 @@
 export function updateObject (obj: any, ..._: any[]): any {
-  obj = Object.apply({}, obj)
+  obj = Object.assign({}, obj)
   for (let i = 1; i < arguments.length; i++) {
     for (const prop in arguments[i]) {
       const val = arguments[i][prop]

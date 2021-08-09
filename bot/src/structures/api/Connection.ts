@@ -39,7 +39,7 @@ export class Connection {
   }
 
   get guilds (): null|ShortGuild[] {
-    if (!this.authorized || !this.db) throw new Error('Not authorized')
+    if (!this.authorized || !this.db) throw new Error('Unauthorized')
 
     const cached = this.socket.cachedShortGuilds.get(this.db.id)
     if (cached) return cached
@@ -86,7 +86,7 @@ export class Connection {
   }
 
   public async getGuilds (): Promise<ShortGuild[]> {
-    if (!this.authorized || !this.db?.bearer) throw new Error('Not authorized')
+    if (!this.authorized || !this.db?.bearer) throw new Error('Unauthorized')
 
     if (this.guilds) return this.guilds
 
@@ -100,7 +100,7 @@ export class Connection {
   }
 
   public async getGuild (id: Snowflake): Promise<GuildData> {
-    if (!this.authorized) throw new Error('Not authorized')
+    if (!this.authorized) throw new Error('Unauthorized')
 
     if (!await this.access(id)) throw new Error('No access to guild')
 

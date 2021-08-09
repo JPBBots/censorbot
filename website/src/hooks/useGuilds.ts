@@ -1,19 +1,18 @@
 import { Snowflake } from 'discord-api-types'
 import { useDispatch, useSelector } from 'react-redux'
-import { DeepPartial } from 'redux'
 import { setCurrentGuild, setGuilds } from 'store/reducers/guilds.reducer'
 import { Api } from 'structures/Api'
-import { GuildDB } from 'typings'
 import { RootState } from '../store'
 
 import { LoginState } from '../store/reducers/auth.reducer'
 import { useLoginState } from './useAuth'
 
-import { setDb } from '../store/reducers/guilds.reducer'
-import { updateObject } from 'utils/updateObject'
-import { FormikHelpers } from 'formik'
+import { setVolatileDb } from '../store/reducers/guilds.reducer'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import Pieces from 'utils/Pieces'
+import { DeepPartial } from '@chakra-ui/react'
+import { GuildDB } from 'typings'
 
 export const useGuildsState = (): RootState['guilds'] => useSelector((state: RootState) => state.guilds)
 
@@ -43,7 +42,7 @@ export const useGuild = () => {
   const router = useRouter()
 
   const dispatch = useDispatch()
-  const { currentGuild } = useGuildsState()
+  const { currentGuild, volatileDb } = useGuildsState()
   const [loginState] = useLoginState()
 
   const [id, setId] = useState<Snowflake|undefined>(undefined)
@@ -63,38 +62,21 @@ export const useGuild = () => {
     })
   }
 
-  const setGuildSettings = (db: DeepPartial<GuildDB>, old: boolean) => {
-    if (!currentGuild || !id) return
-
-    console.log(db)
-
-    dispatch(setDb(
-      updateObject(Object.assign({}, currentGuild.db as any), db)
-    ))
-
-    if (!old) return Api.changeSettings(id, db)
-  }
-
   return [
     currentGuild,
-    async (db: DeepPartial<GuildDB>) => {
-      void setGuildSettings(db, false)
-    },
-    async (value: any, helpers: FormikHelpers<any>) => {
-      console.log(value)
-      if (!currentGuild) return
+    volatileDb,
+    (key: string, value: any) => {
+      if (!currentGuild || !id) return
 
-      const old = { ...currentGuild.db }
+      let obj: Record<any, any> = {}
+      obj[key] = value
 
-      setGuildSettings(value, false)?.catch(() => {
-        if (!currentGuild) return
+      obj = Pieces.normalize(obj) as DeepPartial<GuildDB>
 
-        void setGuildSettings(old, true)
-        for (const key in value) {
-          value[key] = currentGuild[key as keyof CB.Data['currentGuild']]
-        }
+      dispatch(setVolatileDb(obj))
 
-        helpers.setValues(value)
+      Api.changeSettings(id, obj).catch(() => {
+        dispatch(setVolatileDb(currentGuild.db))
       })
     }
   ] as const

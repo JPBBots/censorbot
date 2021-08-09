@@ -1,44 +1,8 @@
-import { Formik } from 'formik'
-import React from 'react'
-
-import { Section } from '@jpbbots/censorbot-components'
-import { FormControl, VStack } from '@chakra-ui/react'
-
-import { Option } from '~/functional/Option'
-
 import { SettingSection } from '~/settings/SettingSection'
+import { sectionSettings } from '~/settings/Setting'
 
-export default function Ai () {
+export default function AI () {
   return (
-    <SettingSection section="AI">
-      {
-        ({ db }, _, handleFormikSubmit) => (
-          <Formik initialValues={{
-            toxicity: db.toxicity,
-            ocr: db.ocr,
-            images: db.images
-          }} onSubmit={handleFormikSubmit}>
-            {({
-              handleSubmit,
-              handleChange
-            }) =>
-              <FormControl w="full" onChange={handleSubmit as any}>
-                <VStack spacing={2}>
-                  <Section title="Toxicity Filter">
-                    <Option name="toxicity" isChecked={db.toxicity} onChange={handleChange} label="Filter out toxic messages with AI" isPremium />
-                  </Section>
-                  <Section title="Anti-NSFW Images">
-                    <Option name="images" isChecked={db.images} onChange={handleChange} label="Improve Discord’s built-in image moderation with a more agressive AI" isPremium />
-                  </Section>
-                  <Section title="OCR - Optical Character Recognition">
-                    <Option name="ocr" isChecked={db.ocr} onChange={handleChange} label="Scan and filter images with text" isPremium />
-                  </Section>
-                </VStack>
-              </FormControl>
-            }
-          </Formik>
-        )
-      }
-    </SettingSection>
+    <SettingSection section="AI" children={sectionSettings('AI')} />
   )
 }

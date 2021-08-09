@@ -1,9 +1,9 @@
-import { HStack } from '@chakra-ui/layout'
 import { MenuItem } from '@chakra-ui/menu'
 import { Header, NavActions } from '@jpbbots/censorbot-components'
 import { useUser } from 'hooks/useAuth'
 import { useRouter } from 'next/router'
 import { Box } from '@chakra-ui/react'
+import { stats } from 'structures/StatsManager'
 
 export function NavBar () {
   const [user, login, logout] = useUser(false)
@@ -15,6 +15,9 @@ export function NavBar () {
       borderBottomWidth="1px"
       borderBottomStyle="solid"
       borderBottomColor="lighter.5"
+      onContextMenu={(ev) => {
+        if (ev.altKey) stats.open()
+      }}
     >
       <Header title="Censor Bot">
         <NavActions actions={[

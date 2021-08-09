@@ -9,6 +9,8 @@ import { CensorMethods, GuildData, WebhookReplace } from 'typings'
 import type { SectionName } from './Sidebar'
 import type { TagifyProps } from './Tagify'
 
+import FuzzySearch from 'fuzzy-search'
+
 export enum OptionType {
   Boolean = 0,
   Input,
@@ -418,6 +420,15 @@ export const settings: ISetting[] = [
     ]
   }
 ]
+
+export const searcher = new FuzzySearch(settings, [
+  'title',
+  'section',
+  'description',
+  'options.name',
+  'options.label',
+  'options.description'
+])
 
 type DataOption<T extends OptionType, P extends {}, E = {}> = {
   name: string

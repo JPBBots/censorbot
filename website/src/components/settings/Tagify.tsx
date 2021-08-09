@@ -23,18 +23,18 @@ function generateProper (value: TagifyProps['value'], settings: TagifyProps['set
 }
 
 export function Tagify ({ onChange, helper, value, ...props }: TagifyProps) {
-  const [values, setValues] = React.useState([] as string[])
+  const [values, setValues] = React.useState(value)
 
   React.useEffect(() => {
     if (value) setValues(generateProper(value, props.settings))
   }, [value])
 
-  console.log(props.settings)
-
   return (
     <Tags onChange={(val) => {
       const newVal = val.detail.tagify.value
         .reduce<string[]>((a, b) => a.concat([b.id || b.value]), [])
+
+      if (([...newVal]).sort().join(',') === ([...values]).sort().join(',')) return console.log('locked')
 
       console.log(newVal)
 

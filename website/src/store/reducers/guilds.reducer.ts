@@ -1,9 +1,12 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { DeepPartial } from '@chakra-ui/react'
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import { GuildData, GuildDB, ShortGuild } from 'typings'
+import { updateObject } from 'utils/updateObject'
 
 export interface GuildsContextType {
   guilds?: ShortGuild[]
   currentGuild?: GuildData
+  volatileDb?: GuildDB
 }
 
 const initialState: GuildsContextType = {}
@@ -17,14 +20,22 @@ const slice = createSlice({
     },
     setCurrentGuild: (state, action: PayloadAction<GuildData>) => {
       state.currentGuild = action.payload
+      state.volatileDb = action.payload.db
     },
-    setDb: (state, action: PayloadAction<GuildDB>) => {
+    setDb: (state, action: PayloadAction<DeepPartial<GuildDB>>) => {
       if (state.currentGuild) {
-        state.currentGuild.db = action.payload
+        const newDb = updateObject(current(state.currentGuild.db), action.payload)
+        state.currentGuild.db = newDb
+        state.volatileDb = newDb
+      }
+    },
+    setVolatileDb: (state, action: PayloadAction<DeepPartial<GuildDB>>) => {
+      if (state.currentGuild) {
+        state.volatileDb = updateObject(current(state.volatileDb), action.payload)
       }
     }
   }
 })
 
 export const guildsReducer = slice.reducer
-export const { setGuilds, setCurrentGuild, setDb } = slice.actions
+export const { setGuilds, setCurrentGuild, setDb, setVolatileDb } = slice.actions

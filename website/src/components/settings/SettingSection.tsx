@@ -1,27 +1,22 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 
-import { HStack, VStack, Text, Divider } from '@chakra-ui/react'
+import { HStack, VStack, Text, Divider, Flex, Box, Input } from '@chakra-ui/react'
 import { Sidebar, sections, SectionName } from './Sidebar'
 import { LoginButton } from '../button/LoginButton'
-import { GuildData, GuildDB } from 'typings'
 import { useLoginState, useUser } from 'hooks/useAuth'
 import { useGuild } from 'hooks/useGuilds'
 import { LoginState } from 'store/reducers/auth.reducer'
-import { DeepPartial } from 'redux'
-import { FormikHelpers } from 'formik'
+import { useRouter } from 'next/router'
 
-interface SettingSectionProps {
-  children: (
-    guild: GuildData,
-    setDb: (db: DeepPartial<GuildDB>) => Promise<any>,
-    formikSubmitHandler: (value: any, helpers: FormikHelpers<any>) => Promise<any>
-  ) => JSX.Element
-  section: SectionName
+interface SettingSectionProps extends PropsWithChildren<{}> {
+  description?: string
+  section: SectionName | 'Search'
 }
 
 export function SettingSection (props: SettingSectionProps) {
   useUser(true)
-  const [currentGuild, setDb, formikSubmitHandler] = useGuild()
+  const [currentGuild] = useGuild()
+  const router = useRouter()
   const [loginState] = useLoginState()
 
   const currentSection = sections.find(x => x.name === props.section)
@@ -45,17 +40,29 @@ export function SettingSection (props: SettingSectionProps) {
   }
 
   return (
-      <div>
-        <HStack alignItems="start">
-          <Sidebar selected={currentSection?.name} />
-          <VStack padding="8px 20px" alignSelf="end" w="full" h="93vh">
-            <Text textStyle="heading.xl" alignSelf="start">{currentSection?.name}</Text>
-            <Divider color="lighter.5" />
-            <VStack w="full" overflowY="scroll">
-              {props.children(currentGuild, setDb, formikSubmitHandler)}
-            </VStack>
+    <HStack alignItems="start" flexGrow={1} flexShrink={1} w="full" h="100%" maxH="100%" overflow="hidden">
+      <Sidebar selected={currentSection?.name} />
+      <Flex flexGrow={1} maxH="100%" h="100%" overflow="auto">
+        <VStack padding="8px 20px" alignSelf="end" w="full">
+          {props.section !== 'Search' && <Box w="full">
+              <Input w="400px" placeholder="Search for..." onClick={() => {
+                void router.push({
+                  pathname: '/dashboard/[guild]/search',
+                  query: router.query
+                })
+              }} />
+            </Box>}
+          <Text textStyle="heading.xl" alignSelf="start">{props.section}</Text>
+          <Divider color="lighter.5" />
+          <VStack w="full" overflowY="scroll">
+            {props.description && <Box w="full" textAlign="left" p={1}>
+              <Text>{props.description}</Text>
+              <Divider color="lighter.5" />
+            </Box>}
+            {props.children}
           </VStack>
-        </HStack>
-      </div>
+        </VStack>
+      </Flex>
+    </HStack>
   )
 }

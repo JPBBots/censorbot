@@ -28,7 +28,7 @@ export default function App (props: AppProps) {
       <Header />
       <CCProvider useCssReset useGlobalStyle cookies={props.pageProps.cookies}>
         <Provider store={store}>
-          <PageWrapper header={<NavBar h="40px" />}>
+          <PageWrapper header={<NavBar />}>
             <Component {...props.pageProps} />
           </PageWrapper>
           <Loader />

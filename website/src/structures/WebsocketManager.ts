@@ -8,7 +8,6 @@ import { stats } from './StatsManager'
 import { EventEmitter } from '@jpbberry/typed-emitter'
 import { store } from 'store'
 import { setDb } from 'store/reducers/guilds.reducer'
-import { updateObject } from 'utils/updateObject'
 import { Api } from './Api'
 
 type Partial<T> = {
@@ -109,7 +108,7 @@ export class WebsocketManager extends EventEmitter<{}> {
 
         if (res?.error) {
           this.log(`Error on ${event}: ${res.error}`)
-          if (res.error === 'Not authorized' && Api.token) {
+          if (res.error === 'Unauthorized' && Api.token) {
             const res = await Api.getUser()
               .then(() => {
                 this.send(event, data, id)
@@ -176,7 +175,7 @@ export class WebsocketManager extends EventEmitter<{}> {
       const currentGuild = store.getState().guilds.currentGuild
       if (!currentGuild || currentGuild.guild.i !== data.d.id) return
 
-      store.dispatch(setDb(updateObject(Object.assign({}, currentGuild.db as any), data.d.data)))
+      store.dispatch(setDb(data.d.data))
     }
   }
 

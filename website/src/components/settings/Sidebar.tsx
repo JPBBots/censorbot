@@ -48,7 +48,7 @@ export function Sidebar ({ selected }: { selected?: string}) {
     <VStack
       backgroundColor="darker.20"
       padding={2}
-      h="93vh"
+      h="full"
       >
       <VStack
         w="308px"
