@@ -1,4 +1,4 @@
-import { GuildData, ShortGuild, ShortID, Ticket, TicketTest, User } from "./api";
+import { DashboardChannel, GuildData, ShortGuild, ShortID, Ticket, TicketTest, User } from "./api";
 
 import { Snowflake } from 'discord-api-types'
 
@@ -85,6 +85,10 @@ export interface WebSocketEventMap {
   }
   UPDATE_USER: {
     receive: User
+    send: null
+  }
+  UPDATE_GUILD: {
+    receive: GuildData
     send: null
   }
   ERROR: {

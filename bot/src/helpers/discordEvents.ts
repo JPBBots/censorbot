@@ -1,4 +1,4 @@
-import { Embed } from 'discord-rose'
+import { Embed, Snowflake } from 'discord-rose'
 import { WorkerManager } from '../managers/Worker'
 
 import { PunishmentType } from 'typings'
@@ -118,5 +118,40 @@ export function setupDiscord (worker: WorkerManager): void {
     if (!punishment) return
 
     void worker.api.members.addRole(member.guild_id, member.user.id, db.punishment.role)
+  })
+
+  const updateGuild = async (guildId: Snowflake): Promise<void> => {
+    const isSubbed = await worker.comms.sendCommand('HAS_SUB', guildId)
+    if (!isSubbed) return
+
+    worker.comms.emit('GET_GUILD', { id: guildId }, (guild) => {
+      if ('error' in guild) return
+
+      worker.comms.tell('GUILD_UPDATED', guild)
+    })
+  }
+
+  worker.on('GUILD_UPDATE', (guild) => {
+    void updateGuild(guild.id)
+  })
+
+  worker.on('GUILD_ROLE_CREATE', (role) => {
+    void updateGuild(role.guild_id)
+  })
+  worker.on('GUILD_ROLE_DELETE', (role) => {
+    void updateGuild(role.guild_id)
+  })
+  worker.on('GUILD_ROLE_UPDATE', (role) => {
+    void updateGuild(role.guild_id)
+  })
+
+  worker.on('CHANNEL_CREATE', (channel) => {
+    if (channel.guild_id) void updateGuild(channel.guild_id)
+  })
+  worker.on('CHANNEL_DELETE', (channel) => {
+    if (channel.guild_id) void updateGuild(channel.guild_id)
+  })
+  worker.on('CHANNEL_UPDATE', (channel) => {
+    if (channel.guild_id) void updateGuild(channel.guild_id)
   })
 }

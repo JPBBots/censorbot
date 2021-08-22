@@ -1,5 +1,5 @@
 import { Cache } from '@jpbberry/cache'
-import { Snowflake } from 'discord-api-types'
+import { APIGuild, Snowflake } from 'discord-api-types'
 import { Collection } from 'mongodb'
 import { GuildData, GuildDB } from 'typings'
 
@@ -13,10 +13,49 @@ export class GuildHandler {
   subs: Map<Snowflake, Set<Connection>> = new Map()
   cache: Cache<Snowflake, GuildData> = new Cache(this.socket.manager.config.dashboardOptions.wipeTimeout)
 
-  constructor (private readonly socket: Socket) {}
+  constructor (private readonly socket: Socket) {
+    socket.manager.thread.on('HAS_SUB', (id, resolve) => {
+      resolve((this.subs.get(id)?.size ?? 0) > 0)
+    })
+    socket.manager.thread.on('GUILD_UPDATED', async (guild) => {
+      const subs = this.subs.get(guild.id)
+      if (!subs || subs.size < 1) return
+
+      const updated = await this._formatGuild(guild).catch(() => null)
+      if (!updated) return
+
+      this.cache.set(guild.id, updated)
+
+      subs.forEach(sub => {
+        sub.sendEvent('UPDATE_GUILD', updated)
+      })
+    })
+  }
 
   get db (): Collection {
     return this.socket.manager.db.collection('guild_data')
+  }
+
+  private async _formatGuild (guild?: APIGuild): Promise<GuildData> {
+    if (!guild || !guild.channels || !guild.roles) throw new Error('Not In Guild')
+
+    return {
+      guild: {
+        n: guild.name,
+        a: guild.icon,
+        i: guild.id,
+        c: guild.channels.map(x => ({
+          id: x.id,
+          name: x.name ?? ''
+        })),
+        r: guild.roles.filter(x => !x.managed && x.id !== guild.id).map(x => ({
+          id: x.id,
+          name: x.name
+        }))
+      },
+      premium: await this.socket.manager.db.guildPremium(guild.id),
+      db: await this.socket.manager.db.config(guild.id)
+    }
   }
 
   async get (id: Snowflake): Promise<GuildData> {
@@ -24,25 +63,8 @@ export class GuildHandler {
     if (cached) return cached
 
     const guild = await this.socket.manager.thread.getGuild(id)
-    if (!guild || !guild.channels || !guild.roles) throw new Error('Not In Guild')
 
-    const g: GuildData = {
-      guild: {
-        n: guild.name,
-        a: guild.icon,
-        i: id,
-        c: guild.channels.map(x => ({
-          id: x.id,
-          name: x.name ?? ''
-        })),
-        r: guild.roles.filter(x => !x.managed && x.id !== id).map(x => ({
-          id: x.id,
-          name: x.name
-        }))
-      },
-      premium: await this.socket.manager.db.guildPremium(id),
-      db: await this.socket.manager.db.config(id)
-    }
+    const g = await this._formatGuild(guild)
 
     this.cache.set(id, g)
 

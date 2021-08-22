@@ -30,4 +30,12 @@ export function addHandlers (master: MasterManager): void {
 
     resolve(helpme.id)
   })
+  master.handlers.on('GUILD_UPDATED', (_cluster, guild) => {
+    master.api.tell('GUILD_UPDATED', guild)
+  })
+  master.handlers.on('HAS_SUB', (_cluster, id, resolve) => {
+    void master.api.sendCommand('HAS_SUB', id).then(res => {
+      resolve(res)
+    })
+  })
 }

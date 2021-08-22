@@ -33,5 +33,6 @@ export class Socket extends Server {
 
   handleClose (con: Connection): void {
     this.connections.delete(con)
+    if (con.subscribed) this.guilds.subs.get(con.subscribed)?.delete(con)
   }
 }
