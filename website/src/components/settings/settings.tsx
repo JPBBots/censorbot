@@ -1,11 +1,17 @@
 import { InputProps } from '@chakra-ui/input'
 import type { OptionProps } from '@jpbbots/censorbot-components'
+
 import type { TagifySettings } from '@yaireo/tagify'
+
 import { FaAt, FaHashtag } from 'react-icons/fa'
 import type { IconType } from 'react-icons/lib'
+
 import type { DeepPartial } from 'redux'
+
 import { Logger } from 'structures/Logger'
+
 import { CensorMethods, GuildData, WebhookReplace } from 'typings'
+
 import type { SectionName } from './Sidebar'
 import type { TagifyProps } from './Tagify'
 
@@ -323,7 +329,7 @@ export const settings: ISetting[] = [
     section: 'Resend',
     options: [
       {
-        name: 'webhook.replace',
+        name: 'webhook.separate',
         label: 'Replace only bad words',
         type: OptionType.Boolean,
         premium: true

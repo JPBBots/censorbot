@@ -7,7 +7,7 @@ import { stats } from './StatsManager'
 
 import { EventEmitter } from '@jpbberry/typed-emitter'
 import { store } from 'store'
-import { setDb } from 'store/reducers/guilds.reducer'
+import { setCurrentGuild, setDb } from 'store/reducers/guilds.reducer'
 import { Api } from './Api'
 
 type Partial<T> = {
@@ -117,7 +117,7 @@ export class WebsocketManager extends EventEmitter<{}> {
               })
               .catch(() => false)
 
-            if (res) return
+            if (res) return this.log(`${event} recovered from unauthorized`)
           }
 
           Logger.error(res.error)
@@ -168,7 +168,7 @@ export class WebsocketManager extends EventEmitter<{}> {
 
       Logger.setLoading(false)
 
-      // return this.api.handleOpen()
+      void this._handleOpen()
     }
 
     if (data.e === 'CHANGE_SETTING') {
@@ -176,6 +176,18 @@ export class WebsocketManager extends EventEmitter<{}> {
       if (!currentGuild || currentGuild.guild.i !== data.d.id) return
 
       store.dispatch(setDb(data.d.data))
+    }
+    if (data.e === 'UPDATE_GUILD') {
+      store.dispatch(setCurrentGuild(data.d))
+    }
+  }
+
+  async _handleOpen () {
+    const currentGuild = store.getState().guilds.currentGuild
+    if (currentGuild) {
+      const guild = await Api.getGuild(currentGuild.guild.i)
+
+      if (guild) store.dispatch(setCurrentGuild(guild))
     }
   }
 

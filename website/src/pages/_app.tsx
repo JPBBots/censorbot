@@ -7,7 +7,7 @@ import { Header } from '~/Header'
 
 import './Global.scss'
 
-import { CCProvider, PageWrapper } from '@jpbbots/censorbot-components'
+import { CCProvider } from '@jpbbots/censorbot-components'
 import '@yaireo/tagify/dist/tagify.css'
 
 import { Provider } from 'react-redux'
@@ -15,6 +15,7 @@ import { store } from 'store'
 
 import { Api } from '../structures/Api'
 import { Loader } from '~/Loader'
+import { Flex } from '@chakra-ui/layout'
 
 export default function App (props: AppProps) {
   const { Component } = props
@@ -28,9 +29,14 @@ export default function App (props: AppProps) {
       <Header />
       <CCProvider useCssReset useGlobalStyle cookies={props.pageProps.cookies}>
         <Provider store={store}>
-          <PageWrapper header={<NavBar />}>
+          <Flex
+            h="full"
+            flexDirection="column"
+            minH="full" w="full"
+            flexGrow={1}>
+            <NavBar />
             <Component {...props.pageProps} />
-          </PageWrapper>
+          </Flex>
           <Loader />
         </Provider>
       </CCProvider>

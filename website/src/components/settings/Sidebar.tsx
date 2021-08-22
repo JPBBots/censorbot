@@ -1,10 +1,11 @@
 import { Category, CategoryOption } from '@jpbbots/censorbot-components'
-import { VStack, Icon, Divider } from '@chakra-ui/react'
+import { VStack, Icon, Divider, Text } from '@chakra-ui/react'
 
 import Router from 'next/router'
 
 import { FaCog, FaFilter, FaDiceD6, FaVial, FaCommentSlash, FaRobot, FaLocationArrow, FaComments } from 'react-icons/fa'
 import { PremiumIcon } from '~/PremiumIcon'
+import { useGuild } from 'hooks/useGuilds'
 
 export const CATEGORIES = {
   Filter: {
@@ -44,6 +45,8 @@ export const sections = [
 export type SectionName = typeof sections[number]['name']
 
 export function Sidebar ({ selected }: { selected?: string}) {
+  const [guild] = useGuild()
+
   return (
     <VStack
       backgroundColor="darker.20"
@@ -54,6 +57,10 @@ export function Sidebar ({ selected }: { selected?: string}) {
         w="308px"
         spacing={2}
       >
+        {guild && <>
+          <Text>{guild.guild.n}</Text>
+          <Divider color="lighter.5" />
+        </>}
         <CategoryOption
           icon={<PremiumIcon />}
           label="Premium"
