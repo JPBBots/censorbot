@@ -37,6 +37,8 @@ function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB,
   const multi = multiLineStore.get(message.channel_id)
 
   void worker.actions.delete(message.channel_id, multi ? Object.values(multi.messages).map(x => x.id) : [message.id])
+  const snipeContent = multi ? Object.values(multi.messages).map(x => x.content).join('\n') : message.content
+  if (snipeContent) void worker.snipes.set(message.channel_id, snipeContent)
 
   if (multi) multiLineStore.delete(message.channel_id)
 

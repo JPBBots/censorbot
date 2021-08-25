@@ -27,6 +27,8 @@ import { ReactionHandler } from '../filters/Reactions'
 
 import { Interface } from '@jpbbots/interface'
 
+import { Cache } from '@jpbberry/cache'
+
 import util from 'util'
 import fetch from 'node-fetch'
 import path from 'path'
@@ -56,6 +58,8 @@ export class WorkerManager extends Worker {
   threads: Collection<Snowflake, CachedThread> = new Collection()
 
   interface = new Interface()
+
+  snipes: Cache<Snowflake, string> = new Cache(15 * 60 * 1000)
 
   methods = {
     msg: MessageHandler,
