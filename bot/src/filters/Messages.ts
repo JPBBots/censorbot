@@ -42,7 +42,10 @@ function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB,
 
   void worker.responses.log(CensorMethods.Messages, message.content ?? 'No Content', message, response, db)
 
-  if (db.msg.content !== false) worker.actions.popup(message.channel_id, message.author.id, db)
+  if (db.msg.content !== false &&
+    !db.msg.ignoredChannels.includes(message.channel_id) &&
+    !db.msg.ignoredRoles.some(x => message.member?.roles.includes(x))
+  ) worker.actions.popup(message.channel_id, message.author.id, db)
 
   if (response.ranges.length > 0 && db.webhook.enabled && message.content && !db.webhook.ignored.some(x => message.member?.roles.includes(x))) {
     if (!worker.hasPerms(message.guild_id, 'webhooks')) {
@@ -86,7 +89,7 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
     ![MessageType.Default, MessageType.Reply].includes(message.type as MessageType) ||
     channel.type !== 0 ||
     message.member.roles.some(role => db.role?.includes(role)) ||
-    db.channels.includes(message.channel_id)
+    worker.isIgnored(channel, db)
   ) return
 
   let content = message.content as string

@@ -12,11 +12,16 @@ export async function ReactionHandler (worker: WorkerManager, reaction: GatewayM
     reaction.member.user.bot
   ) return
 
+  const channel = worker.channels.get(reaction.channel_id) ?? (reaction.guild_id ? worker.getThreadParent(reaction.guild_id, reaction.channel_id) : undefined)
+
+  if (!channel) return
+
   const db = await worker.db.config(reaction.guild_id)
 
   if (
     (db.censor & CensorMethods.Reactions) === 0 ||
-    reaction.member.roles.some(role => db.role?.includes(role))
+    reaction.member.roles.some(role => db.role?.includes(role)) ||
+    worker.isIgnored(channel, db)
   ) return
 
   const res = worker.filter.test(reaction.emoji.name ?? '', db)

@@ -24,9 +24,12 @@ export class MasterManager extends Master {
   constructor () {
     super(path.resolve(__dirname, '../.run/worker.js'), {
       token: Config.token,
+      cache: {
+        channels: ['text', 'category']
+      },
       cacheControl: {
         guilds: ['name', 'icon', 'owner_id', 'region', 'unavailable', 'member_count', 'threads'],
-        channels: ['type', 'name', 'nsfw', 'permission_overwrites'],
+        channels: ['type', 'name', 'nsfw', 'permission_overwrites', 'parent_id'],
         roles: ['managed', 'permissions', 'name', 'position']
       },
       intents: ['GUILD_MESSAGES', 'GUILDS', 'GUILD_MESSAGE_REACTIONS', 'GUILD_MEMBERS'],

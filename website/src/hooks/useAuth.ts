@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { setCurrentGuild, setGuilds } from 'store/reducers/guilds.reducer'
 import { Api } from 'structures/Api'
 import { User } from 'typings'
 import { RootState } from '../store'
@@ -52,6 +53,8 @@ export const useUser = (needsUser: boolean) => {
     () => {
       Api.logout()
       dispatch(setUser(undefined))
+      dispatch(setGuilds(undefined))
+      dispatch(setCurrentGuild(undefined))
     }
   ] as const
 }

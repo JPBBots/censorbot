@@ -24,7 +24,7 @@ export interface FilterResponse {
   censor: boolean
   ranges: Range[]
   filters: filterName[]
-  places: JPBExp[]
+  places: Array<JPBExp|string>
   percentage?: string
 }
 
@@ -240,7 +240,7 @@ export class Filter {
     return res
   }
 
-  test (text: string, db: Pick<GuildDB, 'phrases' | 'filter' | 'filters' | 'uncensor'>): FilterResponse {
+  test (text: string, db: Pick<GuildDB, 'phrases' | 'filter' | 'filters' | 'uncensor' | 'words'>): FilterResponse {
     const content = this.resolve(text)
 
     const res: FilterResponse = {
@@ -256,14 +256,27 @@ export class Filter {
     scanFor.server = db.filter.map(x => new JPBExp(x))
 
     if (db.phrases) {
-      if (db.phrases.some(x =>
-        text.toLowerCase().includes(x)
-      )) {
+      const phrases = db.phrases.filter(x => text.toLowerCase().includes(x))
+      if (phrases.length > 0) {
         return {
           censor: true,
           ranges: [],
           filters: ['server'],
-          places: []
+          places: phrases
+        }
+      }
+    }
+
+    if (db.words) {
+      const split = text.split(' ')
+      const words = db.words.filter(x => split.includes(x))
+
+      if (words.length > 0) {
+        return {
+          censor: true,
+          ranges: [],
+          filters: ['server'],
+          places: words
         }
       }
     }

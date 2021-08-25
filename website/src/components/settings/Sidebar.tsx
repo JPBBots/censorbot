@@ -44,7 +44,7 @@ export const sections = [
 
 export type SectionName = typeof sections[number]['name']
 
-export function Sidebar ({ selected }: { selected?: string}) {
+export function Sidebar ({ selected, premium }: { selected?: string, premium?: boolean }) {
   const [guild] = useGuild()
 
   return (
@@ -64,6 +64,7 @@ export function Sidebar ({ selected }: { selected?: string}) {
         <CategoryOption
           icon={<PremiumIcon />}
           label="Premium"
+          isSelected={premium}
           onClick={() => {
             void Router.push({
               pathname: '/dashboard/[guild]/premium',

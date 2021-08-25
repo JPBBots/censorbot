@@ -46,7 +46,8 @@ export class GuildHandler {
         i: guild.id,
         c: guild.channels.map(x => ({
           id: x.id,
-          name: x.name ?? ''
+          name: x.name ?? '',
+          type: x.type
         })),
         r: guild.roles.filter(x => !x.managed && x.id !== guild.id).map(x => ({
           id: x.id,

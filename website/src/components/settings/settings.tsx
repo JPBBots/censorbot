@@ -1,45 +1,27 @@
 import { InputProps } from '@chakra-ui/input'
 import type { OptionProps } from '@jpbbots/censorbot-components'
 
-import type { TagifySettings } from '@yaireo/tagify'
-
-import { FaAt, FaHashtag } from 'react-icons/fa'
+import { FaAt, FaFilter, FaHashtag } from 'react-icons/fa'
 import type { IconType } from 'react-icons/lib'
 
 import type { DeepPartial } from 'redux'
 
-import { Logger } from 'structures/Logger'
-
 import { CensorMethods, GuildData, WebhookReplace } from 'typings'
 
 import type { SectionName } from './Sidebar'
-import type { TagifyProps } from './Tagify'
 
 import FuzzySearch from 'fuzzy-search'
+import { ChannelType } from '@/types'
+import { TagProps } from '@chakra-ui/tag'
+import { TagsSettings } from './Tags'
 
 export enum OptionType {
   Boolean = 0,
   Input,
-  Tagify,
+  Tags,
   BitBool,
   Select,
   Number
-}
-
-const baseListSettings: TagifySettings = {
-  delimiters: /,/g,
-  pattern: /^.{1,20}$/,
-  callbacks: {
-    invalid: (e) => {
-      if (e.detail.message === 'pattern mismatch') Logger.error('Word cannot be over 20 characters long.')
-      if (e.detail.message === 'number of tags exceeded') Logger.error('Reached max words. Get premium to get up to 1500!')
-    }
-  }
-}
-
-const listSettings = {
-  ...baseListSettings,
-  delimiters: /,|\s/g
 }
 
 export const settings: ISetting[] = [
@@ -134,15 +116,9 @@ export const settings: ISetting[] = [
     options: [
       {
         name: 'role',
-        type: OptionType.Tagify,
+        type: OptionType.Tags,
         settings: ({ guild }) => ({
-          whitelist: guild.r.map(x => ({ value: `@${x.name}`, id: x.id })),
-          enforceWhitelist: true,
-          callbacks: {
-            invalid: (e) => {
-              if (e.detail.message === 'number of tags exceeded') Logger.error('You need premium to add more roles')
-            }
-          }
+          whitelist: guild.r.map(x => ({ value: `@${x.name}`, id: x.id }))
         }),
         placeholder: 'Add roles'
       }
@@ -156,38 +132,47 @@ export const settings: ISetting[] = [
     options: [
       {
         name: 'channels',
-        type: OptionType.Tagify,
+        type: OptionType.Tags,
         settings: ({ guild }) => ({
-          whitelist: guild.c.map(x => ({ value: `#${x.name}`, id: x.id })),
-          enforceWhitelist: true,
-          callbacks: {
-            invalid: (e) => {
-              if (e.detail.message === 'number of tags exceeded') Logger.error('You need premium to add more channels')
-            }
-          }
+          whitelist: guild.c.filter(x => x.type === ChannelType.GuildText).map(x => ({ value: `#${x.name}`, id: x.id }))
         }),
         placeholder: 'Add channels'
+      }
+    ]
+  },
+  {
+    title: 'Ignored Categories',
+    description: 'Categories who\'s channels will be ignored',
+    icon: FaFilter,
+    premium: true,
+    section: 'Exceptions',
+    options: [
+      {
+        name: 'categories',
+        type: OptionType.Tags,
+        settings: ({ guild }) => ({
+          whitelist: guild.c.filter(x => x.type === ChannelType.GuildCategory).map(x => ({ value: `${x.name}`, id: x.id }))
+        }),
+        placeholder: 'Add categories'
       }
     ]
   },
 
   {
     title: 'Pre-made filters',
-    description: 'Pick pre-made filters that apply for your needs',
+    description: 'Pick pre-made filters that apply for your needs, created and maintained by the makers of Censor Bot',
     section: 'General',
     options: [
       {
         name: 'filters',
-        type: OptionType.Tagify,
+        type: OptionType.Tags,
         settings: () => ({
-          whitelist: [
-            { id: 'en', value: 'English' },
+          whitelist: [{ id: 'en', value: 'English' },
             { id: 'es', value: 'Spanish' },
             { id: 'off', value: 'Offensive' },
             { id: 'de', value: 'German' },
             { id: 'ru', value: 'Russian' }
-          ],
-          enforceWhitelist: true
+          ]
         }),
         placeholder: 'Add filters'
       }
@@ -195,33 +180,53 @@ export const settings: ISetting[] = [
   },
   {
     title: 'Server Filter',
-    description: 'Simple words to resolve that add onto your servers\' filter',
+    description: 'Simple words that are used up against an advanced resolution system, removes any special characters',
     section: 'General',
     options: [
       {
         name: 'filter',
-        type: OptionType.Tagify,
         settings: ({ premium }) => ({
-          ...listSettings,
-          maxTags: premium ? 1500 : 150
+          maxTags: premium ? 1500 : 150,
+          maxMessage: 'You need premium to add more words',
+          maxLength: 20
         }),
+        type: OptionType.Tags,
         placeholder: 'Add words'
       }
     ]
   },
   {
     title: 'Phrase Filter',
-    description: 'Words to remove that contain any character, including spaces',
+    description: 'Advanced phrases/combinations that are not resolved like the server filter, allows spaces',
     section: 'General',
     options: [
       {
         name: 'phrases',
-        type: OptionType.Tagify,
+        type: OptionType.Tags,
         settings: ({ premium }) => ({
-          ...baseListSettings,
+          maxLength: 50,
+          allowSpaces: true,
+          maxMessage: 'You need premium to add more words',
           maxTags: premium ? 1500 : 150
         }),
         placeholder: 'Add phrases'
+      }
+    ]
+  },
+  {
+    title: 'Word Filter',
+    description: 'Similar to the phrase filter except that it matches anything between spaces and if the word doesn\'t exactly match a single word it wont censor',
+    section: 'General',
+    options: [
+      {
+        name: 'words',
+        type: OptionType.Tags,
+        settings: ({ premium }) => ({
+          maxLength: 20,
+          maxMessage: 'You need premium to add more words',
+          maxTags: premium ? 1500 : 150
+        }),
+        placeholder: 'Add words'
       }
     ]
   },
@@ -232,9 +237,10 @@ export const settings: ISetting[] = [
     options: [
       {
         name: 'uncensor',
-        type: OptionType.Tagify,
+        type: OptionType.Tags,
         settings: ({ premium }) => ({
-          ...listSettings,
+          maxLength: 20,
+          maxMessage: 'You need premium to add more words',
           maxTags: premium ? 1500 : 150
         }),
         placeholder: 'Add words'
@@ -304,7 +310,7 @@ export const settings: ISetting[] = [
         name: 'log',
         type: OptionType.Select,
         allowNone: true,
-        options: ({ guild }) => guild.c.map(x => ({
+        options: ({ guild }) => guild.c.filter(x => x.type === ChannelType.GuildText).map(x => ({
           value: x.id,
           name: `#${x.name}`
         }))
@@ -361,16 +367,10 @@ export const settings: ISetting[] = [
     options: [
       {
         name: 'webhook.ignored',
-        type: OptionType.Tagify,
+        type: OptionType.Tags,
         settings: ({ guild, premium }) => ({
           whitelist: guild?.r.map(x => ({ value: `@${x.name}`, id: x.id })),
-          maxTags: premium ? Infinity : 0,
-          enforceWhitelist: true,
-          callbacks: {
-            invalid: (e) => {
-              if (e.detail.message === 'number of tags exceeded') Logger.error('You need premium to use this')
-            }
-          }
+          maxTags: premium ? Infinity : 0
         }),
         placeholder: 'Add roles'
       }
@@ -414,6 +414,39 @@ export const settings: ISetting[] = [
     ]
   },
   {
+    title: 'Response Ignored Channels',
+    description: 'Channels that response messages will not show up in',
+    icon: FaHashtag,
+    section: 'Response',
+    options: [
+      {
+        name: 'msg.ignoredChannels',
+        type: OptionType.Tags,
+        settings: ({ guild }) => ({
+          whitelist: guild.c.filter(x => x.type === ChannelType.GuildText).map(x => ({ value: `#${x.name}`, id: x.id }))
+        }),
+        placeholder: 'Add channels'
+      }
+    ]
+  },
+  {
+    title: 'Response Ignored Roles',
+    description: 'Roles to not send responses about',
+    section: 'Response',
+    icon: FaAt,
+    options: [
+      {
+        name: 'msg.ignoredRoles',
+        type: OptionType.Tags,
+        settings: ({ guild, premium }) => ({
+          whitelist: guild?.r.map(x => ({ value: `@${x.name}`, id: x.id })),
+          maxTags: premium ? Infinity : 0
+        }),
+        placeholder: 'Add roles'
+      }
+    ]
+  },
+  {
     title: 'Direct Message',
     section: 'Response',
     options: [
@@ -450,8 +483,8 @@ export type IOption =
     textarea?: boolean
     default?: string
   }> |
-  DataOption<OptionType.Tagify, TagifyProps, {
-    settings: (guild: GuildData) => TagifySettings
+  DataOption<OptionType.Tags, TagProps, {
+    settings: (guild: GuildData) => TagsSettings
     placeholder: string
   }> |
   DataOption<OptionType.BitBool, OptionProps, { bit: number, label: string }> |

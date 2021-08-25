@@ -65,6 +65,10 @@ export interface GuildDB {
    */
   phrases: string[]
   /**
+   * Exact words to filter
+   */
+  words: string[]
+  /**
    * Whether to antihoist users
    */
   antiHoist: boolean
@@ -84,6 +88,9 @@ export interface GuildDB {
      * Whether or not to DM popup messages
      */
     dm: boolean
+
+    ignoredRoles: Snowflake[]
+    ignoredChannels: Snowflake[]
   }
   /**
    * Punishment settings
@@ -130,6 +137,7 @@ export interface GuildDB {
   multi: boolean
   prefix: string|null
   channels: Snowflake[]
+  categories: Snowflake[]
   nsfw: boolean
   invites: boolean
   dm: boolean
@@ -211,6 +219,7 @@ export interface ShortGuild {
 export interface DashboardChannel {
   id: Snowflake
   name: string
+  type: number
 }
 
 export interface DashboardRole {

@@ -41,6 +41,8 @@ export const punishmentSchema = Joi.object({
   retainRoles: false
 })
 
+const RoleChannelList = Joi.array().items(SnowflakeString).max(250)
+
 export const settingSchema = Joi.object<GuildDB>({
   id: SnowflakeString,
 
@@ -53,9 +55,7 @@ export const settingSchema = Joi.object<GuildDB>({
 
   log: nullableSnowflake,
 
-  role: Joi.array()
-    .items(SnowflakeString)
-    .max(4),
+  role: RoleChannelList,
 
   filter: Joi.array()
     .items(Joi.string().max(20))
@@ -69,6 +69,10 @@ export const settingSchema = Joi.object<GuildDB>({
     .items(Joi.string().max(50))
     .max(150),
 
+  words: Joi.array()
+    .items(Joi.string().max(20))
+    .max(150),
+
   antiHoist: Joi.bool(),
 
   msg: Joi.object({
@@ -80,7 +84,10 @@ export const settingSchema = Joi.object<GuildDB>({
       .allow(false)
       .max(120e3),
 
-    dm: PremiumOnly(false)
+    dm: PremiumOnly(false),
+
+    ignoredRoles: RoleChannelList,
+    ignoredChannels: RoleChannelList
   }),
 
   punishment: punishmentSchema,
@@ -95,9 +102,8 @@ export const settingSchema = Joi.object<GuildDB>({
   multi: PremiumOnly(false),
   prefix: Joi.string().allow(null),
 
-  channels: Joi.array()
-    .items(SnowflakeString)
-    .max(5),
+  channels: RoleChannelList,
+  categories: RoleChannelList,
 
   nsfw: Joi.bool(),
 
@@ -123,7 +129,7 @@ export const premiumSchema = settingSchema.concat(Joi.object({
     enabled: boolOverride,
     separate: boolOverride,
     replace: Joi.valid(Joi.override, WebhookReplace.Spoilers, WebhookReplace.Hashtags, WebhookReplace.Stars),
-    ignored: Joi.array().max(Number.MAX_SAFE_INTEGER)
+    ignored: RoleChannelList
   }),
 
   punishment: Joi.object({
@@ -139,9 +145,6 @@ export const premiumSchema = settingSchema.concat(Joi.object({
   }),
 
   multi: boolOverride,
-
-  role: Joi.array().max(Number.MAX_SAFE_INTEGER),
-  channels: Joi.array().max(Number.MAX_SAFE_INTEGER),
 
   toxicity: boolOverride,
   images: boolOverride,

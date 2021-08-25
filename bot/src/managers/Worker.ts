@@ -30,6 +30,7 @@ import { Interface } from '@jpbbots/interface'
 import util from 'util'
 import fetch from 'node-fetch'
 import path from 'path'
+import { GuildDB } from 'typings'
 
 interface CachedThread {
   id: Snowflake
@@ -190,6 +191,13 @@ export class WorkerManager extends Worker {
     return new Embed(async (embed) => {
       return await this.comms.sendWebhook(webhook.id, webhook.token, embed)
     })
+  }
+
+  isIgnored (channel: APIChannel, db: GuildDB): boolean {
+    if (db.channels.includes(channel.id)) return true
+    if (channel.parent_id && db.categories.includes(channel.parent_id)) return true
+
+    return false
   }
 
   logError (error: Error, command?: CommandType): void {

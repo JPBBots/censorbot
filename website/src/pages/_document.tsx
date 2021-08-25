@@ -8,6 +8,14 @@ export default class Document extends NextDocument {
       <Html lang="en">
         <Head>
           <NextFontHead/>
+          <script src="https://js.chargebee.com/v2/chargebee.js"></script>
+          {/* <script lang="javascript">{function () {
+            if ('window' in global) {
+              global.chargebee = Chargebee.init({
+                site: 'censorbot-test'
+              })
+            }
+          }}</script> */}
         </Head>
         <body>
           <NextColorModeScript/>

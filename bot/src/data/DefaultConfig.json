@@ -10,6 +10,7 @@
   "filter": [],
   "uncensor": [],
   "phrases": [],
+  "words": [],
   "msg": {
       "content": null,
       "deleteAfter": 3000,
@@ -31,6 +32,7 @@
       "ignored": []
   },
   "channels": [],
+  "categories": [],
   "nsfw": true,
   "multi": false,
   "prefix": "+",

@@ -9,6 +9,7 @@ import { EventEmitter } from '@jpbberry/typed-emitter'
 import { store } from 'store'
 import { setCurrentGuild, setDb } from 'store/reducers/guilds.reducer'
 import { Api } from './Api'
+import { setUser } from 'store/reducers/auth.reducer'
 
 type Partial<T> = {
   [P in keyof T]?: T[P]
@@ -176,6 +177,9 @@ export class WebsocketManager extends EventEmitter<{}> {
       if (!currentGuild || currentGuild.guild.i !== data.d.id) return
 
       store.dispatch(setDb(data.d.data))
+    }
+    if (data.e === 'UPDATE_USER') {
+      store.dispatch(setUser(data.d))
     }
     if (data.e === 'UPDATE_GUILD') {
       store.dispatch(setCurrentGuild(data.d))

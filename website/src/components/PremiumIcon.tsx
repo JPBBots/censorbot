@@ -1,8 +1,8 @@
 import { Icon } from '@chakra-ui/react'
 import { FaCrown } from 'react-icons/fa'
 
-export function PremiumIcon () {
+export function PremiumIcon (props: { notColored?: boolean }) {
   return (
-    <Icon color="brand.100" as={FaCrown} />
+    <Icon color={ props.notColored ? undefined : 'brand.100' } as={FaCrown} />
   )
 }

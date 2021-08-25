@@ -1,4 +1,4 @@
-import { useUser } from 'hooks/useAuth'
+import { useUser } from '@/hooks/useAuth'
 import { MainButton } from './MainButton'
 
 export function LoginButton ({ name = 'Login' }: { name?: string }) {

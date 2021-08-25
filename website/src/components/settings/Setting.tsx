@@ -1,12 +1,11 @@
-import { useGuild } from 'hooks/useGuilds'
+import { useGuild } from '@/hooks/useGuilds'
 import { IOption, ISetting, OptionType, settings } from './settings'
 
 import { Section } from '@jpbbots/censorbot-components'
 
 import { Option as CCOption } from '~/functional/Option'
 
-import { Tagify } from './Tagify'
-import { updateObject } from 'utils/updateObject'
+import { updateObject } from '@/utils/updateObject'
 
 import { Button, Icon, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputStepper, Select, Textarea } from '@chakra-ui/react'
 import Pieces from 'utils/Pieces'
@@ -14,6 +13,7 @@ import { GuildData } from 'typings'
 import { SectionName } from './Sidebar'
 
 import TextareaResizer from 'react-textarea-autosize'
+import { Tags } from './Tags'
 
 export function Option ({ setValue, guild, pieces, disable, option }: {
   option: IOption
@@ -60,14 +60,17 @@ export function Option ({ setValue, guild, pieces, disable, option }: {
   }
 
   if (option.type === OptionType.Select) {
-    return <Select {...props} onChange={({ target }) => {
-      setValue(target.value === 'none' && option.allowNone
-        ? null
-        : option.number
-          ? Number(target.value)
-          : target.value
-      )
-    }} value={value ?? 'none'}>
+    return <Select
+      {...props}
+      onChange={({ target }) => {
+        setValue(target.value === 'none' && option.allowNone
+          ? null
+          : option.number
+            ? Number(target.value)
+            : target.value
+        )
+      }}
+      value={value ?? 'none'}>
       {option.allowNone && <option value="none">None</option>}
       {option.options(guild).map(opt =>
         <option key={opt.value} value={opt.value}>{opt.name}</option>
@@ -75,19 +78,10 @@ export function Option ({ setValue, guild, pieces, disable, option }: {
     </Select>
   }
 
-  if (option.type === OptionType.Tagify) {
-    const settings = option.settings(guild)
-    return <Tagify {...props} settings={{
-      ...settings,
-      dropdown: settings.whitelist
-        ? {
-            enabled: 0,
-            maxItems: settings.whitelist.length
-          }
-        : { enabled: false }
-    }} placeholder={option.placeholder}
-       onChange={(val) => setValue(val)}
-       value={value} />
+  if (option.type === OptionType.Tags) {
+    return <Tags {...props} settings={option.settings(guild)} placeholder={option.placeholder} value={value} onChange={(val) => {
+      setValue(val)
+    }} />
   }
 
   if (option.type === OptionType.Number) {

@@ -78,6 +78,13 @@ export class Database extends Db {
     if (!db.punishment.ignored) db.punishment.ignored = []
     if (!db.webhook.ignored) db.webhook.ignored = []
 
+    if (!db.words) db.words = []
+
+    if (!db.categories) db.categories = []
+
+    if (!db.msg.ignoredRoles) db.msg.ignoredRoles = []
+    if (!db.msg.ignoredChannels) db.msg.ignoredChannels = []
+
     return db
   }
 

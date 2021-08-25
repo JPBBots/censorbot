@@ -4,6 +4,7 @@ import { useUser } from 'hooks/useAuth'
 import { useRouter } from 'next/router'
 import { Box } from '@chakra-ui/react'
 import { stats } from 'structures/StatsManager'
+import { chargebee } from 'pages/_app'
 
 export function NavBar () {
   const [user, login, logout] = useUser(false)
@@ -38,6 +39,13 @@ export function NavBar () {
                 : `https://cdn.discordapp.com/embed/avatars/${Number(user.tag.split('#')[1]) % 5}.png`
             }
           : undefined} onLogin={() => login()}>
+            {user?.premium?.customer && <MenuItem onClick={() => {
+              if (chargebee) {
+                chargebee.createChargebeePortal().open()
+              }
+            }}>
+              Payment Portal
+            </MenuItem>}
             <MenuItem onClick={() => {
               logout()
             }}>Logout</MenuItem>

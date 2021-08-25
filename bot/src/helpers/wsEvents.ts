@@ -133,7 +133,13 @@ export const Events = {
 
     resolve?.({
       censored: res.censor,
-      places: res.places.map(x => x.toJSON())
+      places: res.places.map(x => {
+        if (typeof x === 'string') {
+          return x
+        } else {
+          return x.toJSON()
+        }
+      })
     })
   },
   ACCEPT_TICKET: async (con, data, resolve) => {

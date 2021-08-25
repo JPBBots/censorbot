@@ -15,12 +15,12 @@ const slice = createSlice({
   name: 'guilds',
   initialState: initialState,
   reducers: {
-    setGuilds: (state, action: PayloadAction<ShortGuild[]>) => {
+    setGuilds: (state, action: PayloadAction<ShortGuild[]|undefined>) => {
       state.guilds = action.payload
     },
-    setCurrentGuild: (state, action: PayloadAction<GuildData>) => {
+    setCurrentGuild: (state, action: PayloadAction<GuildData|undefined>) => {
       state.currentGuild = action.payload
-      state.volatileDb = action.payload.db
+      state.volatileDb = action.payload?.db
     },
     setDb: (state, action: PayloadAction<DeepPartial<GuildDB>>) => {
       if (state.currentGuild) {

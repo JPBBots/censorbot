@@ -8,7 +8,6 @@ import { Header } from '~/Header'
 import './Global.scss'
 
 import { CCProvider } from '@jpbbots/censorbot-components'
-import '@yaireo/tagify/dist/tagify.css'
 
 import { Provider } from 'react-redux'
 import { store } from 'store'
@@ -16,6 +15,13 @@ import { store } from 'store'
 import { Api } from '../structures/Api'
 import { Loader } from '~/Loader'
 import { Flex } from '@chakra-ui/layout'
+
+import { ChargebeeWeb } from 'types'
+
+export const chargebee = 'window' in global
+  // @ts-expect-error
+  ? Chargebee?.init({ site: 'censorbot-test' }) as ChargebeeWeb ?? null
+  : null
 
 export default function App (props: AppProps) {
   const { Component } = props

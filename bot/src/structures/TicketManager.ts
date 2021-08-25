@@ -63,6 +63,7 @@ export class TicketManager {
       filter: [],
       uncensor: [],
       phrases: [],
+      words: [],
       filters: [...filters]
     })
     if (!res.censor) throw new NonFatalError('Phrase is not censored by the base filter.')
