@@ -21,7 +21,8 @@ export enum OptionType {
   Tags,
   BitBool,
   Select,
-  Number
+  Number,
+  Exception
 }
 
 export const settings: ISetting[] = [
@@ -104,6 +105,18 @@ export const settings: ISetting[] = [
         label: 'Scan and filter images with text',
         type: OptionType.Boolean,
         premium: true
+      }
+    ]
+  },
+
+  {
+    title: 'Exceptions',
+    section: 'Exceptions',
+    description: 'List of exceptions that bypass the default nature of the bot based on specific circumstances',
+    options: [
+      {
+        name: 'exceptions',
+        type: OptionType.Exception
       }
     ]
   },
@@ -495,7 +508,8 @@ export type IOption =
   }> |
   DataOption<OptionType.Number, InputProps, {
     multiplier?: number
-  }>
+  }> |
+  DataOption<OptionType.Exception, {}, {}>
 
 export interface ISetting {
   title?: string

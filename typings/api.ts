@@ -31,6 +31,18 @@ export enum CensorMethods {
   Reactions = 4
 }
 
+export enum ExceptionType {
+  Censor,
+  Punishment,
+  Resend,
+  Response
+}
+
+export interface Exception {
+  role: Snowflake | null
+  channel: Snowflake | null
+  type: ExceptionType
+}
 export interface GuildDB {
   /**
    * ID of guild
@@ -43,7 +55,9 @@ export interface GuildDB {
   /**
    * Censor options
    */
-  censor: number
+  censor: number,
+
+  exceptions: Exception[]
   /**
    * Log channel ID
    */

@@ -7,13 +7,15 @@ import { Option as CCOption } from '~/functional/Option'
 
 import { updateObject } from '@/utils/updateObject'
 
-import { Button, Icon, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputStepper, Select, Textarea } from '@chakra-ui/react'
+import { Button, Icon, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputStepper, Select, Textarea, Text, VStack } from '@chakra-ui/react'
 import Pieces from 'utils/Pieces'
-import { GuildData } from 'typings'
+import { Exception, ExceptionType, GuildData } from 'typings'
 import { SectionName } from './Sidebar'
 
 import TextareaResizer from 'react-textarea-autosize'
 import { Tags } from './Tags'
+import { ExceptionSetting } from './ExceptionSetting'
+import { FaPlus } from 'react-icons/fa'
 
 export function Option ({ setValue, guild, pieces, disable, option }: {
   option: IOption
@@ -114,6 +116,37 @@ export function Option ({ setValue, guild, pieces, disable, option }: {
       name={`${option.name}.${option.bit}`}
       isChecked={(value & option.bit) !== 0}
       label={option.label} />
+  }
+
+  if (option.type === OptionType.Exception) {
+    console.log(guild.db)
+    const exceptions = value as Exception[]
+    return (
+      <VStack w="fit-content" spacing={7}>
+      {
+        exceptions.map((x, ind) => <>
+          <ExceptionSetting key={ind}
+            guild={guild}
+            exception={x}
+            first={ind === 0}
+            onChange={(exc) => {
+              const excepts = [...exceptions]
+              excepts[ind] = exc
+
+              console.log(excepts)
+
+              setValue(excepts)
+            }}
+            onDelete={() => {
+              setValue(exceptions.filter((_, i) => i !== ind))
+            }} />
+        </>)
+      }
+      <Text cursor="pointer" onClick={() => {
+        setValue([...exceptions, { channel: null, role: null, type: ExceptionType.Censor }])
+      }}><Icon as={FaPlus} /> Add Exception</Text>
+    </VStack>
+    )
   }
 
   return <h1>Error</h1>

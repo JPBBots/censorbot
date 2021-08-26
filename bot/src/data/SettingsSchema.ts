@@ -1,5 +1,5 @@
 import Joi, { ValidationError } from 'joi'
-import { GuildDB, filters, CensorMethods, PunishmentType, WebhookReplace } from 'typings'
+import { GuildDB, filters, CensorMethods, PunishmentType, WebhookReplace, Exception, ExceptionType } from 'typings'
 
 const sfRegex = /^[0-9]{5,50}$/
 
@@ -14,6 +14,13 @@ const nullableSnowflake = SnowflakeString.concat(Joi.string()
 )
 
 export const PremiumOnly = (type: any): Joi.Schema => Joi.valid(type).error((errs) => new ValidationError('This is premium only!', errs[0], errs[0]))
+
+export const exceptionSchema = Joi.object<Exception>({
+  channel: nullableSnowflake,
+  role: nullableSnowflake,
+  type: Joi.valid(ExceptionType.Censor, ExceptionType.Punishment, ExceptionType.Resend, ExceptionType.Response)
+    .required()
+})
 
 export const punishmentSchema = Joi.object({
   type: Joi.valid(PunishmentType.Nothing, PunishmentType.Mute, PunishmentType.Kick, PunishmentType.Ban)
@@ -48,6 +55,9 @@ export const settingSchema = Joi.object<GuildDB>({
 
   filters: Joi.array()
     .items(...filters),
+
+  exceptions: Joi.array()
+    .items(exceptionSchema),
 
   censor: Joi.number()
     .min(0)

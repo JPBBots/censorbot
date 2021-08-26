@@ -75,6 +75,8 @@ export class Database extends Db {
 
     if (!db.phrases) db.phrases = []
 
+    if (!db.exceptions) db.exceptions = []
+
     if (!db.punishment.ignored) db.punishment.ignored = []
     if (!db.webhook.ignored) db.webhook.ignored = []
 
