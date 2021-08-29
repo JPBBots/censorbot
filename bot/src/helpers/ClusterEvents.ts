@@ -1,7 +1,10 @@
 import { WorkerManager } from '../managers/Worker'
 
-import '../types'
+import { ExtendedEmitter, Event } from '@jpbberry/typed-emitter'
+
 import path from 'path'
+import { ReloadNames } from '../types'
+import { Snowflake } from 'discord-rose'
 
 const filterDataDir = path.resolve(__dirname, '../structures/Filter')
 
@@ -15,22 +18,27 @@ const rem = (path): void => {
   delete require.cache[require.resolve(path)]
 }
 
-export function addHandlers (worker: WorkerManager): void {
-  worker.comms.on('RELOAD', (reloading) => {
+export class ClusterEvents extends ExtendedEmitter {
+  constructor (private worker: WorkerManager) {
+    super()
+  }
+
+  @Event('RELOAD')
+  reloadComponent (reloading: ReloadNames): void {
     switch (reloading) {
       case 'COMMANDS':
-        worker.loadCommands()
+        this.worker.loadCommands()
         break
       case 'FILTER':
         rem(filterDataDir)
         void import(filterDataDir).then(({ Filter }) => {
-          worker.filter = new Filter()
+          this.worker.filter = new Filter()
         })
         break
       case 'CACHE':
-        worker.db.configCache.clear()
-        worker.actions.webhooks.clear()
-        worker.actions.popups.clear()
+        this.worker.db.configCache.clear()
+        this.worker.actions.webhooks.clear()
+        this.worker.actions.popups.clear()
         break
       case 'FILTERS':
         rem(methods.msg)
@@ -38,20 +46,21 @@ export function addHandlers (worker: WorkerManager): void {
         rem(methods.reacts)
 
         void import(methods.msg).then(({ MessageHandler }) => {
-          worker.methods.msg = MessageHandler
+          this.worker.methods.msg = MessageHandler
         })
         void import(methods.names).then(({ NameHandler }) => {
-          worker.methods.names = NameHandler
+          this.worker.methods.names = NameHandler
         })
         void import(methods.reacts).then(({ ReactionHandler }) => {
-          worker.methods.react = ReactionHandler
+          this.worker.methods.react = ReactionHandler
         })
 
         break
     }
-  })
+  }
 
-  worker.comms.on('GUILD_DUMP', (id) => {
-    worker.db.configCache.delete(id)
-  })
+  @Event('GUILD_DUMP')
+  dumpGuild (id: Snowflake): void {
+    this.worker.db.configCache.delete(id)
+  }
 }

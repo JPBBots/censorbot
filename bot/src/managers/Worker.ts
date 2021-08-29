@@ -1,8 +1,8 @@
-import { Worker, PermissionsUtils, Embed, CommandType } from 'discord-rose'
+import { PermissionsUtils, Embed, CommandType, Worker } from 'discord-rose'
 import { Config } from '../config'
 
 import { Database } from '../structures/Database'
-import { Filter } from '../structures/Filter'
+import { Filter, FilterResponse } from '../structures/Filter'
 import { ActionBucket } from '../structures/ActionBucket'
 import { Responses } from '../structures/Responses'
 import { CommandContext, SlashCommandContext } from '../structures/CommandContext'
@@ -17,9 +17,7 @@ import { PunishmentManager } from '../structures/punishments/PunishmentManager'
 import { APIChannel, Snowflake } from 'discord-api-types'
 import { Collection } from '@discordjs/collection'
 
-import { addHandlers } from '../helpers/clusterEvents'
-import { setupFilters } from '../helpers/setupFilters'
-import { setupDiscord } from '../helpers/discordEvents'
+import { ClusterEvents } from '../helpers/ClusterEvents'
 
 import { MessageHandler } from '../filters/Messages'
 import { NameHandler } from '../filters/Names'
@@ -32,12 +30,18 @@ import { Cache } from '@jpbberry/cache'
 import util from 'util'
 import fetch from 'node-fetch'
 import path from 'path'
-import { GuildDB } from 'typings'
+import { ExceptionType, GuildDB } from 'typings'
+import { WorkerEvents } from '../helpers/WorkerEvents'
 
 interface CachedThread {
   id: Snowflake
   parentId: Snowflake
   guildId: Snowflake
+}
+
+interface ExceptedData {
+  roles?: Snowflake[]
+  channel?: Snowflake
 }
 
 export class WorkerManager extends Worker {
@@ -66,6 +70,9 @@ export class WorkerManager extends Worker {
     names: NameHandler,
     react: ReactionHandler
   }
+
+  private readonly _eventHandler = new WorkerEvents(this)
+  private readonly _clusterEventHandler = new ClusterEvents(this)
 
   constructor () {
     super()
@@ -115,9 +122,8 @@ export class WorkerManager extends Worker {
     this.commands.CommandContext = CommandContext
     this.commands.SlashCommandContext = SlashCommandContext
 
-    addHandlers(this)
-    setupFilters(this)
-    setupDiscord(this)
+    this._eventHandler.add(this)
+    this._clusterEventHandler.add(this.comms)
 
     console.log = (...msg: string[]) => this.comms.log(msg.join(' '))
 
@@ -197,12 +203,37 @@ export class WorkerManager extends Worker {
     })
   }
 
-  isIgnored (channel: APIChannel, db: GuildDB): boolean {
-    if (db.channels.includes(channel.id)) return true
-    if (channel.parent_id && db.categories.includes(channel.parent_id)) return true
+  isExcepted (type: ExceptionType, { exceptions }: Pick<GuildDB, 'exceptions'>, data: ExceptedData): boolean {
+    return exceptions.some(x => {
+      if (x.type === ExceptionType.Everything || x.type === type) {
+        if (x.role && data.roles) {
+          if (!data.roles?.includes(x.role)) return false
+        }
 
-    return false
+        if (x.channel && data.channel) {
+          if (data.channel !== x.channel) return false
+        }
+
+        return x.channel ? !!data.channel : true && x.role ? !!data.roles : true
+      }
+
+      return false
+    })
   }
+
+  test (content: string, db: GuildDB, data: ExceptedData): FilterResponse {
+    return this.filter.test(content, db, {
+      server: this.isExcepted(ExceptionType.ServerFilter, db, data),
+      prebuilt: this.isExcepted(ExceptionType.PreBuiltFilter, db, data)
+    })
+  }
+
+  // isIgnored (channel: APIChannel, db: GuildDB): boolean {
+  //   if (db.channels.includes(channel.id)) return true
+  //   if (channel.parent_id && db.categories.includes(channel.parent_id)) return true
+
+  //   return false
+  // }
 
   logError (error: Error, command?: CommandType): void {
     const embed = this.webhook('errors')

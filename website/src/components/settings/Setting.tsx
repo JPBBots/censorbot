@@ -7,7 +7,7 @@ import { Option as CCOption } from '~/functional/Option'
 
 import { updateObject } from '@/utils/updateObject'
 
-import { Button, Icon, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputStepper, Select, Textarea, Text, VStack } from '@chakra-ui/react'
+import { Button, Icon, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputStepper, Textarea, Text, VStack, HStack } from '@chakra-ui/react'
 import Pieces from 'utils/Pieces'
 import { Exception, ExceptionType, GuildData } from 'typings'
 import { SectionName } from './Sidebar'
@@ -16,6 +16,10 @@ import TextareaResizer from 'react-textarea-autosize'
 import { Tags } from './Tags'
 import { ExceptionSetting } from './ExceptionSetting'
 import { FaPlus } from 'react-icons/fa'
+import { Selector } from '~/functional/Selector'
+import Link from 'next/link'
+
+import Router from 'next/router'
 
 export function Option ({ setValue, guild, pieces, disable, option }: {
   option: IOption
@@ -62,22 +66,25 @@ export function Option ({ setValue, guild, pieces, disable, option }: {
   }
 
   if (option.type === OptionType.Select) {
-    return <Select
+    return <Selector
       {...props}
-      onChange={({ target }) => {
-        setValue(target.value === 'none' && option.allowNone
+      onChange={(value) => {
+        setValue(value === 'none' && option.allowNone
           ? null
           : option.number
-            ? Number(target.value)
-            : target.value
+            ? Number(value)
+            : value
         )
       }}
+      channel={option.channel}
+      role={option.role}
+      placeholder={option.placeholder}
       value={value ?? 'none'}>
-      {option.allowNone && <option value="none">None</option>}
-      {option.options(guild).map(opt =>
-        <option key={opt.value} value={opt.value}>{opt.name}</option>
-      )}
-    </Select>
+        {[
+          ...(option.allowNone ? [{ value: 'none', label: 'None' }] : []),
+          ...option.options(guild)
+        ]}
+    </Selector>
   }
 
   if (option.type === OptionType.Tags) {
@@ -119,8 +126,12 @@ export function Option ({ setValue, guild, pieces, disable, option }: {
   }
 
   if (option.type === OptionType.Exception) {
-    console.log(guild.db)
     const exceptions = value as Exception[]
+
+    const premiumLocked = !guild.premium
+      ? exceptions.length >= 15
+      : exceptions.length >= 100
+
     return (
       <VStack w="fit-content" spacing={7}>
       {
@@ -142,9 +153,23 @@ export function Option ({ setValue, guild, pieces, disable, option }: {
             }} />
         </>)
       }
-      <Text cursor="pointer" onClick={() => {
-        setValue([...exceptions, { channel: null, role: null, type: ExceptionType.Censor }])
-      }}><Icon as={FaPlus} /> Add Exception</Text>
+      {!premiumLocked && <HStack
+        cursor="pointer"
+        spacing={1}
+        onClick={() => {
+          setValue([...exceptions, { channel: null, role: null, type: ExceptionType.Everything }])
+        }}>
+          <Icon as={FaPlus} />
+          <Text>Add Exception</Text>
+      </HStack>}
+      {premiumLocked && (
+        guild.premium
+          ? <Text>Reached the maximum 100 exceptions</Text>
+          : <Text>Reached the maximum 15 exceptions, get <Link href={{
+            pathname: '/dashboard/[guild]/premium',
+            query: Router.query
+          }}>premium</Link> for more.</Text>
+      )}
     </VStack>
     )
   }

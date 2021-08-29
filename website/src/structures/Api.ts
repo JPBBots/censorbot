@@ -184,6 +184,6 @@ export class Api {
   }
 }
 
-if ('window' in global) {
-  window.api = Api
-}
+// if ('window' in global) {
+//   window.api = Api
+// }

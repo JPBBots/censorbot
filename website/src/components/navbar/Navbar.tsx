@@ -1,10 +1,10 @@
+import { chargebee } from '@/pages/_app'
 import { MenuItem } from '@chakra-ui/menu'
+import { Box } from '@chakra-ui/react'
 import { Header, NavActions } from '@jpbbots/censorbot-components'
 import { useUser } from 'hooks/useAuth'
 import { useRouter } from 'next/router'
-import { Box } from '@chakra-ui/react'
 import { stats } from 'structures/StatsManager'
-import { chargebee } from 'pages/_app'
 
 export function NavBar () {
   const [user, login, logout] = useUser(false)
@@ -20,7 +20,12 @@ export function NavBar () {
         if (ev.altKey) stats.open()
       }}
     >
-      <Header title="Censor Bot">
+      <Header title="Censor Bot" logoProps={{
+        onClick: () => {
+          void router.push('/')
+        },
+        cursor: 'pointer'
+      }}>
         <NavActions actions={[
           {
             label: 'Support'

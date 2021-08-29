@@ -1,13 +1,12 @@
 import { Input } from '@chakra-ui/input'
 import { HStack, VStack } from '@chakra-ui/layout'
 import { Select } from '@chakra-ui/select'
-import { Tag, TagLabel, TagLeftIcon } from '@chakra-ui/tag'
-
-import { FaTimes } from 'react-icons/fa'
+import { Tag } from '@jpbbots/censorbot-components'
 
 export interface ITag {
   id?: string
   value: string
+  color?: number
 }
 
 export interface TagsSettings {
@@ -16,6 +15,8 @@ export interface TagsSettings {
   maxTags?: number
   maxMessage?: string
   allowSpaces?: boolean
+  role?: boolean
+  channel?: boolean
 }
 
 export interface TagsProps {
@@ -52,20 +53,16 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
         {
           value.map(tagValue => {
             const val = whitelist
-              ? whitelist.find(x => x.id === tagValue)?.value
-              : tagValue
+              ? whitelist.find(x => x.id === tagValue) ?? { value: tagValue }
+              : { value: tagValue }
 
             return (
-              <Tag size="sm">
-                <TagLeftIcon
-                  boxSize="12px"
-                  cursor="pointer"
-                  as={FaTimes}
-                  onClick={() => {
-                    remove(tagValue)
-                  }}/>
-                <TagLabel>{val}</TagLabel>
-              </Tag>
+              <Tag
+                label={val.value}
+                color={val.color ? String(val.color) : undefined}
+                isRole={settings.role}
+                isChannel={settings.channel}
+                onDelete={() => remove(tagValue)} />
             )
           })
         }

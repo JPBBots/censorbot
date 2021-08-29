@@ -6,7 +6,7 @@ import { Snowflake, GatewayMessageCreateDispatchData, GatewayMessageUpdateDispat
 
 import { Cache } from '@jpbberry/cache'
 
-import { CensorMethods, GuildDB } from 'typings/api'
+import { CensorMethods, ExceptionType, GuildDB } from 'typings/api'
 
 interface MultiLine {
   author: Snowflake
@@ -45,11 +45,10 @@ function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB,
   void worker.responses.log(CensorMethods.Messages, message.content ?? 'No Content', message, response, db)
 
   if (db.msg.content !== false &&
-    !db.msg.ignoredChannels.includes(message.channel_id) &&
-    !db.msg.ignoredRoles.some(x => message.member?.roles.includes(x))
+    !worker.isExcepted(ExceptionType.Response, db, { roles: message.member.roles, channel: message.channel_id })
   ) worker.actions.popup(message.channel_id, message.author.id, db)
 
-  if (response.ranges.length > 0 && db.webhook.enabled && message.content && !db.webhook.ignored.some(x => message.member?.roles.includes(x))) {
+  if (response.ranges.length > 0 && db.webhook.enabled && message.content && !worker.isExcepted(ExceptionType.Resend, db, { roles: message.member.roles, channel: message.channel_id })) {
     if (!worker.hasPerms(message.guild_id, 'webhooks')) {
       void worker.responses.missingPermissions(message.channel_id, 'Manage Webhooks')
     } else {
@@ -62,7 +61,7 @@ function handleDeletion (worker: WorkerManager, message: EventData, db: GuildDB,
     }
   }
 
-  if (!db.punishment.ignored.some(x => message.member?.roles.includes(x))) {
+  if (!worker.isExcepted(ExceptionType.Punishment, db, { roles: message.member.roles, channel: message.channel_id })) {
     const perms = worker.punishments.checkPerms(message.guild_id, db)
     if (typeof perms === 'string') return void worker.responses.missingPermissions(message.channel_id, perms)
     if (!perms) void worker.punishments.punish(message.guild_id, message.author.id, message.member.roles)
@@ -90,8 +89,7 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
   if (
     ![MessageType.Default, MessageType.Reply].includes(message.type as MessageType) ||
     channel.type !== 0 ||
-    message.member.roles.some(role => db.role?.includes(role)) ||
-    worker.isIgnored(channel, db)
+    worker.isExcepted(ExceptionType.Everything, db, { roles: message.member.roles, channel: message.channel_id })
   ) return
 
   let content = message.content as string
@@ -172,7 +170,7 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
     }
   }
 
-  const response = worker.filter.test(content, db)
+  const response = worker.test(content, db, { roles: message.member.roles, channel: message.channel_id })
 
   if (!response.censor) return
 

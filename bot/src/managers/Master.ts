@@ -4,7 +4,8 @@ import path from 'path'
 import { Config } from '../config'
 import { Database } from '../structures/Database'
 
-import { addHandlers } from '../helpers/masterEvents'
+import { MasterEvents } from '../helpers/MasterEvents'
+
 import { Cache } from '@jpbberry/cache'
 import { ShortID } from 'typings'
 
@@ -19,6 +20,8 @@ export class MasterManager extends Master {
   db = new Database()
   api: Cluster
 
+  private readonly _handleEvents = new MasterEvents(this)
+
   helpme: Cache<ShortID, { code: ShortID, id: Snowflake }> = new Cache(5e5)
 
   constructor () {
@@ -30,7 +33,7 @@ export class MasterManager extends Master {
       cacheControl: {
         guilds: ['name', 'icon', 'owner_id', 'region', 'unavailable', 'member_count', 'threads'],
         channels: ['type', 'name', 'nsfw', 'permission_overwrites', 'parent_id'],
-        roles: ['managed', 'permissions', 'name', 'position']
+        roles: ['managed', 'permissions', 'name', 'position', 'color']
       },
       intents: ['GUILD_MESSAGES', 'GUILDS', 'GUILD_MESSAGE_REACTIONS', 'GUILD_MEMBERS'],
       rest: {
@@ -44,7 +47,7 @@ export class MasterManager extends Master {
       AutoPoster(Config.dbl, this)
     }
 
-    addHandlers(this)
+    this._handleEvents.add(this.handlers as any)
 
     this.api = this.spawnProcess('API', path.resolve(__dirname, '../.run/api.js'))
 

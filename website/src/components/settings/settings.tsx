@@ -1,12 +1,11 @@
 import { InputProps } from '@chakra-ui/input'
 import type { OptionProps } from '@jpbbots/censorbot-components'
 
-import { FaAt, FaFilter, FaHashtag } from 'react-icons/fa'
 import type { IconType } from 'react-icons/lib'
 
 import type { DeepPartial } from 'redux'
 
-import { CensorMethods, GuildData, WebhookReplace } from 'typings'
+import { CensorMethods, GuildData /* , WebhookReplace */ } from 'typings'
 
 import type { SectionName } from './Sidebar'
 
@@ -117,56 +116,6 @@ export const settings: ISetting[] = [
       {
         name: 'exceptions',
         type: OptionType.Exception
-      }
-    ]
-  },
-
-  {
-    title: 'Ignored Roles',
-    description: 'Roles that are excepted from filtered words and phrases',
-    icon: FaAt,
-    section: 'Exceptions',
-    options: [
-      {
-        name: 'role',
-        type: OptionType.Tags,
-        settings: ({ guild }) => ({
-          whitelist: guild.r.map(x => ({ value: `@${x.name}`, id: x.id }))
-        }),
-        placeholder: 'Add roles'
-      }
-    ]
-  },
-  {
-    title: 'Ignored Channels',
-    description: 'Channels that are excepted from filtered words and phrases',
-    icon: FaHashtag,
-    section: 'Exceptions',
-    options: [
-      {
-        name: 'channels',
-        type: OptionType.Tags,
-        settings: ({ guild }) => ({
-          whitelist: guild.c.filter(x => x.type === ChannelType.GuildText).map(x => ({ value: `#${x.name}`, id: x.id }))
-        }),
-        placeholder: 'Add channels'
-      }
-    ]
-  },
-  {
-    title: 'Ignored Categories',
-    description: 'Categories who\'s channels will be ignored',
-    icon: FaFilter,
-    premium: true,
-    section: 'Exceptions',
-    options: [
-      {
-        name: 'categories',
-        type: OptionType.Tags,
-        settings: ({ guild }) => ({
-          whitelist: guild.c.filter(x => x.type === ChannelType.GuildCategory).map(x => ({ value: `${x.name}`, id: x.id }))
-        }),
-        placeholder: 'Add categories'
       }
     ]
   },
@@ -323,9 +272,11 @@ export const settings: ISetting[] = [
         name: 'log',
         type: OptionType.Select,
         allowNone: true,
+        channel: true,
+        placeholder: 'Search #channel',
         options: ({ guild }) => guild.c.filter(x => x.type === ChannelType.GuildText).map(x => ({
           value: x.id,
-          name: `#${x.name}`
+          label: x.name
         }))
       }
     ]
@@ -355,40 +306,23 @@ export const settings: ISetting[] = [
       }
     ]
   },
-  {
-    title: 'Replace With',
-    section: 'Resend',
-    premium: true,
-    options: [
-      {
-        name: 'webhook.replace',
-        type: OptionType.Select,
-        number: true,
-        options: () => [
-          { value: WebhookReplace.Spoilers, name: 'Spoilers' },
-          { value: WebhookReplace.Hashtags, name: 'Hashtags' },
-          { value: WebhookReplace.Stars, name: 'Stars' }
-        ]
-      }
-    ]
-  },
-  {
-    title: 'Resend Ignored Roles',
-    description: 'Roles to not send resend messages about',
-    section: 'Resend',
-    premium: true,
-    options: [
-      {
-        name: 'webhook.ignored',
-        type: OptionType.Tags,
-        settings: ({ guild, premium }) => ({
-          whitelist: guild?.r.map(x => ({ value: `@${x.name}`, id: x.id })),
-          maxTags: premium ? Infinity : 0
-        }),
-        placeholder: 'Add roles'
-      }
-    ]
-  },
+  // {
+  //   title: 'Replace With',
+  //   section: 'Resend',
+  //   premium: true,
+  //   options: [
+  //     {
+  //       name: 'webhook.replace',
+  //       type: OptionType.Select,
+  //       number: true,
+  //       options: () => [
+  //         { value: WebhookReplace.Spoilers, name: 'Spoilers' },
+  //         { value: WebhookReplace.Hashtags, name: 'Hashtags' },
+  //         { value: WebhookReplace.Stars, name: 'Stars' }
+  //       ]
+  //     }
+  //   ]
+  // },
 
   {
     title: 'Message Content',
@@ -423,39 +357,6 @@ export const settings: ISetting[] = [
         name: 'msg.deleteAfter',
         type: OptionType.Number,
         multiplier: 1000
-      }
-    ]
-  },
-  {
-    title: 'Response Ignored Channels',
-    description: 'Channels that response messages will not show up in',
-    icon: FaHashtag,
-    section: 'Response',
-    options: [
-      {
-        name: 'msg.ignoredChannels',
-        type: OptionType.Tags,
-        settings: ({ guild }) => ({
-          whitelist: guild.c.filter(x => x.type === ChannelType.GuildText).map(x => ({ value: `#${x.name}`, id: x.id }))
-        }),
-        placeholder: 'Add channels'
-      }
-    ]
-  },
-  {
-    title: 'Response Ignored Roles',
-    description: 'Roles to not send responses about',
-    section: 'Response',
-    icon: FaAt,
-    options: [
-      {
-        name: 'msg.ignoredRoles',
-        type: OptionType.Tags,
-        settings: ({ guild, premium }) => ({
-          whitelist: guild?.r.map(x => ({ value: `@${x.name}`, id: x.id })),
-          maxTags: premium ? Infinity : 0
-        }),
-        placeholder: 'Add roles'
       }
     ]
   },
@@ -504,7 +405,10 @@ export type IOption =
   DataOption<OptionType.Select, JSX.IntrinsicElements['select'], {
     allowNone?: boolean
     number?: boolean
-    options: (guild: GuildData) => Array<{ value: string | number, name: string }>
+    placeholder: string
+    options: (guild: GuildData) => Array<{ value: string | number, label: string, color?: number }>
+    channel?: boolean
+    role?: boolean
   }> |
   DataOption<OptionType.Number, InputProps, {
     multiplier?: number

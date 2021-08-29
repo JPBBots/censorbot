@@ -31,8 +31,37 @@ export enum CensorMethods {
   Reactions = 4
 }
 
+export interface Punishment {
+  /**
+   * Type of punishment
+   */
+  type: PunishmentType
+  /**
+   * How many times a user has to curse
+   */
+  amount: number
+  /**
+   * What role they get if it's a mute
+   */
+  role: Snowflake|null
+  /**
+   * Amount of time to keep the punishment going
+   */
+  time: number|null
+  /**
+   * How long the amount has to expire
+   */
+  expires: number|null
+  /**
+   * Whether or not to retain a users role over a mute
+   */
+  retainRoles: boolean
+}
+
 export enum ExceptionType {
-  Censor,
+  Everything,
+  ServerFilter,
+  PreBuiltFilter,
   Punishment,
   Resend,
   Response
@@ -62,10 +91,6 @@ export interface GuildDB {
    * Log channel ID
    */
   log: Snowflake|null
-  /**
-   * Ignored role ID
-   */
-  role: Snowflake[]
   /**
    * List of words to filter
    */
@@ -102,56 +127,21 @@ export interface GuildDB {
      * Whether or not to DM popup messages
      */
     dm: boolean
-
-    ignoredRoles: Snowflake[]
-    ignoredChannels: Snowflake[]
   }
   /**
    * Punishment settings
    */
-  punishment: {
-    /**
-     * Roles that are exempt from punishments
-     */
-    ignored: Snowflake[],
-    /**
-     * Type of punishment
-     */
-    type: PunishmentType
-    /**
-     * How many times a user has to curse
-     */
-    amount: number
-    /**
-     * What role they get if it's a mute
-     */
-    role: Snowflake|null
-    /**
-     * Amount of time to keep the punishment going
-     */
-    time: number|null
-    /**
-     * How long the amount has to expire
-     */
-    expires: number|null
-    /**
-     * Whether or not to retain a users role over a mute
-     */
-    retainRoles: boolean
-  }
+  punishment: Punishment
   /**
    * Webhook options
    */
   webhook: {
     enabled: boolean
     separate: boolean
-    ignored: Snowflake[]
     replace: WebhookReplace
   }
   multi: boolean
   prefix: string|null
-  channels: Snowflake[]
-  categories: Snowflake[]
   nsfw: boolean
   invites: boolean
   dm: boolean
@@ -234,11 +224,13 @@ export interface DashboardChannel {
   id: Snowflake
   name: string
   type: number
+  parent_id?: Snowflake|null
 }
 
 export interface DashboardRole {
   id: Snowflake
   name: string
+  color: number
 }
 
 export interface ExtendedGuild extends ShortGuild {

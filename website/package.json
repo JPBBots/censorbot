@@ -11,7 +11,7 @@
   "dependencies": {
     "@chakra-ui/react": "^1.6.5",
     "@jpbberry/typed-emitter": "^1.0.1",
-    "@jpbbots/censorbot-components": "^2.3.0",
+    "@jpbbots/censorbot-components": "^2.4.0",
     "@reduxjs/toolkit": "^1.6.1",
     "@types/aos": "^3.0.3",
     "aos": "^2.3.4",

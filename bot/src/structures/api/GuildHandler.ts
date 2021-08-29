@@ -47,11 +47,13 @@ export class GuildHandler {
         c: guild.channels.map(x => ({
           id: x.id,
           name: x.name ?? '',
-          type: x.type
+          type: x.type,
+          parent_id: x.parent_id
         })),
         r: guild.roles.filter(x => !x.managed && x.id !== guild.id).map(x => ({
           id: x.id,
-          name: x.name
+          name: x.name,
+          color: x.color
         }))
       },
       premium: await this.socket.manager.db.guildPremium(guild.id),

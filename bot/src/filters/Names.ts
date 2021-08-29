@@ -4,7 +4,7 @@ import { FilterResponse } from '../structures/Filter'
 
 import { GatewayGuildMemberUpdateDispatchData, GatewayGuildMemberAddDispatchData } from 'discord-api-types'
 
-import { CensorMethods, GuildDB } from 'typings/api'
+import { CensorMethods, ExceptionType, GuildDB } from 'typings/api'
 
 const inappName = 'Inappropriate Name'
 const deHoist = String.fromCharCode(856)
@@ -35,7 +35,7 @@ function handleCensor (worker: WorkerManager, member: EventData, db: GuildDB, re
 
   void worker.api.members.setNickname(member.guild_id, member.user.id, member.nick ? null : inappName).catch(() => {})
 
-  if (!worker.punishments.checkPerms(member.guild_id, db)) {
+  if (!worker.punishments.checkPerms(member.guild_id, db) && !worker.isExcepted(ExceptionType.Punishment, db, { roles: member.roles })) {
     void worker.punishments.punish(member.guild_id, member.user.id, member.roles)
   }
 }
@@ -57,12 +57,12 @@ export async function NameHandler (worker: WorkerManager, member: EventData): Pr
 
   if (
     (db.censor & CensorMethods.Names) === 0 ||
-    member.roles.some(role => db.role?.includes(role))
+    worker.isExcepted(ExceptionType.Everything, db, { roles: member.roles })
   ) return
 
   if (member.nick === inappName) return
 
-  const res = worker.filter.test(name, db)
+  const res = worker.test(name, db, { roles: member.roles })
 
   if (!res.censor) return
 

@@ -240,7 +240,7 @@ export class Filter {
     return res
   }
 
-  test (text: string, db: Pick<GuildDB, 'phrases' | 'filter' | 'filters' | 'uncensor' | 'words'>): FilterResponse {
+  test (text: string, db: Pick<GuildDB, 'phrases' | 'filter' | 'filters' | 'uncensor' | 'words'>, exceptions?: { server: boolean, prebuilt: boolean }): FilterResponse {
     const content = this.resolve(text)
 
     const res: FilterResponse = {
@@ -253,36 +253,40 @@ export class Filter {
     const scanFor: {
       [key in filterName]?: JPBExp[]
     } = {}
-    scanFor.server = db.filter.map(x => new JPBExp(x))
+    if (!exceptions?.server) scanFor.server = db.filter.map(x => new JPBExp(x))
 
-    if (db.phrases) {
-      const phrases = db.phrases.filter(x => text.toLowerCase().includes(x))
-      if (phrases.length > 0) {
-        return {
-          censor: true,
-          ranges: [],
-          filters: ['server'],
-          places: phrases
+    if (!exceptions?.server) {
+      if (db.phrases) {
+        const phrases = db.phrases.filter(x => text.toLowerCase().includes(x))
+        if (phrases.length > 0) {
+          return {
+            censor: true,
+            ranges: [],
+            filters: ['server'],
+            places: phrases
+          }
+        }
+      }
+
+      if (db.words) {
+        const split = text.split(' ')
+        const words = db.words.filter(x => split.includes(x))
+
+        if (words.length > 0) {
+          return {
+            censor: true,
+            ranges: [],
+            filters: ['server'],
+            places: words
+          }
         }
       }
     }
 
-    if (db.words) {
-      const split = text.split(' ')
-      const words = db.words.filter(x => split.includes(x))
-
-      if (words.length > 0) {
-        return {
-          censor: true,
-          ranges: [],
-          filters: ['server'],
-          places: words
-        }
+    if (!exceptions?.prebuilt) {
+      for (const filt in this.filters) {
+        if (db.filters.includes(filt as filterType)) scanFor[filt] = this.filters[filt]
       }
-    }
-
-    for (const filt in this.filters) {
-      if (db.filters.includes(filt as filterType)) scanFor[filt] = this.filters[filt]
     }
 
     content.forEach(piece => {

@@ -1,7 +1,9 @@
 import { GuildData, Exception, ExceptionType } from '@/../../typings/api'
-import { DeepPartial, HStack, VStack, Select, Text, Icon } from '@chakra-ui/react'
+import { DeepPartial, HStack, Text, Icon } from '@chakra-ui/react'
+import { InlineOptionGroup } from '@jpbbots/censorbot-components'
 import React from 'react'
 import { FaTrash } from 'react-icons/fa'
+import { Selector } from '~/functional/Selector'
 
 export interface ExceptionSettingProps {
   guild: GuildData
@@ -20,47 +22,70 @@ export function ExceptionSetting ({ guild, exception, onChange, onDelete, first 
     })
   }
 
-  return (
-    <HStack spacing={4} justify="center">
-      <VStack>
-        {first && <Text textStyle="heading.sm">Role</Text>}
-        <Select
-          w="200px"
-          value={exception.role ?? '_'}
-          onChange={({ target }) => change({ role: target.value === '_' ? null : target.value })}>
-          <option value='_'>All Roles</option>
+  return <HStack>
+    <InlineOptionGroup>
+      <Text>Anyone with</Text>
+      <Selector
+        role
+        value={exception.role}
+        placeholder="Select @role"
+        onChange={(role) => change({ role })}>
+          {guild.guild.r.map(x => ({
+            label: x.name,
+            value: x.id,
+            color: x.color
+          }))}
+      </Selector>
+
+      <Text>in channel</Text>
+      <Selector
+        channel
+        value={exception.channel}
+        placeholder="Select #channel"
+        onChange={(channel) => change({ channel })}>
+          {guild.guild.c.map(x => ({
+            label: x.name,
+            value: x.id
+          }))}
+      </Selector>
+
+      <Text>bypasses</Text>
+      <Selector
+        value={exception.type}
+        placeholder="Select bypass"
+        onChange={(type) => change({ type })}>
           {
-            guild.guild.r.map(x => <option key={x.id} value={x.id}>@{x.name}</option>)
+            [
+              {
+                label: 'Everything',
+                value: ExceptionType.Everything
+              },
+              {
+                label: 'Server Filter',
+                value: ExceptionType.ServerFilter
+              },
+              {
+                label: 'Pre-built Filter',
+                value: ExceptionType.PreBuiltFilter
+              },
+              {
+                label: 'Punishments',
+                value: ExceptionType.Punishment
+              },
+              {
+                label: 'Response Message',
+                value: ExceptionType.Response
+              },
+              {
+                label: 'Resends',
+                value: ExceptionType.Resend
+              }
+            ]
           }
-        </Select>
-      </VStack>
-      <VStack>
-        {first && <Text textStyle="heading.sm">Channel</Text>}
-        <Select
-          w="200px"
-          value={exception.channel ?? '_'}
-          onChange={({ target }) => change({ channel: target.value === '_' ? null : target.value })}>
-          <option value="_">All Channels</option>
-          {
-            guild.guild.c.map(x => <option key={x.id} value={x.id}>#{x.name}</option>)
-          }
-        </Select>
-      </VStack>
-      <VStack>
-        {first && <Text textStyle="heading.sm">Bypasses</Text>}
-        <Select
-          w="200px"
-          value={exception.type}
-          onChange={({ target }) => change({ type: Number(target.value) })}>
-          <option value={ExceptionType.Censor}>Curses</option>
-          <option value={ExceptionType.Punishment}>Punishments</option>
-          <option value={ExceptionType.Response}>Response Messages</option>
-          <option value={ExceptionType.Resend}>Resends</option>
-        </Select>
-      </VStack>
-      <Icon cursor="pointer" fontSize={20} as={FaTrash} onClick={() => {
-        onDelete?.()
-      }} />
-    </HStack>
-  )
+      </Selector>
+    </InlineOptionGroup>
+    <Icon cursor="pointer" fontSize={20} as={FaTrash} onClick={() => {
+      onDelete?.()
+    }} />
+  </HStack>
 }

@@ -3,7 +3,7 @@ import { ShortID } from 'typings'
 
 export const Reloaders = ['COMMANDS', 'FILTER', 'CACHE', 'FILTERS'] as const
 
-type ReloadNames = typeof Reloaders[number]
+export type ReloadNames = typeof Reloaders[number]
 
 declare module 'discord-rose/dist/clustering/ThreadComms' {
   interface ThreadEvents {

@@ -2,7 +2,7 @@ import { WorkerManager } from '../managers/Worker'
 
 import { GatewayMessageReactionAddDispatchData } from 'discord-api-types'
 
-import { CensorMethods } from 'typings/api'
+import { CensorMethods, ExceptionType } from 'typings/api'
 
 export async function ReactionHandler (worker: WorkerManager, reaction: GatewayMessageReactionAddDispatchData): Promise<void> {
   if (
@@ -20,11 +20,10 @@ export async function ReactionHandler (worker: WorkerManager, reaction: GatewayM
 
   if (
     (db.censor & CensorMethods.Reactions) === 0 ||
-    reaction.member.roles.some(role => db.role?.includes(role)) ||
-    worker.isIgnored(channel, db)
+    worker.isExcepted(ExceptionType.Everything, db, { roles: reaction.member.roles, channel: channel.id })
   ) return
 
-  const res = worker.filter.test(reaction.emoji.name ?? '', db)
+  const res = worker.test(reaction.emoji.name ?? '', db, { roles: reaction.member.roles, channel: reaction.channel_id })
 
   if (!res.censor) return
 
@@ -34,7 +33,7 @@ export async function ReactionHandler (worker: WorkerManager, reaction: GatewayM
 
   void worker.responses.log(CensorMethods.Reactions, reaction.emoji.name ?? '', reaction, res, db)
 
-  if (!worker.punishments.checkPerms(reaction.guild_id, db)) {
+  if (!worker.punishments.checkPerms(reaction.guild_id, db) && !worker.isExcepted(ExceptionType.Punishment, db, { roles: reaction.member.roles, channel: reaction.channel_id })) {
     void worker.punishments.punish(reaction.guild_id, reaction.member.user.id, reaction.member.roles)
   }
 }

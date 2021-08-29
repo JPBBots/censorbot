@@ -5,6 +5,7 @@
     "outDir": "./dist",
     "moduleResolution": "node",
     "module": "commonjs",
+    "experimentalDecorators": true,
     "resolveJsonModule": true,
     "strictNullChecks": true,
     "allowJs": true,

@@ -1,7 +1,7 @@
 import { Config } from '../config'
 import { Cache } from '@jpbberry/cache'
 
-import { CensorMethods, GuildDB } from 'typings/api'
+import { CensorMethods, ExceptionType, GuildDB } from 'typings/api'
 import { Snowflake } from 'discord-api-types'
 
 import DefaultConfig from '../data/DefaultConfig.json'
@@ -38,17 +38,12 @@ export class Database extends Db {
     let db = (await this.collection('guild_data').findOne({ id }) as GuildDB) || Object.assign({ id }, DefaultConfig)
     db = await this._checkForUpdates(db)
 
-    if (!Array.isArray(db.role)) {
-      if (db.role) db.role = []
-      else db.role = [db.role]
-    }
-
     this.configCache.set(id, db)
 
     return db
   }
 
-  private async _checkForUpdates (db: any): Promise<GuildDB> {
+  private async _checkForUpdates (db: GuildDB & Record<any, any> & { censor: any }): Promise<GuildDB> {
     if (typeof db.censor === 'object') {
       let bit = 0
 
@@ -77,15 +72,32 @@ export class Database extends Db {
 
     if (!db.exceptions) db.exceptions = []
 
-    if (!db.punishment.ignored) db.punishment.ignored = []
-    if (!db.webhook.ignored) db.webhook.ignored = []
-
     if (!db.words) db.words = []
 
-    if (!db.categories) db.categories = []
+    if (db.channels) {
+      db.exceptions.push(...db.channels.map(id => ({
+        channel: id,
+        role: null,
+        type: ExceptionType.Everything
+      })))
 
-    if (!db.msg.ignoredRoles) db.msg.ignoredRoles = []
-    if (!db.msg.ignoredChannels) db.msg.ignoredChannels = []
+      db.exceptions.push(...db.role.map(id => ({
+        channel: null,
+        role: id,
+        type: ExceptionType.Everything
+      })))
+
+      delete db.channels
+      delete db.role
+
+      await this.collection('guild_data').updateOne({ id: db.id }, {
+        $unset: {
+          channels: '',
+          role: ''
+        },
+        $set: db
+      })
+    }
 
     return db
   }

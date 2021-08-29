@@ -1,5 +1,5 @@
 import Joi, { ValidationError } from 'joi'
-import { GuildDB, filters, CensorMethods, PunishmentType, WebhookReplace, Exception, ExceptionType } from 'typings'
+import { GuildDB, filters, CensorMethods, PunishmentType, WebhookReplace, Exception, ExceptionType, Punishment } from 'typings'
 
 const sfRegex = /^[0-9]{5,50}$/
 
@@ -18,11 +18,18 @@ export const PremiumOnly = (type: any): Joi.Schema => Joi.valid(type).error((err
 export const exceptionSchema = Joi.object<Exception>({
   channel: nullableSnowflake,
   role: nullableSnowflake,
-  type: Joi.valid(ExceptionType.Censor, ExceptionType.Punishment, ExceptionType.Resend, ExceptionType.Response)
+  type: Joi.valid(
+    ExceptionType.Everything,
+    ExceptionType.PreBuiltFilter,
+    ExceptionType.ServerFilter,
+    ExceptionType.Punishment,
+    ExceptionType.Resend,
+    ExceptionType.Response
+  )
     .required()
 })
 
-export const punishmentSchema = Joi.object({
+export const punishmentSchema = Joi.object<Punishment>({
   type: Joi.valid(PunishmentType.Nothing, PunishmentType.Mute, PunishmentType.Kick, PunishmentType.Ban)
     .required(),
 
@@ -48,8 +55,6 @@ export const punishmentSchema = Joi.object({
   retainRoles: false
 })
 
-const RoleChannelList = Joi.array().items(SnowflakeString).max(250)
-
 export const settingSchema = Joi.object<GuildDB>({
   id: SnowflakeString,
 
@@ -57,15 +62,14 @@ export const settingSchema = Joi.object<GuildDB>({
     .items(...filters),
 
   exceptions: Joi.array()
-    .items(exceptionSchema),
+    .items(exceptionSchema)
+    .max(15),
 
   censor: Joi.number()
     .min(0)
     .max(Object.values<number>(CensorMethods as unknown as Record<string, number>).reduce((a, b) => a | b, 0)),
 
   log: nullableSnowflake,
-
-  role: RoleChannelList,
 
   filter: Joi.array()
     .items(Joi.string().max(20))
@@ -85,7 +89,7 @@ export const settingSchema = Joi.object<GuildDB>({
 
   antiHoist: Joi.bool(),
 
-  msg: Joi.object({
+  msg: Joi.object<GuildDB['msg']>({
     content: Joi.string()
       .max(200)
       .allow(null, false),
@@ -94,26 +98,19 @@ export const settingSchema = Joi.object<GuildDB>({
       .allow(false)
       .max(120e3),
 
-    dm: PremiumOnly(false),
-
-    ignoredRoles: RoleChannelList,
-    ignoredChannels: RoleChannelList
+    dm: PremiumOnly(false)
   }),
 
   punishment: punishmentSchema,
 
-  webhook: Joi.object({
+  webhook: Joi.object<GuildDB['webhook']>({
     enabled: PremiumOnly(false),
     separate: PremiumOnly(true),
-    replace: PremiumOnly(WebhookReplace.Spoilers),
-    ignored: Joi.array().items(SnowflakeString).max(0)
+    replace: PremiumOnly(WebhookReplace.Spoilers)
   }),
 
   multi: PremiumOnly(false),
   prefix: Joi.string().allow(null),
-
-  channels: RoleChannelList,
-  categories: RoleChannelList,
 
   nsfw: Joi.bool(),
 
@@ -135,15 +132,21 @@ export const premiumSchema = settingSchema.concat(Joi.object({
   uncensor: Joi.array().max(1500),
   phrases: Joi.array().max(1000),
 
-  webhook: Joi.object({
+  exceptions: Joi.array().max(100),
+
+  webhook: Joi.object<GuildDB['webhook']>({
     enabled: boolOverride,
     separate: boolOverride,
-    replace: Joi.valid(Joi.override, WebhookReplace.Spoilers, WebhookReplace.Hashtags, WebhookReplace.Stars),
-    ignored: RoleChannelList
+    replace: Joi.valid(
+      Joi.override,
+      WebhookReplace.Spoilers,
+      WebhookReplace.Hashtags,
+      WebhookReplace.Stars
+    )
   }),
 
-  punishment: Joi.object({
-    retainRoles: boolOverride
+  punishment: Joi.object<Punishment>({
+    retainRoles: boolOverride // TODO
   }),
 
   msg: Joi.object({
