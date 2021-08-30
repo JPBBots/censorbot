@@ -10,7 +10,7 @@ import { ReloadNames } from '../types'
 import GenerateID from '../utils/GenerateID'
 
 export class MasterEvents extends ExtendedEmitter {
-  constructor (private master: MasterManager) {
+  constructor (private readonly master: MasterManager) {
     super()
   }
 
@@ -61,5 +61,4 @@ export class MasterEvents extends ExtendedEmitter {
       resolve(res)
     })
   }
-
 }

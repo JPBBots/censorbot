@@ -8,7 +8,7 @@ import { PunishmentType } from 'typings'
 export class WorkerEvents extends ExtendedEmitter {
   unavailables: Set<Snowflake> = new Set()
 
-  constructor (public worker: WorkerManager) {
+  constructor (private readonly worker: WorkerManager) {
     super()
 
     this.worker.comms.on('START', () => {
