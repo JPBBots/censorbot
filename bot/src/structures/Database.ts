@@ -1,7 +1,7 @@
 import { Config } from '../config'
 import { Cache } from '@jpbberry/cache'
 
-import { CensorMethods, ExceptionType, GuildDB } from 'typings/api'
+import { CensorMethods, ExceptionType, GuildDB, Ticket, User } from 'typings/api'
 import { Snowflake } from 'discord-api-types'
 
 import DefaultConfig from '../data/DefaultConfig.json'
@@ -11,9 +11,29 @@ import { settingSchema, premiumSchema } from '../data/SettingsSchema'
 
 import { Database as Db } from '@jpbbots/interface/dist/Database'
 import { Collection } from 'mongodb'
+import { CustomerSchema } from '../types'
+import { PunishmentSchema } from './punishments/PunishmentManager'
+import { TimeoutSchema } from './punishments/Timeouts'
+import { TicketBanSchema } from './TicketManager'
+import { Injectable } from '@nestjs/common'
 
 export * from '../data/SettingsSchema'
 
+export interface DatabaseCollections {
+  customers: CustomerSchema
+  guild_data: GuildDB
+  premium_users: {
+    id: Snowflake
+    guilds: Snowflake[]
+  }
+  punish: PunishmentSchema
+  tickets: Ticket
+  ticketban: TicketBanSchema
+  timeouts: TimeoutSchema
+  users: User
+}
+
+@Injectable()
 export class Database extends Db {
   configCache: Cache<Snowflake, GuildDB> = new Cache(5 * 60 * 1000)
 
@@ -23,6 +43,10 @@ export class Database extends Db {
   schemas = {
     normal: settingSchema,
     premium: premiumSchema
+  }
+
+  get collection () {
+    return <C extends keyof DatabaseCollections>(name: C) => super.collection(name) as Collection<DatabaseCollections[C]>
   }
 
   constructor () {

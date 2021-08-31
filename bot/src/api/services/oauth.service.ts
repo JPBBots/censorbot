@@ -1,35 +1,30 @@
-import { ApiManager } from '../../managers/Api'
-
-import { PermissionsUtils } from 'discord-rose'
+import { Injectable } from '@nestjs/common'
+import { Database } from '../../structures/Database'
 
 import Crypto from 'crypto'
 import qs from 'querystring'
+import { Config } from '../../config'
+import { ShortGuild, User } from 'typings'
+import { APIGuild, APIUser, RESTPostOAuth2AccessTokenResult, RESTPostOAuth2AccessTokenURLEncodedData } from 'discord-api-types'
+import { DiscordService } from './discord.service'
+import { PermissionsUtils } from 'discord-rose'
 
-import { APIGuild, APIUser, RESTPostOAuth2AccessTokenResult, RESTPostOAuth2AccessTokenURLEncodedData, Snowflake } from 'discord-api-types'
-import { ShortGuild } from 'typings/api'
-import { Collection } from 'mongodb'
+@Injectable()
+export class OAuthService {
+  constructor (
+    private readonly database: Database,
+    private readonly rest: DiscordService
+  ) {}
 
-export interface DatabaseUserSchema {
-  id: Snowflake
-  token: string
-  bearer: string
-  avatar: string|null
-  email?: string|null
-  tag: string
-}
-
-export class OAuth2 {
-  constructor (public manager: ApiManager) {}
-
-  get db (): Collection<DatabaseUserSchema> {
-    return this.manager.db.collection('users')
+  get db () {
+    return this.database.collection('users')
   }
 
   private createToken (): string {
     return Crypto.createHash('sha256')
       .update(Crypto.randomBytes(8).toString('hex'))
       .update(`${Date.now()}`)
-      .update(`${this.manager.config.oauth.mySecret}`)
+      .update(`${Config.oauth.mySecret}`)
       .digest('hex')
   }
 
@@ -44,7 +39,7 @@ export class OAuth2 {
 
     const token = currentUser?.token ?? this.createToken()
 
-    const db: DatabaseUserSchema = {
+    const db: User = {
       id: user.id,
       bearer: oauthUser.access_token,
       token,
@@ -59,17 +54,17 @@ export class OAuth2 {
   }
 
   private async _bearer (code: string, host: string): Promise<RESTPostOAuth2AccessTokenResult | false> {
-    const user = await this.manager.rest.request('POST', '/oauth2/token', {
+    const user = await this.rest.request('POST', '/oauth2/token', {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: {
-        client_id: this.manager.config.id,
-        client_secret: this.manager.config.oauth.secret,
+        client_id: Config.id,
+        client_secret: Config.oauth.secret,
         code,
         grant_type: 'authorization_code',
         redirect_uri: `https://${host}/api/auth/discord/callback`,
-        scope: this.manager.config.dashboardOptions.scopes.join(' ')
+        scope: Config.dashboardOptions.scopes.join(' ')
       } as RESTPostOAuth2AccessTokenURLEncodedData,
       parser: qs.stringify
     }).catch(() => false)
@@ -80,7 +75,7 @@ export class OAuth2 {
   }
 
   public async getUser (token: string): Promise<APIUser | false> {
-    const user = await this.manager.rest.request('GET', '/users/@me', {
+    const user = await this.rest.request('GET', '/users/@me', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -92,7 +87,7 @@ export class OAuth2 {
   }
 
   public async getGuilds (token: string): Promise<ShortGuild[] | false> {
-    const guilds = await this.manager.rest.request('GET', '/users/@me/guilds', {
+    const guilds = await this.rest.request('GET', '/users/@me/guilds', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -100,8 +95,8 @@ export class OAuth2 {
 
     if (!guilds || !Array.isArray(guilds)) return false
 
-    return guilds.filter(x => x.owner as boolean || PermissionsUtils.has(Number(x.permissions), this.manager.config.dashboardOptions.requiredPermission))
-      .filter(x => this.manager.config.custom.allowedGuilds ? this.manager.config.custom.allowedGuilds.includes(x.id) : true)
+    return guilds.filter(x => x.owner as boolean || PermissionsUtils.has(Number(x.permissions), Config.dashboardOptions.requiredPermission))
+      .filter(x => Config.custom.allowedGuilds ? Config.custom.allowedGuilds.includes(x.id) : true)
       .map(x => ({ n: x.name, i: x.id, a: x.icon }))
   }
 }

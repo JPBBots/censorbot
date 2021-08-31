@@ -1,6 +1,15 @@
-import { ApiManager } from '../managers/Api'
+import { NestFactory } from '@nestjs/core'
 
-module.exports = new ApiManager()
+import { AppModule } from '../api/app.module'
+import { Config } from '../config'
 
-// @ts-expect-error
-global.api = module.exports
+async function bootstrap (): Promise<void> {
+  const app = await NestFactory.create(AppModule, {
+    // logger: false
+  })
+
+  app.setGlobalPrefix('api')
+
+  await app.listen(Config.dashboardOptions.port)
+}
+bootstrap()

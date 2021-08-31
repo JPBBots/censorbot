@@ -26,6 +26,12 @@
     "@jpbberry/load-routes": "^1.0.3",
     "@jpbberry/typed-emitter": "^1.2.1",
     "@jpbbots/interface": "^1.0.3",
+    "@nestjs/common": "^8.0.6",
+    "@nestjs/core": "^8.0.6",
+    "@nestjs/platform-express": "^8.0.6",
+    "@nestjs/platform-socket.io": "^8.0.6",
+    "@nestjs/swagger": "^5.0.9",
+    "@nestjs/websockets": "^8.0.6",
     "chargebee": "^2.6.5",
     "crypto": "^1.0.1",
     "deepai": "^1.0.17",
@@ -35,6 +41,9 @@
     "joi": "^17.4.1",
     "mongodb": "^3.6.8",
     "node-fetch": "^2.6.1",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.3.0",
+    "socket.io": "^4.2.0",
     "topgg-autoposter": "^1.1.10",
     "validate": "^5.1.0",
     "ws": "^7.4.4"
@@ -53,7 +62,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
     "ts-standard": "^10.0.0",
-    "typescript": "^4.2.3",
+    "typescript": "^4.4.2",
     "typings": "file:../typings"
   },
   "types": "./types.ts"

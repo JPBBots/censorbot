@@ -5,6 +5,17 @@ export const Reloaders = ['COMMANDS', 'FILTER', 'CACHE', 'FILTERS'] as const
 
 export type ReloadNames = typeof Reloaders[number]
 
+export interface CustomerSchema {
+  /**
+   * Discord User ID
+   */
+  id: Snowflake
+  /**
+   * Customer ChargeBee ID
+   */
+  customer: string
+}
+
 declare module 'discord-rose/dist/clustering/ThreadComms' {
   interface ThreadEvents {
     RELOAD: {

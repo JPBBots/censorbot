@@ -5,7 +5,7 @@ import { PunishmentManager } from './PunishmentManager'
 
 import DJSCollection from '@discordjs/collection'
 
-interface TimeoutSchema {
+export interface TimeoutSchema {
   guild: Snowflake
   user: Snowflake
   at: number

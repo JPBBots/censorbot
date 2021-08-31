@@ -9,7 +9,7 @@ import { NonFatalError } from '../utils/NonFatalError'
 
 import { Embed } from 'discord-rose'
 
-interface TicketBanSchema {
+export interface TicketBanSchema {
   id: Snowflake
   reason: string
   when: Date
