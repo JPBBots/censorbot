@@ -31,7 +31,7 @@ export class DiscordAuthController {
   ) {
     if (!code) throw new HttpException('Missing Code', HttpStatus.BAD_REQUEST)
 
-    let token
+    let token: string
     try {
       token = await this.oauth.callback(code, host)
       if (!token) throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR)

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { Database } from '../../structures/Database'
 
 import Crypto from 'crypto'
 import qs from 'querystring'
@@ -8,11 +7,12 @@ import { ShortGuild, User } from 'typings'
 import { APIGuild, APIUser, RESTPostOAuth2AccessTokenResult, RESTPostOAuth2AccessTokenURLEncodedData } from 'discord-api-types'
 import { DiscordService } from './discord.service'
 import { PermissionsUtils } from 'discord-rose'
+import { DatabaseService } from './database.service'
 
 @Injectable()
 export class OAuthService {
   constructor (
-    private readonly database: Database,
+    private readonly database: DatabaseService,
     private readonly rest: DiscordService
   ) {}
 

@@ -15,7 +15,6 @@ import { CustomerSchema } from '../types'
 import { PunishmentSchema } from './punishments/PunishmentManager'
 import { TimeoutSchema } from './punishments/Timeouts'
 import { TicketBanSchema } from './TicketManager'
-import { Injectable } from '@nestjs/common'
 
 export * from '../data/SettingsSchema'
 
@@ -33,7 +32,6 @@ export interface DatabaseCollections {
   users: User
 }
 
-@Injectable()
 export class Database extends Db {
   configCache: Cache<Snowflake, GuildDB> = new Cache(5 * 60 * 1000)
 
@@ -126,15 +124,8 @@ export class Database extends Db {
     return db
   }
 
-  get premium (): Collection<{
-    id: Snowflake
-    guilds: Snowflake[]
-  }> {
-    return this.collection('premium_users')
-  }
-
   async guildPremium (id: Snowflake): Promise<boolean> {
-    const response = await this.premium.find({
+    const response = await this.collection('premium_users').find({
       guilds: {
         $elemMatch: { $eq: id }
       }
