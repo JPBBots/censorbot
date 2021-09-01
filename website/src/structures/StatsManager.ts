@@ -59,12 +59,12 @@ class StatsManager {
 
   get info () {
     return {
-      connected: Api.ws.open,
+      connected: Api.ws.ws.connected,
       hashRandom: this.runnerHash,
-      ping: `${Api.ws.ping}ms`,
+      ping: `${1}ms`,
       staging: this.staging,
       headless: this.headless,
-      meta: Api.ws.meta,
+      id: Api.ws.ws.id,
       loginState: `${store.getState().auth.loginState} (${swap(LoginState)[store.getState().auth.loginState]})`,
       build: window.__NEXT_DATA__.buildId,
       page: Router.pathname,

@@ -86,14 +86,14 @@ export class OAuthService {
     return user
   }
 
-  public async getGuilds (token: string): Promise<ShortGuild[] | false> {
+  public async getGuilds (token: string): Promise<ShortGuild[]> {
     const guilds = await this.rest.request('GET', '/users/@me/guilds', {
       headers: {
         Authorization: `Bearer ${token}`
       }
     }) as APIGuild[]
 
-    if (!guilds || !Array.isArray(guilds)) return false
+    if (!guilds || !Array.isArray(guilds)) throw new Error('Unauthorized')
 
     return guilds.filter(x => x.owner as boolean || PermissionsUtils.has(Number(x.permissions), Config.dashboardOptions.requiredPermission))
       .filter(x => Config.custom.allowedGuilds ? Config.custom.allowedGuilds.includes(x.id) : true)

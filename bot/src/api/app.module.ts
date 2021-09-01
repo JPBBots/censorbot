@@ -16,6 +16,9 @@ import { ChargeBeeService } from './services/chargebee.service'
 import { DatabaseService } from './services/database.service'
 import { InterfaceService } from './services/interface.service'
 import { CacheService } from './services/cache.service'
+import { FilterService } from './services/filter.service'
+import { GuildsService } from './services/guilds.service'
+import { ThreadService } from './services/thread.service'
 
 @Module({
   imports: [GatewayAuthGuard],
@@ -24,10 +27,13 @@ import { CacheService } from './services/cache.service'
     Database,
     Reflector,
 
+    ThreadService,
     CacheService,
     DatabaseService,
     DiscordService,
     InterfaceService,
+    FilterService,
+    GuildsService,
     OAuthService,
     UsersService,
     ChargeBeeService,

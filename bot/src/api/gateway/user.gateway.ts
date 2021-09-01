@@ -8,6 +8,11 @@ import { SelfData, Self } from '../decorators/self.decorator'
 import { WebSocketEventMap } from 'typings/websocket'
 import { UsersService } from '../services/users.service'
 import { CacheService } from '../services/cache.service'
+import { OAuthService } from '../services/oauth.service'
+import { Snowflake } from 'discord-rose'
+import { GuildsService } from '../services/guilds.service'
+import { DatabaseService } from '../services/database.service'
+import Pieces from '../../utils/Pieces'
 
 export type SocketConnection = Socket & { data: SelfData }
 
@@ -18,21 +23,42 @@ type EventMap = {
 @WebSocketGateway({ path: '/ws', pingInterval: 45e3 })
 export class UserGateway {
   @WebSocketServer()
-  server: Server
+  server: Server<{
+    [key in keyof WebSocketEventMap]: (args: WebSocketEventMap[key]['receive']) => void
+  }>
 
   constructor (
     private readonly users: UsersService,
-    private readonly caching: CacheService
+    private readonly oauth: OAuthService,
+    private readonly db: DatabaseService,
+    private readonly caching: CacheService,
+    private readonly guilds: GuildsService
   ) {
-    setInterval(() => {
-      this.server.to('a').emit('HELLO', 'abc 123')
-    }, 5e3)
+    guilds.on('GUILD_SETTINGS_UPDATE', (dat) => {
+      this.server.to(dat.id).emit('CHANGE_SETTING', { id: dat.id, data: dat.db })
+    })
+
+    guilds.on('GUILD_UPDATED', (guild) => {
+      this.server.to(guild.guild.i).emit('UPDATE_GUILD', guild)
+    })
   }
 
   getSelf (data: SelfData) {
     if (!data.userId) return undefined
 
     return this.caching.users.get(data.userId)
+  }
+
+  hasAccess (data: SelfData, id: Snowflake) {
+    if (!data.userId) throw new Error('Unauthorized')
+
+    const cache = this.caching.userGuilds.get(data.userId)
+
+    if (!cache) throw new Error('Unauthorized')
+
+    if (!cache.some(x => x.i === id)) throw new Error('Unauthorized')
+
+    return true
   }
 
   @SubscribeMessage('LOGOUT')
@@ -58,13 +84,42 @@ export class UserGateway {
     }
   }
 
+  @SubscribeMessage('GET_GUILDS')
+  async getGuilds (
+  @Self() self: SelfData
+  ) {
+    const user = this.getSelf(self)
+    if (!user?.bearer) throw new Error('Unauthorized')
+
+    let guilds = this.caching.userGuilds.get(user.id)
+    if (guilds) return guilds
+
+    guilds = await this.oauth.getGuilds(user?.bearer)
+
+    this.caching.userGuilds.set(user.id, guilds)
+
+    return guilds
+  }
+
   @SubscribeMessage('SUBSCRIBE')
   async subscribe (
   @Self() self: SelfData,
     @MessageBody() data: EventMap['SUBSCRIBE'],
     @ConnectedSocket() sock: SocketConnection
   ) {
-    await sock.join('a')
+    if (!data) return
+
+    if (!this.hasAccess(self, data)) return
+
+    for (const room of sock.rooms) {
+      await sock.leave(room)
+    }
+
+    await sock.join(data)
+
+    const guild = await this.guilds.get(data)
+
+    return guild
   }
 
   @SubscribeMessage('UNSUBSCRIBE')
@@ -73,6 +128,68 @@ export class UserGateway {
     @MessageBody() data: EventMap['UNSUBSCRIBE'],
     @ConnectedSocket() sock: SocketConnection
   ) {
-    await sock.leave('a')
+    await sock.leave(data)
   }
+
+  @SubscribeMessage('CHANGE_SETTING')
+  async changeSetting (
+  @Self() self: SelfData,
+    @MessageBody() data: EventMap['CHANGE_SETTING']
+  ) {
+    if (!data || !data.data || !data.id) return
+
+    if (!this.hasAccess(self, data.id)) return { error: 'Unauthorized' }
+
+    await this.guilds.set(data.id, Pieces.normalize(data.data))
+
+    return true
+  }
+
+  @SubscribeMessage('SET_PREMIUM')
+  async setPremium (
+  @Self() self: SelfData,
+    @MessageBody() data: EventMap['SET_PREMIUM']
+  ) {
+    const user = this.getSelf(self)
+
+    if (!user || !user.premium || !data?.guilds) return
+
+    if (data.guilds.length > user.premium.count) {
+      return {
+        error: 'Not enough premium servers.'
+      }
+    }
+
+    if (!data.guilds.every(x => x.match(/^[0-9]{5,}$/))) return { error: 'Strange guild ID' }
+
+    await this.db.collection('premium_users').updateOne({ id: user.id }, {
+      $set: {
+        id: user.id,
+        guilds: data.guilds
+      }
+    }, {
+      upsert: true
+    })
+
+    user.premium.guilds.filter(x => !data.guilds.includes(x)).forEach(guild => {
+      const cur = this.caching.guilds.get(guild)
+      if (!cur) return
+
+      cur.premium = false // TODO
+      this.caching.guilds.set(guild, cur)
+    })
+    data.guilds.forEach(guild => {
+      const cur = this.caching.guilds.get(guild)
+      if (!cur) return
+
+      cur.premium = true
+      this.caching.guilds.set(guild, cur)
+    })
+
+    user.premium.guilds = data.guilds
+
+    return true
+  }
+
+  // TODO TICKETS
 }

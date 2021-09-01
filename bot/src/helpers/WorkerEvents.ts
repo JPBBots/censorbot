@@ -143,14 +143,7 @@ export class WorkerEvents extends ExtendedEmitter {
   }
 
   async updateGuild (guildId: Snowflake): Promise<void> {
-    const isSubbed = await this.worker.comms.sendCommand('HAS_SUB', guildId)
-    if (!isSubbed) return
-
-    this.worker.comms.emit('GET_GUILD', { id: guildId }, (guild) => {
-      if ('error' in guild) return
-
-      this.worker.comms.tell('GUILD_UPDATED', guild)
-    })
+    this.worker.comms.tell('GUILD_UPDATED', guildId)
   }
 
   @Event('GUILD_ROLE_CREATE')

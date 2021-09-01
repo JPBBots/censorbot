@@ -12,7 +12,8 @@ import { CCProvider } from '@jpbbots/censorbot-components'
 import { Provider } from 'react-redux'
 import { store } from 'store'
 
-import { Api } from '../structures/Api'
+import '../structures/Api'
+
 import { Loader } from '~/Loader'
 import { Flex } from '@chakra-ui/layout'
 
@@ -25,10 +26,6 @@ export const chargebee = 'window' in global
 
 export default function App (props: AppProps) {
   const { Component } = props
-
-  React.useEffect(() => {
-    Api.ws.start()
-  }, [])
 
   return (
     <>

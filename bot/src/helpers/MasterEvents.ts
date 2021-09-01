@@ -1,5 +1,4 @@
 import { ExtendedEmitter, Event } from '@jpbberry/typed-emitter'
-import { APIGuild } from 'discord-api-types'
 import { Snowflake, ThreadEvents } from 'discord-rose'
 
 import { ResolveFunction } from 'discord-rose/dist/clustering/ThreadComms'
@@ -51,14 +50,7 @@ export class MasterEvents extends ExtendedEmitter {
   }
 
   @Event('GUILD_UPDATED')
-  guildUpdated (_cluster, guild: APIGuild): void {
+  guildUpdated (_cluster, guild: Snowflake): void {
     this.master.api.tell('GUILD_UPDATED', guild)
-  }
-
-  @Event('HAS_SUB')
-  hasSub (_cluster, id: ThreadEvents['HAS_SUB']['send'], resolve: ResolveFunction<'HAS_SUB'>): void {
-    void this.master.api.sendCommand('HAS_SUB', id).then(res => {
-      resolve(res)
-    })
   }
 }
