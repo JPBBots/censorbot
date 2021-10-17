@@ -10,7 +10,7 @@ function inRange (x: number, min: number, max: number): boolean {
   return ((x - min) * (x - max) <= 0)
 }
 
-type filterName = filterType | 'server' | 'invites' | 'toxicity' | 'images'
+type filterName = filterType | 'server' | 'invites' | 'toxicity' | 'images' | 'phishing'
 
 type Range = [number, number] | []
 
@@ -48,7 +48,8 @@ export class Filter {
     server: 'Server',
     invites: 'Invites',
     toxicity: 'Toxicity',
-    images: 'Anti-NSFW Image'
+    images: 'Anti-NSFW Image',
+    phishing: 'Anti-Phishing'
   }
 
   filters = Object.keys(filter.filters).reduce<filterObj>((a, b) => {

@@ -149,6 +149,7 @@ export interface GuildDB {
   toxicity: boolean
   images: boolean
   ocr: boolean
+  phishing: boolean
 
   /**
    * Whether or not the entry is in the database or not
@@ -297,9 +298,15 @@ export interface TicketTest {
   places: string[]
 }
 
-export interface RegisterResponse {
+export interface RegisterInfo {
+  id: Snowflake
+  customerId: string
+}
+export type  RegisterResponse = {
+  error: string
+} | {
+  error: undefined
   sub: PremiumTypes,
   amount: number
   endDate: number
-  error?: string
 }

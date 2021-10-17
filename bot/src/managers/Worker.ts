@@ -32,6 +32,7 @@ import fetch from 'node-fetch'
 import path from 'path'
 import { ExceptionType, GuildDB } from 'typings'
 import { WorkerEvents } from '../helpers/WorkerEvents'
+import { AntiPhish } from '../structures/ai/AntiPhish'
 
 interface CachedThread {
   id: Snowflake
@@ -44,7 +45,7 @@ interface ExceptedData {
   channel?: Snowflake
 }
 
-export class WorkerManager extends Worker {
+export class WorkerManager extends Worker<{}> {
   config = Config
   filter = new Filter()
   db = new Database()
@@ -56,6 +57,7 @@ export class WorkerManager extends Worker {
   perspective = new PerspectiveApi(this)
   images = new AntiNSFW(this)
   ocr = new Ocr(this)
+  phishing = new AntiPhish(this)
 
   punishments = new PunishmentManager(this)
 

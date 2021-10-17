@@ -49,6 +49,17 @@ export const settings: ISetting[] = [
     ]
   },
   {
+    title: 'Anti-Phishing',
+    section: 'Extras',
+    options: [
+      {
+        name: 'phishing',
+        label: 'Search every message for scam/phishing links and delete them',
+        type: OptionType.Boolean
+      }
+    ]
+  },
+  {
     title: 'Ignore NSFW Channels',
     section: 'Extras',
     options: [

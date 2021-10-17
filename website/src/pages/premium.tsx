@@ -1,11 +1,14 @@
+import { useUser } from '@/hooks/useAuth'
 import { HStack, VStack } from '@chakra-ui/layout'
 import { PremiumCard, PremiumPerk } from '@jpbbots/censorbot-components'
 import { PremiumTypes } from 'typings'
 import { chargebee } from './_app'
 
 export default function Premium () {
+  const [user, login] = useUser(false)
   const openCheckout = (id: PremiumTypes) => {
     if (!chargebee) return
+    if (!user) return login()
 
     chargebee.getCart().replaceProduct(
       chargebee.initializeProduct(id)

@@ -2,20 +2,16 @@ import React from 'react'
 
 import BRANDING from 'BRANDING'
 
-// import Example1 from '../images/JsEzHiZkM4.png'
-
-import styles from './index.module.scss'
-
-import { MainButton } from '~/button/MainButton'
 import { LandingSection } from '~/landing/LandingSection'
 
 import Aos from 'aos'
 import 'aos/dist/aos.css'
-import { MidContainer } from '~/styling/MidContainer'
 import { LandingExample } from '~/landing/LandingExample'
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
+import { HStack, VStack, Text, Button } from '@chakra-ui/react'
+import { useWindowSize } from 'react-use'
 
-const mobileWidth = 820
+const mobileWidth = 1190
 
 function getWindowDimensions () {
   const { innerWidth: width, innerHeight: height } = window
@@ -25,38 +21,34 @@ function getWindowDimensions () {
   }
 }
 
-export default function Landing (props: JSX.Element) {
-  const [windowDimensions, setWindowDimensions] = React.useState<{ width: number, height: number }>()
+export default function Landing () {
+  const windowDimensions = useWindowSize()
+  const router = useRouter()
 
   React.useEffect(() => {
     Aos.init({ duration: 400 })
     void Router.prefetch('/dashboard')
-    setWindowDimensions(getWindowDimensions())
-    function handleResize () {
-      setWindowDimensions(getWindowDimensions())
-    }
-
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const mobiled = windowDimensions ? windowDimensions.width < mobileWidth : false
 
   return (
-    <MidContainer>
-      <div data-aos="zoom-in" className={styles.main}>
-        <div className={styles.left}>
-          <h1>{BRANDING.title}</h1>
-          <h3>{BRANDING.title2}</h3>
-          <MainButton href="/dashboard">
-            Get Started
-          </MainButton>
-          <small>Used in more than {(50000).toLocaleString()} servers!</small>
-        </div>
+    <VStack margin={mobiled ? '30px 10px' : '30px 200px'}>
+      <HStack gridGap="200px">
+        <VStack maxW="500px" alignItems={mobiled ? 'center' : 'flex-start'} textAlign={mobiled ? 'center' : 'left'}>
+          <Text fontSize="3rem">{BRANDING.title}</Text>
+          <Text color="lighter.40" fontSize="1.4rem">{BRANDING.title2}</Text>
+          <Button onClick={() => {
+            void router.push('/dashboard')
+          }}>Get Started</Button>
 
-        { !mobiled ? <LandingExample href="/invite" example={BRANDING.mainImage} align='right' mobiled={false} /> : '' }
-      </div>
-      <div>
+          <Text fontSize="0.7rem">Used in more than {(50000).toLocaleString()} servers!</Text>
+        </VStack>
+
+        {mobiled ? '' : <LandingExample example={BRANDING.mainImage} align="right" />}
+      </HStack>
+
+      <VStack>
         {
           BRANDING.examples.map((x, ind) => <div key={ind}>
             <LandingSection ind={ind} href="/" example={x.example} title={x.title} align={(ind % 2) ? 'right' : 'left'} mobiled={mobiled}>
@@ -67,50 +59,18 @@ export default function Landing (props: JSX.Element) {
             }}></div>
           </div>)
         }
+      </VStack>
 
-        <br />
-        <br />
-      </div>
-      <div>
-        <div data-aos="zoom-in" data-aos-anchor-placement="top-bottom" style={{
-          textAlign: 'center'
-        }}>
-          <h1 style={{
-            fontSize: '3rem',
-            margin: '20px 0px 10px 0px'
-          }}>Are you ready to go?</h1>
-          <h2>Let's start cleaning your server!</h2> <br />
-          <MainButton href="/invite" target="_blank">Invite</MainButton>
-        </div>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-      </div>
-    </MidContainer>
+      <VStack data-aos="fade-up" data-aos-anchor-placement="top-bottom" >
+        <Text textStyle="heading.xl">Are you ready to go?</Text>
+        <Text textStyle="heading.sm">Let's start cleaning your server!</Text>
+        <Button onClick={() => {
+          window.open('/invite', '_blank')
+        }}>Invite</Button>
+      </VStack>
+      {
+        new Array(20).fill(null).map((x, i) => <br key={i} />)
+      }
+    </VStack>
   )
 }

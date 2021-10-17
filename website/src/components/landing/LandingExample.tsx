@@ -1,15 +1,20 @@
-import styles from './LandingExample.module.scss'
+import { Image } from '@chakra-ui/image'
+import { VStack } from '@chakra-ui/layout'
 
-export function LandingExample (props: { href?: string, example: string, align: 'left' | 'right', mobiled: boolean }) {
+export interface LandingExampleProps {
+  href?: string
+  example: string
+  align: 'left' | 'right'
+}
+
+export function LandingExample (props: LandingExampleProps) {
   return (
-    <div className={styles.example}>
-      <a href={props.href} target="_blank">
-        <img src={props.example}></img>
-      </a> <br />
+    <VStack>
+      <Image src={props.example} w="1000px" />
       <small style={{
         // marginTop: '50px'
         float: props.align
       }}>The word "test" has been censored for this example.</small>
-    </div>
+    </VStack>
   )
 }

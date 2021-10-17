@@ -54,11 +54,12 @@ export function SettingSection (props: SettingSectionProps) {
         flexGrow={1}
         maxH="100%"
         h="100%"
-        overflow="auto">
+        overflowY="scroll">
         <VStack
           padding="8px 20px"
           alignSelf="end"
-          w="full">
+          w="full"
+          h="inherit">
           {props.section !== 'Search' && !props.disableSearch && <Box w="full">
               <Input
                 w="400px"
@@ -77,8 +78,7 @@ export function SettingSection (props: SettingSectionProps) {
           </Text>
           <Divider color="lighter.5" />
           <VStack
-            w="full"
-            overflowY="scroll">
+            w="full">
             {props.description &&
               <Box
                 w="full" textAlign="left"

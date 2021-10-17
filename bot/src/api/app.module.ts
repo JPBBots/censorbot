@@ -19,10 +19,17 @@ import { CacheService } from './services/cache.service'
 import { FilterService } from './services/filter.service'
 import { GuildsService } from './services/guilds.service'
 import { ThreadService } from './services/thread.service'
+import { PremiumController } from './controllers/premium.controller'
+import { ChargeBeeController } from './controllers/chargebee.controller'
 
 @Module({
   imports: [GatewayAuthGuard],
-  controllers: [BaseController, DiscordAuthController],
+  controllers: [
+    BaseController,
+    DiscordAuthController,
+    PremiumController,
+    ChargeBeeController
+  ],
   providers: [
     Database,
     Reflector,

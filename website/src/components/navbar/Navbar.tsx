@@ -6,9 +6,14 @@ import { useUser } from 'hooks/useAuth'
 import { useRouter } from 'next/router'
 import { stats } from 'structures/StatsManager'
 
+import { useWindowSize } from 'react-use'
+
 export function NavBar () {
   const [user, login, logout] = useUser(false)
+  const windowSize = useWindowSize()
   const router = useRouter()
+
+  const includeNavBar = windowSize.width > 675
 
   return (
     <Box
@@ -25,25 +30,29 @@ export function NavBar () {
           void router.push('/')
         },
         cursor: 'pointer'
+      }} textProps={{
+        textStyle: windowSize.width < 455 ? 'label.md' : 'heading.xl'
       }}>
-        <NavActions actions={[
-          {
-            label: 'Support'
-          },
-          {
-            label: 'Dashboard',
-            isActive: router.pathname === '/dashboard',
-            onClick: () => {
-              void router.push('/dashboard')
-            }
-          }
-        ]} user={user
-          ? {
-              avatarUrl: user.avatar
-                ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
-                : `https://cdn.discordapp.com/embed/avatars/${Number(user.tag.split('#')[1]) % 5}.png`
-            }
-          : undefined} onLogin={() => login()}>
+        <NavActions actions={includeNavBar
+          ? [
+              {
+                label: 'Support'
+              },
+              {
+                label: 'Dashboard',
+                isActive: router.pathname === '/dashboard',
+                onClick: () => {
+                  void router.push('/dashboard')
+                }
+              }
+            ]
+          : []} user={user
+            ? {
+                avatarUrl: user.avatar
+                  ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+                  : `https://cdn.discordapp.com/embed/avatars/${Number(user.tag.split('#')[1]) % 5}.png`
+              }
+            : undefined} onLogin={() => login()}>
             {user?.premium?.customer && <MenuItem onClick={() => {
               if (chargebee) {
                 chargebee.createChargebeePortal().open()
@@ -51,6 +60,20 @@ export function NavBar () {
             }}>
               Payment Portal
             </MenuItem>}
+            {!includeNavBar && <>
+                <MenuItem onClick={() => {
+                  void router.push('/dashboard')
+                }}>
+                  Dashboard
+                </MenuItem>
+
+                <MenuItem onClick={() => {
+                  void router.push('/')
+                }}>
+                  Support
+                </MenuItem>
+              </>
+            }
             <MenuItem onClick={() => {
               logout()
             }}>Logout</MenuItem>

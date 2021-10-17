@@ -145,6 +145,7 @@ export class ChargeBeeService {
     }
 
     return {
+      error: undefined,
       sub: sub.plan_id as PremiumTypes,
       amount: Config.premiumAmounts[sub.plan_id] || 0,
       endDate: sub.next_billing_at * 1000

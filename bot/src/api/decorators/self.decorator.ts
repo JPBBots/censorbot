@@ -4,6 +4,7 @@ import { SocketConnection } from '../gateway/user.gateway'
 
 export interface SelfData {
   userId?: Snowflake
+  subscribedGuild?: Snowflake
 }
 
 export const Self = createParamDecorator(

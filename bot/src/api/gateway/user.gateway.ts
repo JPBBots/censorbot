@@ -13,6 +13,7 @@ import { Snowflake } from 'discord-rose'
 import { GuildsService } from '../services/guilds.service'
 import { DatabaseService } from '../services/database.service'
 import Pieces from '../../utils/Pieces'
+import { ChargeBeeService } from '../services/chargebee.service'
 
 export type SocketConnection = Socket & { data: SelfData }
 
@@ -32,7 +33,8 @@ export class UserGateway {
     private readonly oauth: OAuthService,
     private readonly db: DatabaseService,
     private readonly caching: CacheService,
-    private readonly guilds: GuildsService
+    private readonly guilds: GuildsService,
+    private readonly chargebee: ChargeBeeService
   ) {
     guilds.on('GUILD_SETTINGS_UPDATE', (dat) => {
       this.server.to(dat.id).emit('CHANGE_SETTING', { id: dat.id, data: dat.db })
@@ -40,6 +42,10 @@ export class UserGateway {
 
     guilds.on('GUILD_UPDATED', (guild) => {
       this.server.to(guild.guild.i).emit('UPDATE_GUILD', guild)
+    })
+
+    users.on('USER_UPDATE', (user) => {
+      this.server.to(user.id).emit('UPDATE_USER', user)
     })
   }
 
@@ -62,13 +68,17 @@ export class UserGateway {
   }
 
   @SubscribeMessage('LOGOUT')
-  logout (@Self() self: SelfData) {
+  async logout (@Self() self: SelfData,
+    @ConnectedSocket() sock: SocketConnection
+  ) {
+    if (self.userId) await sock.leave(self.userId)
     self.userId = undefined
   }
 
   @SubscribeMessage('AUTHORIZE')
   async authorize (
   @Self() self: SelfData,
+    @ConnectedSocket() sock: SocketConnection,
     @MessageBody() data: EventMap['AUTHORIZE']
   ) {
     if (!data.token) throw new Error('Invalid Token')
@@ -76,6 +86,7 @@ export class UserGateway {
     const user = await this.users.login(data.token)
 
     self.userId = user.id
+    await sock.join(user.id)
 
     return {
       ...user,
@@ -111,13 +122,13 @@ export class UserGateway {
 
     if (!this.hasAccess(self, data)) return
 
-    for (const room of sock.rooms) {
-      await sock.leave(room)
-    }
+    if (self.subscribedGuild) await sock.leave(self.subscribedGuild)
 
     await sock.join(data)
 
     const guild = await this.guilds.get(data)
+
+    self.subscribedGuild = guild.guild.i
 
     return guild
   }

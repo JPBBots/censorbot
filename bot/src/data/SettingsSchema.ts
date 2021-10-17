@@ -120,7 +120,8 @@ export const settingSchema = Joi.object<GuildDB>({
 
   toxicity: PremiumOnly(false),
   images: PremiumOnly(false),
-  ocr: PremiumOnly(false)
+  ocr: PremiumOnly(false),
+  phishing: Joi.bool()
 })
 
 const boolOverride = Joi.valid(Joi.override, true, false)

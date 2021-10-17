@@ -105,6 +105,17 @@ export async function MessageHandler (worker: WorkerManager, message: EventData)
     }
   }
 
+  if (db.phishing) {
+    if (await worker.phishing.resolve(content)) {
+      return handleDeletion(worker, message, db, {
+        censor: true,
+        filters: ['phishing'],
+        places: [],
+        ranges: []
+      })
+    }
+  }
+
   if (db.nsfw && channel.nsfw) return
 
   if (db.toxicity) {

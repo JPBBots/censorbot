@@ -1,3 +1,4 @@
+import { EventEmitter } from '@jpbberry/typed-emitter'
 import { Injectable } from '@nestjs/common'
 import { User, UserPremium } from 'typings'
 
@@ -7,13 +8,17 @@ import { DatabaseService } from './database.service'
 import { InterfaceService } from './interface.service'
 
 @Injectable()
-export class UsersService {
+export class UsersService extends EventEmitter<{
+  USER_UPDATE: User
+}> {
   constructor (
     private readonly database: DatabaseService,
     private readonly int: InterfaceService,
     private readonly caching: CacheService,
     private readonly chargebee: ChargeBeeService
-  ) {}
+  ) {
+    super()
+  }
 
   get db () {
     return this.database.collection('users')
@@ -29,6 +34,8 @@ export class UsersService {
 
     return extendedUser
   }
+
+  
 
   async extendUser (user: User): Promise<User> {
     user.admin = await this.int.api.isAdmin(user.id)

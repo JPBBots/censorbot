@@ -15,25 +15,31 @@ export default function DashboardHome () {
   const [guilds] = useGuilds()
   const router = useRouter()
 
-  const login = !guilds
-    ? loginState === LoginState.Loading || loginState === LoginState.LoggingIn
-      ? <Text textStyle="heading.md">Logging in...</Text>
-      : loginState === LoginState.LoggedIn
-        ? <Text textStyle="heading.md">Loading...</Text>
-        : <LoginButton />
-    : null
-
   return (
       <VStack justify="center" padding={3}>
         <VStack>
           <Text textStyle="heading.xl">Discord Dashboard</Text>
           <br />
-          {login}
+          {
+            (loginState === LoginState.Loading || loginState === LoginState.LoggingIn) &&
+              <Text textStyle='heading.md'>
+                Logging in...
+              </Text>
+          }
+          {
+            loginState === LoginState.LoggedIn && !guilds &&
+              <Text textStyle="heading.md">Loading...</Text>
+          }
+          {
+            loginState === LoginState.LoggedOut &&
+              <LoginButton />
+          }
         </VStack>
-        <HStack spacing={4} justify="center">
+        <HStack spacing={4} justify="center" wrap='wrap' gridGap='5px'>
           {
             guilds?.map(guild =>
               <GuildPreview
+                key={guild.i}
                 guild={{
                   name: guild.n,
                   iconUrl: guild.a ? `https://cdn.discordapp.com/icons/${guild.i}/${guild.a}.png` : undefined

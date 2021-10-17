@@ -16,10 +16,10 @@ export default {
 
     headlessData.currentGuild = Api._createUpdatedGuild(headlessData.currentGuild, data?.data)
 
-    void Api.ws._handleMessage({
-      e: 'CHANGE_SETTING',
-      d: data
-    } as any)
+    // void Api.ws._handleMessage({
+    //   e: 'CHANGE_SETTING',
+    //   d: data
+    // } as any)
   }
 } as {
   [key in keyof WebSocketEventMap]?: (data?: WebSocketEventMap[key]['receive']) => WebSocketEventMap[key]['send']
