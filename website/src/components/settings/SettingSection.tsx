@@ -1,12 +1,15 @@
-import React, { PropsWithChildren } from 'react'
+import React, { PropsWithChildren, useState } from 'react'
 
-import { HStack, VStack, Text, Divider, Flex, Box, Input } from '@chakra-ui/react'
+import { HStack, VStack, Text, Divider, Flex, Box, Input, Icon } from '@chakra-ui/react'
 import { Sidebar, sections, SectionName } from './Sidebar'
 import { LoginButton } from '../button/LoginButton'
 import { useLoginState, useUser } from 'hooks/useAuth'
 import { useGuild } from 'hooks/useGuilds'
 import { LoginState } from 'store/reducers/auth.reducer'
 import { useRouter } from 'next/router'
+
+import { FaBars } from 'react-icons/fa'
+import { useMinWidth } from '@/hooks/useMinWidth'
 
 interface SettingSectionProps extends PropsWithChildren<{}> {
   description?: string
@@ -19,6 +22,8 @@ export function SettingSection (props: SettingSectionProps) {
   const [currentGuild] = useGuild()
   const router = useRouter()
   const [loginState] = useLoginState()
+  const [mobiled] = useMinWidth(840)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const currentSection = sections.find(x => x.name === props.section)
 
@@ -40,6 +45,12 @@ export function SettingSection (props: SettingSectionProps) {
       </div>
   }
 
+  const menuButton = mobiled
+    ? <Icon as={FaBars} onClick={() => {
+      setMenuOpen(!menuOpen)
+    }} margin='10px' fontSize={30} alignSelf="flex-start" />
+    : ''
+
   return (
     <HStack
       alignItems="start"
@@ -49,8 +60,13 @@ export function SettingSection (props: SettingSectionProps) {
       h="100%"
       maxH="100%"
       overflow="hidden">
-      <Sidebar selected={currentSection?.name} premium={props.section === 'Premium'} />
-      <Flex
+      {(!mobiled || menuOpen) && <Sidebar
+        selected={currentSection?.name}
+        premium={props.section === 'Premium'}
+        opened={mobiled && menuOpen}
+        onClose={() => setMenuOpen(false)}
+      /> }
+      {(!mobiled || (mobiled && !menuOpen)) && <Flex
         flexGrow={1}
         maxH="100%"
         h="100%"
@@ -60,9 +76,11 @@ export function SettingSection (props: SettingSectionProps) {
           alignSelf="end"
           w="full"
           h="inherit">
-          {props.section !== 'Search' && !props.disableSearch && <Box w="full">
+            {!props.disableSearch && <Box w="full">
+              {menuButton}
               <Input
                 w="400px"
+                maxW="70vw"
                 placeholder="Search for..."
                 onClick={() => {
                   void router.push({
@@ -74,6 +92,7 @@ export function SettingSection (props: SettingSectionProps) {
           <Text
             textStyle="heading.xl"
             alignSelf="start">
+              {props.disableSearch && menuButton}
               {props.section}
           </Text>
           <Divider color="lighter.5" />
@@ -90,7 +109,7 @@ export function SettingSection (props: SettingSectionProps) {
             {props.children}
           </VStack>
         </VStack>
-      </Flex>
+      </Flex>}
     </HStack>
   )
 }

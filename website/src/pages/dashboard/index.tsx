@@ -39,16 +39,16 @@ export default function DashboardHome () {
           {
             guilds?.map(guild =>
               <GuildPreview
-                key={guild.i}
+                key={guild.icon}
                 guild={{
-                  name: guild.n,
-                  iconUrl: guild.a ? `https://cdn.discordapp.com/icons/${guild.i}/${guild.a}.png` : undefined
+                  name: guild.name,
+                  iconUrl: guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png` : undefined
                 }}
                 onClick={() => {
                   void router.push({
                     pathname: '/dashboard/[guild]',
                     query: {
-                      guild: guild.i
+                      guild: guild.id
                     }
                   })
                 }}

@@ -10,6 +10,7 @@ import { setCurrentGuild, setDb } from 'store/reducers/guilds.reducer'
 import { setUser } from 'store/reducers/auth.reducer'
 
 import { io } from 'socket.io-client'
+import { Api } from './Api'
 
 type EventMap = {
   [key in keyof WebSocketEventMap]: WebSocketEventMap[key]['receive']
@@ -49,7 +50,13 @@ export class WebsocketManager extends ExtendedEmitter {
       }
 
       this.ws.emit(event, data, (dat: any) => {
-        resolve(dat)
+        if (dat?.error && dat.error === 'Unauthorized' && Api.token) {
+          void Api.getUser().then(() => {
+            void Api.getGuilds().then(() => {
+              void this.request(event, data).then(x => resolve(x))
+            })
+          })
+        } else resolve(dat)
       })
 
       // const id = this.sequence++
@@ -112,7 +119,7 @@ export class WebsocketManager extends ExtendedEmitter {
   @Event('CHANGE_SETTING')
   onGuildChange (data: EventMap['CHANGE_SETTING']) {
     const currentGuild = store.getState().guilds.currentGuild
-    if (!currentGuild || currentGuild.guild.i !== data.id) return
+    if (!currentGuild || currentGuild.guild.id !== data.id) return
 
     store.dispatch(setDb(data.data))
   }

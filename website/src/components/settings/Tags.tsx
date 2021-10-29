@@ -58,6 +58,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
 
             return (
               <Tag
+                key={val.value}
                 label={val.value}
                 color={val.color ? String(val.color) : undefined}
                 isRole={settings.role}
@@ -69,7 +70,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
       </HStack>
       {
         whitelist
-          ? <Select w="400px" onChange={({ target }) => {
+          ? <Select w="400px" maxW="80vw" onChange={({ target }) => {
             if (target.value === '_') return
 
             const val = whitelist.find(x => x.id === target.value)
@@ -87,7 +88,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
           }}>
             <option value="_">{placeholder}</option>
             {
-              whitelist.filter(a => !value.some(b => a.id === b)).map(x => <option value={x.id}>{x.value}</option>)
+              whitelist.filter(a => !value.some(b => a.id === b)).map(x => <option key={x.id} value={x.id}>{x.value}</option>)
             }
           </Select>
           : <Input
@@ -98,6 +99,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
                   : placeholder
               }
               w="400px"
+              maxW="80vw"
               maxLength={settings.maxLength}
               onKeyDown={(ev) => {
                 if (ev.key === 'Backspace' && !ev.currentTarget.value) {

@@ -6,14 +6,13 @@ import { useUser } from 'hooks/useAuth'
 import { useRouter } from 'next/router'
 import { stats } from 'structures/StatsManager'
 
-import { useWindowSize } from 'react-use'
+import { useMinWidth } from '@/hooks/useMinWidth'
 
 export function NavBar () {
   const [user, login, logout] = useUser(false)
-  const windowSize = useWindowSize()
+  const [includeNavBar] = useMinWidth(675)
+  const [useSmallText] = useMinWidth(515)
   const router = useRouter()
-
-  const includeNavBar = windowSize.width > 675
 
   return (
     <Box
@@ -31,9 +30,9 @@ export function NavBar () {
         },
         cursor: 'pointer'
       }} textProps={{
-        textStyle: windowSize.width < 455 ? 'label.md' : 'heading.xl'
+        textStyle: useSmallText ? 'label.md' : 'heading.xl'
       }}>
-        <NavActions actions={includeNavBar
+        <NavActions actions={!includeNavBar
           ? [
               {
                 label: 'Support'
@@ -60,7 +59,7 @@ export function NavBar () {
             }}>
               Payment Portal
             </MenuItem>}
-            {!includeNavBar && <>
+            {includeNavBar && <>
                 <MenuItem onClick={() => {
                   void router.push('/dashboard')
                 }}>

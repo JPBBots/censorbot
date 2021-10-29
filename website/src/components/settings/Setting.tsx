@@ -7,7 +7,7 @@ import { Option as CCOption } from '~/functional/Option'
 
 import { updateObject } from '@/utils/updateObject'
 
-import { Button, Icon, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputStepper, Textarea, Text, VStack, HStack } from '@chakra-ui/react'
+import { Button, Icon, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputStepper, Textarea, Text, VStack, HStack, Select } from '@chakra-ui/react'
 import Pieces from 'utils/Pieces'
 import { Exception, ExceptionType, GuildData } from 'typings'
 import { SectionName } from './Sidebar'
@@ -16,7 +16,7 @@ import TextareaResizer from 'react-textarea-autosize'
 import { Tags } from './Tags'
 import { ExceptionSetting } from './ExceptionSetting'
 import { FaPlus } from 'react-icons/fa'
-import { Selector } from '~/functional/Selector'
+// import { Selector } from '~/functional/Selector'
 import Link from 'next/link'
 
 import Router from 'next/router'
@@ -56,6 +56,7 @@ export function Option ({ setValue, guild, pieces, disable, option }: {
     return <Component {...props}
       as={option.textarea ? TextareaResizer : undefined}
       resize="none"
+      maxW="80vw"
       value={value ?? (option.default ?? '')}
       placeholder="None"
       onChange={({ target }: { target: HTMLInputElement|HTMLTextAreaElement }) => {
@@ -66,9 +67,30 @@ export function Option ({ setValue, guild, pieces, disable, option }: {
   }
 
   if (option.type === OptionType.Select) {
-    return <Selector
+    // return <Selector
+    //   {...props}
+    //   onChange={(value) => {
+    //     setValue(value === 'none' && option.allowNone
+    //       ? null
+    //       : option.number
+    //         ? Number(value)
+    //         : value
+    //     )
+    //   }}
+    //   channel={option.channel}
+    //   role={option.role}
+    //   placeholder={option.placeholder}
+    //   value={value ?? 'none'}>
+    //     {[
+    //       ...(option.allowNone ? [{ value: 'none', label: 'None' }] : []),
+    //       ...option.options(guild)
+    //     ]}
+    // </Selector>
+    const prefix = option.role ? '@' : option.channel ? '#' : ''
+    return <Select
       {...props}
-      onChange={(value) => {
+      onChange={(ev) => {
+        const value = ev.target.value
         setValue(value === 'none' && option.allowNone
           ? null
           : option.number
@@ -76,15 +98,21 @@ export function Option ({ setValue, guild, pieces, disable, option }: {
             : value
         )
       }}
-      channel={option.channel}
-      role={option.role}
-      placeholder={option.placeholder}
+      maxW="80vw"
       value={value ?? 'none'}>
-        {[
+        {/* {[
           ...(option.allowNone ? [{ value: 'none', label: 'None' }] : []),
           ...option.options(guild)
-        ]}
-    </Selector>
+        ]} */}
+        {
+          option.allowNone && <option value="none">None</option>
+        }
+        {
+          option.options(guild).map(x =>
+            <option key={x.value} value={x.value}>{prefix}{x.label}</option>
+          )
+        }
+    </Select>
   }
 
   if (option.type === OptionType.Tags) {
@@ -157,7 +185,7 @@ export function Option ({ setValue, guild, pieces, disable, option }: {
         cursor="pointer"
         spacing={1}
         onClick={() => {
-          setValue([...exceptions, { channel: null, role: null, type: ExceptionType.Everything }])
+          setValue([...exceptions, { channel: guild.guild.channels[0].id, role: guild.guild.roles[0].id, type: ExceptionType.Everything }])
         }}>
           <Icon as={FaPlus} />
           <Text>Add Exception</Text>

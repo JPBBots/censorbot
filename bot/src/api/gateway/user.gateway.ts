@@ -41,7 +41,7 @@ export class UserGateway {
     })
 
     guilds.on('GUILD_UPDATED', (guild) => {
-      this.server.to(guild.guild.i).emit('UPDATE_GUILD', guild)
+      this.server.to(guild.guild.id).emit('UPDATE_GUILD', guild)
     })
 
     users.on('USER_UPDATE', (user) => {
@@ -56,13 +56,13 @@ export class UserGateway {
   }
 
   hasAccess (data: SelfData, id: Snowflake) {
-    if (!data.userId) throw new Error('Unauthorized')
+    if (!data.userId) return false
 
     const cache = this.caching.userGuilds.get(data.userId)
 
-    if (!cache) throw new Error('Unauthorized')
+    if (!cache) return false
 
-    if (!cache.some(x => x.i === id)) throw new Error('Unauthorized')
+    if (!cache.some(x => x.id === id)) return false
 
     return true
   }
@@ -120,7 +120,7 @@ export class UserGateway {
   ) {
     if (!data) return
 
-    if (!this.hasAccess(self, data)) return
+    if (!this.hasAccess(self, data)) return { error: 'Unauthorized' }
 
     if (self.subscribedGuild) await sock.leave(self.subscribedGuild)
 
@@ -128,7 +128,7 @@ export class UserGateway {
 
     const guild = await this.guilds.get(data)
 
-    self.subscribedGuild = guild.guild.i
+    self.subscribedGuild = guild.guild.id
 
     return guild
   }

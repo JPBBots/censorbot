@@ -5,7 +5,7 @@ import type { IconType } from 'react-icons/lib'
 
 import type { DeepPartial } from 'redux'
 
-import { CensorMethods, GuildData /* , WebhookReplace */ } from 'typings'
+import { CensorMethods, GuildData, WebhookReplace } from 'typings'
 
 import type { SectionName } from './Sidebar'
 
@@ -285,7 +285,7 @@ export const settings: ISetting[] = [
         allowNone: true,
         channel: true,
         placeholder: 'Search #channel',
-        options: ({ guild }) => guild.c.filter(x => x.type === ChannelType.GuildText).map(x => ({
+        options: ({ guild }) => guild.channels.filter(x => x.type === ChannelType.GuildText).map(x => ({
           value: x.id,
           label: x.name
         }))
@@ -306,34 +306,27 @@ export const settings: ISetting[] = [
   },
   {
     title: 'Replace',
-    description: 'When disabled, will just censor the entire message',
     section: 'Resend',
+    description: 'Single out individual curses and replace them',
+    premium: true,
+    disable: {
+      property: 'webhook.separate',
+      disableValue: false,
+      enableValue: true
+    },
     options: [
       {
-        name: 'webhook.separate',
-        label: 'Replace only bad words',
-        type: OptionType.Boolean,
-        premium: true
+        name: 'webhook.replace',
+        type: OptionType.Select,
+        number: true,
+        options: () => [
+          { value: WebhookReplace.Spoilers, label: 'Spoilers' },
+          { value: WebhookReplace.Hashtags, label: 'Hashtags' },
+          { value: WebhookReplace.Stars, label: 'Stars' }
+        ]
       }
     ]
   },
-  // {
-  //   title: 'Replace With',
-  //   section: 'Resend',
-  //   premium: true,
-  //   options: [
-  //     {
-  //       name: 'webhook.replace',
-  //       type: OptionType.Select,
-  //       number: true,
-  //       options: () => [
-  //         { value: WebhookReplace.Spoilers, name: 'Spoilers' },
-  //         { value: WebhookReplace.Hashtags, name: 'Hashtags' },
-  //         { value: WebhookReplace.Stars, name: 'Stars' }
-  //       ]
-  //     }
-  //   ]
-  // },
 
   {
     title: 'Message Content',
@@ -416,7 +409,7 @@ export type IOption =
   DataOption<OptionType.Select, JSX.IntrinsicElements['select'], {
     allowNone?: boolean
     number?: boolean
-    placeholder: string
+    placeholder?: string
     options: (guild: GuildData) => Array<{ value: string | number, label: string, color?: number }>
     channel?: boolean
     role?: boolean

@@ -15,7 +15,7 @@ export default function AI () {
   const items = searcher.search(searchTerm)
 
   return (
-    <SettingSection section="Search">
+    <SettingSection section="Search" disableSearch>
       <Input ref={searchInput} value={searchTerm} placeholder="Search settings..." onChange={({ target }) => {
         setSearchTerm(target.value)
       }} />

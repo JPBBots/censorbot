@@ -20,9 +20,11 @@ export const useGuilds = () => {
   const dispatch = useDispatch()
   const { guilds } = useGuildsState()
   const [loginState] = useLoginState()
+  const [requesting, setRequesting] = useState(false)
 
-  if (!guilds) {
+  if (!guilds && !requesting) {
     if (loginState === LoginState.LoggedIn) {
+      setRequesting(true)
       Api.getGuilds().then(res => {
         if (!res) return
 
@@ -44,23 +46,27 @@ export const useGuild = () => {
   const dispatch = useDispatch()
   const { currentGuild, volatileDb } = useGuildsState()
   const [loginState] = useLoginState()
+  const [guilds] = useGuilds()
 
   const [id, setId] = useState<Snowflake|undefined>(undefined)
 
   useEffect(() => {
+    console.log('changed')
     setId(Api.guildId)
   }, [router.query])
 
-  if (id && loginState === LoginState.LoggedIn && selectedGuild !== id && 'window' in global) {
-    if (selectedGuild) void Api.unsubscribe(selectedGuild)
-    selectedGuild = id
+  useEffect(() => {
+    if (id && guilds && loginState === LoginState.LoggedIn && selectedGuild !== id && 'window' in global) {
+      if (selectedGuild) void Api.unsubscribe(selectedGuild)
+      selectedGuild = id
 
-    void Api.getGuild(id).then(guild => {
-      if (!guild) return
+      void Api.getGuild(id).then(guild => {
+        if (!guild) return
 
-      dispatch(setCurrentGuild(guild))
-    })
-  }
+        dispatch(setCurrentGuild(guild))
+      })
+    }
+  }, [loginState, guilds, id])
 
   return [
     currentGuild,
@@ -75,7 +81,7 @@ export const useGuild = () => {
 
       dispatch(setVolatileDb(obj))
 
-      Api.changeSettings(currentGuild.guild.i, obj).catch(() => {
+      Api.changeSettings(currentGuild.guild.id, obj).catch(() => {
         dispatch(setVolatileDb(currentGuild.db))
       })
     }

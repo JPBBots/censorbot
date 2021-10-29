@@ -210,15 +210,15 @@ export interface ShortGuild {
   /**
    * ID of guild
    */
-  i: Snowflake
+  id: Snowflake
   /**
    * Name of guild
    */
-  n: string
+  name: string
   /**
    * CDN Hash of icon
    */
-  a: string | null
+  icon: string | null
 }
 
 export interface DashboardChannel {
@@ -238,11 +238,15 @@ export interface ExtendedGuild extends ShortGuild {
   /**
    * Array of channels
    */
-  c: DashboardChannel[]
+  channels: DashboardChannel[]
+  /**
+   * Array of categories
+   */
+  categories: DashboardChannel[]
   /**
    * Array of roles
    */
-  r: DashboardRole[]
+  roles: DashboardRole[]
 }
 
 export interface GuildData {

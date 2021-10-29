@@ -9,28 +9,16 @@ import 'aos/dist/aos.css'
 import { LandingExample } from '~/landing/LandingExample'
 import Router, { useRouter } from 'next/router'
 import { HStack, VStack, Text, Button } from '@chakra-ui/react'
-import { useWindowSize } from 'react-use'
-
-const mobileWidth = 1190
-
-function getWindowDimensions () {
-  const { innerWidth: width, innerHeight: height } = window
-  return {
-    width,
-    height
-  }
-}
+import { useMinWidth } from '@/hooks/useMinWidth'
 
 export default function Landing () {
-  const windowDimensions = useWindowSize()
   const router = useRouter()
+  const [mobiled] = useMinWidth(1190)
 
   React.useEffect(() => {
     Aos.init({ duration: 400 })
     void Router.prefetch('/dashboard')
   }, [])
-
-  const mobiled = windowDimensions ? windowDimensions.width < mobileWidth : false
 
   return (
     <VStack margin={mobiled ? '30px 10px' : '30px 200px'}>
@@ -51,7 +39,7 @@ export default function Landing () {
       <VStack>
         {
           BRANDING.examples.map((x, ind) => <div key={ind}>
-            <LandingSection ind={ind} href="/" example={x.example} title={x.title} align={(ind % 2) ? 'right' : 'left'} mobiled={mobiled}>
+            <LandingSection ind={ind} href="/" example={x.example} title={x.title} align={(ind % 2) ? 'right' : 'left'}>
               {x.description}
             </LandingSection>
             <div style={{

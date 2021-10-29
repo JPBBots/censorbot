@@ -1,26 +1,35 @@
-import { HStack, Text } from '@chakra-ui/layout'
+import { useMinWidth } from '@/hooks/useMinWidth'
+import { Box, HStack, Text } from '@chakra-ui/layout'
 import React from 'react'
 import { LandingExample } from './LandingExample'
-import styles from './LandingSection.module.scss'
 
-export function LandingSection (props: { ind: number, children: string, example: string, href?: string, title: string, align: 'left' | 'right', mobiled: boolean }) {
-  const example = props.mobiled
+interface LandingSectionOptions {
+  ind: number
+  children: string
+  example: string
+  href?: string
+  title: string
+  align: 'left' | 'right'
+}
+
+export function LandingSection (props: LandingSectionOptions) {
+  const [mobiled] = useMinWidth(1190)
+
+  const example = mobiled
     ? ''
-    : <div className={props.align === 'right' ? styles.second : ''}>
-    <LandingExample href={props.href} example={props.example} align={props.align} />
-  </div>
+    : <Box marginLeft={props.align === 'right' ? '20px' : undefined}>
+        <LandingExample href={props.href} example={props.example} align={props.align} />
+      </Box>
 
-  const text = <div className={props.align === 'left' ? styles.second : ''} style={{
-    textAlign: props.mobiled ? 'center' : props.align
-  }}>
+  const text = <Box textAlign={mobiled ? 'center' : props.align} marginLeft={props.align === 'left' ? '20px' : ''}>
     <Text textStyle="heading.xl">{props.title}</Text>
     <Text>{props.children}</Text>
-  </div>
+  </Box>
 
   return (
     <HStack data-aos="fade-up" data-aos-anchor-placement="top-bottom" gridGap="20px">
       {
-        !props.mobiled && props.align === 'left'
+        !mobiled && props.align === 'left'
           ? <>
               {example}
               {text}

@@ -35,8 +35,6 @@ export class UsersService extends EventEmitter<{
     return extendedUser
   }
 
-  
-
   async extendUser (user: User): Promise<User> {
     user.admin = await this.int.api.isAdmin(user.id)
 

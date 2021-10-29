@@ -97,6 +97,6 @@ export class OAuthService {
 
     return guilds.filter(x => x.owner as boolean || PermissionsUtils.has(Number(x.permissions), Config.dashboardOptions.requiredPermission))
       .filter(x => Config.custom.allowedGuilds ? Config.custom.allowedGuilds.includes(x.id) : true)
-      .map(x => ({ n: x.name, i: x.id, a: x.icon }))
+      .map(x => ({ name: x.name, id: x.id, icon: x.icon }))
   }
 }
