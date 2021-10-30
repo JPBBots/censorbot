@@ -52,7 +52,7 @@ export async function NameHandler (worker: WorkerManager, member: EventData): Pr
   let name = member.nick ?? member.user.username
 
   if (db.antiHoist && isHoisting(name) && worker.hasPerms(member.guild_id, 'manageNicknames') && worker.isManageable(member.guild_id, member.user.id, member.roles, true)) {
-    if (name.length >= 16) name = name.substring(1, 16)
+    if (name.length >= 32) name = name.substring(1, 16)
     await worker.api.members.setNickname(member.guild_id, member.user.id, `${deHoist}${name}`).catch(() => {})
   }
 
