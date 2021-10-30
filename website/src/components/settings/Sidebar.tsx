@@ -7,6 +7,8 @@ import {
   Text,
   Flex,
   Image,
+  Box,
+  Button,
 } from '@chakra-ui/react'
 
 import Router from 'next/router'
@@ -21,6 +23,7 @@ import {
   FaLocationArrow,
   FaComments,
   FaTimes,
+  FaSignOutAlt,
 } from 'react-icons/fa'
 import { PremiumIcon } from '~/PremiumIcon'
 import { useGuild } from 'hooks/useGuilds'
@@ -135,13 +138,35 @@ export function Sidebar({
           <VStack w={opened ? '95vw' : '308px'} spacing={2}>
             {guild && (
               <>
-                <HStack w="full">
+                <HStack w="full" padding="1px">
+                  {opened ? (
+                    <Icon
+                      cursor="pointer"
+                      fontSize="30px"
+                      display="inline-flex"
+                      color="lighter.20"
+                      as={FaTimes}
+                      onClick={() => props.onClose?.()}
+                    />
+                  ) : (
+                    <Box as={Button} h="50px" w="50px" display="inline-flex">
+                      <Icon
+                        cursor="pointer"
+                        fontSize="30px"
+                        color="lighter.20"
+                        transform="rotate(180deg)"
+                        as={FaSignOutAlt}
+                        onClick={() => Router.push({ pathname: '/dashboard' })}
+                      />
+                    </Box>
+                  )}
                   <HStack
                     w="full"
                     minH="50px"
                     justifyContent="center"
                     bg="darker.20"
                     borderRadius="10px"
+                    as={Button}
                   >
                     {guild.guild.icon && (
                       <Image
@@ -151,15 +176,6 @@ export function Sidebar({
                     )}
                     <Text>{guild.guild.name}</Text>
                   </HStack>
-                  {opened && (
-                    <Icon
-                      cursor="pointer"
-                      fontSize="30px"
-                      display="inline-flex"
-                      as={FaTimes}
-                      onClick={() => props.onClose?.()}
-                    />
-                  )}
                 </HStack>
                 <Divider color="lighter.5" />
               </>

@@ -1,6 +1,6 @@
 import { chargebee } from '@/pages/_app'
 import { MenuItem } from '@chakra-ui/menu'
-import { Box } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/layout'
 import { Header, NavActions } from '@jpbbots/censorbot-components'
 import { useUser } from 'hooks/useAuth'
 import { useRouter } from 'next/router'

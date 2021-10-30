@@ -72,6 +72,7 @@ export function SettingSection(props: SettingSectionProps) {
         setMenuOpen(!menuOpen)
       }}
       margin="10px"
+      color="lighter.20"
       cursor="pointer"
       fontSize={30}
     />
