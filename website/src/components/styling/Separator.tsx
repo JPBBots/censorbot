@@ -1,9 +1,11 @@
-export function Separator () {
+export function Separator() {
   return (
-    <div style={{
-      width: '80vw',
-      border: '2px solid var(--secondary)',
-      margin: '20px'
-    }}></div>
+    <div
+      style={{
+        width: '80vw',
+        border: '2px solid var(--secondary)',
+        margin: '20px',
+      }}
+    ></div>
   )
 }

@@ -16,43 +16,50 @@ export interface ExceptionSettingProps {
 const ExceptionTypes = [
   {
     label: 'Everything',
-    value: ExceptionType.Everything
+    value: ExceptionType.Everything,
   },
   {
     label: 'Server Filter',
-    value: ExceptionType.ServerFilter
+    value: ExceptionType.ServerFilter,
   },
   {
     label: 'Pre-built Filter',
-    value: ExceptionType.PreBuiltFilter
+    value: ExceptionType.PreBuiltFilter,
   },
   {
     label: 'Punishments',
-    value: ExceptionType.Punishment
+    value: ExceptionType.Punishment,
   },
   {
     label: 'Response Message',
-    value: ExceptionType.Response
+    value: ExceptionType.Response,
   },
   {
     label: 'Resends',
-    value: ExceptionType.Resend
-  }
+    value: ExceptionType.Resend,
+  },
 ]
 
-export function ExceptionSetting ({ guild, exception, onChange, onDelete, first }: ExceptionSettingProps) {
+export function ExceptionSetting({
+  guild,
+  exception,
+  onChange,
+  onDelete,
+  first,
+}: ExceptionSettingProps) {
   const change = (data: DeepPartial<Exception>) => {
     console.log(data)
     onChange?.({
       ...exception,
-      ...data
+      ...data,
     })
   }
 
-  return <HStack>
-    <InlineOptionGroup>
-      <Text>Anyone with</Text>
-      {/* <Selector
+  return (
+    <HStack>
+      <InlineOptionGroup>
+        <Text>Anyone with</Text>
+        {/* <Selector
         role
         value={exception.role}
         placeholder="Select @role"
@@ -63,20 +70,24 @@ export function ExceptionSetting ({ guild, exception, onChange, onDelete, first 
             color: x.color
           }))}
       </Selector> */}
-      <Select
-        onChange={({ target }) => change({ role: target.value === 'none' ? null : target.value })}
-        value={exception.role ?? 'none'}
-      >
-        <option value='none'>Any role</option>
-        {
-          guild.guild.roles.map(x =>
-            <option key={x.id} value={x.id}>@{x.name}</option>
-          )
-        }
-      </Select>
+        <Select
+          onChange={({ target }) =>
+            change({ role: target.value === 'none' ? null : target.value })
+          }
+          value={exception.role ?? 'none'}
+          w="200px"
+          maxW="20vw"
+        >
+          <option value="none">Any role</option>
+          {guild.guild.roles.map((x) => (
+            <option key={x.id} value={x.id}>
+              @{x.name}
+            </option>
+          ))}
+        </Select>
 
-      <Text>in channel</Text>
-      {/* <Selector
+        <Text>in channel</Text>
+        {/* <Selector
         channel
         value={exception.channel}
         placeholder="Select #channel"
@@ -86,20 +97,24 @@ export function ExceptionSetting ({ guild, exception, onChange, onDelete, first 
             value: x.id
           }))}
       </Selector> */}
-      <Select
-        onChange={({ target }) => change({ channel: target.value === 'none' ? null : target.value })}
-        value={exception.channel ?? 'none'}
-      >
-        <option value='none'>Any channel</option>
-        {
-          guild.guild.channels.map(x =>
-            <option key={x.id} value={x.id}>#{x.name}</option>
-          )
-        }
-      </Select>
+        <Select
+          onChange={({ target }) =>
+            change({ channel: target.value === 'none' ? null : target.value })
+          }
+          value={exception.channel ?? 'none'}
+          w="200px"
+          maxW="20vw"
+        >
+          <option value="none">Any channel</option>
+          {guild.guild.channels.map((x) => (
+            <option key={x.id} value={x.id}>
+              #{x.name}
+            </option>
+          ))}
+        </Select>
 
-      <Text>bypasses</Text>
-      {/* <Selector
+        <Text>bypasses</Text>
+        {/* <Selector
         value={exception.type}
         placeholder="Select bypass"
         onChange={(type) => change({ type })}>
@@ -107,19 +122,27 @@ export function ExceptionSetting ({ guild, exception, onChange, onDelete, first 
             ExceptionTypes
           }
       </Selector> */}
-      <Select
-        onChange={({ target }) => change({ type: Number(target.value) })}
-        value={exception.type}
-      >
-        {
-          ExceptionTypes.map(x =>
-            <option key={x.value} value={x.value}>{x.label}</option>
-          )
-        }
-      </Select>
-    </InlineOptionGroup>
-    <Icon cursor="pointer" fontSize={20} as={FaTrash} onClick={() => {
-      onDelete?.()
-    }} />
-  </HStack>
+        <Select
+          onChange={({ target }) => change({ type: Number(target.value) })}
+          value={exception.type}
+          w="200px"
+          maxW="20vw"
+        >
+          {ExceptionTypes.map((x) => (
+            <option key={x.value} value={x.value}>
+              {x.label}
+            </option>
+          ))}
+        </Select>
+      </InlineOptionGroup>
+      <Icon
+        cursor="pointer"
+        fontSize={20}
+        as={FaTrash}
+        onClick={() => {
+          onDelete?.()
+        }}
+      />
+    </HStack>
+  )
 }

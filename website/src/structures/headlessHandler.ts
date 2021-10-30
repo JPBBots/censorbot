@@ -14,13 +14,18 @@ export default {
     console.log(data)
     if (!headlessData.currentGuild) return
 
-    headlessData.currentGuild = Api._createUpdatedGuild(headlessData.currentGuild, data?.data)
+    headlessData.currentGuild = Api._createUpdatedGuild(
+      headlessData.currentGuild,
+      data?.data,
+    )
 
     // void Api.ws._handleMessage({
     //   e: 'CHANGE_SETTING',
     //   d: data
     // } as any)
-  }
+  },
 } as {
-  [key in keyof WebSocketEventMap]?: (data?: WebSocketEventMap[key]['receive']) => WebSocketEventMap[key]['send']
+  [key in keyof WebSocketEventMap]?: (
+    data?: WebSocketEventMap[key]['receive'],
+  ) => WebSocketEventMap[key]['send']
 }

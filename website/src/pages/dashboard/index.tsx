@@ -9,53 +9,47 @@ import { LoginButton } from '~/button/LoginButton'
 import { GuildPreview } from '@jpbbots/censorbot-components'
 import { useRouter } from 'next/router'
 
-export default function DashboardHome () {
+export default function DashboardHome() {
   useUser(true)
   const [loginState] = useLoginState()
   const [guilds] = useGuilds()
   const router = useRouter()
 
   return (
-      <VStack justify="center" padding={3}>
-        <VStack>
-          <Text textStyle="heading.xl">Discord Dashboard</Text>
-          <br />
-          {
-            (loginState === LoginState.Loading || loginState === LoginState.LoggingIn) &&
-              <Text textStyle='heading.md'>
-                Logging in...
-              </Text>
-          }
-          {
-            loginState === LoginState.LoggedIn && !guilds &&
-              <Text textStyle="heading.md">Loading...</Text>
-          }
-          {
-            loginState === LoginState.LoggedOut &&
-              <LoginButton />
-          }
-        </VStack>
-        <HStack spacing={4} justify="center" wrap='wrap' gridGap='5px'>
-          {
-            guilds?.map(guild =>
-              <GuildPreview
-                key={guild.icon}
-                guild={{
-                  name: guild.name,
-                  iconUrl: guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png` : undefined
-                }}
-                onClick={() => {
-                  void router.push({
-                    pathname: '/dashboard/[guild]',
-                    query: {
-                      guild: guild.id
-                    }
-                  })
-                }}
-              />
-            )
-          }
-        </HStack>
+    <VStack justify="center" padding={3}>
+      <VStack>
+        <Text textStyle="heading.xl">Discord Dashboard</Text>
+        <br />
+        {(loginState === LoginState.Loading ||
+          loginState === LoginState.LoggingIn) && (
+          <Text textStyle="heading.md">Logging in...</Text>
+        )}
+        {loginState === LoginState.LoggedIn && !guilds && (
+          <Text textStyle="heading.md">Loading...</Text>
+        )}
+        {loginState === LoginState.LoggedOut && <LoginButton />}
       </VStack>
+      <HStack spacing={4} justify="center" wrap="wrap" gridGap="5px">
+        {guilds?.map((guild) => (
+          <GuildPreview
+            key={guild.icon}
+            guild={{
+              name: guild.name,
+              iconUrl: guild.icon
+                ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
+                : undefined,
+            }}
+            onClick={() => {
+              void router.push({
+                pathname: '/dashboard/[guild]',
+                query: {
+                  guild: guild.id,
+                },
+              })
+            }}
+          />
+        ))}
+      </HStack>
+    </VStack>
   )
 }

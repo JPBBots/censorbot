@@ -14,7 +14,8 @@ import Pieces from 'utils/Pieces'
 import { DeepPartial } from '@chakra-ui/react'
 import { GuildDB } from 'typings'
 
-export const useGuildsState = (): RootState['guilds'] => useSelector((state: RootState) => state.guilds)
+export const useGuildsState = (): RootState['guilds'] =>
+  useSelector((state: RootState) => state.guilds)
 
 export const useGuilds = () => {
   const dispatch = useDispatch()
@@ -25,17 +26,17 @@ export const useGuilds = () => {
   if (!guilds && !requesting) {
     if (loginState === LoginState.LoggedIn) {
       setRequesting(true)
-      Api.getGuilds().then(res => {
-        if (!res) return
+      Api.getGuilds()
+        .then((res) => {
+          if (!res) return
 
-        dispatch(setGuilds(res))
-      }).catch(() => {})
+          dispatch(setGuilds(res))
+        })
+        .catch(() => {})
     }
   }
 
-  return [
-    guilds
-  ] as const
+  return [guilds] as const
 }
 
 let selectedGuild: Snowflake | undefined
@@ -48,7 +49,7 @@ export const useGuild = () => {
   const [loginState] = useLoginState()
   const [guilds] = useGuilds()
 
-  const [id, setId] = useState<Snowflake|undefined>(undefined)
+  const [id, setId] = useState<Snowflake | undefined>(undefined)
 
   useEffect(() => {
     console.log('changed')
@@ -56,11 +57,17 @@ export const useGuild = () => {
   }, [router.query])
 
   useEffect(() => {
-    if (id && guilds && loginState === LoginState.LoggedIn && selectedGuild !== id && 'window' in global) {
+    if (
+      id &&
+      guilds &&
+      loginState === LoginState.LoggedIn &&
+      selectedGuild !== id &&
+      'window' in global
+    ) {
       if (selectedGuild) void Api.unsubscribe(selectedGuild)
       selectedGuild = id
 
-      void Api.getGuild(id).then(guild => {
+      void Api.getGuild(id).then((guild) => {
         if (!guild) return
 
         dispatch(setCurrentGuild(guild))
@@ -84,7 +91,7 @@ export const useGuild = () => {
       Api.changeSettings(currentGuild.guild.id, obj).catch(() => {
         dispatch(setVolatileDb(currentGuild.db))
       })
-    }
+    },
   ] as const
 }
 

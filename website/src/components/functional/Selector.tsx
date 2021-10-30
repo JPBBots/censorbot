@@ -28,22 +28,36 @@ export interface SelectorTagProps {
   onClick: () => void
 }
 
-export const SelectorTag = ({ tag, role, channel, onClick }: SelectorTagProps) => {
+export const SelectorTag = ({
+  tag,
+  role,
+  channel,
+  onClick,
+}: SelectorTagProps) => {
   console.log(tag)
-  return <Tag
-    w="full"
-    justifyContent="start"
-    label={tag.label}
-    color={'#' + String(tag.color?.toString(16))}
-    isRole={tag.value !== 'none' ? role : false}
-    isChannel={tag.value !== 'none' ? channel : false}
-    bg="transparent"
-    onClick={onClick}
-  />
+  return (
+    <Tag
+      w="full"
+      justifyContent="start"
+      label={tag.label}
+      color={'#' + String(tag.color?.toString(16))}
+      isRole={tag.value !== 'none' ? role : false}
+      isChannel={tag.value !== 'none' ? channel : false}
+      bg="transparent"
+      onClick={onClick}
+    />
+  )
 }
 
-export const Selector = ({ value, onChange, children, role, channel, placeholder }: SelectorProps) => {
-  const [search, setSearch] = useState<string|null>(null)
+export const Selector = ({
+  value,
+  onChange,
+  children,
+  role,
+  channel,
+  placeholder,
+}: SelectorProps) => {
+  const [search, setSearch] = useState<string | null>(null)
   const [changing, setChanging] = useState(false)
 
   let menuDisclosure: UseDisclosureReturn
@@ -52,20 +66,29 @@ export const Selector = ({ value, onChange, children, role, channel, placeholder
 
   return (
     <SelectMenu
-      options={
-        (search ? searcher.search(search.replace(/^(@|#)/g, '')) : children).map(x => ({
-          node: <SelectorTag key={x.value} tag={x} channel={channel} role={role} onClick={() => {
-            onChange(x.value)
-            setSearch(null)
-            menuDisclosure?.onClose()
-          }} />
-        }))
-      }
+      options={(search
+        ? searcher.search(search.replace(/^(@|#)/g, ''))
+        : children
+      ).map((x) => ({
+        node: (
+          <SelectorTag
+            key={x.value}
+            tag={x}
+            channel={channel}
+            role={role}
+            onClick={() => {
+              onChange(x.value)
+              setSearch(null)
+              menuDisclosure?.onClose()
+            }}
+          />
+        ),
+      }))}
       popoverProps={{
         autoFocus: false,
         matchWidth: true,
         gutter: 0,
-        returnFocusOnClose: false
+        returnFocusOnClose: false,
       }}
     >
       {(triggerProps, disclosure, isHovering) => {
@@ -79,22 +102,28 @@ export const Selector = ({ value, onChange, children, role, channel, placeholder
           borderTopColor: disclosure.isOpen ? 'brand.100' : 'transparent',
           borderLeftColor: disclosure.isOpen ? 'brand.100' : 'transparent',
           borderRightColor: disclosure.isOpen ? 'brand.100' : 'transparent',
-          borderBottomRadius: disclosure.isOpen ? 0 : 'md'
+          borderBottomRadius: disclosure.isOpen ? 0 : 'md',
         }
-        const selected = (value !== undefined && value !== null) && children.find(x => x.value === value)
+        const selected =
+          value !== undefined &&
+          value !== null &&
+          children.find((x) => x.value === value)
 
-        return selected && !changing
-          ? (
+        return selected && !changing ? (
           <Box p={2} borderTopRadius="md" bg="lighter.5" {...containerProps}>
-            <SelectorTag tag={selected} channel={channel} role={role} onClick={() => setChanging(true)} />
+            <SelectorTag
+              tag={selected}
+              channel={channel}
+              role={role}
+              onClick={() => setChanging(true)}
+            />
           </Box>
-            )
-          : (
+        ) : (
           <Input
             {...containerProps}
             placeholder={placeholder}
             _focus={{
-              shadow: 'none'
+              shadow: 'none',
             }}
             ref={(m) => {
               if (changing) m?.focus()
@@ -111,10 +140,10 @@ export const Selector = ({ value, onChange, children, role, channel, placeholder
               setSearch(target.value)
             }}
             value={search ?? ''}
-            autoComplete='off'
+            autoComplete="off"
             {...triggerProps}
           />
-            )
+        )
       }}
     </SelectMenu>
   )

@@ -1,13 +1,16 @@
-import { NextColorModeScript, NextFontHead } from '@jpbbots/censorbot-components'
+import {
+  NextColorModeScript,
+  NextFontHead,
+} from '@jpbbots/censorbot-components'
 
 import NextDocument, { Html, Head, Main, NextScript } from 'next/document'
 
 export default class Document extends NextDocument {
-  render () {
+  render() {
     return (
       <Html lang="en">
         <Head>
-          <NextFontHead/>
+          <NextFontHead />
           <script src="https://js.chargebee.com/v2/chargebee.js"></script>
           {/* <script lang="javascript">{function () {
             if ('window' in global) {
@@ -18,7 +21,7 @@ export default class Document extends NextDocument {
           }}</script> */}
         </Head>
         <body>
-          <NextColorModeScript/>
+          <NextColorModeScript />
           <Main />
           <NextScript />
         </body>

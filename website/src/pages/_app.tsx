@@ -19,12 +19,13 @@ import { Flex } from '@chakra-ui/layout'
 
 import { ChargebeeWeb } from 'types'
 
-export const chargebee = 'window' in global
-  // @ts-expect-error
-  ? Chargebee?.init({ site: 'censorbot-test' }) as ChargebeeWeb ?? null
-  : null
+export const chargebee =
+  'window' in global
+    ? // @ts-expect-error
+      (Chargebee?.init({ site: 'censorbot-test' }) as ChargebeeWeb) ?? null
+    : null
 
-export default function App (props: AppProps) {
+export default function App(props: AppProps) {
   const { Component } = props
 
   return (
@@ -35,8 +36,10 @@ export default function App (props: AppProps) {
           <Flex
             h="full"
             flexDirection="column"
-            minH="full" w="full"
-            flexGrow={1}>
+            minH="full"
+            w="full"
+            flexGrow={1}
+          >
             <NavBar />
             <Component {...props.pageProps} />
           </Flex>

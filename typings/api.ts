@@ -242,10 +242,6 @@ export interface ExtendedGuild extends ShortGuild {
    */
   channels: DashboardChannel[]
   /**
-   * Array of categories
-   */
-  categories: DashboardChannel[]
-  /**
    * Array of roles
    */
   roles: DashboardRole[]

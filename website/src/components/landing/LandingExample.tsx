@@ -7,14 +7,18 @@ export interface LandingExampleProps {
   align: 'left' | 'right'
 }
 
-export function LandingExample (props: LandingExampleProps) {
+export function LandingExample(props: LandingExampleProps) {
   return (
     <VStack>
       <Image src={props.example} w="1000px" />
-      <small style={{
-        // marginTop: '50px'
-        float: props.align
-      }}>The word "test" has been censored for this example.</small>
+      <small
+        style={{
+          // marginTop: '50px'
+          float: props.align,
+        }}
+      >
+        The word "test" has been censored for this example.
+      </small>
     </VStack>
   )
 }

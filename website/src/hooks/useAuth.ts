@@ -5,9 +5,14 @@ import { Api } from 'structures/Api'
 import { User } from 'typings'
 import { RootState } from '../store'
 
-import { LoginState, setLoginState, setUser } from '../store/reducers/auth.reducer'
+import {
+  LoginState,
+  setLoginState,
+  setUser,
+} from '../store/reducers/auth.reducer'
 
-export const useAuthState = (): RootState['auth'] => useSelector((state: RootState) => state.auth)
+export const useAuthState = (): RootState['auth'] =>
+  useSelector((state: RootState) => state.auth)
 
 export const useUser = (needsUser: boolean) => {
   const dispatch = useDispatch()
@@ -17,7 +22,7 @@ export const useUser = (needsUser: boolean) => {
     void goUser(needsUser)
   }, [])
 
-  const goUser = async (ret: boolean = false): Promise<User|undefined> => {
+  const goUser = async (ret: boolean = false): Promise<User | undefined> => {
     if (user) return user
     if (!Api.token && !ret) {
       dispatch(setLoginState(LoginState.LoggedOut))
@@ -28,20 +33,22 @@ export const useUser = (needsUser: boolean) => {
     if (loginState !== LoginState.LoggingIn) {
       dispatch(setLoginState(LoginState.LoggingIn))
 
-      return await (Api.token ? Api.getUser() : Api.login(needsUser)).then(user => {
-        if (!user) throw new Error()
+      return await (Api.token ? Api.getUser() : Api.login(needsUser))
+        .then((user) => {
+          if (!user) throw new Error()
 
-        dispatch(setUser(user))
-        dispatch(setLoginState(LoginState.LoggedIn))
+          dispatch(setUser(user))
+          dispatch(setLoginState(LoginState.LoggedIn))
 
-        return user
-      }).catch(() => {
-        if (needsUser) return goUser()
+          return user
+        })
+        .catch(() => {
+          if (needsUser) return goUser()
 
-        dispatch(setLoginState(LoginState.LoggedOut))
+          dispatch(setLoginState(LoginState.LoggedOut))
 
-        return undefined
-      })
+          return undefined
+        })
     }
   }
 
@@ -55,16 +62,14 @@ export const useUser = (needsUser: boolean) => {
       dispatch(setUser(undefined))
       dispatch(setGuilds(undefined))
       dispatch(setCurrentGuild(undefined))
-    }
+    },
   ] as const
 }
 
 export const useLoginState = () => {
   const { loginState } = useAuthState()
 
-  return [
-    loginState
-  ]
+  return [loginState]
 }
 
 // export const useGuilds = () => {

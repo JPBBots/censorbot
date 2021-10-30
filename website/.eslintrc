@@ -1,8 +1,15 @@
 {
-  "extends": ["standard-with-typescript", "../.eslintrc"],
+  "extends": [
+    "standard-with-typescript",
+    "../.eslintrc",
+    "plugin:prettier/recommended"
+  ],
   "parserOptions": {
     "project": "./tsconfig.json"
   },
+  "plugins": [
+    "react"
+  ],
   "rules": {
     "@typescript-eslint/explicit-function-return-type": "off"
   }

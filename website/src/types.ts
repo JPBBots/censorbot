@@ -22,13 +22,13 @@ declare global {
   }
 }
 
-interface ChargebeeProduct { _: null }
+interface ChargebeeProduct {
+  _: null
+}
 
 export interface ChargebeeWeb {
   createChargebeePortal: () => {
-    open: (opt?: {
-      close?: () => void | Promise<void>
-    }) => void
+    open: (opt?: { close?: () => void | Promise<void> }) => void
   }
 
   getCart: () => {
@@ -95,5 +95,5 @@ export enum ChannelType {
    *
    * See https://support.discord.com/hc/en-us/articles/1500005513722
    */
-  GuildStageVoice = 13
+  GuildStageVoice = 13,
 }

@@ -1,3 +1,8 @@
+const fs = require('fs')
+const path = require('path')
+
+const links = fs.readdirSync(path.resolve(__dirname, './src/pages/api')).filter(x => x.endsWith('.tsx')).map(x => x.split('.')[0])
+
 module.exports = {
   reactStrictMode: true,
   onDemandEntries: {
@@ -6,7 +11,9 @@ module.exports = {
   },
   async rewrites () {
     return [
-      { source: '/invite:path*', destination: '/api/invite' },
+      ...links.map(name => ({
+        source: `/${name}:path*`, destination: `/api/${name}`
+      })),
       { source: '/servers/:path*', destination: '/dashboard/:path*' }
     ]
   }

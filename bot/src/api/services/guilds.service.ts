@@ -54,7 +54,6 @@ export class GuildsService extends EventEmitter<{
           type: x.type,
           parent_id: x.parent_id
         })),
-        categories: [],
         roles: guild.roles.filter(x => !x.managed && x.id !== guild.id).map(x => ({
           id: x.id,
           name: x.name,

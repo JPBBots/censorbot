@@ -1,4 +1,4 @@
-export default function Punishment () {
+export default function Punishment() {
   return <h1>e</h1>
 }
 

@@ -15,7 +15,7 @@ export enum LoginState {
   Loading = 0,
   LoggedOut,
   LoggingIn,
-  LoggedIn
+  LoggedIn,
 }
 
 export interface ApiData {
@@ -34,23 +34,26 @@ export class Api {
 
   static ws = new WebsocketManager()
 
-  static log (msg: string) {
+  static log(msg: string) {
     Logger.log('API', msg)
   }
 
-  static get guildId () {
+  static get guildId() {
     if (!('window' in global)) return undefined
 
-    return location.href.split('/')[4]?.match(/[0-9]{5,}/)?.[0] as Snowflake | undefined
+    return location.href.split('/')[4]?.match(/[0-9]{5,}/)?.[0] as
+      | Snowflake
+      | undefined
   }
 
-  static get token () {
+  static get token() {
     return Utils.getCookie('token')
   }
 
-  static async login (required: boolean = false) {
-    const user = await Utils.openWindow('/api/auth/discord', 'Login')
-      .then(async () => await this.getUser())
+  static async login(required: boolean = false) {
+    const user = await Utils.openWindow('/api/auth/discord', 'Login').then(
+      async () => await this.getUser(),
+    )
 
     if (!user) {
       Logger.error('Failed to authorize')
@@ -60,7 +63,7 @@ export class Api {
     return user
   }
 
-  static logout () {
+  static logout() {
     this.ws.tell('LOGOUT')
 
     document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
@@ -74,16 +77,19 @@ export class Api {
   //   } else this.setData({ login: LoginState.LoggedOut })
   // }
 
-  static async getUser () {
+  static async getUser() {
     if (!this.token) return undefined
     this.log('Retrieving user')
 
-    const user = await this.ws.request('AUTHORIZE', { token: this.token, customer: false })
+    const user = await this.ws.request('AUTHORIZE', {
+      token: this.token,
+      customer: false,
+    })
 
     return user
   }
 
-  static async getGuilds () {
+  static async getGuilds() {
     this.log('Retrieving guilds')
     const guilds = await this.ws.request('GET_GUILDS').catch(() => null)
 
@@ -92,42 +98,40 @@ export class Api {
     return guilds
   }
 
-  static async getGuild (id: Snowflake): Promise<GuildData|undefined> {
+  static async getGuild(id: Snowflake): Promise<GuildData | undefined> {
     this.log(`Subscribing to ${id}`)
 
-    const guild = await this.ws.request('SUBSCRIBE', id)
-      .catch(err => {
-        if (err === 'Not In Guild') {
-          return Swal.fire({
-            text: 'Censor Bot is not in this server yet!',
-            showConfirmButton: true,
-            showCancelButton: true,
-            imageUrl: 'https://static.jpbbots.org/censorbot.svg',
-            imageWidth: 116,
-            confirmButtonText: 'Invite'
-          }).then(res => {
-            if (res.isConfirmed) {
-              return Utils.openWindow('/invite?id=' + id)
-                .then(async () => {
-                  return await this.getGuild(id)
-                })
-            } else {
-              void Router.push('/dashboard')
-            }
-          })
-        } else if (err === 'Unauthorized') {
-          Logger.error('You don\'t have access to this server')
-          void Router.push('/dashboard')
-        }
-        return null
-      })
+    const guild = await this.ws.request('SUBSCRIBE', id).catch((err) => {
+      if (err === 'Not In Guild') {
+        return Swal.fire({
+          text: 'Censor Bot is not in this server yet!',
+          showConfirmButton: true,
+          showCancelButton: true,
+          imageUrl: 'https://static.jpbbots.org/censorbot.svg',
+          imageWidth: 116,
+          confirmButtonText: 'Invite',
+        }).then((res) => {
+          if (res.isConfirmed) {
+            return Utils.openWindow('/invite?id=' + id).then(async () => {
+              return await this.getGuild(id)
+            })
+          } else {
+            void Router.push('/dashboard')
+          }
+        })
+      } else if (err === 'Unauthorized') {
+        Logger.error("You don't have access to this server")
+        void Router.push('/dashboard')
+      }
+      return null
+    })
 
     if (!guild) return
 
     return guild
   }
 
-  static _createUpdatedGuild (current: GuildData, newDb: any) {
+  static _createUpdatedGuild(current: GuildData, newDb: any) {
     const obj = Object.assign({}, current)
     obj.db = updateObject(obj.db, Pieces.normalize(newDb))
 
@@ -138,7 +142,7 @@ export class Api {
   static timeout?: number
   static resolve?: () => void
 
-  static _resetTimer () {
+  static _resetTimer() {
     if (!this.timeout) return
     console.log('resetting timer')
     clearTimeout(this.timeout)
@@ -148,7 +152,7 @@ export class Api {
     }, 1000)
   }
 
-  static async changeSettings (id: Snowflake, data: any) {
+  static async changeSettings(id: Snowflake, data: any) {
     Logger.setLoading(true)
 
     if (!this.waiting) this.waiting = data
@@ -163,7 +167,7 @@ export class Api {
       this.resolve?.()
     }, 1000)
 
-    await new Promise<void>(resolve => {
+    await new Promise<void>((resolve) => {
       this.resolve = resolve
     })
 
@@ -177,7 +181,7 @@ export class Api {
     Logger.setLoading(false)
   }
 
-  static async unsubscribe (id: Snowflake) {
+  static async unsubscribe(id: Snowflake) {
     this.log(`Unsubscribing from ${id}`)
 
     this.ws.tell('UNSUBSCRIBE', id)

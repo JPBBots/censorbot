@@ -3,7 +3,7 @@ import Router from 'next/router'
 import { Api, LoginState } from './Api'
 import { store } from 'store'
 
-function swap (json: any) {
+function swap(json: any) {
   const ret = {} as Record<any, any>
   for (const key in json) {
     ret[json[key]] = key
@@ -15,7 +15,7 @@ class StatsManager {
   win?: Window
   interval?: number
 
-  open () {
+  open() {
     this.win = window.open('', 'stats', 'height=320,width=400') ?? undefined
     if (!this.win) return
 
@@ -45,19 +45,24 @@ class StatsManager {
     }, 100)
   }
 
-  get staging () {
+  get staging() {
     return location.host.startsWith('staging.')
   }
 
-  get runnerHash () {
-    return crypto.getRandomValues(new Int32Array(Number((Date.now() / 100000000).toFixed(0))))[0].toString(36).replace('-', '')
+  get runnerHash() {
+    return crypto
+      .getRandomValues(
+        new Int32Array(Number((Date.now() / 100000000).toFixed(0))),
+      )[0]
+      .toString(36)
+      .replace('-', '')
   }
 
-  get headless () {
+  get headless() {
     return Utils.getCookie('headless') === 'true'
   }
 
-  get info () {
+  get info() {
     return {
       connected: Api.ws.ws.connected,
       hashRandom: this.runnerHash,
@@ -66,14 +71,16 @@ class StatsManager {
       headless: this.headless,
       user: store.getState().auth.user,
       id: Api.ws.ws.id,
-      loginState: `${store.getState().auth.loginState} (${swap(LoginState)[store.getState().auth.loginState]})`,
+      loginState: `${store.getState().auth.loginState} (${
+        swap(LoginState)[store.getState().auth.loginState]
+      })`,
       build: window.__NEXT_DATA__.buildId,
       page: Router.pathname,
-      query: Router.query
+      query: Router.query,
     }
   }
 
-  write () {
+  write() {
     if (!this.win) return
 
     const stats = this.win.document.getElementById('stats')
@@ -82,7 +89,7 @@ class StatsManager {
     stats.innerHTML = JSON.stringify(this.info, null, 2)
   }
 
-  private _handleEvent (event: string) {
+  private _handleEvent(event: string) {
     switch (event) {
       case 'TOGGLE_HEADLESS': {
         const current = Utils.getCookie('headless')

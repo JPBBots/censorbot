@@ -6,7 +6,7 @@ export enum LoginState {
   Loading = 0,
   LoggedOut,
   LoggingIn,
-  LoggedIn
+  LoggedIn,
 }
 
 export interface AuthContextType {
@@ -20,7 +20,7 @@ const slice = createSlice({
   name: 'auth',
   initialState: initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<User|undefined>) => {
+    setUser: (state, action: PayloadAction<User | undefined>) => {
       state.user = action.payload
     },
     setPremiumGuilds: (state, action: PayloadAction<Snowflake[]>) => {
@@ -30,8 +30,8 @@ const slice = createSlice({
     },
     setLoginState: (state, action: PayloadAction<LoginState>) => {
       state.loginState = action.payload
-    }
-  }
+    },
+  },
 })
 
 export const authReducer = slice.reducer

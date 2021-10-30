@@ -12,7 +12,7 @@ import { Selector } from '~/functional/Selector'
 // import { Exception, ExceptionType } from 'typings/api'
 // import { Section } from '@jpbbots/censorbot-components'
 
-export default function Test () {
+export default function Test() {
   // const [guild] = useGuild()
 
   // const [exceptions, setExceptions] = useState<Exception[]>([
@@ -35,38 +35,48 @@ export default function Test () {
 
   return (
     <InlineOptionGroup>
-    <Text>Anyone with role</Text>
-    <Selector role placeholder="Search @role" value="123123" onChange={() => {}}>
-      {[
-        {
-          value: '123123',
-          label: 'hello'
-        },
-        {
-          value: '1231234',
-          label: 'helloa'
-        },
-        {
-          value: '1231235',
-          label: 'hellob'
-        }
-      ]}
-    </Selector>
-      <Text>in channel</Text>
-      <Selector channel placeholder="Search #channel" value="123123" onChange={() => {}}>
+      <Text>Anyone with role</Text>
+      <Selector
+        role
+        placeholder="Search @role"
+        value="123123"
+        onChange={() => {}}
+      >
         {[
           {
             value: '123123',
-            label: 'hello'
+            label: 'hello',
           },
           {
             value: '1231234',
-            label: 'helloa'
+            label: 'helloa',
           },
           {
             value: '1231235',
-            label: 'hellob'
-          }
+            label: 'hellob',
+          },
+        ]}
+      </Selector>
+      <Text>in channel</Text>
+      <Selector
+        channel
+        placeholder="Search #channel"
+        value="123123"
+        onChange={() => {}}
+      >
+        {[
+          {
+            value: '123123',
+            label: 'hello',
+          },
+          {
+            value: '1231234',
+            label: 'helloa',
+          },
+          {
+            value: '1231235',
+            label: 'hellob',
+          },
         ]}
       </Selector>
     </InlineOptionGroup>

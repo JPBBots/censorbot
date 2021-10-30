@@ -4,7 +4,7 @@ import { Setting } from '~/settings/Setting'
 import { searcher } from '~/settings/settings'
 import { SettingSection } from '~/settings/SettingSection'
 
-export default function AI () {
+export default function AI() {
   const [searchTerm, setSearchTerm] = useState('')
   const searchInput = createRef<HTMLInputElement>()
 
@@ -16,13 +16,18 @@ export default function AI () {
 
   return (
     <SettingSection section="Search" disableSearch>
-      <Input ref={searchInput} value={searchTerm} placeholder="Search settings..." onChange={({ target }) => {
-        setSearchTerm(target.value)
-      }} />
+      <Input
+        ref={searchInput}
+        value={searchTerm}
+        placeholder="Search settings..."
+        onChange={({ target }) => {
+          setSearchTerm(target.value)
+        }}
+      />
 
-      {
-        items.map(x => <Setting key={x.title ?? x.options[0].name} {...x} />)
-      }
+      {items.map((x) => (
+        <Setting key={x.title ?? x.options[0].name} {...x} />
+      ))}
     </SettingSection>
   )
 }

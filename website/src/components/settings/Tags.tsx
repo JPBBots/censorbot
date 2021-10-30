@@ -32,7 +32,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
   const remove = (val: string) => {
     let removing: string
     if (whitelist) {
-      const inWhitelist = whitelist.find(x => x.id === val)?.id
+      const inWhitelist = whitelist.find((x) => x.id === val)?.id
       if (!inWhitelist) return
 
       removing = inWhitelist
@@ -40,7 +40,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
       removing = val
     }
 
-    onChange?.(value.filter(x => x !== removing))
+    onChange?.(value.filter((x) => x !== removing))
   }
 
   const add = (val: string) => {
@@ -50,30 +50,31 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
   return (
     <VStack align="left">
       <HStack wrap="wrap">
-        {
-          value.map(tagValue => {
-            const val = whitelist
-              ? whitelist.find(x => x.id === tagValue) ?? { value: tagValue }
-              : { value: tagValue }
+        {value.map((tagValue) => {
+          const val = whitelist
+            ? whitelist.find((x) => x.id === tagValue) ?? { value: tagValue }
+            : { value: tagValue }
 
-            return (
-              <Tag
-                key={val.value}
-                label={val.value}
-                color={val.color ? String(val.color) : undefined}
-                isRole={settings.role}
-                isChannel={settings.channel}
-                onDelete={() => remove(tagValue)} />
-            )
-          })
-        }
+          return (
+            <Tag
+              key={val.value}
+              label={val.value}
+              color={val.color ? String(val.color) : undefined}
+              isRole={settings.role}
+              isChannel={settings.channel}
+              onDelete={() => remove(tagValue)}
+            />
+          )
+        })}
       </HStack>
-      {
-        whitelist
-          ? <Select w="400px" maxW="80vw" onChange={({ target }) => {
+      {whitelist ? (
+        <Select
+          w="400px"
+          maxW="80vw"
+          onChange={({ target }) => {
             if (target.value === '_') return
 
-            const val = whitelist.find(x => x.id === target.value)
+            const val = whitelist.find((x) => x.id === target.value)
 
             if (val?.id) {
               if (value.includes(val.id)) {
@@ -85,45 +86,58 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
 
               target.value = '_'
             }
-          }}>
-            <option value="_">{placeholder}</option>
-            {
-              whitelist.filter(a => !value.some(b => a.id === b)).map(x => <option key={x.id} value={x.id}>{x.value}</option>)
+          }}
+        >
+          <option value="_">{placeholder}</option>
+          {whitelist
+            .filter((a) => !value.some((b) => a.id === b))
+            .map((x) => (
+              <option key={x.id} value={x.id}>
+                {x.value}
+              </option>
+            ))}
+        </Select>
+      ) : (
+        <Input
+          disabled={settings.maxTags ? value.length >= settings.maxTags : false}
+          placeholder={
+            settings.maxMessage &&
+            settings.maxTags &&
+            value.length >= settings.maxTags
+              ? settings.maxMessage
+              : placeholder
+          }
+          w="400px"
+          maxW="80vw"
+          maxLength={settings.maxLength}
+          onKeyDown={(ev) => {
+            if (ev.key === 'Backspace' && !ev.currentTarget.value) {
+              return remove(value[value.length - 1])
             }
-          </Select>
-          : <Input
-              disabled={settings.maxTags ? (value.length >= settings.maxTags) : false}
-              placeholder={
-                settings.maxMessage && settings.maxTags && value.length >= settings.maxTags
-                  ? settings.maxMessage
-                  : placeholder
+
+            if (
+              ['Enter', 'Tab'].includes(ev.key) ||
+              (!settings.allowSpaces && ev.key === ' ')
+            ) {
+              let val = ev.currentTarget.value
+              while (val.endsWith(' ')) {
+                val = val.slice(0, -1)
               }
-              w="400px"
-              maxW="80vw"
-              maxLength={settings.maxLength}
-              onKeyDown={(ev) => {
-                if (ev.key === 'Backspace' && !ev.currentTarget.value) {
-                  return remove(value[value.length - 1])
-                }
 
-                if (['Enter', 'Tab'].includes(ev.key) || (!settings.allowSpaces && ev.key === ' ')) {
-                  let val = ev.currentTarget.value
-                  while (val.endsWith(' ')) {
-                    val = val.slice(0, -1)
-                  }
+              if (value.includes(val) || val === '') {
+                ev.currentTarget.value = ''
+                return
+              }
 
-                  if (value.includes(val) || val === '') {
-                    ev.currentTarget.value = ''
-                    return
-                  }
-
-                  add(val)
-                  ev.currentTarget.value = ''
-                }
-              }} onChange={({ target }) => {
-                if (target.value === ' ') target.value = ''
-              }} />
-      }
+              add(val)
+              ev.currentTarget.value = ''
+            }
+          }}
+          onChange={({ target }) => {
+            if (target.value === ' ') target.value = ''
+          }}
+        />
+      )}
     </VStack>
   )
 }
