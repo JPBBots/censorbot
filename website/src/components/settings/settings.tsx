@@ -244,6 +244,31 @@ export const settings: ISetting[] = [
       }
     ]
   },
+  {
+    title: 'Nickname Replacement',
+    description: 'Nickname to set when a users nickname is inappropriate',
+    section: 'General',
+    options: [
+      {
+        name: 'nickReplace',
+        type: OptionType.Input,
+        props: {
+          maxLength: 32
+        }
+      }
+    ]
+  },
+  {
+    title: 'Remove Nickname',
+    section: 'General',
+    options: [
+      {
+        name: 'removeNick',
+        label: 'If a user has an inappropriate nickname, reset their name to their user account name',
+        type: OptionType.Boolean
+      }
+    ]
+  },
 
   {
     title: 'Prefix',

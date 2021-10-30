@@ -1,6 +1,8 @@
 {
   "filters": [],
   "censor": 0,
+  "nickReplace": "Inappropriate Name",
+  "removeNick": true,
   "log": null,
   "role": [],
   "filter": [],

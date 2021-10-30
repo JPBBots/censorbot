@@ -85,6 +85,8 @@ export interface GuildDB {
    * Censor options
    */
   censor: number,
+  nickReplace: string,
+  removeNick: boolean
 
   exceptions: Exception[]
   /**

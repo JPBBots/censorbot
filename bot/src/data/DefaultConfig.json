@@ -5,6 +5,8 @@
       "off"
   ],
   "censor": 7,
+  "nickReplace": "Inappropriate Name",
+  "removeNick": true,
   "log": null,
   "role": [],
   "filter": [],

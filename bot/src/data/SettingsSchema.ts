@@ -69,6 +69,11 @@ export const settingSchema = Joi.object<GuildDB>({
     .min(0)
     .max(Object.values<number>(CensorMethods as unknown as Record<string, number>).reduce((a, b) => a | b, 0)),
 
+  nickReplace: Joi.string()
+    .max(32),
+
+  removeNick: Joi.bool(),
+
   log: nullableSnowflake,
 
   filter: Joi.array()

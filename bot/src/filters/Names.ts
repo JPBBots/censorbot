@@ -6,7 +6,6 @@ import { GatewayGuildMemberUpdateDispatchData, GatewayGuildMemberAddDispatchData
 
 import { CensorMethods, ExceptionType, GuildDB } from 'typings/api'
 
-const inappName = 'Inappropriate Name'
 const deHoist = String.fromCharCode(856)
 
 type EventData = GatewayGuildMemberUpdateDispatchData | GatewayGuildMemberAddDispatchData
@@ -33,7 +32,7 @@ function handleCensor (worker: WorkerManager, member: EventData, db: GuildDB, re
 
   void worker.responses.log(CensorMethods.Names, member.nick ?? member.user.username, member, response, db)
 
-  void worker.api.members.setNickname(member.guild_id, member.user.id, member.nick ? null : inappName).catch(() => {})
+  void worker.api.members.setNickname(member.guild_id, member.user.id, (db.removeNick && member.nick) ? null : db.nickReplace).catch(() => {})
 
   if (!worker.punishments.checkPerms(member.guild_id, db) && !worker.isExcepted(ExceptionType.Punishment, db, { roles: member.roles })) {
     void worker.punishments.punish(member.guild_id, member.user.id, member.roles)
@@ -60,7 +59,7 @@ export async function NameHandler (worker: WorkerManager, member: EventData): Pr
     worker.isExcepted(ExceptionType.Everything, db, { roles: member.roles })
   ) return
 
-  if (member.nick === inappName) return
+  if (member.nick === db.nickReplace) return
 
   const res = worker.test(name, db, { roles: member.roles })
 
