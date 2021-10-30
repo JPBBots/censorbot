@@ -10,7 +10,7 @@ import {
   Input,
   Icon,
   InputGroup,
-  InputLeftElement,
+  InputLeftAddon,
 } from '@chakra-ui/react'
 import { Sidebar, sections, SectionName } from './Sidebar'
 import { LoginButton } from '../button/LoginButton'
@@ -72,8 +72,8 @@ export function SettingSection(props: SettingSectionProps) {
         setMenuOpen(!menuOpen)
       }}
       margin="10px"
+      cursor="pointer"
       fontSize={30}
-      alignSelf="flex-start"
     />
   ) : (
     ''
@@ -101,16 +101,14 @@ export function SettingSection(props: SettingSectionProps) {
         <Flex flexGrow={1} maxH="100%" h="100%" overflowY="scroll">
           <VStack padding="8px 20px" alignSelf="end" w="full" h="inherit">
             {!props.disableSearch && (
-              <Box w="full">
+              <HStack w="full" align="center" spacing="15px">
                 {menuButton}
-                <InputGroup>
-                  <InputLeftElement>
-                    <Icon as={FaSearch} />
-                  </InputLeftElement>
+                <InputGroup w="400px" maxW="70vw" display="inline-flex">
+                  <InputLeftAddon>
+                    <Icon color="brand.100" as={FaSearch} />
+                  </InputLeftAddon>
 
                   <Input
-                    w="400px"
-                    maxW="70vw"
                     placeholder="Search for..."
                     onClick={() => {
                       void router.push({
@@ -120,7 +118,7 @@ export function SettingSection(props: SettingSectionProps) {
                     }}
                   />
                 </InputGroup>
-              </Box>
+              </HStack>
             )}
             <Text textStyle="heading.xl" alignSelf="start">
               {props.disableSearch && menuButton}
