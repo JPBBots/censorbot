@@ -99,6 +99,8 @@ export class Database extends Db {
     if (!db.nickReplace) db.nickReplace = 'Inappropriate Nickname'
     if (!('removeNick' in db)) db.removeNick = true
 
+    if (!('phishing' in db)) db.phishing = !!db.censor
+
     if (db.channels) {
       db.exceptions.push(...db.channels.map(id => ({
         channel: id,
