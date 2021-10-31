@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrentGuild, setGuilds } from 'store/reducers/guilds.reducer'
 import { Api } from 'structures/Api'
@@ -14,6 +14,8 @@ import {
 export const useAuthState = (): RootState['auth'] =>
   useSelector((state: RootState) => state.auth)
 
+let requesting = false
+
 export const useUser = (needsUser: boolean) => {
   const dispatch = useDispatch()
   const { user, loginState } = useAuthState()
@@ -24,6 +26,7 @@ export const useUser = (needsUser: boolean) => {
 
   const goUser = async (ret: boolean = false): Promise<User | undefined> => {
     if (user) return user
+
     if (!Api.token && !ret) {
       dispatch(setLoginState(LoginState.LoggedOut))
 
@@ -31,6 +34,9 @@ export const useUser = (needsUser: boolean) => {
     }
 
     if (loginState !== LoginState.LoggingIn) {
+      if (requesting) return undefined
+      requesting = true
+
       dispatch(setLoginState(LoginState.LoggingIn))
 
       return await (Api.token ? Api.getUser() : Api.login(needsUser))
@@ -48,6 +54,9 @@ export const useUser = (needsUser: boolean) => {
           dispatch(setLoginState(LoginState.LoggedOut))
 
           return undefined
+        })
+        .finally(() => {
+          requesting = false
         })
     }
   }

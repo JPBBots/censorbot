@@ -126,13 +126,7 @@ export function Sidebar({
   const { height } = useWindowSize()
 
   return (
-    <Flex
-      data-back="a"
-      position={opened ? 'unset' : 'unset'}
-      h={height - 90}
-      zIndex={999}
-      backgroundColor="darker.20"
-    >
+    <Flex h={height - 90} zIndex={999} backgroundColor="darker.20">
       <Flex overflowY="scroll" overflowX="hidden">
         <VStack padding={2} h="fit-content">
           <VStack w={opened ? '95vw' : '308px'} spacing={2}>

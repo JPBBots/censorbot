@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { Api, ApiData, DataContext } from './structures/Api'
-import type { AppProps } from 'next/app'
-import React from 'react'
-
-type CBAppProps = AppProps & {
-  data: ApiData
-}
+import { Api } from './structures/Api'
 
 declare global {
   namespace NodeJS {
@@ -13,12 +7,6 @@ declare global {
       api: Api
       Chargebee: any
     }
-  }
-
-  namespace CB {
-    export interface Data extends ApiData {}
-    export interface Props extends CBAppProps {}
-    export interface Context extends React.ContextType<typeof DataContext> {}
   }
 }
 

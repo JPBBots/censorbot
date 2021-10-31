@@ -5,10 +5,10 @@ import { Api } from 'structures/Api'
 import { RootState } from '../store'
 
 import { LoginState } from '../store/reducers/auth.reducer'
-import { useLoginState } from './useAuth'
+import { useLoginState, useUser } from './useAuth'
 
 import { setVolatileDb } from '../store/reducers/guilds.reducer'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Pieces from 'utils/Pieces'
 import { DeepPartial } from '@chakra-ui/react'
@@ -17,24 +17,33 @@ import { GuildDB } from 'typings'
 export const useGuildsState = (): RootState['guilds'] =>
   useSelector((state: RootState) => state.guilds)
 
+let requesting = false
+
 export const useGuilds = () => {
   const dispatch = useDispatch()
   const { guilds } = useGuildsState()
   const [loginState] = useLoginState()
-  const [requesting, setRequesting] = useState(false)
+  const [user, login] = useUser(true)
 
-  if (!guilds && !requesting) {
-    if (loginState === LoginState.LoggedIn) {
-      setRequesting(true)
-      Api.getGuilds()
-        .then((res) => {
-          if (!res) return
+  useEffect(() => {
+    if (!guilds && !requesting && user) {
+      if (loginState === LoginState.LoggedIn) {
+        requesting = true
+        Api.getGuilds()
+          .then((res) => {
+            if (!res) return
 
-          dispatch(setGuilds(res))
-        })
-        .catch(() => {})
+            dispatch(setGuilds(res))
+          })
+          .catch(() => {})
+          .finally(() => {
+            requesting = false
+          })
+      } else {
+        login()
+      }
     }
-  }
+  }, [user, loginState])
 
   return [guilds] as const
 }
@@ -67,8 +76,10 @@ export const useGuild = () => {
       if (selectedGuild) void Api.unsubscribe(selectedGuild)
       selectedGuild = id
 
+      dispatch(setCurrentGuild(undefined))
+
       void Api.getGuild(id).then((guild) => {
-        if (!guild) return
+        if (!guild) return (selectedGuild = undefined)
 
         dispatch(setCurrentGuild(guild))
       })

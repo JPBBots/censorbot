@@ -2,7 +2,7 @@ import { HStack, Text, VStack } from '@chakra-ui/layout'
 import { useLoginState, useUser } from 'hooks/useAuth'
 import { useGuilds } from 'hooks/useGuilds'
 import React from 'react'
-import { LoginState } from 'structures/Api'
+import { LoginState } from '@/store/reducers/auth.reducer'
 
 import { LoginButton } from '~/button/LoginButton'
 
@@ -32,7 +32,7 @@ export default function DashboardHome() {
       <HStack spacing={4} justify="center" wrap="wrap" gridGap="5px">
         {guilds?.map((guild) => (
           <GuildPreview
-            key={guild.icon}
+            key={guild.id}
             guild={{
               name: guild.name,
               iconUrl: guild.icon

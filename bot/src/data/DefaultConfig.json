@@ -33,8 +33,7 @@
       "separate": true,
       "ignored": []
   },
-  "channels": [],
-  "categories": [],
+  "exceptions": [],
   "nsfw": true,
   "multi": false,
   "prefix": "+",

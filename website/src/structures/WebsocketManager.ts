@@ -22,11 +22,25 @@ export class WebsocketManager extends ExtendedEmitter {
   constructor() {
     super()
 
+    this.ws.on
+
     this.add(this.ws as any)
   }
 
   private log(msg: string) {
     Logger.log('WS', msg)
+  }
+
+  @Event('connect')
+  onConnect() {
+    this.log('Connected to socket')
+
+    Api.getUser()
+  }
+
+  @Event('disconnect')
+  onDisconnect() {
+    this.log('Socket disconnected')
   }
 
   // private send (event: string, data?: any, id?: number) {
@@ -54,12 +68,16 @@ export class WebsocketManager extends ExtendedEmitter {
       }
 
       this.ws.emit(event, data, (dat: any) => {
-        if (dat?.error && dat.error === 'Unauthorized' && Api.token) {
-          void Api.getUser().then(() => {
-            void Api.getGuilds().then(() => {
-              void this.request(event, data).then((x) => resolve(x))
+        if (dat?.error) {
+          if (dat.error === 'Unauthorized' && Api.token) {
+            void Api.getUser().then(() => {
+              void Api.getGuilds().then(() => {
+                void this.request(event, data).then((x) => resolve(x))
+              })
             })
-          })
+          } else {
+            reject(new Error(dat.error))
+          }
         } else resolve(dat)
       })
 

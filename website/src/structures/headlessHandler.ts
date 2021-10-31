@@ -1,9 +1,9 @@
-import { Api, ApiData } from './Api'
+import { Api } from './Api'
 import _headlessData from './headlessData.json'
 
 import { WebSocketEventMap } from 'typings/websocket'
 
-const headlessData = _headlessData as unknown as ApiData
+const headlessData = _headlessData as any
 
 export default {
   AUTHORIZE: () => headlessData.user,

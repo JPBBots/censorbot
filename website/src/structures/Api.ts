@@ -10,22 +10,8 @@ import { Snowflake } from 'discord-api-types'
 import { updateObject } from 'utils/updateObject'
 import Pieces from 'utils/Pieces'
 import Swal from 'sweetalert2'
-
-export enum LoginState {
-  Loading = 0,
-  LoggedOut,
-  LoggingIn,
-  LoggedIn,
-}
-
-export interface ApiData {
-  user?: User
-  guilds?: ShortGuild[]
-  login: LoginState
-  currentGuild?: GuildData
-}
-
-export const DataContext = React.createContext({} as ApiData)
+import { store } from '@/store'
+import { setUser } from '@/store/reducers/auth.reducer'
 
 export class Api {
   static logger = Logger
@@ -86,6 +72,10 @@ export class Api {
       customer: false,
     })
 
+    if (user) {
+      store.dispatch(setUser(user))
+    }
+
     return user
   }
 
@@ -102,7 +92,7 @@ export class Api {
     this.log(`Subscribing to ${id}`)
 
     const guild = await this.ws.request('SUBSCRIBE', id).catch((err) => {
-      if (err === 'Not In Guild') {
+      if (err.message === 'Not In Guild') {
         return Swal.fire({
           text: 'Censor Bot is not in this server yet!',
           showConfirmButton: true,

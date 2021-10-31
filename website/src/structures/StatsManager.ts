@@ -1,7 +1,8 @@
 import { Utils } from '../utils/Utils'
 import Router from 'next/router'
-import { Api, LoginState } from './Api'
+import { Api } from './Api'
 import { store } from 'store'
+import { LoginState } from '@/store/reducers/auth.reducer'
 
 function swap(json: any) {
   const ret = {} as Record<any, any>

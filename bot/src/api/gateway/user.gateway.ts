@@ -126,7 +126,8 @@ export class UserGateway {
 
     await sock.join(data)
 
-    const guild = await this.guilds.get(data)
+    const guild = await this.guilds.get(data).catch((err) => ({ error: err.message }))
+    if ('error' in guild) return guild
 
     self.subscribedGuild = guild.guild.id
 

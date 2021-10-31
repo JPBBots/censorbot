@@ -48,19 +48,12 @@ export function SettingSection(props: SettingSectionProps) {
   }
   if (
     loginState === LoginState.Loading ||
-    loginState === LoginState.LoggingIn
+    loginState === LoginState.LoggingIn ||
+    !currentGuild
   ) {
     return (
       <div style={{ textAlign: 'center' }}>
         <h1>Loading...</h1>
-      </div>
-    )
-  }
-
-  if (!currentGuild) {
-    return (
-      <div>
-        <h1>I forget what this means</h1>
       </div>
     )
   }
