@@ -13,6 +13,6 @@ export const useLoading = () => {
     loading,
     (newLoadingState: boolean) => {
       dispatch(setLoading(newLoadingState))
-    },
+    }
   ]
 }

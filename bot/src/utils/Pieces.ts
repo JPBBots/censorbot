@@ -1,12 +1,14 @@
 const Pieces = {
   generate: (obj: any): any => {
     const pieces = {}
-    function generatePiece (toObj: any, key: string, working?: string): void {
+    function generatePiece(toObj: any, key: string, working?: string): void {
       const val = key ? toObj[key] : toObj
       if (!val || val.constructor !== Object) {
         pieces[`${working ? `${working}.` : ''}${key}`] = val
       } else {
-        Object.keys(val).forEach(x => generatePiece(val, x, `${working ? `${working}.` : ''}${key}`))
+        Object.keys(val).forEach((x) =>
+          generatePiece(val, x, `${working ? `${working}.` : ''}${key}`)
+        )
       }
     }
     generatePiece(obj, '')
@@ -15,7 +17,7 @@ const Pieces = {
   },
   normalize: (obj: any): any => {
     const res = {}
-    Object.keys(obj).forEach(piece => {
+    Object.keys(obj).forEach((piece) => {
       const split = piece.split('.')
       let objToBe = res
       for (let i = 0; i < split.length - 1; i++) {
@@ -24,7 +26,7 @@ const Pieces = {
       }
       objToBe[split[split.length - 1]] = obj[piece]
     })
-  
+
     return res
   }
 }

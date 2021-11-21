@@ -5,7 +5,10 @@ import { Database } from '../structures/Database'
 import { Filter, FilterResponse } from '../structures/Filter'
 import { ActionBucket } from '../structures/ActionBucket'
 import { Responses } from '../structures/Responses'
-import { CommandContext, SlashCommandContext } from '../structures/CommandContext'
+import {
+  CommandContext,
+  SlashCommandContext
+} from '../structures/CommandContext'
 import { TicketManager } from '../structures/TicketManager'
 
 import { PerspectiveApi } from '../structures/ai/PerspectiveApi'
@@ -76,16 +79,21 @@ export class WorkerManager extends Worker<{}> {
   private readonly _eventHandler = new WorkerEvents(this)
   private readonly _clusterEventHandler = new ClusterEvents(this)
 
-  constructor () {
+  constructor() {
     super()
 
     this.interface.setupWorker(this)
 
-    this.setStatus(this.config.custom.status?.[0] ?? 'watching', this.config.custom.status?.[1] ?? 'For Bad Words')
+    this.setStatus(
+      this.config.custom.status?.[0] ?? 'watching',
+      this.config.custom.status?.[1] ?? 'For Bad Words'
+    )
 
     this.commands
       .options({
-        interactionGuild: this.config.staging ? '569907007465848842' : undefined,
+        interactionGuild: this.config.staging
+          ? '569907007465848842'
+          : undefined,
         default: {
           myPerms: ['sendMessages', 'embed']
         }
@@ -94,14 +102,15 @@ export class WorkerManager extends Worker<{}> {
         if (ctx.myPerms('sendMessages')) {
           if (ctx.isInteraction || ctx.myPerms('embed')) {
             ctx.embed
-              .color(0xFF0000)
+              .color(0xff0000)
               .title('An Error Occured')
               .description(`\`\`\`xl\n${err.message}\`\`\``)
-              .send(true, false, true).catch(console.error)
+              .send(true, false, true)
+              .catch(console.error)
           } else {
             ctx
               .send(`An Error Occured\n\`\`\`xl\n${err.message}\`\`\``)
-              .catch(() => { })
+              .catch(() => {})
           }
         }
 
@@ -110,7 +119,9 @@ export class WorkerManager extends Worker<{}> {
         this.logError(err, ctx.command.command)
       })
       .prefix(async (msg): Promise<string | string[]> => {
-        const prefix = await this.db.config(msg.guild_id as Snowflake).then(x => x.prefix)
+        const prefix = await this.db
+          .config(msg.guild_id as Snowflake)
+          .then((x) => x.prefix)
         // @ts-expect-error
         if (!prefix) return null
         return prefix
@@ -132,11 +143,13 @@ export class WorkerManager extends Worker<{}> {
     this.loadCommands()
   }
 
-  public async isAdmin (id: Snowflake): Promise<boolean> {
-    return await fetch(`https://jpbbots.org/api/admin/${id}`).then(async x => await x.text()).then(x => !!Number(x))
+  public async isAdmin(id: Snowflake): Promise<boolean> {
+    return await fetch(`https://jpbbots.org/api/admin/${id}`)
+      .then(async (x) => await x.text())
+      .then((x) => !!Number(x))
   }
 
-  public loadCommands (): void {
+  public loadCommands(): void {
     console.log('Loading commands')
     if (this.commands.commands) this.commands.commands.clear()
 
@@ -145,20 +158,30 @@ export class WorkerManager extends Worker<{}> {
     this.commands.load(path.resolve(__dirname, '../commands'))
   }
 
-  getThreadParent (guildId: Snowflake, threadId: Snowflake): APIChannel | undefined {
+  getThreadParent(
+    guildId: Snowflake,
+    threadId: Snowflake
+  ): APIChannel | undefined {
     const thread = this.threads.get(`${guildId}-${threadId}`)
     if (!thread) return undefined
 
     return this.channels.get(thread.parentId)
   }
 
-  hasPerms (guildId: Snowflake, perms: keyof typeof PermissionsUtils.bits | Array<keyof typeof PermissionsUtils.bits>, channel?: Snowflake): boolean {
+  hasPerms(
+    guildId: Snowflake,
+    perms:
+      | keyof typeof PermissionsUtils.bits
+      | Array<keyof typeof PermissionsUtils.bits>,
+    channel?: Snowflake
+  ): boolean {
     const guild = this.guilds.get(guildId)
     const member = this.selfMember.get(guildId)
     const roleList = this.guildRoles.get(guildId)
     let overwrites
     if (channel) {
-      const c = this.channels.get(channel) ?? this.getThreadParent(guildId, channel)
+      const c =
+        this.channels.get(channel) ?? this.getThreadParent(guildId, channel)
       if (!c) return false
       overwrites = c.permission_overwrites
     }
@@ -174,10 +197,15 @@ export class WorkerManager extends Worker<{}> {
       overwrites
     })
 
-    return p.every(x => PermissionsUtils.has(current, x))
+    return p.every((x) => PermissionsUtils.has(current, x))
   }
 
-  isManageable (guildId: Snowflake, user: Snowflake, userRoleIds: Snowflake[], ownerMatters = true): boolean {
+  isManageable(
+    guildId: Snowflake,
+    user: Snowflake,
+    userRoleIds: Snowflake[],
+    ownerMatters = true
+  ): boolean {
     const guild = this.guilds.get(guildId)
     if (!guild) return false
 
@@ -186,27 +214,37 @@ export class WorkerManager extends Worker<{}> {
     const roles = this.guildRoles.get(guildId)
     if (!roles) return false
 
-    const highestRole = roles.filter(x => userRoleIds.includes(x.id)).sort((a, b) => b.position - a.position).first()
+    const highestRole = roles
+      .filter((x) => userRoleIds.includes(x.id))
+      .sort((a, b) => b.position - a.position)
+      .first()
     if (!highestRole) return true
 
     const self = this.selfMember.get(guildId)
     if (!self) return false
 
-    const myHighestRole = roles.filter(x => self.roles.includes(x.id)).sort((a, b) => b.position - a.position).first()
+    const myHighestRole = roles
+      .filter((x) => self.roles.includes(x.id))
+      .sort((a, b) => b.position - a.position)
+      .first()
     if (!myHighestRole) return false
 
     return myHighestRole.position > highestRole.position
   }
 
-  webhook (wh: keyof typeof Config.webhooks): Embed {
+  webhook(wh: keyof typeof Config.webhooks): Embed {
     const webhook = this.config.webhooks[wh]
     return new Embed(async (embed) => {
       return await this.comms.sendWebhook(webhook.id, webhook.token, embed)
     })
   }
 
-  isExcepted (type: ExceptionType, { exceptions }: Pick<GuildDB, 'exceptions'>, data: ExceptedData): boolean {
-    return exceptions.some(x => {
+  isExcepted(
+    type: ExceptionType,
+    { exceptions }: Pick<GuildDB, 'exceptions'>,
+    data: ExceptedData
+  ): boolean {
+    return exceptions.some((x) => {
       if (x.type === ExceptionType.Everything || x.type === type) {
         if (x.role && data.roles) {
           if (!data.roles?.includes(x.role)) return false
@@ -223,7 +261,7 @@ export class WorkerManager extends Worker<{}> {
     })
   }
 
-  test (content: string, db: GuildDB, data: ExceptedData): FilterResponse {
+  test(content: string, db: GuildDB, data: ExceptedData): FilterResponse {
     return this.filter.test(content, db, {
       server: this.isExcepted(ExceptionType.ServerFilter, db, data),
       prebuilt: this.isExcepted(ExceptionType.PreBuiltFilter, db, data)
@@ -237,9 +275,10 @@ export class WorkerManager extends Worker<{}> {
   //   return false
   // }
 
-  logError (error: Error, command?: CommandType): void {
-    const embed = this.webhook('errors')
-      .description(`\`\`\`xl\n${util.inspect(error)}\`\`\``)
+  logError(error: Error, command?: CommandType): void {
+    const embed = this.webhook('errors').description(
+      `\`\`\`xl\n${util.inspect(error)}\`\`\``
+    )
 
     if (command) embed.field('Command', `${command}`, true)
 

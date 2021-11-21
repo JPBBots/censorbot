@@ -21,7 +21,7 @@ export default function GuildPremium() {
           .filter(
             (setting) =>
               setting.premium ??
-              setting.options.some((x) => 'premium' in x && x.premium),
+              setting.options.some((x) => 'premium' in x && x.premium)
           )
           .map((x) => <Setting key={x.title ?? x.options[0].name} {...x} />)
       ) : (

@@ -47,27 +47,30 @@ class StatsManager {
   }
 
   get staging() {
-    return location.host.startsWith('staging.')
+    return (
+      location.host.startsWith('staging.') &&
+      window.__NEXT_DATA__.buildId === 'development'
+    )
   }
 
   get runnerHash() {
     return crypto
       .getRandomValues(
-        new Int32Array(Number((Date.now() / 100000000).toFixed(0))),
+        new Int32Array(Number((Date.now() / 100000000).toFixed(0)))
       )[0]
       .toString(36)
       .replace('-', '')
   }
 
   get headless() {
-    return Utils.getCookie('headless') === 'true'
+    return this.staging && Utils.getCookie('headless') === 'true'
   }
 
   get info() {
     return {
       connected: Api.ws.ws.connected,
       hashRandom: this.runnerHash,
-      ping: `${1}ms`,
+      ping: `${Api.ws.ping}ms`,
       staging: this.staging,
       headless: this.headless,
       user: store.getState().auth.user,
@@ -77,7 +80,7 @@ class StatsManager {
       })`,
       build: window.__NEXT_DATA__.buildId,
       page: Router.pathname,
-      query: Router.query,
+      query: Router.query
     }
   }
 
@@ -93,13 +96,15 @@ class StatsManager {
   private _handleEvent(event: string) {
     switch (event) {
       case 'TOGGLE_HEADLESS': {
+        if (!this.staging) return alert('Cannot toggle headless on qap/prod')
         const current = Utils.getCookie('headless')
         document.cookie = `headless=${!(current === 'true')}`
+        this.win?.close()
         location.reload()
         break
       }
       case 'RESTART_SOCKET': {
-        void Api.ws.ws?.close()
+        void Api.ws.ws?.close().open()
         break
       }
     }

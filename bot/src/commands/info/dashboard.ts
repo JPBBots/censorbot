@@ -9,7 +9,12 @@ export default {
   },
   description: 'Sends a link to the dashboard',
   exec: (ctx) => {
-    if (ctx.flags.i) return void ctx.reply(`${ctx.worker.config.links.site}/dashboard/${ctx.guild?.id}`)
-    void ctx.reply(`Change server settings here: ${ctx.worker.config.links.dashboard}`)
+    if (ctx.flags.i)
+      return void ctx.reply(
+        `${ctx.worker.config.links.site}/dashboard/${ctx.guild?.id}`
+      )
+    void ctx.reply(
+      `Change server settings here: ${ctx.worker.config.links.dashboard}`
+    )
   }
 } as CommandOptions

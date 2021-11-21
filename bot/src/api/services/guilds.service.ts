@@ -12,10 +12,10 @@ import { ThreadService } from './thread.service'
 
 @Injectable()
 export class GuildsService extends EventEmitter<{
-  GUILD_SETTINGS_UPDATE: { id: Snowflake, db: GuildDB }
+  GUILD_SETTINGS_UPDATE: { id: Snowflake; db: GuildDB }
   GUILD_UPDATED: GuildData
 }> {
-  constructor (
+  constructor(
     private readonly thread: ThreadService,
     private readonly database: DatabaseService,
     private readonly caching: CacheService,
@@ -34,38 +34,41 @@ export class GuildsService extends EventEmitter<{
     })
   }
 
-  get db () {
+  get db() {
     return this.database.collection('guild_data')
   }
 
-  private async getGuild (guildId: Snowflake): Promise<GuildData> {
+  private async getGuild(guildId: Snowflake): Promise<GuildData> {
     const guild = await this.thread.sendCommand('GET_GUILD', { id: guildId })
 
-    if (!guild || !guild.channels || !guild.roles) throw new Error('Not In Guild')
+    if (!guild || !guild.channels || !guild.roles)
+      throw new Error('Not In Guild')
 
     return {
       guild: {
         name: guild.name,
         icon: guild.icon,
         id: guild.id,
-        channels: guild.channels.map(x => ({
+        channels: guild.channels.map((x) => ({
           id: x.id,
           name: x.name ?? '',
           type: x.type,
           parent_id: x.parent_id
         })),
-        roles: guild.roles.filter(x => !x.managed && x.id !== guild.id).map(x => ({
-          id: x.id,
-          name: x.name,
-          color: x.color
-        }))
+        roles: guild.roles
+          .filter((x) => !x.managed && x.id !== guild.id)
+          .map((x) => ({
+            id: x.id,
+            name: x.name,
+            color: x.color
+          }))
       },
       premium: await this.database.guildPremium(guild.id),
       db: await this.database.config(guild.id)
     }
   }
 
-  async get (id: Snowflake): Promise<GuildData> {
+  async get(id: Snowflake): Promise<GuildData> {
     const cached = this.caching.guilds.get(id)
     if (cached) return cached
 
@@ -76,30 +79,40 @@ export class GuildsService extends EventEmitter<{
     return guild
   }
 
-  async set (id: Snowflake, db?: GuildDB): Promise<void> {
+  async set(id: Snowflake, db?: GuildDB): Promise<void> {
     const guild = await this.get(id)
 
     if (!db) db = guild.db
 
     if (guild.db.notInDb) {
       guild.db.notInDb = false
-      await this.db.updateOne({ id }, {
-        $set: guild.db
-      }, { upsert: true })
+      await this.db.updateOne(
+        { id },
+        {
+          $set: guild.db
+        },
+        { upsert: true }
+      )
     }
 
-    const valid = this.database.schemas[guild.premium ? 'premium' : 'normal'].validate(db)
+    const valid =
+      this.database.schemas[guild.premium ? 'premium' : 'normal'].validate(db)
     if (valid.error) throw valid.error
 
     db.id = id
 
-    db.filter = (db.filter || guild.db.filter).map(x => this.filter.resolve(x)[0]?.t).filter(x => x)
+    db.filter = (db.filter || guild.db.filter)
+      .map((x) => this.filter.resolve(x)[0]?.t)
+      .filter((x) => x)
 
-    await this.db.updateOne({
-      id
-    }, {
-      $set: pieces.generate(db)
-    })
+    await this.db.updateOne(
+      {
+        id
+      },
+      {
+        $set: pieces.generate(db)
+      }
+    )
 
     guild.db = patch(guild.db, db)
 

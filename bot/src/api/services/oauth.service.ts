@@ -4,23 +4,28 @@ import Crypto from 'crypto'
 import qs from 'querystring'
 import { Config } from '../../config'
 import { ShortGuild, User } from 'typings'
-import { APIGuild, APIUser, RESTPostOAuth2AccessTokenResult, RESTPostOAuth2AccessTokenURLEncodedData } from 'discord-api-types'
+import {
+  APIGuild,
+  APIUser,
+  RESTPostOAuth2AccessTokenResult,
+  RESTPostOAuth2AccessTokenURLEncodedData
+} from 'discord-api-types'
 import { DiscordService } from './discord.service'
 import { PermissionsUtils } from 'discord-rose'
 import { DatabaseService } from './database.service'
 
 @Injectable()
 export class OAuthService {
-  constructor (
+  constructor(
     private readonly database: DatabaseService,
     private readonly rest: DiscordService
   ) {}
 
-  get db () {
+  get db() {
     return this.database.collection('users')
   }
 
-  private createToken (): string {
+  private createToken(): string {
     return Crypto.createHash('sha256')
       .update(Crypto.randomBytes(8).toString('hex'))
       .update(`${Date.now()}`)
@@ -28,7 +33,7 @@ export class OAuthService {
       .digest('hex')
   }
 
-  async callback (code: string, host: string): Promise<string> {
+  async callback(code: string, host: string): Promise<string> {
     const oauthUser = await this._bearer(code, host)
     if (!oauthUser) throw new Error('Invalid Code')
 
@@ -53,28 +58,33 @@ export class OAuthService {
     return token
   }
 
-  private async _bearer (code: string, host: string): Promise<RESTPostOAuth2AccessTokenResult | false> {
-    const user = await this.rest.request('POST', '/oauth2/token', {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: {
-        client_id: Config.id,
-        client_secret: Config.oauth.secret,
-        code,
-        grant_type: 'authorization_code',
-        redirect_uri: `https://${host}/api/auth/discord/callback`,
-        scope: Config.dashboardOptions.scopes.join(' ')
-      } as RESTPostOAuth2AccessTokenURLEncodedData,
-      parser: qs.stringify
-    }).catch(() => false)
+  private async _bearer(
+    code: string,
+    host: string
+  ): Promise<RESTPostOAuth2AccessTokenResult | false> {
+    const user = await this.rest
+      .request('POST', '/oauth2/token', {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: {
+          client_id: Config.id,
+          client_secret: Config.oauth.secret,
+          code,
+          grant_type: 'authorization_code',
+          redirect_uri: `https://${host}/api/auth/discord/callback`,
+          scope: Config.dashboardOptions.scopes.join(' ')
+        } as RESTPostOAuth2AccessTokenURLEncodedData,
+        parser: qs.stringify
+      })
+      .catch(() => false)
 
     if (!user || !user.access_token) return false
 
     return user
   }
 
-  public async getUser (token: string): Promise<APIUser | false> {
+  public async getUser(token: string): Promise<APIUser | false> {
     const user = await this.rest.request('GET', '/users/@me', {
       headers: {
         Authorization: `Bearer ${token}`
@@ -86,17 +96,29 @@ export class OAuthService {
     return user
   }
 
-  public async getGuilds (token: string): Promise<ShortGuild[]> {
-    const guilds = await this.rest.request('GET', '/users/@me/guilds', {
+  public async getGuilds(token: string): Promise<ShortGuild[]> {
+    const guilds = (await this.rest.request('GET', '/users/@me/guilds', {
       headers: {
         Authorization: `Bearer ${token}`
       }
-    }) as APIGuild[]
+    })) as APIGuild[]
 
     if (!guilds || !Array.isArray(guilds)) throw new Error('Unauthorized')
 
-    return guilds.filter(x => x.owner as boolean || PermissionsUtils.has(Number(x.permissions), Config.dashboardOptions.requiredPermission))
-      .filter(x => Config.custom.allowedGuilds ? Config.custom.allowedGuilds.includes(x.id) : true)
-      .map(x => ({ name: x.name, id: x.id, icon: x.icon }))
+    return guilds
+      .filter(
+        (x) =>
+          (x.owner as boolean) ||
+          PermissionsUtils.has(
+            Number(x.permissions),
+            Config.dashboardOptions.requiredPermission
+          )
+      )
+      .filter((x) =>
+        Config.custom.allowedGuilds
+          ? Config.custom.allowedGuilds.includes(x.id)
+          : true
+      )
+      .map((x) => ({ name: x.name, id: x.id, icon: x.icon }))
   }
 }

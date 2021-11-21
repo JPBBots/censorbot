@@ -11,7 +11,7 @@ import { InterfaceService } from './interface.service'
 export class UsersService extends EventEmitter<{
   USER_UPDATE: User
 }> {
-  constructor (
+  constructor(
     private readonly database: DatabaseService,
     private readonly int: InterfaceService,
     private readonly caching: CacheService,
@@ -20,11 +20,11 @@ export class UsersService extends EventEmitter<{
     super()
   }
 
-  get db () {
+  get db() {
     return this.database.collection('users')
   }
 
-  async login (token: string) {
+  async login(token: string) {
     const user = await this.db.findOne({ token })
     if (!user) throw new Error('Invalid Token')
 
@@ -35,7 +35,7 @@ export class UsersService extends EventEmitter<{
     return extendedUser
   }
 
-  async extendUser (user: User): Promise<User> {
+  async extendUser(user: User): Promise<User> {
     user.admin = await this.int.api.isAdmin(user.id)
 
     const prem = await this.chargebee.getAmount(user.id)
@@ -49,13 +49,17 @@ export class UsersService extends EventEmitter<{
       premium.count = prem.amount
       premium.customer = prem.customer
 
-      let premiumUser = await this.database.collection('premium_users').findOne({ id: user.id })
+      let premiumUser = await this.database
+        .collection('premium_users')
+        .findOne({ id: user.id })
       if (!premiumUser) {
         premiumUser = {
           id: user.id,
           guilds: []
         }
-        await this.database.collection('premium_users').updateOne({ id: user.id }, { $set: premiumUser }, { upsert: true })
+        await this.database
+          .collection('premium_users')
+          .updateOne({ id: user.id }, { $set: premiumUser }, { upsert: true })
       }
       premium.guilds = premiumUser.guilds
     }

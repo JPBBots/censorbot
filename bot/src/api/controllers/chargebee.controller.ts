@@ -1,4 +1,12 @@
-import { Body, Controller, HttpException, HttpStatus, Post, Query, Res } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  HttpException,
+  HttpStatus,
+  Post,
+  Query,
+  Res
+} from '@nestjs/common'
 import { Response } from 'express'
 import { RegisterInfo, RegisterResponse } from 'typings'
 import { Config } from '../../config'
@@ -23,7 +31,7 @@ const changeEvents = [
 
 @Controller('chargebee')
 export class ChargeBeeController {
-  constructor (
+  constructor(
     private readonly chargebee: ChargeBeeService,
     private readonly users: UsersService,
     private readonly caching: CacheService,
@@ -31,11 +39,12 @@ export class ChargeBeeController {
   ) {}
 
   @Post('/register')
-  async register (
-    @Body() customer: RegisterInfo
-  ): Promise<RegisterResponse> {
+  async register(@Body() customer: RegisterInfo): Promise<RegisterResponse> {
     try {
-      const sub = await this.chargebee.register(customer.id, customer.customerId)
+      const sub = await this.chargebee.register(
+        customer.id,
+        customer.customerId
+      )
       if (sub) return sub
       else throw new Error('Error')
     } catch (err) {
@@ -44,12 +53,13 @@ export class ChargeBeeController {
   }
 
   @Post('/webhook')
-  async webhookPost (
-  @Query('key') key: string,
+  async webhookPost(
+    @Query('key') key: string,
     @Res() res: Response,
     @Body() body: any
   ) {
-    if (key !== Config.chargebee.webhook) throw new HttpException('Invalid Key', HttpStatus.FORBIDDEN)
+    if (key !== Config.chargebee.webhook)
+      throw new HttpException('Invalid Key', HttpStatus.FORBIDDEN)
 
     res.sendStatus(204)
 
@@ -68,9 +78,14 @@ export class ChargeBeeController {
 
     await this.chargebee.db.deleteOne({ id: user.id })
 
-    void this.int.api._request('POST', '/premium/webhook/remove', {
-      Authorization: process.env.JPBBOT_PREMIUM_UPDATES
-    }, { id: user.id })
+    void this.int.api._request(
+      'POST',
+      '/premium/webhook/remove',
+      {
+        Authorization: process.env.JPBBOT_PREMIUM_UPDATES
+      },
+      { id: user.id }
+    )
 
     const current = this.caching.users.get(user.id)
     if (current) {

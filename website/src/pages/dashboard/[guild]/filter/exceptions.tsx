@@ -25,7 +25,7 @@ export default function Exceptions() {
                 exceptions.push({
                   channel: target.value,
                   role: null,
-                  type: ExceptionType.Everything,
+                  type: ExceptionType.Everything
                 })
 
                 setDb('exceptions', exceptions)
@@ -53,7 +53,7 @@ export default function Exceptions() {
                 exceptions.push({
                   channel: null,
                   role: target.value,
-                  type: ExceptionType.Everything,
+                  type: ExceptionType.Everything
                 })
 
                 setDb('exceptions', exceptions)

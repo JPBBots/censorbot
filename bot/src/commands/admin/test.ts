@@ -10,7 +10,16 @@ export default {
       .title(`Censored: ${response.censor}`)
       .description(`\`\`\`json\n${JSON.stringify(response, null, 4)}\`\`\``)
 
-    if (response.censor) embed.field('Contains curse', `||${ctx.worker.filter.surround(ctx.args.join(' '), response.ranges, '__')}||`, true)
+    if (response.censor)
+      embed.field(
+        'Contains curse',
+        `||${ctx.worker.filter.surround(
+          ctx.args.join(' '),
+          response.ranges,
+          '__'
+        )}||`,
+        true
+      )
 
     void embed.send(false)
   }

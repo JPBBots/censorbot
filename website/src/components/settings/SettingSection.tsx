@@ -10,7 +10,7 @@ import {
   Input,
   Icon,
   InputGroup,
-  InputLeftAddon,
+  InputLeftAddon
 } from '@chakra-ui/react'
 import { Sidebar, sections, SectionName } from './Sidebar'
 import { LoginButton } from '../button/LoginButton'
@@ -107,7 +107,7 @@ export function SettingSection(props: SettingSectionProps) {
                     onClick={() => {
                       void router.push({
                         pathname: '/dashboard/[guild]/search',
-                        query: router.query,
+                        query: router.query
                       })
                     }}
                   />

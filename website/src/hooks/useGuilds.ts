@@ -5,14 +5,15 @@ import { Api } from 'structures/Api'
 import { RootState } from '../store'
 
 import { LoginState } from '../store/reducers/auth.reducer'
-import { useLoginState, useUser } from './useAuth'
+import { useHeadless, useLoginState, useUser } from './useAuth'
 
 import { setVolatileDb } from '../store/reducers/guilds.reducer'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Pieces from 'utils/Pieces'
 import { DeepPartial } from '@chakra-ui/react'
 import { GuildDB } from 'typings'
+import headlessData from '@/structures/headlessData.json'
 
 export const useGuildsState = (): RootState['guilds'] =>
   useSelector((state: RootState) => state.guilds)
@@ -51,6 +52,7 @@ export const useGuilds = () => {
 let selectedGuild: Snowflake | undefined
 
 export const useGuild = () => {
+  const [headless] = useHeadless()
   const router = useRouter()
 
   const dispatch = useDispatch()
@@ -66,11 +68,14 @@ export const useGuild = () => {
   }, [router.query])
 
   useEffect(() => {
+    if (selectedGuild === id) return
+    if (headless) {
+      dispatch(setCurrentGuild(headlessData.currentGuild as any))
+    }
     if (
       id &&
       guilds &&
       loginState === LoginState.LoggedIn &&
-      selectedGuild !== id &&
       'window' in global
     ) {
       if (selectedGuild) void Api.unsubscribe(selectedGuild)
@@ -102,7 +107,7 @@ export const useGuild = () => {
       Api.changeSettings(currentGuild.guild.id, obj).catch(() => {
         dispatch(setVolatileDb(currentGuild.db))
       })
-    },
+    }
   ] as const
 }
 

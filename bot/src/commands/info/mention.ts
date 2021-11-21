@@ -10,7 +10,9 @@ export default {
 
     void ctx.embed
       .title('Censor Bot')
-      .description(`My prefix in this server is \`${ctx.db.prefix ?? mention}\``)
+      .description(
+        `My prefix in this server is \`${ctx.db.prefix ?? mention}\``
+      )
       .footer(`Do ${ctx.db.prefix}help to get help`)
       .send()
   }

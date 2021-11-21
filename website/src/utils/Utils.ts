@@ -17,7 +17,7 @@ export class Utils {
         void Swal.fire({
           text: text ?? 'Open',
           showConfirmButton: true,
-          showCancelButton: true,
+          showCancelButton: true
         }).then((res) => {
           if (res.isConfirmed) resolve(this.openWindow(url, text))
         })

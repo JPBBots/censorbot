@@ -14,7 +14,7 @@ export function LandingExample(props: LandingExampleProps) {
       <small
         style={{
           // marginTop: '50px'
-          float: props.align,
+          float: props.align
         }}
       >
         The word "test" has been censored for this example.

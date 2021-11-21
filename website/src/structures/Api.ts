@@ -1,6 +1,4 @@
-import React from 'react'
-
-import { GuildData, ShortGuild, User } from 'typings'
+import { GuildData, User } from 'typings'
 import { Utils } from 'utils/Utils'
 import { Logger } from './Logger'
 import { WebsocketManager } from './WebsocketManager'
@@ -38,7 +36,7 @@ export class Api {
 
   static async login(required: boolean = false) {
     const user = await Utils.openWindow('/api/auth/discord', 'Login').then(
-      async () => await this.getUser(),
+      async () => await this.getUser()
     )
 
     if (!user) {
@@ -69,7 +67,7 @@ export class Api {
 
     const user = await this.ws.request('AUTHORIZE', {
       token: this.token,
-      customer: false,
+      customer: false
     })
 
     if (user) {
@@ -99,7 +97,7 @@ export class Api {
           showCancelButton: true,
           imageUrl: 'https://static.jpbbots.org/censorbot.svg',
           imageWidth: 116,
-          confirmButtonText: 'Invite',
+          confirmButtonText: 'Invite'
         }).then((res) => {
           if (res.isConfirmed) {
             return Utils.openWindow('/invite?id=' + id).then(async () => {

@@ -2,7 +2,7 @@ import { chargebee } from '@/pages/_app'
 import { MenuItem } from '@chakra-ui/menu'
 import { Box } from '@chakra-ui/layout'
 import { Header, NavActions } from '@jpbbots/censorbot-components'
-import { useUser } from 'hooks/useAuth'
+import { useHeadless, useUser } from 'hooks/useAuth'
 import { useRouter } from 'next/router'
 import { stats } from 'structures/StatsManager'
 
@@ -13,6 +13,7 @@ export function NavBar() {
   const [includeNavBar] = useMinWidth(675)
   const [useSmallText] = useMinWidth(515)
   const router = useRouter()
+  const [headless] = useHeadless()
 
   return (
     <Box
@@ -25,15 +26,15 @@ export function NavBar() {
       }}
     >
       <Header
-        title="Censor Bot"
+        title={headless ? 'Headless Bot' : 'Censor Bot'}
         logoProps={{
           onClick: () => {
             void router.push('/')
           },
-          cursor: 'pointer',
+          cursor: 'pointer'
         }}
         textProps={{
-          textStyle: useSmallText ? 'label.md' : 'heading.xl',
+          textStyle: useSmallText ? 'label.md' : 'heading.xl'
         }}
       >
         <NavActions
@@ -41,15 +42,15 @@ export function NavBar() {
             !includeNavBar
               ? [
                   {
-                    label: 'Support',
+                    label: 'Support'
                   },
                   {
                     label: 'Dashboard',
                     isActive: router.pathname === '/dashboard',
                     onClick: () => {
                       void router.push('/dashboard')
-                    },
-                  },
+                    }
+                  }
                 ]
               : []
           }
@@ -60,7 +61,7 @@ export function NavBar() {
                     ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
                     : `https://cdn.discordapp.com/embed/avatars/${
                         Number(user.tag.split('#')[1]) % 5
-                      }.png`,
+                      }.png`
                 }
               : undefined
           }

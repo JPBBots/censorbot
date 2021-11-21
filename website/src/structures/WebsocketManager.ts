@@ -18,11 +18,10 @@ type EventMap = {
 
 export class WebsocketManager extends ExtendedEmitter {
   public ws = io('', { path: '/ws' })
+  ping = -1
 
   constructor() {
     super()
-
-    this.ws.on
 
     this.add(this.ws as any)
   }
@@ -35,7 +34,7 @@ export class WebsocketManager extends ExtendedEmitter {
   onConnect() {
     this.log('Connected to socket')
 
-    Api.getUser()
+    void Api.getUser()
   }
 
   @Event('disconnect')
@@ -59,7 +58,7 @@ export class WebsocketManager extends ExtendedEmitter {
 
   public async request<K extends keyof WebSocketEventMap>(
     event: K,
-    data?: WebSocketEventMap[K]['receive'],
+    data?: WebSocketEventMap[K]['receive']
   ): Promise<WebSocketEventMap[K]['send']> {
     return await new Promise((resolve, reject) => {
       if (stats.headless) {

@@ -32,7 +32,7 @@ export const SelectorTag = ({
   tag,
   role,
   channel,
-  onClick,
+  onClick
 }: SelectorTagProps) => {
   console.log(tag)
   return (
@@ -55,7 +55,7 @@ export const Selector = ({
   children,
   role,
   channel,
-  placeholder,
+  placeholder
 }: SelectorProps) => {
   const [search, setSearch] = useState<string | null>(null)
   const [changing, setChanging] = useState(false)
@@ -82,13 +82,13 @@ export const Selector = ({
               menuDisclosure?.onClose()
             }}
           />
-        ),
+        )
       }))}
       popoverProps={{
         autoFocus: false,
         matchWidth: true,
         gutter: 0,
-        returnFocusOnClose: false,
+        returnFocusOnClose: false
       }}
     >
       {(triggerProps, disclosure, isHovering) => {
@@ -102,7 +102,7 @@ export const Selector = ({
           borderTopColor: disclosure.isOpen ? 'brand.100' : 'transparent',
           borderLeftColor: disclosure.isOpen ? 'brand.100' : 'transparent',
           borderRightColor: disclosure.isOpen ? 'brand.100' : 'transparent',
-          borderBottomRadius: disclosure.isOpen ? 0 : 'md',
+          borderBottomRadius: disclosure.isOpen ? 0 : 'md'
         }
         const selected =
           value !== undefined &&
@@ -123,7 +123,7 @@ export const Selector = ({
             {...containerProps}
             placeholder={placeholder}
             _focus={{
-              shadow: 'none',
+              shadow: 'none'
             }}
             ref={(m) => {
               if (changing) m?.focus()

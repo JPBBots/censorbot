@@ -19,12 +19,12 @@ const rem = (path): void => {
 }
 
 export class ClusterEvents extends ExtendedEmitter {
-  constructor (private worker: WorkerManager) {
+  constructor(private worker: WorkerManager) {
     super()
   }
 
   @Event('RELOAD')
-  reloadComponent (reloading: ReloadNames): void {
+  reloadComponent(reloading: ReloadNames): void {
     switch (reloading) {
       case 'COMMANDS':
         this.worker.loadCommands()
@@ -60,7 +60,7 @@ export class ClusterEvents extends ExtendedEmitter {
   }
 
   @Event('GUILD_DUMP')
-  dumpGuild (id: Snowflake): void {
+  dumpGuild(id: Snowflake): void {
     this.worker.db.configCache.delete(id)
   }
 }

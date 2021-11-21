@@ -77,12 +77,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
             const val = whitelist.find((x) => x.id === target.value)
 
             if (val?.id) {
-              if (value.includes(val.id)) {
-                target.value = '_'
-
-                return
-              }
-              add(val.id)
+              if (!value.includes(val.id)) add(val.id)
 
               target.value = '_'
             }
@@ -131,6 +126,11 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
 
               add(val)
               ev.currentTarget.value = ''
+            }
+          }}
+          onBlur={({ target }) => {
+            if (target.value) {
+              target.value = ''
             }
           }}
           onChange={({ target }) => {

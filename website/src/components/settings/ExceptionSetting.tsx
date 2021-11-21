@@ -16,28 +16,28 @@ export interface ExceptionSettingProps {
 const ExceptionTypes = [
   {
     label: 'Everything',
-    value: ExceptionType.Everything,
+    value: ExceptionType.Everything
   },
   {
     label: 'Server Filter',
-    value: ExceptionType.ServerFilter,
+    value: ExceptionType.ServerFilter
   },
   {
     label: 'Pre-built Filter',
-    value: ExceptionType.PreBuiltFilter,
+    value: ExceptionType.PreBuiltFilter
   },
   {
     label: 'Punishments',
-    value: ExceptionType.Punishment,
+    value: ExceptionType.Punishment
   },
   {
     label: 'Response Message',
-    value: ExceptionType.Response,
+    value: ExceptionType.Response
   },
   {
     label: 'Resends',
-    value: ExceptionType.Resend,
-  },
+    value: ExceptionType.Resend
+  }
 ]
 
 export function ExceptionSetting({
@@ -45,13 +45,13 @@ export function ExceptionSetting({
   exception,
   onChange,
   onDelete,
-  first,
+  first
 }: ExceptionSettingProps) {
   const change = (data: DeepPartial<Exception>) => {
     console.log(data)
     onChange?.({
       ...exception,
-      ...data,
+      ...data
     })
   }
 

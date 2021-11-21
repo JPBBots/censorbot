@@ -20,13 +20,18 @@ export class Timeouts {
     void this.checkTimeouts()
   }, 15e4)
 
-  constructor (public manager: PunishmentManager) {}
+  constructor(public manager: PunishmentManager) {}
 
-  get db (): Collection<TimeoutSchema> {
+  get db(): Collection<TimeoutSchema> {
     return this.manager.worker.db.collection('timeouts')
   }
 
-  private async execute (guild: Snowflake, user: Snowflake, type: TimedPunishments, roles?: Snowflake[]): Promise<void> {
+  private async execute(
+    guild: Snowflake,
+    user: Snowflake,
+    type: TimedPunishments,
+    roles?: Snowflake[]
+  ): Promise<void> {
     this.timeouts.delete(`${user}-${guild}`)
 
     switch (type) {
@@ -39,24 +44,40 @@ export class Timeouts {
     }
   }
 
-  public async checkTimeouts (): Promise<void> {
-    const timeouts = await this.db.find({ at: { $lt: Date.now() + 30e4 } }).toArray()
+  public async checkTimeouts(): Promise<void> {
+    const timeouts = await this.db
+      .find({ at: { $lt: Date.now() + 30e4 } })
+      .toArray()
 
     timeouts
-      .filter(x => this.manager.worker.guilds.has(x.guild))
-      .filter(x => !this.timeouts.has(`${x.user}-${x.guild}`))
-      .forEach(timeout => {
+      .filter((x) => this.manager.worker.guilds.has(x.guild))
+      .filter((x) => !this.timeouts.has(`${x.user}-${x.guild}`))
+      .forEach((timeout) => {
         this._create(timeout)
       })
   }
 
-  private _create (timeout: TimeoutSchema): void {
-    this.timeouts.set(`${timeout.user}-${timeout.guild}`, setTimeout(() => {
-      void this.execute(timeout.guild, timeout.user, timeout.type, timeout.roles)
-    }, timeout.at - Date.now()))
+  private _create(timeout: TimeoutSchema): void {
+    this.timeouts.set(
+      `${timeout.user}-${timeout.guild}`,
+      setTimeout(() => {
+        void this.execute(
+          timeout.guild,
+          timeout.user,
+          timeout.type,
+          timeout.roles
+        )
+      }, timeout.at - Date.now())
+    )
   }
 
-  public async add (guild: Snowflake, user: Snowflake, type: TimedPunishments, at: number, roles?: Snowflake[]): Promise<void> {
+  public async add(
+    guild: Snowflake,
+    user: Snowflake,
+    type: TimedPunishments,
+    at: number,
+    roles?: Snowflake[]
+  ): Promise<void> {
     const time = {
       guild,
       user,
@@ -64,13 +85,18 @@ export class Timeouts {
       at,
       roles
     }
-    await this.db.updateOne({
-      guild, user
-    }, {
-      $set: time
-    }, {
-      upsert: true
-    })
+    await this.db.updateOne(
+      {
+        guild,
+        user
+      },
+      {
+        $set: time
+      },
+      {
+        upsert: true
+      }
+    )
 
     const timeout = this.timeouts.get(`${user}-${guild}`)
     if (timeout) {
@@ -83,7 +109,7 @@ export class Timeouts {
     }
   }
 
-  public async remove (guild: Snowflake, user: Snowflake): Promise<void> {
+  public async remove(guild: Snowflake, user: Snowflake): Promise<void> {
     await this.db.deleteOne({ guild, user })
 
     const timeout = this.timeouts.get(`${user}-${guild}`)

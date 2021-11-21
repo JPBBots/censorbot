@@ -18,7 +18,7 @@ export function Option({ onChange, name, ...props }: OptionProps) {
 
           void Router.replace({
             pathname: '/dashboard/[guild]/premium',
-            query: Router.query,
+            query: Router.query
           })
         } else if (onChange) {
           onChange(ev)

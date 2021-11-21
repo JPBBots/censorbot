@@ -7,7 +7,7 @@ const Pieces = {
         pieces[`${working ? `${working}.` : ''}${key}`] = val
       } else {
         Object.keys(val).forEach((x) =>
-          generatePiece(val, x, `${working ? `${working}.` : ''}${key}`),
+          generatePiece(val, x, `${working ? `${working}.` : ''}${key}`)
         )
       }
     }
@@ -28,7 +28,7 @@ const Pieces = {
     })
 
     return res
-  },
+  }
 }
 
 export default Pieces

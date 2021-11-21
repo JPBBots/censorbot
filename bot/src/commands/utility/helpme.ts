@@ -7,11 +7,13 @@ export default {
   interaction: {
     name: 'helpme',
     description: 'Creates an easy code to give to helpers',
-    options: [{
-      name: 'code',
-      description: 'HelpME Code, (helper use only)',
-      type: ApplicationCommandOptionType.String
-    }]
+    options: [
+      {
+        name: 'code',
+        description: 'HelpME Code, (helper use only)',
+        type: ApplicationCommandOptionType.String
+      }
+    ]
   },
   description: 'Creates an easy code to give to helpers',
   exec: async (ctx) => {
@@ -20,7 +22,10 @@ export default {
       ctx.args = [ctx.options.code]
     }
 
-    if (ctx.args[0] && await ctx.worker.interface.api.isAdmin(ctx.author.id)) {
+    if (
+      ctx.args[0] &&
+      (await ctx.worker.interface.api.isAdmin(ctx.author.id))
+    ) {
       const code = ctx.args[0]
 
       const id: any = await ctx.worker.comms.sendCommand('GET_HELPME', { code })
@@ -35,7 +40,9 @@ export default {
         .send()
     }
 
-    const code = await ctx.worker.comms.sendCommand('CREATE_HELPME', { id: ctx.guild.id })
+    const code = await ctx.worker.comms.sendCommand('CREATE_HELPME', {
+      id: ctx.guild.id
+    })
 
     return void ctx.embed
       .title('Your HelpME Code')

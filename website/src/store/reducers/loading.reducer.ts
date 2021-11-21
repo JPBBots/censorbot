@@ -10,8 +10,8 @@ const slice = createSlice({
       state = payload.payload
 
       return state
-    },
-  },
+    }
+  }
 })
 
 export const loadingReducer = slice.reducer

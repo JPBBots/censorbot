@@ -1,5 +1,11 @@
 // import { UseGuards } from '@nestjs/common'
-import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, ConnectedSocket } from '@nestjs/websockets'
+import {
+  MessageBody,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+  ConnectedSocket
+} from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 
 import { SelfData, Self } from '../decorators/self.decorator'
@@ -25,10 +31,12 @@ type EventMap = {
 export class UserGateway {
   @WebSocketServer()
   server: Server<{
-    [key in keyof WebSocketEventMap]: (args: WebSocketEventMap[key]['receive']) => void
+    [key in keyof WebSocketEventMap]: (
+      args: WebSocketEventMap[key]['receive']
+    ) => void
   }>
 
-  constructor (
+  constructor(
     private readonly users: UsersService,
     private readonly oauth: OAuthService,
     private readonly db: DatabaseService,
@@ -37,7 +45,9 @@ export class UserGateway {
     private readonly chargebee: ChargeBeeService
   ) {
     guilds.on('GUILD_SETTINGS_UPDATE', (dat) => {
-      this.server.to(dat.id).emit('CHANGE_SETTING', { id: dat.id, data: dat.db })
+      this.server
+        .to(dat.id)
+        .emit('CHANGE_SETTING', { id: dat.id, data: dat.db })
     })
 
     guilds.on('GUILD_UPDATED', (guild) => {
@@ -49,26 +59,27 @@ export class UserGateway {
     })
   }
 
-  getSelf (data: SelfData) {
+  getSelf(data: SelfData) {
     if (!data.userId) return undefined
 
     return this.caching.users.get(data.userId)
   }
 
-  hasAccess (data: SelfData, id: Snowflake) {
+  hasAccess(data: SelfData, id: Snowflake) {
     if (!data.userId) return false
 
     const cache = this.caching.userGuilds.get(data.userId)
 
     if (!cache) return false
 
-    if (!cache.some(x => x.id === id)) return false
+    if (!cache.some((x) => x.id === id)) return false
 
     return true
   }
 
   @SubscribeMessage('LOGOUT')
-  async logout (@Self() self: SelfData,
+  async logout(
+    @Self() self: SelfData,
     @ConnectedSocket() sock: SocketConnection
   ) {
     if (self.userId) await sock.leave(self.userId)
@@ -76,8 +87,8 @@ export class UserGateway {
   }
 
   @SubscribeMessage('AUTHORIZE')
-  async authorize (
-  @Self() self: SelfData,
+  async authorize(
+    @Self() self: SelfData,
     @ConnectedSocket() sock: SocketConnection,
     @MessageBody() data: EventMap['AUTHORIZE']
   ) {
@@ -96,9 +107,7 @@ export class UserGateway {
   }
 
   @SubscribeMessage('GET_GUILDS')
-  async getGuilds (
-  @Self() self: SelfData
-  ) {
+  async getGuilds(@Self() self: SelfData) {
     const user = this.getSelf(self)
     if (!user?.bearer) throw new Error('Unauthorized')
 
@@ -113,8 +122,8 @@ export class UserGateway {
   }
 
   @SubscribeMessage('SUBSCRIBE')
-  async subscribe (
-  @Self() self: SelfData,
+  async subscribe(
+    @Self() self: SelfData,
     @MessageBody() data: EventMap['SUBSCRIBE'],
     @ConnectedSocket() sock: SocketConnection
   ) {
@@ -126,7 +135,9 @@ export class UserGateway {
 
     await sock.join(data)
 
-    const guild = await this.guilds.get(data).catch((err) => ({ error: err.message }))
+    const guild = await this.guilds
+      .get(data)
+      .catch((err) => ({ error: err.message }))
     if ('error' in guild) return guild
 
     self.subscribedGuild = guild.guild.id
@@ -135,8 +146,8 @@ export class UserGateway {
   }
 
   @SubscribeMessage('UNSUBSCRIBE')
-  async unsubscribe (
-  @Self() self: SelfData,
+  async unsubscribe(
+    @Self() self: SelfData,
     @MessageBody() data: EventMap['UNSUBSCRIBE'],
     @ConnectedSocket() sock: SocketConnection
   ) {
@@ -144,8 +155,8 @@ export class UserGateway {
   }
 
   @SubscribeMessage('CHANGE_SETTING')
-  async changeSetting (
-  @Self() self: SelfData,
+  async changeSetting(
+    @Self() self: SelfData,
     @MessageBody() data: EventMap['CHANGE_SETTING']
   ) {
     if (!data || !data.data || !data.id) return
@@ -158,8 +169,8 @@ export class UserGateway {
   }
 
   @SubscribeMessage('SET_PREMIUM')
-  async setPremium (
-  @Self() self: SelfData,
+  async setPremium(
+    @Self() self: SelfData,
     @MessageBody() data: EventMap['SET_PREMIUM']
   ) {
     const user = this.getSelf(self)
@@ -172,25 +183,32 @@ export class UserGateway {
       }
     }
 
-    if (!data.guilds.every(x => x.match(/^[0-9]{5,}$/))) return { error: 'Strange guild ID' }
+    if (!data.guilds.every((x) => x.match(/^[0-9]{5,}$/)))
+      return { error: 'Strange guild ID' }
 
-    await this.db.collection('premium_users').updateOne({ id: user.id }, {
-      $set: {
-        id: user.id,
-        guilds: data.guilds
+    await this.db.collection('premium_users').updateOne(
+      { id: user.id },
+      {
+        $set: {
+          id: user.id,
+          guilds: data.guilds
+        }
+      },
+      {
+        upsert: true
       }
-    }, {
-      upsert: true
-    })
+    )
 
-    user.premium.guilds.filter(x => !data.guilds.includes(x)).forEach(guild => {
-      const cur = this.caching.guilds.get(guild)
-      if (!cur) return
+    user.premium.guilds
+      .filter((x) => !data.guilds.includes(x))
+      .forEach((guild) => {
+        const cur = this.caching.guilds.get(guild)
+        if (!cur) return
 
-      cur.premium = false // TODO
-      this.caching.guilds.set(guild, cur)
-    })
-    data.guilds.forEach(guild => {
+        cur.premium = false // TODO
+        this.caching.guilds.set(guild, cur)
+      })
+    data.guilds.forEach((guild) => {
       const cur = this.caching.guilds.get(guild)
       if (!cur) return
 

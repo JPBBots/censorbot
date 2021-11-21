@@ -11,7 +11,8 @@ export class AmountAnnotation implements AmountObject {
   amount: number
 
   @ApiProperty({
-    description: 'Whether or not the user is a customer using the improved payment system',
+    description:
+      'Whether or not the user is a customer using the improved payment system',
     example: true
   })
   customer: boolean
@@ -19,10 +20,14 @@ export class AmountAnnotation implements AmountObject {
 
 @Controller('premium')
 export class PremiumController {
-  constructor (private readonly premium: ChargeBeeService) {}
+  constructor(private readonly premium: ChargeBeeService) {}
   @Get('/:id')
-  @ApiResponse({ status: HttpStatus.OK, description: 'Retreives information on a users current premium status', type: AmountAnnotation })
-  async getPremium (@Param('id') id: Snowflake) {
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Retreives information on a users current premium status',
+    type: AmountAnnotation
+  })
+  async getPremium(@Param('id') id: Snowflake) {
     const amount = await this.premium.getAmount(id)
 
     return amount

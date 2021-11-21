@@ -5,16 +5,21 @@ import { PermissionsUtils } from 'discord-rose'
 import { OAuth2Scopes, Snowflake } from 'discord-api-types'
 
 if (!process.env.BOT_TOKEN) {
-  const env = DotEnv.parse(fs.readFileSync(path.resolve(__dirname, '../../.env')))
-  Object.keys(env).forEach(key => {
+  const env = DotEnv.parse(
+    fs.readFileSync(path.resolve(__dirname, '../../.env'))
+  )
+  Object.keys(env).forEach((key) => {
     process.env[key] = env[key]
   })
 }
 
 const staging = Boolean(process.env.STAGING)
 
-function generateWebhook (wh: string): { id: Snowflake, token: string } {
-  const [id, token] = process.env[`WH_${wh.toUpperCase()}`]?.split(',') as [Snowflake, string]
+function generateWebhook(wh: string): { id: Snowflake; token: string } {
+  const [id, token] = process.env[`WH_${wh.toUpperCase()}`]?.split(',') as [
+    Snowflake,
+    string
+  ]
 
   return { id, token }
 }
@@ -140,7 +145,10 @@ export const Config = {
     on: Boolean(process.env.CUSTOM),
     lock: Boolean(process.env.LOCK_COMMANDS),
     allowedGuilds: process.env.ALLOWED_GUILDS?.split(','),
-    status: process.env.CUSTOM_STATUS?.split(',') as ['playing' | 'streaming' | 'listening' | 'watching' | 'competing', string]
+    status: process.env.CUSTOM_STATUS?.split(',') as [
+      'playing' | 'streaming' | 'listening' | 'watching' | 'competing',
+      string
+    ]
   },
 
   ai: {

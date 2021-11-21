@@ -13,5 +13,5 @@ export class BaseAI {
 
   ai = Config.ai
 
-  constructor (public worker: WorkerManager) {}
+  constructor(public worker: WorkerManager) {}
 }

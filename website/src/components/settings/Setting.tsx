@@ -19,7 +19,7 @@ import {
   Text,
   VStack,
   HStack,
-  Select,
+  Select
 } from '@chakra-ui/react'
 import Pieces from 'utils/Pieces'
 import { Exception, ExceptionType, GuildData } from 'typings'
@@ -39,7 +39,7 @@ export function Option({
   guild,
   pieces,
   disable,
-  option,
+  option
 }: {
   option: IOption
   setValue: (value: any) => void
@@ -86,7 +86,7 @@ export function Option({
         value={value ?? option.default ?? ''}
         placeholder="None"
         onChange={({
-          target,
+          target
         }: {
           target: HTMLInputElement | HTMLTextAreaElement
         }) => {
@@ -129,7 +129,7 @@ export function Option({
               ? null
               : option.number
               ? Number(value)
-              : value,
+              : value
           )
         }}
         w="400px"
@@ -263,8 +263,8 @@ export function Option({
                 {
                   channel: guild.guild.channels[0].id,
                   role: guild.guild.roles[0].id,
-                  type: ExceptionType.Everything,
-                },
+                  type: ExceptionType.Everything
+                }
               ])
             }}
           >
@@ -281,7 +281,7 @@ export function Option({
               <Link
                 href={{
                   pathname: '/dashboard/[guild]/premium',
-                  query: Router.query,
+                  query: Router.query
                 }}
               >
                 premium

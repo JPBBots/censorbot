@@ -4,7 +4,7 @@ import { Config } from '../../config'
 
 @Injectable()
 export class DiscordService extends RestManager {
-  constructor () {
+  constructor() {
     super(Config.token)
   }
 }

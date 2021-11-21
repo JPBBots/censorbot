@@ -44,9 +44,11 @@ const NONE: AmountObject = {
 export class ChargeBeeService {
   chargebee: Chargebee.ChargeBee = chargebee
 
-  cache: Cache<Snowflake, AmountObject> = new Cache(Config.dashboardOptions.wipeTimeout)
+  cache: Cache<Snowflake, AmountObject> = new Cache(
+    Config.dashboardOptions.wipeTimeout
+  )
 
-  constructor (
+  constructor(
     private readonly database: DatabaseService,
     private readonly int: InterfaceService,
     private readonly caching: CacheService
@@ -57,35 +59,40 @@ export class ChargeBeeService {
     })
   }
 
-  get db (): Collection<CustomerSchema> {
+  get db(): Collection<CustomerSchema> {
     return this.database.collection('customers')
   }
 
-  async getCustomerSub (customer: string): Promise<Subscription> {
+  async getCustomerSub(customer: string): Promise<Subscription> {
     return await new Promise((resolve, reject) => {
-      void this.chargebee.subscription.subscriptions_for_customer(customer).request((err, data: { list: Array<{ subscription: Subscription }> }) => {
-        if (err) {
-          if (err.error_code === 'resource_not_found') {
-            return reject(new Error('Couldn\'t find subscription'))
+      void this.chargebee.subscription
+        .subscriptions_for_customer(customer)
+        .request(
+          (err, data: { list: Array<{ subscription: Subscription }> }) => {
+            if (err) {
+              if (err.error_code === 'resource_not_found') {
+                return reject(new Error("Couldn't find subscription"))
+              }
+              return reject(new Error(err.message))
+            }
+
+            let sub
+
+            if (data.list.length > 0) {
+              sub = data.list.filter(
+                (x) => x.subscription.status === 'active'
+              )?.[0]?.subscription
+            }
+
+            if (!sub) reject(new Error("Couldn't find subscription"))
+
+            resolve(sub)
           }
-          return reject(new Error(err.message))
-        }
-
-        let sub
-
-        if (data.list.length > 0) {
-          sub = data.list
-            .filter(x => x.subscription.status === 'active')?.[0]?.subscription
-        }
-
-        if (!sub) reject(new Error('Couldn\'t find subscription'))
-
-        resolve(sub)
-      })
+        )
     })
   }
 
-  async getAmount (id: Snowflake): Promise<AmountObject> {
+  async getAmount(id: Snowflake): Promise<AmountObject> {
     const cached = this.cache.get(id)
     if (cached) return cached
 
@@ -115,21 +122,25 @@ export class ChargeBeeService {
     return res
   }
 
-  async register (id: Snowflake, customer: string): Promise<RegisterResponse> {
+  async register(id: Snowflake, customer: string): Promise<RegisterResponse> {
     const current = await this.db.findOne({ customer })
 
     if (current) throw new Error('Customer already exists')
     const sub = await this.getCustomerSub(customer)
-    if (!sub?.next_billing_at) throw new Error('Couldn\'t find subscription')
+    if (!sub?.next_billing_at) throw new Error("Couldn't find subscription")
 
-    await this.db.updateOne({ id }, {
-      $set: {
-        id,
-        customer
+    await this.db.updateOne(
+      { id },
+      {
+        $set: {
+          id,
+          customer
+        }
+      },
+      {
+        upsert: true
       }
-    }, {
-      upsert: true
-    })
+    )
 
     const user = this.caching.users.get(id)
     if (user?.premium) {
@@ -138,9 +149,14 @@ export class ChargeBeeService {
       this.caching.users.set(id, user)
 
       if (user.premium.count > 0) {
-        void this.int.api._request('POST', '/premium/webhook/add', {
-          Authorization: process.env.JPBBOT_PREMIUM_UPDATES
-        }, { id: user.id })
+        void this.int.api._request(
+          'POST',
+          '/premium/webhook/add',
+          {
+            Authorization: process.env.JPBBOT_PREMIUM_UPDATES
+          },
+          { id: user.id }
+        )
       }
     }
 
@@ -152,7 +168,7 @@ export class ChargeBeeService {
     }
   }
 
-  async handleDelete (user: User): Promise<void> {
+  async handleDelete(user: User): Promise<void> {
     await this.database.collection('premium_users').deleteOne({ id: user.id })
 
     // TODO
@@ -167,8 +183,13 @@ export class ChargeBeeService {
     //   }
     // }
 
-    void this.int.api._request('POST', '/premium/webhook/remove', {
-      Authorization: process.env.JPBBOT_PREMIUM_UPDATES
-    }, { id: user.id })
+    void this.int.api._request(
+      'POST',
+      '/premium/webhook/remove',
+      {
+        Authorization: process.env.JPBBOT_PREMIUM_UPDATES
+      },
+      { id: user.id }
+    )
   }
 }

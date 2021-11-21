@@ -68,7 +68,7 @@ export default function Landing() {
             </LandingSection>
             <div
               style={{
-                height: '50px',
+                height: '50px'
               }}
             ></div>
           </div>
@@ -103,40 +103,48 @@ export default function Landing() {
             children: [
               {
                 label: 'Discord Server',
-                url: '/support',
+                url: '/support'
               },
               {
                 label: 'support@jpbbots.org',
-                url: 'mailto:support@jpbbots.org',
-              },
-            ],
+                url: 'mailto:support@jpbbots.org'
+              }
+            ]
           },
           {
-            label: 'Site',
+            label: 'Censor Bot',
             children: [
               {
                 label: 'Invite',
-                url: '/invite',
+                url: '/invite'
               },
-            ],
+              {
+                label: 'Vote',
+                url: '/vote'
+              },
+              {
+                label: 'Review',
+                url: '/review'
+              }
+            ]
           },
           {
             label: 'Important Links',
             children: [
               {
                 label: 'Privacy Policy',
-                url: '/privacy',
+                url: '/privacy'
               },
               {
                 label: 'Terms of Service',
-                url: '/terms',
+                url: '/terms'
               },
               {
                 label: 'Discord ToS',
-                url: 'https://discord.com/terms',
-              },
-            ],
-          },
+                url: 'https://discord.com/terms'
+              }
+            ]
+          }
         ]}
       />
       {new Array(2).fill(null).map((x, i) => (

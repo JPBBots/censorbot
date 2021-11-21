@@ -37,14 +37,14 @@ export default function DashboardHome() {
               name: guild.name,
               iconUrl: guild.icon
                 ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
-                : undefined,
+                : undefined
             }}
             onClick={() => {
               void router.push({
                 pathname: '/dashboard/[guild]',
                 query: {
-                  guild: guild.id,
-                },
+                  guild: guild.id
+                }
               })
             }}
           />

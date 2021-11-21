@@ -45,16 +45,16 @@ export default function Test() {
         {[
           {
             value: '123123',
-            label: 'hello',
+            label: 'hello'
           },
           {
             value: '1231234',
-            label: 'helloa',
+            label: 'helloa'
           },
           {
             value: '1231235',
-            label: 'hellob',
-          },
+            label: 'hellob'
+          }
         ]}
       </Selector>
       <Text>in channel</Text>
@@ -67,16 +67,16 @@ export default function Test() {
         {[
           {
             value: '123123',
-            label: 'hello',
+            label: 'hello'
           },
           {
             value: '1231234',
-            label: 'helloa',
+            label: 'helloa'
           },
           {
             value: '1231235',
-            label: 'hellob',
-          },
+            label: 'hellob'
+          }
         ]}
       </Selector>
     </InlineOptionGroup>

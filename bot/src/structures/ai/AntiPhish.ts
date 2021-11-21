@@ -2,10 +2,11 @@ import { BaseAI } from './Base'
 
 import fetch from 'node-fetch'
 
-const domainRegex = /(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/
+const domainRegex =
+  /(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/
 
 export class AntiPhish extends BaseAI {
-  public async resolve (message: string): Promise<boolean> {
+  public async resolve(message: string): Promise<boolean> {
     if (!message.match(domainRegex)) return false
 
     const res = await fetch('https://anti-fish.bitflow.dev/check', {
@@ -17,7 +18,9 @@ export class AntiPhish extends BaseAI {
       body: JSON.stringify({
         message
       })
-    }).then(async (x) => await x.json()).catch(() => ({}))
+    })
+      .then(async (x) => await x.json())
+      .catch(() => ({}))
 
     return res?.match ?? false
   }

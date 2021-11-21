@@ -8,7 +8,7 @@ import {
   Flex,
   Image,
   Box,
-  Button,
+  Button
 } from '@chakra-ui/react'
 
 import Router from 'next/router'
@@ -23,7 +23,7 @@ import {
   FaLocationArrow,
   FaComments,
   FaTimes,
-  FaSignOutAlt,
+  FaSignOutAlt
 } from 'react-icons/fa'
 import { PremiumIcon } from '~/PremiumIcon'
 import { useGuild } from 'hooks/useGuilds'
@@ -31,14 +31,14 @@ import { useWindowSize } from 'react-use'
 
 export const CATEGORIES = {
   Filter: {
-    icon: '',
+    icon: ''
   },
   General: {
-    icon: '',
+    icon: ''
   },
   Other: {
-    icon: '',
-  },
+    icon: ''
+  }
 }
 
 // interface Section {
@@ -56,39 +56,39 @@ export const sections = [
     name: 'General',
     category: 'Filter',
     href: '/filter',
-    icon: <Icon as={FaCog} />,
+    icon: <Icon as={FaCog} />
   },
   {
     name: 'Exceptions',
     category: 'Filter',
     href: '/filter/exceptions',
-    icon: <Icon as={FaFilter} />,
+    icon: <Icon as={FaFilter} />
   },
   {
     name: 'Extras',
     category: 'Filter',
     href: '/filter/extras',
-    icon: <Icon as={FaDiceD6} />,
+    icon: <Icon as={FaDiceD6} />
   },
   {
     name: 'AI',
     category: 'Filter',
     href: '/filter/ai',
     icon: <Icon as={FaVial} />,
-    premium: true,
+    premium: true
   },
 
   {
     name: 'Punishments',
     category: 'General',
     href: '/general/punishments',
-    icon: <Icon as={FaCommentSlash} />,
+    icon: <Icon as={FaCommentSlash} />
   },
   {
     name: 'Bot',
     category: 'General',
     href: '/general/bot',
-    icon: <Icon as={FaRobot} />,
+    icon: <Icon as={FaRobot} />
   },
 
   {
@@ -96,15 +96,15 @@ export const sections = [
     category: 'Other',
     href: '/other/resend',
     icon: <Icon as={FaLocationArrow} />,
-    premium: true,
+    premium: true
   },
   {
     name: 'Response',
     category: 'Other',
     href: '/other/response',
     icon: <Icon as={FaComments} />,
-    miniText: 'Popup',
-  },
+    miniText: 'Popup'
+  }
 ] as const
 
 export type SectionName = typeof sections[number]['name']
@@ -150,7 +150,9 @@ export function Sidebar({
                         color="lighter.20"
                         transform="rotate(180deg)"
                         as={FaSignOutAlt}
-                        onClick={() => Router.push({ pathname: '/dashboard' })}
+                        onClick={async () =>
+                          await Router.push({ pathname: '/dashboard' })
+                        }
                       />
                     </Box>
                   )}
@@ -182,7 +184,7 @@ export function Sidebar({
                 props.onClose?.()
                 void Router.push({
                   pathname: '/dashboard/[guild]/premium',
-                  query: Router.query,
+                  query: Router.query
                 })
               }}
             />
@@ -198,7 +200,7 @@ export function Sidebar({
                         props.onClose?.()
                         void Router.push({
                           pathname: '/dashboard/[guild]' + section.href,
-                          query: Router.query,
+                          query: Router.query
                         })
                       }}
                       icon={section.icon}

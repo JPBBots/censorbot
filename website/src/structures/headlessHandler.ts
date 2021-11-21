@@ -3,7 +3,7 @@ import _headlessData from './headlessData.json'
 
 import { WebSocketEventMap } from 'typings/websocket'
 
-const headlessData = _headlessData as any
+export const headlessData = _headlessData as any
 
 export default {
   AUTHORIZE: () => headlessData.user,
@@ -16,16 +16,16 @@ export default {
 
     headlessData.currentGuild = Api._createUpdatedGuild(
       headlessData.currentGuild,
-      data?.data,
+      data?.data
     )
 
     // void Api.ws._handleMessage({
     //   e: 'CHANGE_SETTING',
     //   d: data
     // } as any)
-  },
+  }
 } as {
   [key in keyof WebSocketEventMap]?: (
-    data?: WebSocketEventMap[key]['receive'],
+    data?: WebSocketEventMap[key]['receive']
   ) => WebSocketEventMap[key]['send']
 }

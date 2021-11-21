@@ -4,7 +4,7 @@ export function Separator() {
       style={{
         width: '80vw',
         border: '2px solid var(--secondary)',
-        margin: '20px',
+        margin: '20px'
       }}
     ></div>
   )

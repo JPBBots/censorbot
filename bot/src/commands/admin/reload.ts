@@ -8,8 +8,9 @@ export default {
   description: 'Reloads a certain aspect',
   admin: true,
   exec: (ctx) => {
-    const reloading = Reloaders.find(x => x === ctx.args[0]?.toUpperCase())
-    if (!reloading) return void ctx.error(`${ctx.args[0]} not one of ${Reloaders.join(', ')}`)
+    const reloading = Reloaders.find((x) => x === ctx.args[0]?.toUpperCase())
+    if (!reloading)
+      return void ctx.error(`${ctx.args[0]} not one of ${Reloaders.join(', ')}`)
 
     ctx.worker.comms.tell('RELOAD', reloading)
 

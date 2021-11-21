@@ -21,7 +21,7 @@ export enum OptionType {
   BitBool,
   Select,
   Number,
-  Exception,
+  Exception
 }
 
 export const settings: ISetting[] = [
@@ -33,9 +33,9 @@ export const settings: ISetting[] = [
         name: 'multi',
         label: 'Recognize text over multiple messages',
         type: OptionType.Boolean,
-        premium: true,
-      },
-    ],
+        premium: true
+      }
+    ]
   },
   {
     title: 'Censor Invites',
@@ -44,9 +44,9 @@ export const settings: ISetting[] = [
       {
         name: 'invites',
         label: 'Remove any Discord server invites',
-        type: OptionType.Boolean,
-      },
-    ],
+        type: OptionType.Boolean
+      }
+    ]
   },
   {
     title: 'Anti-Phishing',
@@ -55,9 +55,9 @@ export const settings: ISetting[] = [
       {
         name: 'phishing',
         label: 'Search every message for scam/phishing links and delete them',
-        type: OptionType.Boolean,
-      },
-    ],
+        type: OptionType.Boolean
+      }
+    ]
   },
   {
     title: 'Ignore NSFW Channels',
@@ -66,9 +66,9 @@ export const settings: ISetting[] = [
       {
         name: 'nsfw',
         label: 'Ignore messages in channels marked as NSFW',
-        type: OptionType.Boolean,
-      },
-    ],
+        type: OptionType.Boolean
+      }
+    ]
   },
   {
     title: 'Anti-Hoist',
@@ -78,9 +78,9 @@ export const settings: ISetting[] = [
         name: 'antiHoist',
         label:
           'Prevent users from hoisting with special characters to get on top of the member list',
-        type: OptionType.Boolean,
-      },
-    ],
+        type: OptionType.Boolean
+      }
+    ]
   },
 
   {
@@ -91,9 +91,9 @@ export const settings: ISetting[] = [
         name: 'toxicity',
         label: 'Filter out toxic messages with AI',
         type: OptionType.Boolean,
-        premium: true,
-      },
-    ],
+        premium: true
+      }
+    ]
   },
   {
     title: 'Anti-NSFW Images',
@@ -104,9 +104,9 @@ export const settings: ISetting[] = [
         label:
           'Improve Discord’s built-in image moderation with a more agressive AI',
         type: OptionType.Boolean,
-        premium: true,
-      },
-    ],
+        premium: true
+      }
+    ]
   },
   {
     title: 'OCR - Optical Character Recognition',
@@ -116,9 +116,9 @@ export const settings: ISetting[] = [
         name: 'ocr',
         label: 'Scan and filter images with text',
         type: OptionType.Boolean,
-        premium: true,
-      },
-    ],
+        premium: true
+      }
+    ]
   },
 
   {
@@ -129,9 +129,9 @@ export const settings: ISetting[] = [
     options: [
       {
         name: 'exceptions',
-        type: OptionType.Exception,
-      },
-    ],
+        type: OptionType.Exception
+      }
+    ]
   },
 
   {
@@ -149,12 +149,12 @@ export const settings: ISetting[] = [
             { id: 'es', value: 'Spanish' },
             { id: 'off', value: 'Offensive' },
             { id: 'de', value: 'German' },
-            { id: 'ru', value: 'Russian' },
-          ],
+            { id: 'ru', value: 'Russian' }
+          ]
         }),
-        placeholder: 'Add filters',
-      },
-    ],
+        placeholder: 'Add filters'
+      }
+    ]
   },
   {
     title: 'Server Filter',
@@ -167,12 +167,12 @@ export const settings: ISetting[] = [
         settings: ({ premium }) => ({
           maxTags: premium ? 1500 : 150,
           maxMessage: 'You need premium to add more words',
-          maxLength: 20,
+          maxLength: 20
         }),
         type: OptionType.Tags,
-        placeholder: 'Add words',
-      },
-    ],
+        placeholder: 'Add words'
+      }
+    ]
   },
   {
     title: 'Phrase Filter',
@@ -187,11 +187,11 @@ export const settings: ISetting[] = [
           maxLength: 50,
           allowSpaces: true,
           maxMessage: 'You need premium to add more words',
-          maxTags: premium ? 1500 : 150,
+          maxTags: premium ? 1500 : 150
         }),
-        placeholder: 'Add phrases',
-      },
-    ],
+        placeholder: 'Add phrases'
+      }
+    ]
   },
   {
     title: 'Word Filter',
@@ -205,11 +205,11 @@ export const settings: ISetting[] = [
         settings: ({ premium }) => ({
           maxLength: 20,
           maxMessage: 'You need premium to add more words',
-          maxTags: premium ? 1500 : 150,
+          maxTags: premium ? 1500 : 150
         }),
-        placeholder: 'Add words',
-      },
-    ],
+        placeholder: 'Add words'
+      }
+    ]
   },
   {
     title: 'Uncensor List',
@@ -222,11 +222,11 @@ export const settings: ISetting[] = [
         settings: ({ premium }) => ({
           maxLength: 20,
           maxMessage: 'You need premium to add more words',
-          maxTags: premium ? 1500 : 150,
+          maxTags: premium ? 1500 : 150
         }),
-        placeholder: 'Add words',
-      },
-    ],
+        placeholder: 'Add words'
+      }
+    ]
   },
   {
     title: 'Censor Methods',
@@ -236,21 +236,21 @@ export const settings: ISetting[] = [
         name: 'censor',
         label: 'Filter sent and edited messages',
         type: OptionType.BitBool,
-        bit: CensorMethods.Messages,
+        bit: CensorMethods.Messages
       },
       {
         name: 'censor',
         label: 'Filter usernames and nicknames',
         type: OptionType.BitBool,
-        bit: CensorMethods.Names,
+        bit: CensorMethods.Names
       },
       {
         name: 'censor',
         label: 'Filter reactions on messages',
         type: OptionType.BitBool,
-        bit: CensorMethods.Reactions,
-      },
-    ],
+        bit: CensorMethods.Reactions
+      }
+    ]
   },
   {
     title: 'Nickname Replacement',
@@ -261,10 +261,10 @@ export const settings: ISetting[] = [
         name: 'nickReplace',
         type: OptionType.Input,
         props: {
-          maxLength: 32,
-        },
-      },
-    ],
+          maxLength: 32
+        }
+      }
+    ]
   },
   {
     title: 'Remove Nickname',
@@ -274,9 +274,9 @@ export const settings: ISetting[] = [
         name: 'removeNick',
         label:
           'If a user has an inappropriate nickname, reset their name to their user account name',
-        type: OptionType.Boolean,
-      },
-    ],
+        type: OptionType.Boolean
+      }
+    ]
   },
 
   {
@@ -286,15 +286,15 @@ export const settings: ISetting[] = [
     disable: {
       property: 'prefix',
       disableValue: null,
-      enableValue: '+',
+      enableValue: '+'
     },
     options: [
       {
         name: 'prefix',
         type: OptionType.Input,
-        noneDisable: true,
-      },
-    ],
+        noneDisable: true
+      }
+    ]
   },
   {
     title: 'DM Commands',
@@ -305,9 +305,9 @@ export const settings: ISetting[] = [
         label:
           "Respond to bot commands in a user's Direct Messages rather than publicly",
         type: OptionType.Boolean,
-        premium: true,
-      },
-    ],
+        premium: true
+      }
+    ]
   },
   {
     title: 'Log Channel',
@@ -325,7 +325,7 @@ export const settings: ISetting[] = [
             .filter((x) => x.type === ChannelType.GuildText && !x.parent_id)
             .map((x) => ({
               value: x.id,
-              label: x.name,
+              label: x.name
             })),
         categories: ({ guild }) =>
           guild.channels
@@ -336,11 +336,11 @@ export const settings: ISetting[] = [
                 .filter((a) => a.parent_id === x.id)
                 .map((b) => ({
                   label: b.name,
-                  value: b.id,
-                })),
-            })),
-      },
-    ],
+                  value: b.id
+                }))
+            }))
+      }
+    ]
   },
 
   {
@@ -350,9 +350,9 @@ export const settings: ISetting[] = [
         name: 'webhook.enabled',
         label: 'Enable resending deleted messages',
         type: OptionType.Boolean,
-        premium: true,
-      },
-    ],
+        premium: true
+      }
+    ]
   },
   {
     title: 'Replace',
@@ -362,7 +362,7 @@ export const settings: ISetting[] = [
     disable: {
       property: 'webhook.separate',
       disableValue: false,
-      enableValue: true,
+      enableValue: true
     },
     options: [
       {
@@ -372,10 +372,10 @@ export const settings: ISetting[] = [
         options: () => [
           { value: WebhookReplace.Spoilers, label: 'Spoilers' },
           { value: WebhookReplace.Hashtags, label: 'Hashtags' },
-          { value: WebhookReplace.Stars, label: 'Stars' },
-        ],
-      },
-    ],
+          { value: WebhookReplace.Stars, label: 'Stars' }
+        ]
+      }
+    ]
   },
 
   {
@@ -385,16 +385,16 @@ export const settings: ISetting[] = [
     disable: {
       property: 'msg.content',
       disableValue: false,
-      enableValue: "You're not allowed to say that!",
+      enableValue: "You're not allowed to say that!"
     },
     options: [
       {
         name: 'msg.content',
         type: OptionType.Input,
         noneDisable: true,
-        textarea: true,
-      },
-    ],
+        textarea: true
+      }
+    ]
   },
   {
     title: 'Delete After',
@@ -405,15 +405,15 @@ export const settings: ISetting[] = [
       property: 'msg.deleteAfter',
       disableButton: 'Never',
       disableValue: false,
-      enableValue: 3000,
+      enableValue: 3000
     },
     options: [
       {
         name: 'msg.deleteAfter',
         type: OptionType.Number,
-        multiplier: 1000,
-      },
-    ],
+        multiplier: 1000
+      }
+    ]
   },
   {
     title: 'Direct Message',
@@ -423,10 +423,10 @@ export const settings: ISetting[] = [
         name: 'msg.dm',
         label: 'Send response to triggering user’s Direct Messages',
         type: OptionType.Boolean,
-        premium: true,
-      },
-    ],
-  },
+        premium: true
+      }
+    ]
+  }
 ]
 
 export const searcher = new FuzzySearch(settings, [
@@ -435,7 +435,7 @@ export const searcher = new FuzzySearch(settings, [
   'description',
   'options.name',
   'options.label',
-  'options.description',
+  'options.description'
 ])
 
 type DataOption<T extends OptionType, P extends {}, E = {}> = {
@@ -477,7 +477,7 @@ export type IOption =
         number?: boolean
         placeholder?: string
         options?: (
-          guild: GuildData,
+          guild: GuildData
         ) => Array<{ value: string | number; label: string; color?: number }>
         categories?: (guild: GuildData) => Array<{
           name: string

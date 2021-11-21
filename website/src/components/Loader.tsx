@@ -19,10 +19,10 @@ export function Loader() {
       <motion.div
         hidden={!loading}
         animate={{
-          rotate: [0, 360],
+          rotate: [0, 360]
         }}
         transition={{
-          flip: Infinity,
+          flip: Infinity
         }}
       >
         <Logo />

@@ -1,7 +1,12 @@
 import Collection from '@discordjs/collection'
 import { Cache } from '@jpbberry/cache'
 
-import { AllowedMentionsTypes, APIUser, APIWebhook, Snowflake } from 'discord-api-types'
+import {
+  AllowedMentionsTypes,
+  APIUser,
+  APIWebhook,
+  Snowflake
+} from 'discord-api-types'
 
 import { GuildDB } from 'typings/api'
 
@@ -21,9 +26,9 @@ export class ActionBucket {
   popups: Collection<string, true> = new Collection()
   webhooks: Cache<Snowflake, APIWebhook> = new Cache(30e3)
 
-  constructor (public worker: WorkerManager) {}
+  constructor(public worker: WorkerManager) {}
 
-  public async delete (channel: Snowflake, message: Snowflake[]): Promise<void> {
+  public async delete(channel: Snowflake, message: Snowflake[]): Promise<void> {
     let bucket = this.messages.get(channel)
     if (!bucket) {
       bucket = {
@@ -36,8 +41,7 @@ export class ActionBucket {
     }
 
     if (bucket.amount <= this.worker.config.actionRetention) {
-      this.worker.api.messages.bulkDelete(channel, message)
-        .catch(() => {})
+      this.worker.api.messages.bulkDelete(channel, message).catch(() => {})
 
       bucket.amount++
       bucket.timeout = setTimeout(() => {
@@ -65,23 +69,30 @@ export class ActionBucket {
     }, 4000)
   }
 
-  private _executeDelete (channel: Snowflake): void {
+  private _executeDelete(channel: Snowflake): void {
     const bucket = this.messages.get(channel)
     if (!bucket) return
     this.messages.delete(channel)
 
-    this.worker.api.messages.bulkDelete(channel, bucket.msgs)
-      .catch(() => {})
+    this.worker.api.messages.bulkDelete(channel, bucket.msgs).catch(() => {})
   }
 
-  public popup (channel: Snowflake, user: Snowflake, db: GuildDB): void {
+  public popup(channel: Snowflake, user: Snowflake, db: GuildDB): void {
     const id = `${channel}-${user}`
     if (this.popups.has(id)) return
 
     this.popups.set(id, true)
 
-    this.worker.responses.popup(channel, user, db.msg.content === null ? this.worker.config.defaultMessage : db.msg.content as string, db.msg.dm)
-      .then(async msg => {
+    this.worker.responses
+      .popup(
+        channel,
+        user,
+        db.msg.content === null
+          ? this.worker.config.defaultMessage
+          : (db.msg.content as string),
+        db.msg.dm
+      )
+      .then(async (msg) => {
         if (!db.msg.deleteAfter || db.msg.dm) {
           await wait(5000)
           return this.popups.delete(id)
@@ -89,10 +100,16 @@ export class ActionBucket {
         await wait(db.msg.deleteAfter)
         this.worker.api.messages.delete(channel, msg.id).catch(console.log)
         this.popups.delete(id)
-      }).catch(() => {})
+      })
+      .catch(() => {})
   }
 
-  public async sendAs (channel: Snowflake, user: APIUser, name: string, content: string): Promise<void> {
+  public async sendAs(
+    channel: Snowflake,
+    user: APIUser,
+    name: string,
+    content: string
+  ): Promise<void> {
     let webhook = this.webhooks.get(channel)
     if (!webhook) {
       webhook = await this.worker.api.webhooks.create(channel, {
@@ -109,7 +126,11 @@ export class ActionBucket {
     await this.worker.api.webhooks.send(webhook.id, webhook.token as string, {
       content: content.slice(0, 2048),
       username: name,
-      avatar_url: `https://cdn.discordapp.com/${user.avatar ? `avatars/${user.id}/${user.avatar}` : `embed/avatars/${Number(user.discriminator) % 5}`}.png`,
+      avatar_url: `https://cdn.discordapp.com/${
+        user.avatar
+          ? `avatars/${user.id}/${user.avatar}`
+          : `embed/avatars/${Number(user.discriminator) % 5}`
+      }.png`,
       allowed_mentions: {
         parse: [AllowedMentionsTypes.User]
       }

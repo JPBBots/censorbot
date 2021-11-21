@@ -28,7 +28,7 @@ export default function Premium() {
           perks={[
             PremiumPerk.PremiumServers_6,
             PremiumPerk.PremiumSupport,
-            PremiumPerk.BetaAccess,
+            PremiumPerk.BetaAccess
           ]}
           monthlyPrice={10}
           onBuy={() => openCheckout(PremiumTypes.SuperPremium)}
@@ -38,7 +38,7 @@ export default function Premium() {
           perks={[
             PremiumPerk.IncludedHosting,
             PremiumPerk.CustomAvatarUsername,
-            PremiumPerk.FeatureRequests,
+            PremiumPerk.FeatureRequests
           ]}
           monthlyPrice={25}
           onBuy={() => openCheckout(PremiumTypes.OwnInstance)}

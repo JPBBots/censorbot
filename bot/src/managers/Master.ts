@@ -22,20 +22,39 @@ export class MasterManager extends Master {
 
   private readonly _handleEvents = new MasterEvents(this)
 
-  helpme: Cache<ShortID, { code: ShortID, id: Snowflake }> = new Cache(5e5)
+  helpme: Cache<ShortID, { code: ShortID; id: Snowflake }> = new Cache(5e5)
 
-  constructor () {
+  constructor() {
     super(path.resolve(__dirname, '../.run/worker.js'), {
       token: Config.token,
       cache: {
         channels: ['text', 'category']
       },
       cacheControl: {
-        guilds: ['name', 'icon', 'owner_id', 'region', 'unavailable', 'member_count', 'threads'],
-        channels: ['type', 'name', 'nsfw', 'permission_overwrites', 'parent_id'],
+        guilds: [
+          'name',
+          'icon',
+          'owner_id',
+          'region',
+          'unavailable',
+          'member_count',
+          'threads'
+        ],
+        channels: [
+          'type',
+          'name',
+          'nsfw',
+          'permission_overwrites',
+          'parent_id'
+        ],
         roles: ['managed', 'permissions', 'name', 'position', 'color']
       },
-      intents: ['GUILD_MESSAGES', 'GUILDS', 'GUILD_MESSAGE_REACTIONS', 'GUILD_MEMBERS'],
+      intents: [
+        'GUILD_MESSAGES',
+        'GUILDS',
+        'GUILD_MESSAGE_REACTIONS',
+        'GUILD_MEMBERS'
+      ],
       rest: {
         version: 9
       }
@@ -49,7 +68,10 @@ export class MasterManager extends Master {
 
     this._handleEvents.add(this.handlers as any)
 
-    this.api = this.spawnProcess('API', path.resolve(__dirname, '../.run/api.js'))
+    this.api = this.spawnProcess(
+      'API',
+      path.resolve(__dirname, '../.run/api.js')
+    )
 
     void this.start()
   }

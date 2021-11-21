@@ -26,7 +26,7 @@ const slice = createSlice({
       if (state.currentGuild) {
         const newDb = updateObject(
           current(state.currentGuild.db),
-          action.payload,
+          action.payload
         )
         state.currentGuild.db = newDb
         state.volatileDb = newDb
@@ -36,11 +36,11 @@ const slice = createSlice({
       if (state.currentGuild) {
         state.volatileDb = updateObject(
           current(state.volatileDb),
-          action.payload,
+          action.payload
         )
       }
-    },
-  },
+    }
+  }
 })
 
 export const guildsReducer = slice.reducer

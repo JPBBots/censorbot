@@ -6,13 +6,13 @@ import { MESSAGE_METADATA } from '@nestjs/websockets/constants'
 
 @Injectable()
 export class GatewayAuthGuard implements CanActivate {
-  constructor (private readonly reflector: Reflector) {}
+  constructor(private readonly reflector: Reflector) {}
 
-  getEvent (context: ExecutionContext) {
+  getEvent(context: ExecutionContext) {
     return this.reflector.get(MESSAGE_METADATA, context.getHandler())
   }
 
-  canActivate (context: ExecutionContext): boolean {
+  canActivate(context: ExecutionContext): boolean {
     const sock = context.switchToWs().getClient<SocketConnection>()
 
     // sock.emit('ERROR', { message: 'Unauthorized' })
