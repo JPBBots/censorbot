@@ -8,7 +8,6 @@ import { Subscription } from 'chargebee-typescript/lib/resources'
 import { Collection } from 'mongodb'
 import { Snowflake } from 'discord-api-types'
 
-import { PremiumTypes, RegisterResponse, User } from 'typings'
 import { Cache } from '@jpbberry/cache'
 
 import { Config } from '../../config'
@@ -50,8 +49,7 @@ export class ChargeBeeService {
 
   constructor(
     private readonly database: DatabaseService,
-    private readonly int: InterfaceService,
-    private readonly caching: CacheService
+    private readonly int: InterfaceService
   ) {
     this.chargebee.configure({
       site: `censorbot${Config.staging ? '-test' : ''}`,
@@ -120,76 +118,5 @@ export class ChargeBeeService {
     })()
     this.cache.set(id, res)
     return res
-  }
-
-  async register(id: Snowflake, customer: string): Promise<RegisterResponse> {
-    const current = await this.db.findOne({ customer })
-
-    if (current) throw new Error('Customer already exists')
-    const sub = await this.getCustomerSub(customer)
-    if (!sub?.next_billing_at) throw new Error("Couldn't find subscription")
-
-    await this.db.updateOne(
-      { id },
-      {
-        $set: {
-          id,
-          customer
-        }
-      },
-      {
-        upsert: true
-      }
-    )
-
-    const user = this.caching.users.get(id)
-    if (user?.premium) {
-      user.premium.count = Config.premiumAmounts[sub.plan_id] || 0
-
-      this.caching.users.set(id, user)
-
-      if (user.premium.count > 0) {
-        void this.int.api._request(
-          'POST',
-          '/premium/webhook/add',
-          {
-            Authorization: process.env.JPBBOT_PREMIUM_UPDATES
-          },
-          { id: user.id }
-        )
-      }
-    }
-
-    return {
-      error: undefined,
-      sub: sub.plan_id as PremiumTypes,
-      amount: Config.premiumAmounts[sub.plan_id] || 0,
-      endDate: sub.next_billing_at * 1000
-    }
-  }
-
-  async handleDelete(user: User): Promise<void> {
-    await this.database.collection('premium_users').deleteOne({ id: user.id })
-
-    // TODO
-    // if (user.premium) {
-    //   for (const guild of user.premium?.guilds ?? []) {
-    //     try {
-    //       this.manager.socket.guilds.cache.delete(guild)
-    //       await this.manager.socket.guilds.set(guild)
-    //     } catch (err) {
-    //       await this.manager.db.collection('guild_data').deleteOne({ id: guild })
-    //     }
-    //   }
-    // }
-
-    void this.int.api._request(
-      'POST',
-      '/premium/webhook/remove',
-      {
-        Authorization: process.env.JPBBOT_PREMIUM_UPDATES
-      },
-      { id: user.id }
-    )
   }
 }

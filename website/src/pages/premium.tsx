@@ -1,4 +1,5 @@
 import { useUser } from '@/hooks/useAuth'
+import { Api } from '@/structures/Api'
 import { HStack, VStack } from '@chakra-ui/layout'
 import { PremiumCard, PremiumPerk } from '@jpbbots/censorbot-components'
 import { PremiumTypes } from 'typings'
@@ -6,13 +7,21 @@ import { chargebee } from './_app'
 
 export default function Premium() {
   const [user, login] = useUser(false)
-  const openCheckout = (id: PremiumTypes) => {
+  const openCheckout = (id: PremiumTypes): void => {
     if (!chargebee) return
-    if (!user) return login()
+    if (!user || !user.email) {
+      return void login(true)
+    }
 
-    chargebee.getCart().replaceProduct(chargebee.initializeProduct(id))
-
-    chargebee.openCheckout({})
+    chargebee.openCheckout({
+      hostedPage: () => {
+        return Api.ws
+          .request('CREATE_HOSTED_PAGE', { plan: id })
+          .catch((err) => {
+            console.log('err', err)
+          })
+      }
+    })
   }
   return (
     <VStack padding="10">

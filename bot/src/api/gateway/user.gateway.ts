@@ -20,6 +20,7 @@ import { GuildsService } from '../services/guilds.service'
 import { DatabaseService } from '../services/database.service'
 import Pieces from '../../utils/Pieces'
 import { ChargeBeeService } from '../services/chargebee.service'
+import { ThreadService } from '../services/thread.service'
 
 export type SocketConnection = Socket & { data: SelfData }
 
@@ -55,7 +56,11 @@ export class UserGateway {
     })
 
     users.on('USER_UPDATE', (user) => {
-      this.server.to(user.id).emit('UPDATE_USER', user)
+      this.server.to(user.id).emit('UPDATE_USER', {
+        ...user,
+        _id: undefined,
+        bearer: undefined
+      })
     })
   }
 
@@ -92,9 +97,11 @@ export class UserGateway {
     @ConnectedSocket() sock: SocketConnection,
     @MessageBody() data: EventMap['AUTHORIZE']
   ) {
-    if (!data.token) throw new Error('Invalid Token')
+    if (!data.token) return { error: 'Invalid Token' }
 
-    const user = await this.users.login(data.token)
+    const user = await this.users.login(data.token).catch((err: Error) => err)
+
+    if (user instanceof Error) return { error: user.message }
 
     self.userId = user.id
     await sock.join(user.id)
@@ -113,8 +120,11 @@ export class UserGateway {
 
     let guilds = this.caching.userGuilds.get(user.id)
     if (guilds) return guilds
-
-    guilds = await this.oauth.getGuilds(user?.bearer)
+    try {
+      guilds = await this.oauth.getGuilds(user?.bearer)
+    } catch (err) {
+      return { error: 'Unauthorized' }
+    }
 
     this.caching.userGuilds.set(user.id, guilds)
 
@@ -219,6 +229,33 @@ export class UserGateway {
     user.premium.guilds = data.guilds
 
     return true
+  }
+
+  @SubscribeMessage('CREATE_HOSTED_PAGE')
+  async createHostedPage(
+    @Self() self: SelfData,
+    @MessageBody() data: EventMap['CREATE_HOSTED_PAGE']
+  ) {
+    const user = this.getSelf(self)
+    if (!user) return { error: 'Login' }
+    if (!user.email) return { error: 'Needs email' }
+
+    const hosted_page = await this.chargebee.chargebee.hosted_page
+      .checkout_new({
+        subscription: {
+          plan_id: data.plan
+        },
+        customer: {
+          first_name: 'Discord',
+          last_name: `${user.tag}`,
+          email: user.email
+        }
+      })
+      .request((error) => {
+        if (error) throw new Error(error)
+      })
+
+    return hosted_page.hosted_page
   }
 
   // TODO TICKETS

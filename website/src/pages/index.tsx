@@ -43,7 +43,7 @@ export default function Landing() {
           </Button>
 
           <Text fontSize="0.7rem">
-            Used in more than {(50000).toLocaleString()} servers!
+            Used in more than {(60000).toLocaleString()} servers!
           </Text>
         </VStack>
 

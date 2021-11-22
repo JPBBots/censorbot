@@ -34,10 +34,11 @@ export class Api {
     return Utils.getCookie('token')
   }
 
-  static async login(required: boolean = false) {
-    const user = await Utils.openWindow('/api/auth/discord', 'Login').then(
-      async () => await this.getUser()
-    )
+  static async login(required: boolean = false, email?: boolean) {
+    const user = await Utils.openWindow(
+      `/api/auth/discord${email ? `?email=true` : ''}`,
+      'Login'
+    ).then(async () => await this.getUser())
 
     if (!user) {
       Logger.error('Failed to authorize')
@@ -47,28 +48,29 @@ export class Api {
     return user
   }
 
-  static logout() {
+  static logout(userBound = true) {
     this.ws.tell('LOGOUT')
 
     document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
 
-    if (Router.pathname.includes('dashboard')) void Router.push('/')
+    if (userBound && Router.pathname.includes('dashboard'))
+      void Router.push('/')
   }
 
-  // handleOpen () {
-  //   if (this.token) {
-  //     void this.updateUser()
-  //   } else this.setData({ login: LoginState.LoggedOut })
-  // }
-
-  static async getUser() {
+  static async getUser(tryingLogin = false) {
     if (!this.token) return undefined
     this.log('Retrieving user')
 
-    const user = await this.ws.request('AUTHORIZE', {
-      token: this.token,
-      customer: false
-    })
+    const user = await this.ws
+      .request(
+        'AUTHORIZE',
+        {
+          token: this.token,
+          customer: false
+        },
+        tryingLogin
+      )
+      .catch(() => this.logout(false))
 
     if (user) {
       store.dispatch(setUser(user))
@@ -77,9 +79,9 @@ export class Api {
     return user
   }
 
-  static async getGuilds() {
+  static async getGuilds(tryingLogin = false) {
     this.log('Retrieving guilds')
-    const guilds = await this.ws.request('GET_GUILDS').catch(() => null)
+    const guilds = await this.ws.request('GET_GUILDS', undefined, tryingLogin)
 
     if (!guilds) return
 
@@ -176,6 +178,6 @@ export class Api {
   }
 }
 
-// if ('window' in global) {
-//   window.api = Api
-// }
+if ('window' in global) {
+  ;(global as any).api = Api
+}

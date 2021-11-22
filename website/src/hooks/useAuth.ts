@@ -47,8 +47,11 @@ export const useUser = (needsUser: boolean) => {
     void goUser(needsUser)
   }, [])
 
-  const goUser = async (ret: boolean = false): Promise<User | undefined> => {
-    if (user) return user
+  const goUser = async (
+    ret: boolean = false,
+    email?: boolean
+  ): Promise<User | undefined> => {
+    if (user && !email) return user
 
     if (!Api.token && !ret) {
       dispatch(setLoginState(LoginState.LoggedOut))
@@ -62,7 +65,10 @@ export const useUser = (needsUser: boolean) => {
 
       dispatch(setLoginState(LoginState.LoggingIn))
 
-      return await (Api.token ? Api.getUser() : Api.login(needsUser))
+      return await (Api.token && !email
+        ? Api.getUser()
+        : Api.login(needsUser, email)
+      )
         .then((user) => {
           if (!user) throw new Error()
 
@@ -86,8 +92,8 @@ export const useUser = (needsUser: boolean) => {
 
   return [
     user,
-    () => {
-      void goUser(true)
+    (email?: boolean) => {
+      void goUser(true, email)
     },
     () => {
       Api.logout()

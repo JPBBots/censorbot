@@ -1,5 +1,6 @@
 import { EventEmitter } from '@jpbberry/typed-emitter'
 import { Injectable } from '@nestjs/common'
+import { Snowflake } from 'discord-api-types'
 import { User, UserPremium } from 'typings'
 
 import { CacheService } from './cache.service'
@@ -22,6 +23,17 @@ export class UsersService extends EventEmitter<{
 
   get db() {
     return this.database.collection('users')
+  }
+
+  async causeUpdate(id: Snowflake) {
+    const cachedUser = this.caching.users.get(id)
+    if (!cachedUser) return
+
+    this.chargebee.cache.delete(id)
+
+    const newUser = await this.extendUser(cachedUser)
+
+    this.emit('USER_UPDATE', newUser)
   }
 
   async login(token: string) {

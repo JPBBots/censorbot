@@ -34,7 +34,7 @@ export class WebsocketManager extends ExtendedEmitter {
   onConnect() {
     this.log('Connected to socket')
 
-    void Api.getUser()
+    void Api.getUser().catch()
   }
 
   @Event('disconnect')
@@ -58,7 +58,8 @@ export class WebsocketManager extends ExtendedEmitter {
 
   public async request<K extends keyof WebSocketEventMap>(
     event: K,
-    data?: WebSocketEventMap[K]['receive']
+    data?: WebSocketEventMap[K]['receive'],
+    tryingLogin = false
   ): Promise<WebSocketEventMap[K]['send']> {
     return await new Promise((resolve, reject) => {
       if (stats.headless) {
@@ -68,12 +69,23 @@ export class WebsocketManager extends ExtendedEmitter {
 
       this.ws.emit(event, data, (dat: any) => {
         if (dat?.error) {
-          if (dat.error === 'Unauthorized' && Api.token) {
-            void Api.getUser().then(() => {
-              void Api.getGuilds().then(() => {
-                void this.request(event, data).then((x) => resolve(x))
+          this.log('Got error ' + dat.error)
+          if (dat.error === 'Unauthorized' && Api.token && !tryingLogin) {
+            Api.getUser(true)
+              .then(() => {
+                return Api.getGuilds(true).then(() => {
+                  return this.request(event, data).then((x) => resolve(x))
+                })
               })
-            })
+              .catch(() => {
+                Api.logout(false)
+                Api.login().then((user) => {
+                  if (user)
+                    Api.getGuilds(true).then(() => {
+                      return this.request(event, data).then((x) => resolve(x))
+                    })
+                })
+              })
           } else {
             reject(new Error(dat.error))
           }

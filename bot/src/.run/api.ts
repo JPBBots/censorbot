@@ -4,9 +4,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from '../api/app.module'
 import { Config } from '../config'
 
-async function bootstrap (): Promise<void> {
+async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
-    // logger: false
+    logger: false
   })
   app.setGlobalPrefix('api')
 
