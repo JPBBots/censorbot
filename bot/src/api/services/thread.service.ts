@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Thread } from 'discord-rose'
+import { Thread } from 'jadl'
 
 @Injectable()
 export class ThreadService extends Thread {}

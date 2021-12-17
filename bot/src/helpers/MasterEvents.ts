@@ -1,7 +1,7 @@
 import { ExtendedEmitter, Event } from '@jpbberry/typed-emitter'
-import { Snowflake, ThreadEvents } from 'discord-rose'
+import { Snowflake, ThreadEvents } from 'jadl'
 
-import { ResolveFunction } from 'discord-rose/dist/clustering/ThreadComms'
+import { ResolveFunction } from 'jadl/dist/clustering/ThreadComms'
 
 import { MasterManager } from '../managers/Master'
 import { ReloadNames } from '../types'
@@ -60,5 +60,21 @@ export class MasterEvents extends ExtendedEmitter {
   @Event('GUILD_UPDATED')
   guildUpdated(_cluster, guild: Snowflake): void {
     this.master.api.tell('GUILD_UPDATED', guild)
+  }
+
+  @Event('SEND_WEBHOOK')
+  sendWebhook(
+    _cluster,
+    data: ThreadEvents['SEND_WEBHOOK']['send'],
+    resolve: ResolveFunction<'SEND_WEBHOOK'>
+  ) {
+    this.master.requests
+      .sendWebhookMessage(data.id, data.token, data.data as any)
+      .then((x) => {
+        resolve(x)
+      })
+      .catch((err) => {
+        resolve({ error: err.message })
+      })
   }
 }

@@ -31,14 +31,12 @@ interface Variant<Tag extends string, Value> extends Payload {
 
 type Values<T> = T[keyof T];
 
-export type Incoming<Client extends "frontend" | "backend"> = Values<
-  {
-    [Tag in keyof WebSocketEventMap]: Variant<
-      Tag,
-      WebSocketEventMap[Tag][Client extends "frontend" ? "receive" : "send"]
-    >;
-  }
->;
+export type Incoming<Client extends "frontend" | "backend"> = Values<{
+  [Tag in keyof WebSocketEventMap]: Variant<
+    Tag,
+    WebSocketEventMap[Tag][Client extends "frontend" ? "receive" : "send"]
+  >;
+}>;
 
 export interface WebSocketEventMap {
   RETURN: {
@@ -55,6 +53,14 @@ export interface WebSocketEventMap {
   CREATE_HOSTED_PAGE: {
     receive: { plan: PremiumTypes };
     send: {};
+  };
+  CREATE_PORTAL_SESSION: {
+    receive: null;
+    send: {};
+  };
+  RELOAD_SELF: {
+    receive: null;
+    send: null;
   };
   HEARTBEAT: {
     receive: null;

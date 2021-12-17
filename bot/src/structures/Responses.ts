@@ -1,7 +1,7 @@
 import { APIMessage, ChannelType, Snowflake } from 'discord-api-types'
 import { WorkerManager } from '../managers/Worker'
 
-import { Embed } from 'discord-rose'
+import { Embed } from '@jadl/embed'
 import { FilterResponse } from './Filter'
 import { CensorMethods, GuildDB } from 'typings'
 
@@ -15,7 +15,7 @@ export class Responses {
 
   embed(channel: Snowflake): Embed {
     return new Embed(async (embed) => {
-      return await this.worker.api.messages.send(channel, embed)
+      return await this.worker.requests.sendMessage(channel, embed)
     })
   }
 
@@ -37,9 +37,7 @@ export class Responses {
     dm: boolean
   ): Promise<APIMessage> {
     return await this.embed(
-      dm
-        ? await this.worker.api.users.createDM(user).then((x) => x.id)
-        : channel
+      dm ? await this.worker.requests.createDM(user).then((x) => x.id) : channel
     )
       .color(this.color)
       .description(`<@${user}> ${message}`)

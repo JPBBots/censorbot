@@ -27,6 +27,10 @@ const ExceptionTypes = [
     value: ExceptionType.PreBuiltFilter
   },
   {
+    label: 'Invite Filter',
+    value: ExceptionType.Invites
+  },
+  {
     label: 'Punishments',
     value: ExceptionType.Punishment
   },

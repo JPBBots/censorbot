@@ -19,6 +19,8 @@ export class Utils {
           showConfirmButton: true,
           showCancelButton: true
         }).then((res) => {
+          if (res.isDismissed) return
+
           if (res.isConfirmed) resolve(this.openWindow(url, text))
         })
         return

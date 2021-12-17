@@ -34,27 +34,22 @@ export class WebsocketManager extends ExtendedEmitter {
   onConnect() {
     this.log('Connected to socket')
 
-    void Api.getUser().catch()
+    void Api.getUser().then((user) => {
+      if (user && Api.guildId)
+        void Api.getGuild(Api.guildId)
+          .then((guild) => {
+            if (!guild || 'notInGuild' in guild) return
+
+            store.dispatch(setCurrentGuild(guild))
+          })
+          .catch()
+    })
   }
 
   @Event('disconnect')
   onDisconnect() {
     this.log('Socket disconnected')
   }
-
-  // private send (event: string, data?: any, id?: number) {
-  //   if (!this.open) return this.queue.push([event, data, id])
-
-  //   this.ws?.send(JSON.stringify({
-  //     e: event,
-  //     d: data,
-  //     i: id
-  //   }))
-  // }
-
-  // public tell (event: string, data?: any) {
-  //   this.send(event, data)
-  // }
 
   public async request<K extends keyof WebSocketEventMap>(
     event: K,
@@ -91,52 +86,6 @@ export class WebsocketManager extends ExtendedEmitter {
           }
         } else resolve(dat)
       })
-
-      // const id = this.sequence++
-
-      // const timeout = setTimeout(() => {
-      //   if (this.promises.has(id)) {
-      //     reject(new Error('ERR_TOOK_TOO_LONG'))
-      //     Logger.error('Error occured in request')
-
-      //     this.promises.delete(id)
-      //     Logger.setLoading(false)
-      //   }
-      // }, 30e3)
-
-      // this.promises.set(id, async (res) => {
-      //   clearTimeout(timeout)
-
-      //   if (res?.closed) {
-      //     this.queue.push([event, data, id])
-      //     return
-      //   }
-
-      //   if (res?.error) {
-      //     this.log(`Error on ${event}: ${res.error}`)
-      //     if (res.error === 'Unauthorized' && Api.token) {
-      //       const res = await Api.getUser()
-      //         .then(() => {
-      //           this.send(event, data, id)
-
-      //           return true
-      //         })
-      //         .catch(() => false)
-
-      //       if (res) return this.log(`${event} recovered from unauthorized`)
-      //     }
-
-      //     Logger.error(res.error)
-
-      //     reject(res.error)
-      //   }
-      //   this.promises.delete(id)
-
-      //   if (!data?.error) resolve(res)
-      //   Logger.setLoading(false)
-      // })
-
-      // this.send(event, data, id)
     })
   }
 
@@ -166,14 +115,4 @@ export class WebsocketManager extends ExtendedEmitter {
   onGuildUpdate(data: EventMap['UPDATE_GUILD']) {
     store.dispatch(setCurrentGuild(data))
   }
-
-  // TODO
-  // async _handleOpen () {
-  //   const currentGuild = store.getState().guilds.currentGuild
-  //   if (currentGuild) {
-  //     const guild = await Api.getGuild(currentGuild.guild.i)
-
-  //     if (guild) store.dispatch(setCurrentGuild(guild))
-  //   }
-  // }
 }

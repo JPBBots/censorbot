@@ -12,6 +12,7 @@ import { Config } from '../../config'
 import { CacheService } from '../services/cache.service'
 import { ChargeBeeService } from '../services/chargebee.service'
 import { DatabaseService } from '../services/database.service'
+import { GuildsService } from '../services/guilds.service'
 import { InterfaceService } from '../services/interface.service'
 import { UsersService } from '../services/users.service'
 
@@ -32,7 +33,8 @@ export class ChargeBeeController {
     private readonly chargebee: ChargeBeeService,
     private readonly users: UsersService,
     private readonly int: InterfaceService,
-    private readonly db: DatabaseService
+    private readonly db: DatabaseService,
+    private readonly guilds: GuildsService
   ) {}
 
   negativeEvents = [
@@ -116,9 +118,21 @@ export class ChargeBeeController {
         this.chargebee.cache.delete(user.id)
         const newAmount = await this.chargebee.getAmount(user.id)
 
+        const existingPremium = await this.db
+          .collection('premium_users')
+          .findOne({ id: user.id })
+
         if (newAmount.amount < 1) {
           console.log(`Customer ${body.content.customer.id} deleted`)
-          await this.db.collection('premium_users').deleteOne({ id: user.id })
+          if (existingPremium) {
+            for (const guild of existingPremium.guilds) {
+              await this.db.removeGuildPremium(guild)
+
+              this.guilds.updateGuild(guild)
+            }
+
+            await this.db.collection('premium_users').deleteOne({ id: user.id })
+          }
 
           void this.int.api._request(
             'POST',
@@ -131,16 +145,22 @@ export class ChargeBeeController {
             }
           )
         } else {
-          const existingPremium = await this.db
-            .collection('premium_users')
-            .findOne({ id: user.id })
           if (!existingPremium) return
+
+          const newGuilds = existingPremium.guilds.slice(0, newAmount.amount)
+          for (const guild of existingPremium.guilds) {
+            if (!newGuilds.includes(guild)) {
+              await this.db.removeGuildPremium(guild)
+
+              this.guilds.updateGuild(guild)
+            }
+          }
 
           await this.db.collection('premium_users').updateOne(
             { id: user.id },
             {
               $set: {
-                guilds: existingPremium.guilds.slice(0, newAmount.amount)
+                guilds: newGuilds
               }
             }
           )

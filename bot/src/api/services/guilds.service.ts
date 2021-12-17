@@ -24,18 +24,22 @@ export class GuildsService extends EventEmitter<{
     super()
 
     thread.on('GUILD_UPDATED', async (guildId) => {
-      if (!this.caching.guilds.has(guildId)) return
-
-      const guild = await this.getGuild(guildId)
-      if (!guild) return
-
-      this.caching.guilds.set(guildId, guild)
-      this.emit('GUILD_UPDATED', guild)
+      this.updateGuild(guildId)
     })
   }
 
   get db() {
     return this.database.collection('guild_data')
+  }
+
+  async updateGuild(id: Snowflake) {
+    if (!this.caching.guilds.has(id)) return
+
+    const guild = await this.getGuild(id)
+    if (!guild) return
+
+    this.caching.guilds.set(id, guild)
+    this.emit('GUILD_UPDATED', guild)
   }
 
   private async getGuild(guildId: Snowflake): Promise<GuildData> {
@@ -118,8 +122,7 @@ export class GuildsService extends EventEmitter<{
 
     this.caching.guilds.set(id, guild)
 
-    this.database.configCache.delete(id)
-    this.thread.tell('GUILD_DUMP', id)
+    this.database.dumpGuild(id)
 
     this.emit('GUILD_SETTINGS_UPDATE', { id, db })
   }

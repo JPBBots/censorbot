@@ -1,5 +1,5 @@
 import { Snowflake } from 'discord-api-types'
-import { Embed, MembersResource } from 'discord-rose'
+import { Embed } from '@jadl/embed'
 import { Collection } from 'mongodb'
 import { GuildDB, PunishmentType } from 'typings'
 import { WorkerManager } from '../../managers/Worker'
@@ -22,8 +22,8 @@ export class PunishmentManager {
     return this.worker.db.collection('punish')
   }
 
-  get members(): MembersResource {
-    return this.worker.api.members
+  get requests() {
+    return this.worker.requests
   }
 
   async config(id: Snowflake): Promise<GuildDB> {
@@ -113,7 +113,7 @@ export class PunishmentManager {
     if (!db.log || !db.id || !this.worker.responses.canLog(db.id, db.log))
       return
 
-    await this.worker.api.messages.send(
+    await this.requests.sendMessage(
       db.log,
       new Embed()
         .color(positive ? 0x2ecc71 : 0xe74c3c)
@@ -141,13 +141,11 @@ export class PunishmentManager {
 
     if (this.worker.isManageable(guild, user, roles, false)) {
       if (db.punishment.retainRoles) {
-        await this.members.edit(guild, user, {
+        await this.requests.editMember(guild, user, {
           roles: [db.punishment.role]
         })
       } else {
-        await this.members
-          .addRole(guild, user, db.punishment.role)
-          .catch(() => {})
+        await this.requests.addRole(guild, user, db.punishment.role)
       }
 
       await this.sendLog(
@@ -196,20 +194,16 @@ export class PunishmentManager {
     if (!db.punishment.role) return
 
     if (db.punishment.retainRoles && roles) {
-      const current = await this.worker.api.members.get(guild, user)
+      const current = await this.requests.getMember(guild, user)
       if (!current) return
 
-      await this.worker.api.members
-        .edit(guild, user, {
-          roles: Array.from(new Set(roles.concat(current.roles))).filter(
-            (x) => x !== db.punishment.role
-          )
-        })
-        .catch(() => {})
+      await this.requests.editMember(guild, user, {
+        roles: Array.from(new Set(roles.concat(current.roles))).filter(
+          (x) => x !== db.punishment.role
+        )
+      })
     } else {
-      await this.members
-        .removeRole(guild, user, db.punishment.role)
-        .catch(() => {})
+      await this.requests.removeRole(guild, user, db.punishment.role)
     }
 
     await this.timeouts.remove(guild, user)
@@ -231,7 +225,9 @@ export class PunishmentManager {
     roles: Snowflake[]
   ): Promise<void> {
     if (this.worker.isManageable(guild, user, roles)) {
-      await this.members.kick(guild, user, 'Reached max warnings')
+      await this.requests.kickMember(guild, user, {
+        reason: 'Reached max warnings'
+      })
 
       await this.sendLog(false, guild, user, 'Kicked')
     } else {
@@ -253,7 +249,7 @@ export class PunishmentManager {
     const db = await this.config(guild)
 
     if (this.worker.isManageable(guild, user, roles)) {
-      await this.members.ban(guild, user, {
+      await this.requests.banMember(guild, user, {
         reason: 'Reached max warnings.'
       })
 
@@ -291,7 +287,7 @@ export class PunishmentManager {
   async unban(guild: Snowflake, user: Snowflake): Promise<void> {
     const db = await this.config(guild)
 
-    await this.members.unban(guild, user).catch(() => {})
+    await this.requests.unbanMember(guild, user).catch(() => {})
 
     await this.timeouts.remove(guild, user)
 

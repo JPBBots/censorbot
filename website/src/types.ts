@@ -19,6 +19,10 @@ export interface ChargebeeWeb {
     open: (opt?: { close?: () => void | Promise<void> }) => void
   }
 
+  setPortalSession: (fn: () => Promise<{}>) => void
+
+  logout: () => void
+
   getCart: () => {
     replaceProduct: (product: ChargebeeProduct) => void
     customer: {
@@ -28,7 +32,10 @@ export interface ChargebeeWeb {
 
   initializeProduct: (id: string) => ChargebeeProduct
 
-  openCheckout: (opt: {}) => void
+  openCheckout: (opt: {
+    hostedPage?: () => Promise<{}>
+    success?: () => any
+  }) => void
 }
 
 export enum ChannelType {

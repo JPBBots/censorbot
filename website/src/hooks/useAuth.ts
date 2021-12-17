@@ -14,6 +14,7 @@ import {
 import { stats } from '@/structures/StatsManager'
 
 import headlessData from '../structures/headlessData.json'
+import Swal from 'sweetalert2'
 
 export const useAuthState = (): RootState['auth'] =>
   useSelector((state: RootState) => state.auth)
@@ -65,12 +66,16 @@ export const useUser = (needsUser: boolean) => {
 
       dispatch(setLoginState(LoginState.LoggingIn))
 
+      console.log('abc', Api.token, !email)
+
       return await (Api.token && !email
         ? Api.getUser()
         : Api.login(needsUser, email)
       )
         .then((user) => {
           if (!user) throw new Error()
+
+          Swal.close({ isDismissed: true, isConfirmed: false, isDenied: false })
 
           dispatch(setUser(user))
           dispatch(setLoginState(LoginState.LoggedIn))
@@ -107,7 +112,7 @@ export const useUser = (needsUser: boolean) => {
 export const useLoginState = () => {
   const { loginState } = useAuthState()
 
-  return [loginState]
+  return [loginState] as const
 }
 
 // export const useGuilds = () => {

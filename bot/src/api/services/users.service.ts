@@ -31,7 +31,11 @@ export class UsersService extends EventEmitter<{
 
     this.chargebee.cache.delete(id)
 
+    console.log(`Updating ${id}`)
+
     const newUser = await this.extendUser(cachedUser)
+
+    this.caching.users.set(id, newUser)
 
     this.emit('USER_UPDATE', newUser)
   }

@@ -42,7 +42,7 @@ function handleDeletion(
   if (!worker.hasPerms(message.guild_id, 'sendMessages', message.channel_id))
     return
   if (!worker.hasPerms(message.guild_id, 'embed', message.channel_id)) {
-    return void worker.api.messages.send(
+    return void worker.requests.sendMessage(
       message.channel_id,
       'Missing `Embed Links` permission.'
     )
@@ -66,7 +66,11 @@ function handleDeletion(
         .map((x) => x.content)
         .join('\n')
     : message.content
-  if (snipeContent) void worker.snipes.set(message.channel_id, snipeContent)
+  if (snipeContent)
+    void worker.snipes.set(
+      message.channel_id,
+      `<@${message.author.id}>: ${snipeContent}`
+    )
 
   if (multi) multiLineStore.delete(message.channel_id)
 
@@ -109,19 +113,15 @@ function handleDeletion(
       )
 
       if (db.webhook.replace !== 0)
-        content = content
-          .split(/\|\|/g)
-          .reduce(
-            (a, b) => [
-              // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-              a[0] +
-                (a[1] === 1
-                  ? replaces[db.webhook.replace].repeat(b.length)
-                  : b),
-              (a[1] as number) * -1
-            ],
-            ['', -1]
-          )[0]
+        content = content.split(/\|\|/g).reduce(
+          (a, b) => [
+            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+            a[0] +
+              (a[1] === 1 ? replaces[db.webhook.replace].repeat(b.length) : b),
+            (a[1] as number) * -1
+          ],
+          ['', -1]
+        )[0]
 
       void worker.actions.sendAs(
         message.channel_id,
@@ -172,9 +172,6 @@ export async function MessageHandler(
 
   const db = await worker.db.config(message.guild_id)
 
-  if (message.content?.startsWith(`${db.prefix}ticket`))
-    return void worker.api.messages.delete(message.channel_id, message.id)
-
   if ((db.censor & CensorMethods.Messages) === 0) return
 
   if (
@@ -191,7 +188,13 @@ export async function MessageHandler(
 
   let content = message.content as string
 
-  if (db.invites) {
+  if (
+    db.invites &&
+    !worker.isExcepted(ExceptionType.Invites, db, {
+      channel: message.channel_id,
+      roles: message.member.roles
+    })
+  ) {
     if (content.match(/discord((app)?\.com\/invite|\.gg)\/([-\w]{2,32})/i)) {
       return handleDeletion(worker, message, db, {
         censor: true,

@@ -47,7 +47,7 @@ export async function ReactionHandler(
   )
     return
 
-  await worker.api.messages.deleteAllReactions(
+  await worker.requests.deleteAllReactions(
     reaction.channel_id,
     reaction.message_id,
     reaction.emoji.id ?? reaction.emoji.name ?? ''

@@ -4,7 +4,7 @@ import { ExtendedEmitter, Event } from '@jpbberry/typed-emitter'
 
 import path from 'path'
 import { ReloadNames } from '../types'
-import { Snowflake } from 'discord-rose'
+import { Snowflake } from 'jadl'
 
 const filterDataDir = path.resolve(__dirname, '../structures/Filter')
 
@@ -27,7 +27,7 @@ export class ClusterEvents extends ExtendedEmitter {
   reloadComponent(reloading: ReloadNames): void {
     switch (reloading) {
       case 'COMMANDS':
-        this.worker.loadCommands()
+        // this.worker.loadCommands() TODO
         break
       case 'FILTER':
         rem(filterDataDir)
@@ -57,10 +57,5 @@ export class ClusterEvents extends ExtendedEmitter {
 
         break
     }
-  }
-
-  @Event('GUILD_DUMP')
-  dumpGuild(id: Snowflake): void {
-    this.worker.db.configCache.delete(id)
   }
 }

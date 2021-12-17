@@ -1,4 +1,6 @@
-import { Master, Cluster, Snowflake } from 'discord-rose'
+import { Master, Cluster, Snowflake } from 'jadl'
+
+import { GatewayIntentBits, ChannelType } from 'discord-api-types'
 
 import path from 'path'
 import { Config } from '../config'
@@ -12,6 +14,7 @@ import { ShortID } from 'typings'
 import AutoPoster from 'topgg-autoposter'
 
 import { Interface } from '@jpbbots/interface'
+import { Requests } from './Requests'
 
 const int = new Interface()
 
@@ -19,6 +22,8 @@ export class MasterManager extends Master {
   config = Config
   db = new Database()
   api: Cluster
+
+  requests = new Requests(this.rest)
 
   private readonly _handleEvents = new MasterEvents(this)
 
@@ -28,7 +33,11 @@ export class MasterManager extends Master {
     super(path.resolve(__dirname, '../.run/worker.js'), {
       token: Config.token,
       cache: {
-        channels: ['text', 'category']
+        channels: [
+          ChannelType.GuildText,
+          ChannelType.GuildNews,
+          ChannelType.GuildCategory
+        ]
       },
       cacheControl: {
         guilds: [
@@ -49,19 +58,15 @@ export class MasterManager extends Master {
         ],
         roles: ['managed', 'permissions', 'name', 'position', 'color']
       },
-      intents: [
-        'GUILD_MESSAGES',
-        'GUILDS',
-        'GUILD_MESSAGE_REACTIONS',
-        'GUILD_MEMBERS'
-      ],
-      rest: {
-        version: 9
-      }
+      intents:
+        GatewayIntentBits.GuildMessages |
+        GatewayIntentBits.Guilds |
+        GatewayIntentBits.GuildMessageReactions |
+        GatewayIntentBits.GuildMembers
     })
 
     if (!this.config.staging) {
-      int.setupMaster(this, 'censorbot')
+      // int.setupMaster(this, 'censorbot') TODO
 
       AutoPoster(Config.dbl, this)
     }

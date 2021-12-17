@@ -65,6 +65,7 @@ export enum ExceptionType {
   Punishment,
   Resend,
   Response,
+  Invites,
 }
 
 export interface Exception {

@@ -1,14 +1,14 @@
-import { PermissionsUtils, Embed, CommandType, Worker } from 'discord-rose'
+import { PermissionUtils, Worker } from 'jadl'
+
+import { Embed } from '@jadl/embed'
+
 import { Config } from '../config'
 
 import { Database } from '../structures/Database'
 import { Filter, FilterResponse } from '../structures/Filter'
 import { ActionBucket } from '../structures/ActionBucket'
 import { Responses } from '../structures/Responses'
-import {
-  CommandContext,
-  SlashCommandContext
-} from '../structures/CommandContext'
+
 import { TicketManager } from '../structures/TicketManager'
 
 import { PerspectiveApi } from '../structures/ai/PerspectiveApi'
@@ -32,10 +32,19 @@ import { Cache } from '@jpbberry/cache'
 
 import util from 'util'
 import fetch from 'node-fetch'
-import path from 'path'
+
 import { ExceptionType, GuildDB } from 'typings'
 import { WorkerEvents } from '../helpers/WorkerEvents'
 import { AntiPhish } from '../structures/ai/AntiPhish'
+import { Requests } from './Requests'
+import { CommandHandler, formatMessage } from '@jadl/cmd'
+
+import { DashboardCommand } from '../commands/info/DashboardCommand'
+import { HelpCommand } from '../commands/info/HelpCommand'
+import { SnipeCommand } from '../commands/utility/SnipeCommand'
+import { DebugCommand } from '../commands/utility/DebugCommand'
+import { TicketCommand } from '../commands/TicketCommand'
+import { EvalCommand } from '../commands/admin/EvalCommand'
 
 interface CachedThread {
   id: Snowflake
@@ -51,11 +60,13 @@ interface ExceptedData {
 export class WorkerManager extends Worker<{}> {
   config = Config
   filter = new Filter()
-  db = new Database()
+  db = new Database(this.comms)
 
   actions = new ActionBucket(this)
   responses = new Responses(this)
   tickets = new TicketManager(this)
+
+  requests = new Requests(this.api)
 
   perspective = new PerspectiveApi(this)
   images = new AntiNSFW(this)
@@ -70,6 +81,21 @@ export class WorkerManager extends Worker<{}> {
 
   snipes: Cache<Snowflake, string> = new Cache(15 * 60 * 1000)
 
+  cmd = new CommandHandler(
+    this,
+    [
+      DashboardCommand,
+      HelpCommand,
+      SnipeCommand,
+      DebugCommand,
+      TicketCommand,
+      EvalCommand
+    ],
+    {
+      interactionGuild: '569907007465848842'
+    }
+  )
+
   methods = {
     msg: MessageHandler,
     names: NameHandler,
@@ -82,80 +108,25 @@ export class WorkerManager extends Worker<{}> {
   constructor() {
     super()
 
-    this.interface.setupWorker(this)
+    // this.interface.setupWorker(this) TODO
+
+    this.api.on('restDebug', console.debug)
 
     this.setStatus(
       this.config.custom.status?.[0] ?? 'watching',
       this.config.custom.status?.[1] ?? 'For Bad Words'
     )
 
-    this.commands
-      .options({
-        interactionGuild: this.config.staging
-          ? '569907007465848842'
-          : undefined,
-        default: {
-          myPerms: ['sendMessages', 'embed']
-        }
-      })
-      .error((ctx, err) => {
-        if (ctx.myPerms('sendMessages')) {
-          if (ctx.isInteraction || ctx.myPerms('embed')) {
-            ctx.embed
-              .color(0xff0000)
-              .title('An Error Occured')
-              .description(`\`\`\`xl\n${err.message}\`\`\``)
-              .send(true, false, true)
-              .catch(console.error)
-          } else {
-            ctx
-              .send(`An Error Occured\n\`\`\`xl\n${err.message}\`\`\``)
-              .catch(() => {})
-          }
-        }
-
-        if (err.nonFatal) return
-
-        this.logError(err, ctx.command.command)
-      })
-      .prefix(async (msg): Promise<string | string[]> => {
-        const prefix = await this.db
-          .config(msg.guild_id as Snowflake)
-          .then((x) => x.prefix)
-        // @ts-expect-error
-        if (!prefix) return null
-        return prefix
-      })
-      .middleware(async (ctx) => {
-        if (!ctx.guild) return true
-        ctx.db = await this.db.config(ctx.guild.id)
-
-        return true
-      })
-    this.commands.CommandContext = CommandContext
-    this.commands.SlashCommandContext = SlashCommandContext
-
     this._eventHandler.add(this)
     this._clusterEventHandler.add(this.comms)
 
     console.log = (...msg: string[]) => this.comms.log(msg.join(' '))
-
-    this.loadCommands()
   }
 
   public async isAdmin(id: Snowflake): Promise<boolean> {
     return await fetch(`https://jpbbots.org/api/admin/${id}`)
       .then(async (x) => await x.text())
       .then((x) => !!Number(x))
-  }
-
-  public loadCommands(): void {
-    console.log('Loading commands')
-    if (this.commands.commands) this.commands.commands.clear()
-
-    this.interface.addCommands(this)
-
-    this.commands.load(path.resolve(__dirname, '../commands'))
   }
 
   getThreadParent(
@@ -171,8 +142,8 @@ export class WorkerManager extends Worker<{}> {
   hasPerms(
     guildId: Snowflake,
     perms:
-      | keyof typeof PermissionsUtils.bits
-      | Array<keyof typeof PermissionsUtils.bits>,
+      | keyof typeof PermissionUtils.bits
+      | Array<keyof typeof PermissionUtils.bits>,
     channel?: Snowflake
   ): boolean {
     const guild = this.guilds.get(guildId)
@@ -190,14 +161,14 @@ export class WorkerManager extends Worker<{}> {
 
     const p = Array.isArray(perms) ? perms : [perms]
 
-    const current = PermissionsUtils.combine({
+    const current = PermissionUtils.combine({
       guild,
       member,
       roleList,
       overwrites
     })
 
-    return p.every((x) => PermissionsUtils.has(current, x))
+    return p.every((x) => PermissionUtils.has(current, x))
   }
 
   isManageable(
@@ -235,7 +206,11 @@ export class WorkerManager extends Worker<{}> {
   webhook(wh: keyof typeof Config.webhooks): Embed {
     const webhook = this.config.webhooks[wh]
     return new Embed(async (embed) => {
-      return await this.comms.sendWebhook(webhook.id, webhook.token, embed)
+      return await this.comms.sendCommand('SEND_WEBHOOK', {
+        id: webhook.id,
+        token: webhook.token,
+        data: formatMessage(embed).data as any
+      })
     })
   }
 
@@ -275,12 +250,10 @@ export class WorkerManager extends Worker<{}> {
   //   return false
   // }
 
-  logError(error: Error, command?: CommandType): void {
+  logError(error: Error): void {
     const embed = this.webhook('errors').description(
       `\`\`\`xl\n${util.inspect(error)}\`\`\``
     )
-
-    if (command) embed.field('Command', `${command}`, true)
 
     void embed.send()
   }

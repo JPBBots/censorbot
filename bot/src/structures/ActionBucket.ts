@@ -41,7 +41,7 @@ export class ActionBucket {
     }
 
     if (bucket.amount <= this.worker.config.actionRetention) {
-      this.worker.api.messages.bulkDelete(channel, message).catch(() => {})
+      this.worker.requests.bulkDeleteMessages(channel, message).catch(() => {})
 
       bucket.amount++
       bucket.timeout = setTimeout(() => {
@@ -74,7 +74,9 @@ export class ActionBucket {
     if (!bucket) return
     this.messages.delete(channel)
 
-    this.worker.api.messages.bulkDelete(channel, bucket.msgs).catch(() => {})
+    this.worker.requests
+      .bulkDeleteMessages(channel, bucket.msgs)
+      .catch(() => {})
   }
 
   public popup(channel: Snowflake, user: Snowflake, db: GuildDB): void {
@@ -98,7 +100,7 @@ export class ActionBucket {
           return this.popups.delete(id)
         }
         await wait(db.msg.deleteAfter)
-        this.worker.api.messages.delete(channel, msg.id).catch(console.log)
+        this.worker.requests.deleteMessage(channel, msg.id).catch(console.log)
         this.popups.delete(id)
       })
       .catch(() => {})
@@ -112,28 +114,32 @@ export class ActionBucket {
   ): Promise<void> {
     let webhook = this.webhooks.get(channel)
     if (!webhook) {
-      webhook = await this.worker.api.webhooks.create(channel, {
+      webhook = await this.worker.requests.createWebhook(channel, {
         name: 'Censor Bot Resend Webhook'
       })
 
       this.webhooks.set(channel, webhook, () => {
         if (!webhook) return {}
-        void this.worker.api.webhooks.delete(webhook.id, webhook.token)
+        void this.worker.requests.deleteWebhook(webhook.id, webhook.token)
         return {}
       })
     }
 
-    await this.worker.api.webhooks.send(webhook.id, webhook.token as string, {
-      content: content.slice(0, 2048),
-      username: name,
-      avatar_url: `https://cdn.discordapp.com/${
-        user.avatar
-          ? `avatars/${user.id}/${user.avatar}`
-          : `embed/avatars/${Number(user.discriminator) % 5}`
-      }.png`,
-      allowed_mentions: {
-        parse: [AllowedMentionsTypes.User]
+    await this.worker.requests.sendWebhookMessage(
+      webhook.id,
+      webhook.token as string,
+      {
+        content: content.slice(0, 2048),
+        username: name,
+        avatar_url: `https://cdn.discordapp.com/${
+          user.avatar
+            ? `avatars/${user.id}/${user.avatar}`
+            : `embed/avatars/${Number(user.discriminator) % 5}`
+        }.png`,
+        allowed_mentions: {
+          parse: [AllowedMentionsTypes.User]
+        }
       }
-    })
+    )
   }
 }

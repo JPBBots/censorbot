@@ -55,7 +55,7 @@ function handleCensor(
     db
   )
 
-  void worker.api.members
+  void worker.requests
     .setNickname(
       member.guild_id,
       member.user.id,
@@ -92,7 +92,7 @@ export async function NameHandler(
     worker.isManageable(member.guild_id, member.user.id, member.roles, true)
   ) {
     if (name.length >= 32) name = name.substring(1, 32)
-    await worker.api.members
+    await worker.requests
       .setNickname(member.guild_id, member.user.id, `${deHoist}${name}`)
       .catch(() => {})
   }

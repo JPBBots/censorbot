@@ -1,6 +1,6 @@
 import { Cache } from '@jpbberry/cache'
 import { Injectable } from '@nestjs/common'
-import { Snowflake } from 'discord-rose'
+import { Snowflake } from 'jadl'
 import { GuildData, ShortGuild, User } from 'typings'
 import { Config } from '../../config'
 

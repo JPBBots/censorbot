@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common'
-import { Snowflake } from 'discord-rose'
+import { Snowflake } from 'jadl'
 import { SocketConnection } from '../gateway/user.gateway'
 
 export interface SelfData {

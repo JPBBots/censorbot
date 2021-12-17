@@ -1,7 +1,7 @@
 import { Controller, Get, HttpStatus, Query, Redirect } from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
 import { OAuth2Scopes, Snowflake } from 'discord-api-types'
-import { PermissionsUtils } from 'discord-rose'
+import { PermissionUtils } from 'jadl'
 import { Config } from '../../config'
 
 @Controller()
@@ -25,7 +25,10 @@ export class BaseController {
     description: 'Redirects to the invite'
   })
   @Redirect()
-  inviteBot(@Query('id') id: Snowflake | 'undefined') {
+  inviteBot(
+    @Query('id') id: Snowflake | 'undefined',
+    @Query('admin') admin?: 'true'
+  ) {
     return {
       url:
         'https://discord.com/oauth2/authorize?' +
@@ -35,9 +38,15 @@ export class BaseController {
           scope: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands].join(
             ' '
           ),
-          permissions: Config.requiredPermissions
-            .reduce((a, b) => a | PermissionsUtils.bits[b.permission], 0)
-            .toString()
+          permissions:
+            admin === 'true'
+              ? PermissionUtils.bits.administrator.toString()
+              : Config.requiredPermissions
+                  .reduce(
+                    (a, b) => a | Number(PermissionUtils.bits[b.permission]),
+                    0
+                  )
+                  .toString()
         }).toString()
     }
   }

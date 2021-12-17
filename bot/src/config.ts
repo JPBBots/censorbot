@@ -1,7 +1,7 @@
 import DotEnv from 'dotenv'
 import path from 'path'
 import fs from 'fs'
-import { PermissionsUtils } from 'discord-rose'
+import { PermissionUtils } from 'jadl'
 import { OAuth2Scopes, Snowflake } from 'discord-api-types'
 
 if (!process.env.BOT_TOKEN) {
@@ -32,6 +32,8 @@ export const Config = {
     username: process.env.DB_USERNAME as string,
     password: process.env.DB_PASSWORD as string
   },
+
+  owners: ['142408079177285632'],
 
   staging,
 
@@ -110,7 +112,7 @@ export const Config = {
       why: 'To create resend webhooks (premium)'
     }
   ] as Array<{
-    permission: keyof typeof PermissionsUtils.bits
+    permission: keyof typeof PermissionUtils.bits
     name: string
     why: string
     vital?: boolean
@@ -136,7 +138,7 @@ export const Config = {
 
   dashboardOptions: {
     wipeTimeout: 15 * 60 * 1000, // 15 minutes
-    requiredPermission: 'manageGuild' as keyof typeof PermissionsUtils.bits,
+    requiredPermission: 'manageGuild' as keyof typeof PermissionUtils.bits,
     scopes: [OAuth2Scopes.Identify, OAuth2Scopes.Guilds],
     port: Number(process.env.PORT)
   },

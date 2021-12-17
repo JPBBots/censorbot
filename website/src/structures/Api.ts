@@ -10,6 +10,7 @@ import Pieces from 'utils/Pieces'
 import Swal from 'sweetalert2'
 import { store } from '@/store'
 import { setUser } from '@/store/reducers/auth.reducer'
+import { chargebee } from '@/pages/_app'
 
 export class Api {
   static logger = Logger
@@ -46,6 +47,14 @@ export class Api {
     }
 
     return user
+  }
+
+  static async createPortal() {
+    chargebee?.setPortalSession(() => {
+      return this.ws.request('CREATE_PORTAL_SESSION')
+    })
+
+    chargebee?.createChargebeePortal().open()
   }
 
   static logout(userBound = true) {
@@ -88,32 +97,15 @@ export class Api {
     return guilds
   }
 
-  static async getGuild(id: Snowflake): Promise<GuildData | undefined> {
+  static async getGuild(
+    id: Snowflake
+  ): Promise<GuildData | { notInGuild: boolean } | undefined> {
     this.log(`Subscribing to ${id}`)
 
     const guild = await this.ws.request('SUBSCRIBE', id).catch((err) => {
       if (err.message === 'Not In Guild') {
-        return Swal.fire({
-          text: 'Censor Bot is not in this server yet!',
-          showConfirmButton: true,
-          showCancelButton: true,
-          imageUrl: 'https://static.jpbbots.org/censorbot.svg',
-          imageWidth: 116,
-          confirmButtonText: 'Invite'
-        }).then((res) => {
-          if (res.isConfirmed) {
-            return Utils.openWindow('/invite?id=' + id).then(async () => {
-              return await this.getGuild(id)
-            })
-          } else {
-            void Router.push('/dashboard')
-          }
-        })
-      } else if (err === 'Unauthorized') {
-        Logger.error("You don't have access to this server")
-        void Router.push('/dashboard')
+        return { notInGuild: true }
       }
-      return null
     })
 
     if (!guild) return

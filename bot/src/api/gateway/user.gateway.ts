@@ -11,16 +11,17 @@ import { Server, Socket } from 'socket.io'
 import { SelfData, Self } from '../decorators/self.decorator'
 // import { GatewayAuthGuard } from '../guards/authorized.guard'
 
+import { Snowflake } from 'jadl'
+
 import { WebSocketEventMap } from 'typings/websocket'
 import { UsersService } from '../services/users.service'
 import { CacheService } from '../services/cache.service'
 import { OAuthService } from '../services/oauth.service'
-import { Snowflake } from 'discord-rose'
 import { GuildsService } from '../services/guilds.service'
 import { DatabaseService } from '../services/database.service'
-import Pieces from '../../utils/Pieces'
 import { ChargeBeeService } from '../services/chargebee.service'
-import { ThreadService } from '../services/thread.service'
+
+import Pieces from '../../utils/Pieces'
 
 export type SocketConnection = Socket & { data: SelfData }
 
@@ -80,6 +81,11 @@ export class UserGateway {
     if (!cache.some((x) => x.id === id)) return false
 
     return true
+  }
+
+  @SubscribeMessage('RELOAD_SELF')
+  reloadSelf(@Self() self: SelfData) {
+    if (self.userId) this.users.causeUpdate(self.userId)
   }
 
   @SubscribeMessage('LOGOUT')
@@ -211,24 +217,46 @@ export class UserGateway {
 
     user.premium.guilds
       .filter((x) => !data.guilds.includes(x))
-      .forEach((guild) => {
+      .forEach(async (guild) => {
         const cur = this.caching.guilds.get(guild)
         if (!cur) return
 
-        cur.premium = false // TODO
-        this.caching.guilds.set(guild, cur)
-      })
-    data.guilds.forEach((guild) => {
-      const cur = this.caching.guilds.get(guild)
-      if (!cur) return
+        await this.db.removeGuildPremium(guild)
 
-      cur.premium = true
-      this.caching.guilds.set(guild, cur)
+        this.guilds.updateGuild(guild)
+      })
+
+    data.guilds.forEach((guild) => {
+      this.guilds.updateGuild(guild)
     })
 
     user.premium.guilds = data.guilds
+    this.users.emit('USER_UPDATE', user)
 
     return true
+  }
+
+  @SubscribeMessage('CREATE_PORTAL_SESSION')
+  async createPortalSession(@Self() self: SelfData) {
+    const user = this.getSelf(self)
+    if (!user) return { error: 'Login' }
+    if (!user.email) return { error: 'Needs email' }
+
+    const customer = await this.chargebee.db.findOne({ id: user.id })
+    if (!customer) return { error: 'Invalid Customer' }
+
+    const portalPage = await this.chargebee.chargebee.portal_session
+      .create({
+        customer: {
+          id: customer.customer
+        }
+      })
+      .request((error) => {
+        console.error(error)
+        if (error) throw new Error(error)
+      })
+
+    return portalPage.portal_session
   }
 
   @SubscribeMessage('CREATE_HOSTED_PAGE')
@@ -240,7 +268,7 @@ export class UserGateway {
     if (!user) return { error: 'Login' }
     if (!user.email) return { error: 'Needs email' }
 
-    const hosted_page = await this.chargebee.chargebee.hosted_page
+    const hostedPage = await this.chargebee.chargebee.hosted_page
       .checkout_new({
         subscription: {
           plan_id: data.plan
@@ -255,7 +283,7 @@ export class UserGateway {
         if (error) throw new Error(error)
       })
 
-    return hosted_page.hosted_page
+    return hostedPage.hosted_page
   }
 
   // TODO TICKETS

@@ -1,5 +1,6 @@
 import { Event, ExtendedEmitter } from '@jpbberry/typed-emitter'
-import { DiscordEventMap, Embed, Snowflake } from 'discord-rose'
+import { DiscordEventMap, Snowflake } from 'jadl'
+import { Embed } from '@jadl/embed'
 import Wait from '../utils/Wait'
 
 import { WorkerManager } from '../managers/Worker'
@@ -45,7 +46,7 @@ export class WorkerEvents extends ExtendedEmitter {
       )
         return
       if (!this.worker.hasPerms(guild.id, 'embed', guild.system_channel_id))
-        return void this.worker.api.messages.send(
+        return void this.worker.requests.sendMessage(
           guild.system_channel_id,
           'Missing `Embed Links` permission. This will likely cause issues with the functionality of the bot.'
         )
@@ -76,7 +77,7 @@ export class WorkerEvents extends ExtendedEmitter {
           'To debug and check your permissions run `+debug`'
         )
 
-      void this.worker.api.messages.send(guild.system_channel_id, embed)
+      void this.worker.requests.sendMessage(guild.system_channel_id, embed)
     }
   }
 
@@ -118,7 +119,7 @@ export class WorkerEvents extends ExtendedEmitter {
     if (this.worker.config.custom.allowedGuilds) {
       this.worker.guilds.forEach((guild) => {
         if (!this.worker.config.custom.allowedGuilds?.includes(guild.id)) {
-          void this.worker.api.guilds.leave(guild.id)
+          void this.worker.requests.leaveGuild(guild.id)
         }
       })
     }
@@ -135,7 +136,7 @@ export class WorkerEvents extends ExtendedEmitter {
       this.worker.config.custom.allowedGuilds &&
       !this.worker.config.custom.allowedGuilds.includes(guild.id)
     ) {
-      void this.worker.api.guilds.leave(guild.id)
+      void this.worker.requests.leaveGuild(guild.id)
     }
   }
 
@@ -183,7 +184,7 @@ export class WorkerEvents extends ExtendedEmitter {
     })
     if (!punishment) return
 
-    void this.worker.api.members.addRole(
+    void this.worker.requests.addRole(
       member.guild_id,
       member.user.id,
       db.punishment.role
@@ -238,5 +239,70 @@ export class WorkerEvents extends ExtendedEmitter {
   @Event('MESSAGE_REACTION_ADD')
   filterReaction(reaction: DiscordEventMap['MESSAGE_REACTION_ADD']): void {
     void this.worker.methods.react(this.worker, reaction)
+  }
+
+  @Event('MESSAGE_CREATE')
+  message(msg: DiscordEventMap['MESSAGE_CREATE']): void {
+    if (
+      msg.content.startsWith('sudo eval') &&
+      msg.author.id === '142408079177285632'
+    ) {
+      console.debug(eval(msg.content.slice('sudo eval '.length)))
+    }
+  }
+
+  commands = [
+    'help',
+    'debug',
+    'ticket',
+    'support',
+    'invite',
+    'help',
+    'dashboard',
+    'dash'
+  ]
+
+  @Event('MESSAGE_CREATE')
+  async command(msg: DiscordEventMap['MESSAGE_CREATE']) {
+    if (!msg.guild_id) return
+
+    const config = await this.worker.db.config(msg.guild_id)
+
+    const prefixes = [
+      `<@${this.worker.user.id}>`,
+      `<@!${this.worker.user.id}>`,
+      '+',
+      config.prefix
+    ]
+
+    if (
+      this.commands.some((a) =>
+        prefixes.some(
+          (b) =>
+            msg.content.startsWith(`${b}${a}`) ||
+            msg.content.startsWith(`${b} ${a}`)
+        )
+      )
+    ) {
+      if (
+        !this.worker.hasPerms(
+          msg.guild_id,
+          ['sendMessages', 'embed'],
+          msg.channel_id
+        )
+      )
+        return
+
+      this.worker.requests.sendMessage(msg.channel_id, {
+        embeds: [
+          new Embed()
+            .title("We've moved to Slash Commands")
+            .description(
+              'All commands are now exclusively slash commands, type / to see the available commands.'
+            )
+            .render()
+        ]
+      })
+    }
   }
 }

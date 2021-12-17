@@ -6,7 +6,8 @@ import {
   ExceptionType,
   GuildDB,
   Ticket,
-  User
+  User,
+  WebhookReplace
 } from 'typings/api'
 import { Snowflake } from 'discord-api-types'
 
@@ -21,6 +22,7 @@ import { CustomerSchema } from '../types'
 import { PunishmentSchema } from './punishments/PunishmentManager'
 import { TimeoutSchema } from './punishments/Timeouts'
 import { TicketBanSchema } from './TicketManager'
+import { ThreadComms } from 'jadl/dist/clustering/ThreadComms'
 
 export * from '../data/SettingsSchema'
 
@@ -54,8 +56,12 @@ export class Database extends Db {
       super.collection(name) as Collection<DatabaseCollections[C]>
   }
 
-  constructor() {
+  constructor(private comms?: ThreadComms) {
     super('localhost', Config.db.username, Config.db.password)
+
+    this.comms?.on('GUILD_DUMP', (id) => {
+      this.configCache.delete(id)
+    })
   }
 
   async config(id: Snowflake): Promise<GuildDB> {
@@ -111,8 +117,10 @@ export class Database extends Db {
     if (!db.words) db.words = []
 
     if (!db.nickReplace) db.nickReplace = 'Inappropriate Nickname'
+    // @ts-ignore
     if (!('removeNick' in db)) db.removeNick = true
 
+    // @ts-ignore
     if (!('phishing' in db)) db.phishing = !!db.censor
 
     if (db.channels) {
@@ -161,5 +169,57 @@ export class Database extends Db {
       .then((x) => x.length)
 
     return response > 0
+  }
+
+  dumpGuild(id: Snowflake) {
+    this.configCache.delete(id)
+
+    this.comms?.tell('GUILD_DUMP', id)
+  }
+
+  async removeGuildPremium(id: Snowflake) {
+    const db = await this.config(id)
+
+    await this.collection('guild_data').updateOne(
+      { id: db.id },
+      {
+        $set: {
+          dm: false,
+          filter: db.filter.slice(0, 150),
+          uncensor: db.uncensor.slice(0, 150),
+          phrases: db.phrases.slice(0, 150),
+          words: db.words.slice(0, 150),
+
+          exceptions: db.exceptions.slice(0, 15),
+
+          webhook: {
+            enabled: false,
+            separate: true,
+            replace: WebhookReplace.Spoilers
+          },
+
+          punishment: {
+            ...db.punishment,
+            retainRoles: false
+          },
+
+          msg: {
+            content: db.msg.content
+              ? db.msg.content.slice(0, 200)
+              : db.msg.content,
+            deleteAfter:
+              db.msg.deleteAfter > 120e3 ? 120e3 : db.msg.deleteAfter,
+            dm: false
+          },
+
+          multi: false,
+          toxicity: false,
+          images: false,
+          ocr: false
+        }
+      }
+    )
+
+    this.dumpGuild(id)
   }
 }

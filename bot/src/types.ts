@@ -1,4 +1,5 @@
-import { Snowflake } from 'discord-api-types'
+import { MessageTypes } from '@jadl/cmd'
+import { APIMessage, Snowflake } from 'discord-api-types'
 import { ShortID } from 'typings'
 
 export const Reloaders = ['COMMANDS', 'FILTER', 'CACHE', 'FILTERS'] as const
@@ -16,7 +17,7 @@ export interface CustomerSchema {
   customer: string
 }
 
-declare module 'discord-rose/dist/clustering/ThreadComms' {
+declare module 'jadl/dist/clustering/ThreadComms' {
   interface ThreadEvents {
     RELOAD: {
       send: ReloadNames
@@ -41,6 +42,14 @@ declare module 'discord-rose/dist/clustering/ThreadComms' {
     GUILD_UPDATED: {
       send: Snowflake
       receive: null
+    }
+    SEND_WEBHOOK: {
+      send: {
+        id: Snowflake
+        token: string
+        data: MessageTypes
+      }
+      receive: APIMessage
     }
   }
 }

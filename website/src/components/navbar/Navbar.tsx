@@ -1,4 +1,3 @@
-import { chargebee } from '@/pages/_app'
 import { MenuItem } from '@chakra-ui/menu'
 import { Box } from '@chakra-ui/layout'
 import { Header, NavActions } from '@jpbbots/censorbot-components'
@@ -7,6 +6,7 @@ import { useRouter } from 'next/router'
 import { stats } from 'structures/StatsManager'
 
 import { useMinWidth } from '@/hooks/useMinWidth'
+import { Api } from '@/structures/Api'
 
 export function NavBar() {
   const [user, login, logout] = useUser(false)
@@ -70,9 +70,7 @@ export function NavBar() {
           {user?.premium?.customer && (
             <MenuItem
               onClick={() => {
-                if (chargebee) {
-                  chargebee.createChargebeePortal().open()
-                }
+                Api.createPortal()
               }}
             >
               Payment Portal
@@ -97,6 +95,9 @@ export function NavBar() {
               </MenuItem>
             </>
           )}
+          <MenuItem onClick={() => void router.push('/premium')}>
+            Premium
+          </MenuItem>
           <MenuItem
             onClick={() => {
               logout()

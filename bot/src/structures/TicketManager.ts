@@ -7,7 +7,7 @@ import { APIUser, Snowflake } from 'discord-api-types'
 import GenerateID from '../utils/GenerateID'
 import { NonFatalError } from '../utils/NonFatalError'
 
-import { Embed } from 'discord-rose'
+import { Embed } from '@jadl/embed'
 
 export interface TicketBanSchema {
   id: Snowflake
@@ -24,12 +24,12 @@ export class TicketManager {
         msg.channel_id === this.worker.config.channels.tickets &&
         msg.webhook_id === this.worker.config.webhooks.tickets.id
       ) {
-        void (await worker.api.messages.react(
+        void (await worker.requests.react(
           msg.channel_id,
           msg.id,
           this.worker.config.emojis.yes
         ))
-        void (await worker.api.messages.react(
+        void (await worker.requests.react(
           msg.channel_id,
           msg.id,
           this.worker.config.emojis.no
@@ -73,7 +73,7 @@ export class TicketManager {
   async create(word: string, user: Snowflake): Promise<string> {
     const ban = await this.bans.findOne({ id: user })
     if (ban?.banned)
-      throw new NonFatalError(`User is banned for \`${ban.reason}\``)
+      throw new NonFatalError(`User is banned for "${ban.reason}"`)
 
     const res = this.worker.filter.test(word, {
       filter: [],
@@ -117,7 +117,7 @@ export class TicketManager {
       .timestamp()
       .send()
 
-    void this.worker.api.users.dm(
+    void this.worker.requests.dm(
       ticket.user,
       new Embed()
         .title(`Ticket was accepted (${ticket.id})`)
@@ -133,8 +133,8 @@ export class TicketManager {
     )
 
     if (ticket.msg)
-      void this.worker.api.webhooks
-        .deleteMessage(
+      void this.worker.requests
+        .deleteWebhookMessage(
           this.worker.config.webhooks.tickets.id,
           this.worker.config.webhooks.tickets.token,
           ticket.msg
@@ -163,7 +163,7 @@ export class TicketManager {
       .timestamp()
       .send()
 
-    void this.worker.api.users.dm(
+    void this.worker.requests.dm(
       ticket.user,
       new Embed()
         .title(`Ticket was denied (${ticket.id})`)
@@ -179,7 +179,7 @@ export class TicketManager {
     )
 
     if (ticket.msg)
-      void this.worker.api.webhooks.deleteMessage(
+      void this.worker.requests.deleteWebhookMessage(
         this.worker.config.webhooks.tickets.id,
         this.worker.config.webhooks.tickets.token,
         ticket.msg

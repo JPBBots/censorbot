@@ -143,16 +143,21 @@ export function Sidebar({
                       onClick={() => props.onClose?.()}
                     />
                   ) : (
-                    <Box as={Button} h="50px" w="50px" display="inline-flex">
+                    <Box
+                      as={Button}
+                      h="50px"
+                      w="50px"
+                      display="inline-flex"
+                      onClick={async () =>
+                        await Router.push({ pathname: '/dashboard' })
+                      }
+                    >
                       <Icon
                         cursor="pointer"
                         fontSize="30px"
                         color="lighter.20"
                         transform="rotate(180deg)"
                         as={FaSignOutAlt}
-                        onClick={async () =>
-                          await Router.push({ pathname: '/dashboard' })
-                        }
                       />
                     </Box>
                   )}

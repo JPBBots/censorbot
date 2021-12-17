@@ -5,13 +5,12 @@ import qs from 'querystring'
 import { Config } from '../../config'
 import { ShortGuild, User } from 'typings'
 import {
-  APIGuild,
   APIUser,
   RESTPostOAuth2AccessTokenResult,
   RESTPostOAuth2AccessTokenURLEncodedData
 } from 'discord-api-types'
 import { DiscordService } from './discord.service'
-import { PermissionsUtils } from 'discord-rose'
+import { PermissionUtils } from 'jadl'
 import { DatabaseService } from './database.service'
 
 @Injectable()
@@ -49,7 +48,7 @@ export class OAuthService {
       bearer: oauthUser.access_token,
       token,
       avatar: user.avatar,
-      email: user.email,
+      email: user.verified ? user.email : undefined,
       tag: `${user.username}#${user.discriminator}`
     }
 
@@ -63,21 +62,19 @@ export class OAuthService {
     host: string
   ): Promise<RESTPostOAuth2AccessTokenResult | false> {
     const user = await this.rest
-      .request('POST', '/oauth2/token', {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: {
-          client_id: Config.id,
-          client_secret: Config.oauth.secret,
-          code,
-          grant_type: 'authorization_code',
-          redirect_uri: `https://${host}/api/auth/discord/callback`,
-          scope: Config.dashboardOptions.scopes.join(' ')
-        } as RESTPostOAuth2AccessTokenURLEncodedData,
-        parser: qs.stringify
+      .authorizeToken({
+        client_id: Config.id,
+        client_secret: Config.oauth.secret,
+        code,
+        grant_type: 'authorization_code',
+        redirect_uri: `https://${host}/api/auth/discord/callback`,
+        // @ts-expect-error
+        scope: Config.dashboardOptions.scopes.join(' ')
       })
-      .catch(() => false)
+      .catch((err) => {
+        console.log(err)
+        return null
+      })
 
     if (!user || !user.access_token) return false
 
@@ -85,11 +82,7 @@ export class OAuthService {
   }
 
   public async getUser(token: string): Promise<APIUser | false> {
-    const user = await this.rest.request('GET', '/users/@me', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+    const user = await this.rest.getSelf(token)
 
     if (!user || !user.id) return false
 
@@ -97,11 +90,7 @@ export class OAuthService {
   }
 
   public async getGuilds(token: string): Promise<ShortGuild[]> {
-    const guilds = (await this.rest.request('GET', '/users/@me/guilds', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })) as APIGuild[]
+    const guilds = await this.rest.getUserGuilds(token)
 
     if (!guilds || !Array.isArray(guilds)) throw new Error('Unauthorized')
 
@@ -109,7 +98,7 @@ export class OAuthService {
       .filter(
         (x) =>
           (x.owner as boolean) ||
-          PermissionsUtils.has(
+          PermissionUtils.has(
             Number(x.permissions),
             Config.dashboardOptions.requiredPermission
           )

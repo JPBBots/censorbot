@@ -1,10 +1,11 @@
+import { REST } from '@discordjs/rest'
 import { Injectable } from '@nestjs/common'
-import { RestManager } from 'discord-rose'
 import { Config } from '../../config'
+import { Requests } from '../../managers/Requests'
 
 @Injectable()
-export class DiscordService extends RestManager {
+export class DiscordService extends Requests {
   constructor() {
-    super(Config.token)
+    super(new REST().setToken(Config.token))
   }
 }
