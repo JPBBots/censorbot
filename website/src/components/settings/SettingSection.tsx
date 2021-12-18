@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState } from 'react'
+import React, { PropsWithChildren, useEffect, useState } from 'react'
 
 import {
   HStack,
@@ -21,6 +21,8 @@ import { useRouter } from 'next/router'
 
 import { FaBars, FaSearch } from 'react-icons/fa'
 import { useMinWidth } from '@/hooks/useMinWidth'
+import { sectionSettings, Setting } from './Setting'
+import { searcher } from './settings'
 
 interface SettingSectionProps extends PropsWithChildren<{}> {
   description?: string
@@ -35,6 +37,7 @@ export function SettingSection(props: SettingSectionProps) {
   const [loginState] = useLoginState()
   const [mobiled] = useMinWidth(840)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
 
   const currentSection = sections.find((x) => x.name === props.section)
 
@@ -104,29 +107,34 @@ export function SettingSection(props: SettingSectionProps) {
 
                   <Input
                     placeholder="Search for..."
-                    onClick={() => {
-                      void router.push({
-                        pathname: '/dashboard/[guild]/search',
-                        query: router.query
-                      })
-                    }}
+                    onChange={({ target }) => setSearchTerm(target.value)}
                   />
                 </InputGroup>
               </HStack>
             )}
-            <Text textStyle="heading.xl" alignSelf="start">
-              {props.disableSearch && menuButton}
-              {props.section}
-            </Text>
+            {!searchTerm && (
+              <Text textStyle="heading.xl" alignSelf="start">
+                {props.disableSearch && menuButton}
+                {props.section}
+              </Text>
+            )}
             <Divider color="lighter.5" />
             <VStack w="full">
-              {props.description && (
+              {!searchTerm && props.description && (
                 <Box w="full" textAlign="left" p={1}>
                   <Text>{props.description}</Text>
                   <Divider color="lighter.5" />
                 </Box>
               )}
-              {props.children}
+              {props.children ??
+                (searchTerm && searchTerm !== ''
+                  ? searcher
+                      .search(searchTerm)
+                      .slice(0, 10)
+                      .map((x) => (
+                        <Setting key={x.title ?? x.options[0].name} {...x} />
+                      ))
+                  : sectionSettings(props.section as any))}
             </VStack>
           </VStack>
         </Flex>

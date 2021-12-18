@@ -5,7 +5,7 @@ import { setGuilds } from '@/store/reducers/guilds.reducer'
 import { Utils } from '@/utils/Utils'
 import { Center, HStack, VStack, Text, Button } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import { Loader } from '~/styling/Loader'
+import { Loading } from '~/styling/Loading'
 import Filter from './filter/index'
 
 export default function GuildHome() {
@@ -67,7 +67,7 @@ export default function GuildHome() {
   if (!guild || guild.guild.id !== id) {
     return (
       <Center>
-        <Loader />
+        <Loading />
       </Center>
     )
   }

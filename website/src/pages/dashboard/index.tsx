@@ -15,6 +15,7 @@ import { FaSearch } from 'react-icons/fa'
 import FuzzySearch from 'fuzzy-search'
 import { ShortGuild } from '@/../../typings/api'
 import { useMinWidth } from '@/hooks/useMinWidth'
+import { Loading } from '~/styling/Loading'
 
 export default function DashboardHome() {
   useUser(true)
@@ -42,9 +43,7 @@ export default function DashboardHome() {
           loginState === LoginState.LoggingIn) && (
           <Text textStyle="heading.md">Logging in...</Text>
         )}
-        {loginState === LoginState.LoggedIn && !guilds && (
-          <Text textStyle="heading.md">Loading...</Text>
-        )}
+        {loginState === LoginState.LoggedIn && !guilds && <Loading />}
         {loginState === LoginState.LoggedOut && <LoginButton />}
         {loginState === LoginState.LoggedIn && guilds && (
           <>

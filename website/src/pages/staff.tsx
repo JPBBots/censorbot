@@ -9,7 +9,7 @@ import {
   Box
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { Loader } from '~/styling/Loader'
+import { Loading } from '~/styling/Loading'
 
 import { Footer } from '~/footer/Footer'
 
@@ -129,7 +129,7 @@ export default function Staff() {
             </VStack>
           ))
         ) : (
-          <Loader />
+          <Loading />
         )}
       </VStack>
       <Box h={100} />

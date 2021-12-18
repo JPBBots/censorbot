@@ -96,19 +96,20 @@ export class OAuthService {
 
     if (!guilds || !Array.isArray(guilds)) throw new Error('Unauthorized')
 
-    const newGuilds = guilds.filter(
-      (x) =>
-        (x.owner as boolean) ||
-        PermissionUtils.has(
-          Number(x.permissions),
-          Config.dashboardOptions.requiredPermission
-        )
-    )
-    // .filter((x) =>
-    //   Config.custom.allowedGuilds
-    //     ? Config.custom.allowedGuilds.includes(x.id)
-    //     : true
-    // )
+    const newGuilds = guilds
+      .filter(
+        (x) =>
+          (x.owner as boolean) ||
+          PermissionUtils.has(
+            Number(x.permissions),
+            Config.dashboardOptions.requiredPermission
+          )
+      )
+      .filter((x) =>
+        Config.custom.allowedGuilds
+          ? Config.custom.allowedGuilds.includes(x.id)
+          : true
+      )
 
     const inGuilds = await this.thread.sendCommand(
       'IN_GUILDS',
