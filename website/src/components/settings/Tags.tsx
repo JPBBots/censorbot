@@ -1,5 +1,6 @@
 import { Input } from '@chakra-ui/input'
-import { HStack, VStack } from '@chakra-ui/layout'
+import { VStack } from '@chakra-ui/layout'
+import { Flex } from '@chakra-ui/react'
 import { Select } from '@chakra-ui/select'
 import { Tag } from '@jpbbots/censorbot-components'
 
@@ -49,7 +50,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
 
   return (
     <VStack align="left">
-      <HStack wrap="wrap">
+      <Flex wrap="wrap" gridGap={2}>
         {value.map((tagValue) => {
           const val = whitelist
             ? whitelist.find((x) => x.id === tagValue) ?? { value: tagValue }
@@ -66,7 +67,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
             />
           )
         })}
-      </HStack>
+      </Flex>
       {whitelist ? (
         <Select
           w="400px"

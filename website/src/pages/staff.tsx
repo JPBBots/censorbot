@@ -49,6 +49,8 @@ function calcDate(date1: Date, date2: Date) {
   if (years) time += `${years} year${years > 1 ? 's' : ''}`
   if (months)
     time += `${years ? ' & ' : ''}${months} month${months > 1 ? 's' : ''}`
+  if (!months && !years)
+    time += `${Math.floor(days) || 1} day${days > 1 ? 's' : ''}`
 
   return time
 }

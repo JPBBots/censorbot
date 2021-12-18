@@ -37,7 +37,7 @@ export function SettingSection(props: SettingSectionProps) {
   const [loginState] = useLoginState()
   const [mobiled] = useMinWidth(840)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState<string | null>(null)
 
   const currentSection = sections.find((x) => x.name === props.section)
 
@@ -96,38 +96,60 @@ export function SettingSection(props: SettingSectionProps) {
       )}
       {(!mobiled || (mobiled && !menuOpen)) && (
         <Flex flexGrow={1} maxH="100%" h="100%" overflowY="scroll">
-          <VStack padding="8px 20px" alignSelf="end" w="full" h="inherit">
-            {!props.disableSearch && (
-              <HStack w="full" align="center" spacing="15px">
-                {menuButton}
-                <InputGroup w="400px" maxW="70vw" display="inline-flex">
-                  <InputLeftAddon>
-                    <Icon color="brand.100" as={FaSearch} />
-                  </InputLeftAddon>
+          <VStack padding="8px 20px" w="full" h="inherit">
+            <HStack
+              flexWrap="wrap"
+              justify={mobiled ? 'flex-start' : 'space-between'}
+              w="full"
+            >
+              {menuButton}
+              {searchTerm === null && (
+                <Text textStyle="heading.xl" alignSelf="start">
+                  {props.disableSearch && menuButton}
+                  {props.section}
+                </Text>
+              )}
+              {!props.disableSearch && (
+                <HStack
+                  w={searchTerm === null ? undefined : 'full'}
+                  _focus={{
+                    transition: '0.5s'
+                  }}
+                  justifyContent="flex-end"
+                >
+                  <InputGroup
+                    w={searchTerm === null ? '400px' : 'full'}
+                    maxW={searchTerm === null ? '70vw' : '100vw'}
+                    transition="0.4s"
+                  >
+                    <InputLeftAddon>
+                      <Icon color="brand.100" as={FaSearch} />
+                    </InputLeftAddon>
 
-                  <Input
-                    placeholder="Search for..."
-                    onChange={({ target }) => setSearchTerm(target.value)}
-                  />
-                </InputGroup>
-              </HStack>
-            )}
-            {!searchTerm && (
-              <Text textStyle="heading.xl" alignSelf="start">
-                {props.disableSearch && menuButton}
-                {props.section}
-              </Text>
-            )}
+                    <Input
+                      placeholder="Search settings..."
+                      onChange={({ target }) => setSearchTerm(target.value)}
+                      onFocus={() => {
+                        if (!searchTerm) setSearchTerm('')
+                      }}
+                      onBlur={() => {
+                        if (!searchTerm) setSearchTerm(null)
+                      }}
+                    />
+                  </InputGroup>
+                </HStack>
+              )}
+            </HStack>
             <Divider color="lighter.5" />
             <VStack w="full">
-              {!searchTerm && props.description && (
+              {searchTerm === null && props.description && (
                 <Box w="full" textAlign="left" p={1}>
                   <Text>{props.description}</Text>
                   <Divider color="lighter.5" />
                 </Box>
               )}
               {props.children ??
-                (searchTerm && searchTerm !== ''
+                (searchTerm !== null
                   ? searcher
                       .search(searchTerm)
                       .slice(0, 10)
