@@ -56,7 +56,7 @@ class StatsManager {
   get runnerHash() {
     return crypto
       .getRandomValues(
-        new Int32Array(Number((Date.now() / 100000000).toFixed(0)))
+        new Int32Array(Number((Date.now() / 1000000000).toFixed(0)))
       )[0]
       .toString(36)
       .replace('-', '')

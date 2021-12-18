@@ -1,4 +1,4 @@
-import { Divider, HStack, Text, VStack } from '@chakra-ui/layout'
+import { Divider, HStack, Text, VStack, Flex } from '@chakra-ui/layout'
 import { useLoginState, useUser } from 'hooks/useAuth'
 import { useGuilds } from 'hooks/useGuilds'
 import React, { useEffect, useState } from 'react'
@@ -69,27 +69,62 @@ export default function DashboardHome() {
           </>
         )}
       </VStack>
-      <HStack spacing={4} alignSelf="flex-start" wrap="wrap" gridGap="5px">
-        {searcher?.search(searchTerm).map((guild) => (
-          <GuildPreview
-            key={guild.id}
-            guild={{
-              name: guild.name,
-              iconUrl: guild.icon
-                ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
-                : undefined
-            }}
-            onClick={() => {
-              void router.push({
-                pathname: '/dashboard/[guild]',
-                query: {
-                  guild: guild.id
-                }
-              })
-            }}
-          />
-        ))}
-      </HStack>
+      {guilds && (
+        <VStack align="left" w="full">
+          <Flex spacing={4} alignSelf="flex-start" wrap="wrap" gridGap="15px">
+            {searcher
+              ?.search(searchTerm)
+              .filter((x) => x.joined)
+              .map((guild) => (
+                <GuildPreview
+                  key={guild.id}
+                  guild={{
+                    name: guild.name,
+                    iconUrl: guild.icon
+                      ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
+                      : undefined
+                  }}
+                  onClick={() => {
+                    void router.push({
+                      pathname: '/dashboard/[guild]',
+                      query: {
+                        guild: guild.id
+                      }
+                    })
+                  }}
+                />
+              ))}
+          </Flex>
+          <Text align="left" textStyle="heading.lg">
+            Servers without Censor Bot
+          </Text>
+          <Divider color="lighter.5" />
+          <Flex spacing={4} alignSelf="flex-start" wrap="wrap" gridGap="15px">
+            {searcher
+              ?.search(searchTerm)
+              .filter((x) => !x.joined)
+              .map((guild) => (
+                <GuildPreview
+                  key={guild.id}
+                  guild={{
+                    name: guild.name,
+                    iconUrl: guild.icon
+                      ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
+                      : undefined
+                  }}
+                  onClick={() => {
+                    void router.push({
+                      pathname: '/dashboard/[guild]',
+                      query: {
+                        guild: guild.id
+                      }
+                    })
+                  }}
+                />
+              ))}
+          </Flex>
+        </VStack>
+      )}
     </VStack>
   )
 }

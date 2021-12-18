@@ -172,4 +172,5 @@ export class Api {
 
 if ('window' in global) {
   ;(global as any).api = Api
+  ;(global as any).store = store
 }

@@ -12,8 +12,6 @@ import { Tooltip } from '@chakra-ui/tooltip'
 import { Api } from '@/structures/Api'
 import { useDispatch } from 'react-redux'
 
-import { current } from '@reduxjs/toolkit'
-
 import { setUser } from '@/store/reducers/auth.reducer'
 
 export default function GuildPremium() {
@@ -28,22 +26,22 @@ export default function GuildPremium() {
         <PremiumIcon notColored={!guild?.premium} />
       </Text>
       {guild &&
-        ((guild.premium && user?.premium?.guilds.includes(guild?.guild.id)) ||
+        ((guild.premium && user?.premium?.guilds.includes(guild?.guild.id)) ??
           (!guild.premium && user?.premium?.count)) && (
           <VStack>
             <HStack>
               <Text>Enable premium</Text>
               <Switch
                 onChange={({ target }) => {
-                  let guilds = new Set(user.premium?.guilds)
+                  const guilds = new Set(user.premium?.guilds)
                   if (target.checked) guilds.add(guild?.guild.id)
                   else guilds.delete(guild?.guild.id)
-                  Api.ws
+                  void Api.ws
                     .request('SET_PREMIUM', {
                       guilds: [...guilds]
                     })
                     .then((val) => {
-                      if (val === true) {
+                      if (val) {
                         const premium = Object.assign({}, user.premium)
                         premium.guilds = [...guilds]
 

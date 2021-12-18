@@ -25,13 +25,13 @@ export default function Payment() {
           <Spinner w="100px" h="100px" />
         </>
       )}
-      {user && user.premium?.customer && user.premium?.count && (
+      {user?.premium?.customer && user.premium?.count && (
         <>
           <Text textStyle="heading.xl">Successfully subscribed!</Text>
           <Text textStyle="label.md">
             Enjoy your {user.premium.count} servers
           </Text>
-          <Button onClick={() => router.push('/dashboard')}>
+          <Button onClick={() => void router.push('/dashboard')}>
             Go to dashboard
           </Button>
           <Tooltip>Manage your payment through the user dropdown</Tooltip>

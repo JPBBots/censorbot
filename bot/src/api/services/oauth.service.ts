@@ -12,12 +12,14 @@ import {
 import { DiscordService } from './discord.service'
 import { PermissionUtils } from 'jadl'
 import { DatabaseService } from './database.service'
+import { ThreadService } from './thread.service'
 
 @Injectable()
 export class OAuthService {
   constructor(
     private readonly database: DatabaseService,
-    private readonly rest: DiscordService
+    private readonly rest: DiscordService,
+    private readonly thread: ThreadService
   ) {}
 
   get db() {
@@ -94,20 +96,30 @@ export class OAuthService {
 
     if (!guilds || !Array.isArray(guilds)) throw new Error('Unauthorized')
 
-    return guilds
-      .filter(
-        (x) =>
-          (x.owner as boolean) ||
-          PermissionUtils.has(
-            Number(x.permissions),
-            Config.dashboardOptions.requiredPermission
-          )
-      )
-      .filter((x) =>
-        Config.custom.allowedGuilds
-          ? Config.custom.allowedGuilds.includes(x.id)
-          : true
-      )
-      .map((x) => ({ name: x.name, id: x.id, icon: x.icon }))
+    const newGuilds = guilds.filter(
+      (x) =>
+        (x.owner as boolean) ||
+        PermissionUtils.has(
+          Number(x.permissions),
+          Config.dashboardOptions.requiredPermission
+        )
+    )
+    // .filter((x) =>
+    //   Config.custom.allowedGuilds
+    //     ? Config.custom.allowedGuilds.includes(x.id)
+    //     : true
+    // )
+
+    const inGuilds = await this.thread.sendCommand(
+      'IN_GUILDS',
+      newGuilds.map((x) => x.id)
+    )
+
+    return newGuilds.map((x) => ({
+      name: x.name,
+      id: x.id,
+      icon: x.icon,
+      joined: inGuilds.includes(x.id)
+    }))
   }
 }

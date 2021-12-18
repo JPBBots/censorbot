@@ -1,8 +1,11 @@
+import { ShortGuild } from '@/../../typings/api'
 import { useGuild, useGuilds } from '@/hooks/useGuilds'
+import { store } from '@/store'
+import { setGuilds } from '@/store/reducers/guilds.reducer'
 import { Utils } from '@/utils/Utils'
 import { Center, HStack, VStack, Text, Button } from '@chakra-ui/react'
-import { Spinner } from '@chakra-ui/spinner'
 import { useRouter } from 'next/router'
+import { Loader } from '~/styling/Loader'
 import Filter from './filter/index'
 
 export default function GuildHome() {
@@ -11,9 +14,29 @@ export default function GuildHome() {
   const router = useRouter()
 
   const inviteBot = (admin: boolean = false) => {
-    Utils.openWindow(`/invite?id=${id}&admin=${admin}`, 'Invite the bot').then(
-      () => updateGuild()
-    )
+    void Utils.openWindow(
+      `/invite?id=${id}&admin=${admin}`,
+      'Invite the bot'
+    ).then(() => {
+      updateGuild().then((hasGuild) => {
+        if (hasGuild) {
+          const newGuilds: ShortGuild[] = Object.assign([], guilds)
+          const g: ShortGuild = Object.assign(
+            {},
+            newGuilds.find((x) => x.id === hasGuild.guild.id)
+          )
+          if (g) {
+            g.joined = true
+
+            store.dispatch(
+              setGuilds(
+                newGuilds.filter((x) => x.id !== hasGuild.guild.id).concat([g])
+              )
+            )
+          }
+        }
+      })
+    })
   }
 
   if (needsInvite) {
@@ -31,7 +54,7 @@ export default function GuildHome() {
           </HStack>
           <Button
             onClick={() => {
-              router.push('/dashboard')
+              void router.push('/dashboard')
             }}
           >
             Back
@@ -44,7 +67,7 @@ export default function GuildHome() {
   if (!guild || guild.guild.id !== id) {
     return (
       <Center>
-        <Spinner w="100px" h="100px" />
+        <Loader />
       </Center>
     )
   }

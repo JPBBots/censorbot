@@ -1,4 +1,4 @@
-import types, { Snowflake } from 'discord-api-types'
+import types, { Snowflake, Routes } from 'discord-api-types/v9'
 
 import { MessageTypes, formatMessage } from '@jadl/cmd'
 
@@ -19,7 +19,7 @@ export class Requests {
     member: types.RESTPatchAPIGuildMemberJSONBody,
     extra?: RequestData
   ): Promise<types.RESTPatchAPIGuildMemberResult> {
-    return this.api.patch(`/guilds/${guildId}/members/${userId}`, {
+    return this.api.patch(Routes.guildMember(guildId, userId), {
       body: member,
       ...extra
     }) as any
@@ -36,7 +36,7 @@ export class Requests {
     extra?: RequestData
   ): Promise<types.RESTPutAPIGuildMemberRoleResult> {
     return this.api.put(
-      `/guilds/${guildId}/members/${userId}/roles/${roleId}`,
+      Routes.guildMemberRole(guildId, userId, roleId),
       extra
     ) as any
   }
@@ -46,7 +46,7 @@ export class Requests {
     userId: Snowflake,
     extra?: RequestData
   ): Promise<types.RESTGetAPIGuildMemberResult> {
-    return this.api.get(`/guilds/${guildId}/members/${userId}`, extra) as any
+    return this.api.get(Routes.guildMember(guildId, userId), extra) as any
   }
 
   sendMessage(
@@ -54,7 +54,7 @@ export class Requests {
     message: MessageTypes,
     extra?: RequestData
   ): Promise<types.RESTPostAPIChannelMessageResult> {
-    return this.api.post(`/channels/${channelId}/messages`, {
+    return this.api.post(Routes.channelMessages(channelId), {
       body: formatMessage(message).data,
       ...extra
     }) as any
@@ -66,7 +66,7 @@ export class Requests {
     extra?: RequestData
   ): Promise<types.RESTDeleteAPIChannelMessageResult> {
     return this.api.delete(
-      `/channels/${channelId}/messages/${messageId}`,
+      Routes.channelMessage(channelId, messageId),
       extra
     ) as any
   }
@@ -78,7 +78,7 @@ export class Requests {
     if (messageIds.length < 2)
       return this.deleteMessage(channelId, messageIds[0])
 
-    return this.api.post(`/channels/${channelId}/messages/bulk-delete`, {
+    return this.api.post(Routes.channelBulkDelete(channelId), {
       body: {
         messages: messageIds
       }
@@ -92,7 +92,7 @@ export class Requests {
     extra?: RequestData
   ): Promise<types.RESTDeleteAPIGuildMemberRoleResult> {
     return this.api.delete(
-      `/guilds/${guildId}/members/${userId}/roles/${roleId}`,
+      Routes.guildMemberRole(guildId, userId, roleId),
       extra
     ) as any
   }
@@ -102,7 +102,7 @@ export class Requests {
     userId: Snowflake,
     extra?: RequestData
   ): Promise<types.RESTDeleteAPIGuildMemberResult> {
-    return this.api.delete(`/guilds/${guildId}/members/${userId}`, extra) as any
+    return this.api.delete(Routes.guildMember(guildId, userId), extra) as any
   }
 
   banMember(
@@ -110,7 +110,7 @@ export class Requests {
     userId: Snowflake,
     extra?: RequestData
   ): Promise<types.RESTPutAPIGuildBanResult> {
-    return this.api.put(`/guilds/${guildId}/bans/${userId}`, extra) as any
+    return this.api.put(Routes.guildBan(guildId, userId), extra) as any
   }
 
   unbanMember(
@@ -118,7 +118,7 @@ export class Requests {
     userId: Snowflake,
     extra?: RequestData
   ): Promise<types.RESTDeleteAPIGuildBanResult> {
-    return this.api.delete(`/guilds/${guildId}/bans${userId}`, extra) as any
+    return this.api.delete(Routes.guildBan(guildId, userId), extra) as any
   }
 
   async createDM(
@@ -126,7 +126,7 @@ export class Requests {
   ): Promise<types.RESTPostAPICurrentUserCreateDMChannelResult> {
     if (this.dmCache.has(userId)) return this.dmCache.get(userId) as any
 
-    const channel = (await this.api.post('/users/@me/channels', {
+    const channel = (await this.api.post(Routes.userChannels(), {
       body: {
         recipient_id: userId
       }
@@ -145,7 +145,7 @@ export class Requests {
   leaveGuild(
     guildId: Snowflake
   ): Promise<types.RESTDeleteAPICurrentUserGuildResult> {
-    return this.api.delete(`/users/@me/guilds/${guildId}`) as any
+    return this.api.delete(Routes.userGuild(guildId)) as any
   }
 
   deleteWebhookMessage(
@@ -154,7 +154,7 @@ export class Requests {
     messageId: Snowflake
   ): Promise<types.RESTDeleteAPIChannelMessageUserReactionResult> {
     return this.api.delete(
-      `/webhooks/${webhookId}/${webhookToken}/messages/${messageId}`
+      Routes.webhookMessage(webhookId, webhookToken, messageId)
     ) as any
   }
 
@@ -169,9 +169,11 @@ export class Requests {
     emoji: Emoji
   ): Promise<types.RESTPutAPIChannelMessageReactionResult> {
     return this.api.put(
-      `/channels/${channelId}/messages/${messageId}/reactions/${this._parseEmoji(
-        emoji
-      )}/@me`
+      Routes.channelMessageOwnReaction(
+        channelId,
+        messageId,
+        this._parseEmoji(emoji)
+      )
     ) as any
   }
 
@@ -192,7 +194,7 @@ export class Requests {
     channelId: Snowflake,
     data: types.RESTPostAPIChannelWebhookJSONBody
   ): Promise<types.RESTPostAPIChannelWebhookResult> {
-    return this.api.post(`/channels/${channelId}/webhooks`, {
+    return this.api.post(Routes.channelWebhooks(channelId), {
       body: data
     }) as any
   }
@@ -211,7 +213,7 @@ export class Requests {
     webhookToken: string,
     message: types.RESTPostAPIWebhookWithTokenJSONBody
   ): Promise<types.RESTPostAPIWebhookWithTokenWaitResult> {
-    return this.api.post(`/webhooks/${webhookId}/${webhookToken}`, {
+    return this.api.post(Routes.webhook(webhookId, webhookToken), {
       query: new URLSearchParams({ wait: 'true' }),
       body: message
     }) as any
@@ -220,7 +222,7 @@ export class Requests {
   getUserGuilds(
     token: string
   ): Promise<types.RESTGetAPICurrentUserGuildsResult> {
-    return this.api.get(`/users/@me/guilds`, {
+    return this.api.get(Routes.userGuilds(), {
       headers: {
         Authorization: `Bearer ${token}`
       },
@@ -229,7 +231,7 @@ export class Requests {
   }
 
   getSelf(token: string): Promise<types.RESTGetAPICurrentUserResult> {
-    return this.api.get('/users/@me', {
+    return this.api.get(Routes.user(), {
       headers: {
         Authorization: `Bearer ${token}`
       },
@@ -240,7 +242,7 @@ export class Requests {
   authorizeToken(
     request: types.RESTPostOAuth2AccessTokenURLEncodedData
   ): Promise<types.RESTPostOAuth2AccessTokenResult> {
-    return this.api.post('/oauth2/token', {
+    return this.api.post(Routes.oauth2TokenExchange(), {
       body: new URLSearchParams(request as any),
       contentType: 'urlencoded'
     }) as any

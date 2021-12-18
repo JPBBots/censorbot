@@ -11,6 +11,7 @@ import { setUser } from 'store/reducers/auth.reducer'
 
 import { io } from 'socket.io-client'
 import { Api } from './Api'
+import { setLoading } from '@/store/reducers/loading.reducer'
 
 type EventMap = {
   [key in keyof WebSocketEventMap]: WebSocketEventMap[key]['receive']
@@ -34,6 +35,8 @@ export class WebsocketManager extends ExtendedEmitter {
   onConnect() {
     this.log('Connected to socket')
 
+    store.dispatch(setLoading(false))
+
     void Api.getUser().then((user) => {
       if (user && Api.guildId)
         void Api.getGuild(Api.guildId)
@@ -49,6 +52,8 @@ export class WebsocketManager extends ExtendedEmitter {
   @Event('disconnect')
   onDisconnect() {
     this.log('Socket disconnected')
+
+    store.dispatch(setLoading(true))
   }
 
   public async request<K extends keyof WebSocketEventMap>(

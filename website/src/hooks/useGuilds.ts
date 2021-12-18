@@ -12,8 +12,9 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Pieces from 'utils/Pieces'
 import { DeepPartial } from '@chakra-ui/react'
-import { GuildDB } from 'typings'
+import { GuildDB, ShortGuild } from 'typings'
 import headlessData from '@/structures/headlessData.json'
+import { current } from '@reduxjs/toolkit'
 
 export const useGuildsState = (): RootState['guilds'] =>
   useSelector((state: RootState) => state.guilds)
@@ -68,7 +69,7 @@ export const useGuild = () => {
     setId(Api.guildId)
   }, [router.query])
 
-  const checkForGuild = () => {
+  const checkForGuild = async () => {
     if (selectedGuild === id && currentGuild) return
     setNeedsInvite(false)
     if (headless) {
@@ -85,20 +86,24 @@ export const useGuild = () => {
 
       dispatch(setCurrentGuild(undefined))
 
-      void Api.getGuild(id).then((guild) => {
+      return await Api.getGuild(id).then((guild) => {
         if (!guild) return (selectedGuild = undefined)
 
         selectedGuild = id
 
         if ('notInGuild' in guild) {
           setNeedsInvite(true)
+
+          return null
         } else {
           dispatch(setCurrentGuild(guild))
+
+          return guild
         }
       })
     }
   }
-  useEffect(checkForGuild, [loginState, guilds, id, user])
+  useEffect(() => void checkForGuild(), [loginState, guilds, id, user])
 
   return [
     currentGuild,
@@ -119,9 +124,7 @@ export const useGuild = () => {
     },
     needsInvite,
     id,
-    () => {
-      checkForGuild()
-    }
+    () => checkForGuild()
   ] as const
 }
 

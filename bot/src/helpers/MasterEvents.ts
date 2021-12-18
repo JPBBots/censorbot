@@ -77,4 +77,40 @@ export class MasterEvents extends ExtendedEmitter {
         resolve({ error: err.message })
       })
   }
+
+  @Event('IN_GUILDS')
+  async inGuilds(
+    _cluster,
+    data: ThreadEvents['IN_GUILDS']['send'],
+    resolve: ResolveFunction<'IN_GUILDS'>
+  ) {
+    const clusters: Array<{ cluster: string; ids: Snowflake[] }> = []
+    data.forEach((id) => {
+      const cluster = this.master.guildToCluster(id)
+
+      let clusterObject = clusters.find((x) => x.cluster === cluster.id)
+      if (!clusterObject) {
+        clusterObject = {
+          cluster: cluster.id,
+          ids: []
+        }
+
+        clusters.push(clusterObject)
+      }
+
+      clusterObject.ids.push(id)
+    })
+
+    const result: Snowflake[] = []
+
+    for (const cluster of clusters) {
+      const ids = await this.master.clusters
+        .get(cluster.cluster)
+        ?.sendCommand('IN_GUILDS', cluster.ids)
+
+      if (ids) result.push(...ids)
+    }
+
+    resolve(result)
+  }
 }

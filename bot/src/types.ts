@@ -51,5 +51,9 @@ declare module 'jadl/dist/clustering/ThreadComms' {
       }
       receive: APIMessage
     }
+    IN_GUILDS: {
+      send: Snowflake[]
+      receive: Snowflake[]
+    }
   }
 }

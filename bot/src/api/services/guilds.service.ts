@@ -48,11 +48,16 @@ export class GuildsService extends EventEmitter<{
     if (!guild || !guild.channels || !guild.roles)
       throw new Error('Not In Guild')
 
+    this.caching.userGuilds
+      .filter((x) => x.some((b) => b.id === guild.id))
+      .forEach((g) => (g.find((x) => x.id === guild.id)!.joined = true))
+
     return {
       guild: {
         name: guild.name,
         icon: guild.icon,
         id: guild.id,
+        joined: true,
         channels: guild.channels.map((x) => ({
           id: x.id,
           name: x.name ?? '',

@@ -70,7 +70,7 @@ export function NavBar() {
           {user?.premium?.customer && (
             <MenuItem
               onClick={() => {
-                Api.createPortal()
+                void Api.createPortal()
               }}
             >
               Payment Portal

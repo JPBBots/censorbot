@@ -18,8 +18,8 @@ export default function Premium() {
     }
 
     chargebee.openCheckout({
-      hostedPage: () => {
-        return Api.ws
+      hostedPage: async () => {
+        return await Api.ws
           .request('CREATE_HOSTED_PAGE', { plan: id })
           .catch((err) => {
             console.log('err', err)
@@ -28,7 +28,7 @@ export default function Premium() {
           })
       },
       success: () => {
-        router.push('/payment')
+        void router.push('/payment')
       }
     })
   }
@@ -64,7 +64,7 @@ export default function Premium() {
           <Text>You're already a customer</Text>
           <Button
             onClick={() => {
-              Api.createPortal()
+              void Api.createPortal()
             }}
           >
             Manage

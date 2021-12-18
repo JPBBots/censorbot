@@ -18,6 +18,7 @@ import { Loader } from '~/Loader'
 import { Flex } from '@chakra-ui/layout'
 
 import { ChargebeeWeb } from 'types'
+import { motion } from 'framer-motion'
 
 export const chargebee =
   'window' in global

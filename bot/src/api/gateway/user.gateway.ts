@@ -22,6 +22,7 @@ import { DatabaseService } from '../services/database.service'
 import { ChargeBeeService } from '../services/chargebee.service'
 
 import Pieces from '../../utils/Pieces'
+import { ThreadService } from '../services/thread.service'
 
 export type SocketConnection = Socket & { data: SelfData }
 
@@ -44,7 +45,8 @@ export class UserGateway {
     private readonly db: DatabaseService,
     private readonly caching: CacheService,
     private readonly guilds: GuildsService,
-    private readonly chargebee: ChargeBeeService
+    private readonly chargebee: ChargeBeeService,
+    private readonly thread: ThreadService
   ) {
     guilds.on('GUILD_SETTINGS_UPDATE', (dat) => {
       this.server
@@ -131,6 +133,13 @@ export class UserGateway {
     } catch (err) {
       return { error: 'Unauthorized' }
     }
+
+    this.thread
+      .sendCommand(
+        'IN_GUILDS',
+        guilds.map((x) => x.id)
+      )
+      .then(console.debug)
 
     this.caching.userGuilds.set(user.id, guilds)
 

@@ -219,6 +219,10 @@ export interface ShortGuild {
    */
   name: string;
   /**
+   * Whether or not the bot is in the server
+   */
+  joined: boolean;
+  /**
    * CDN Hash of icon
    */
   icon: string | null;

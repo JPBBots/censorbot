@@ -5,6 +5,7 @@ import { ExtendedEmitter, Event } from '@jpbberry/typed-emitter'
 import path from 'path'
 import { ReloadNames } from '../types'
 import { Snowflake } from 'jadl'
+import { ResolveFunction } from 'jadl/dist/clustering/ThreadComms'
 
 const filterDataDir = path.resolve(__dirname, '../structures/Filter')
 
@@ -57,5 +58,10 @@ export class ClusterEvents extends ExtendedEmitter {
 
         break
     }
+  }
+
+  @Event('IN_GUILDS')
+  inGuilds(guilds: Snowflake[], resolve: ResolveFunction<'IN_GUILDS'>) {
+    resolve(guilds.filter((x) => this.worker.guilds.has(x)))
   }
 }
