@@ -2,8 +2,9 @@ import { SettingSection } from '~/settings/SettingSection'
 import { sectionSettings } from '~/settings/Setting'
 import { useGuild } from '@/hooks/useGuilds'
 import { Select } from '@chakra-ui/select'
-import { HStack, Text, VStack } from '@chakra-ui/layout'
+import { Text, VStack } from '@chakra-ui/layout'
 import { ExceptionType } from '@/../../typings/api'
+import { Wrap } from '@chakra-ui/react'
 
 export default function Exceptions() {
   const [guild, db, setDb] = useGuild()
@@ -12,7 +13,7 @@ export default function Exceptions() {
     <SettingSection section="Exceptions">
       {sectionSettings('Exceptions')}
       {guild && (
-        <HStack alignSelf="flex-start">
+        <Wrap alignSelf="flex-start">
           <VStack>
             <Text>Add ignored channel</Text>
             <Select
@@ -68,7 +69,7 @@ export default function Exceptions() {
               ))}
             </Select>
           </VStack>
-        </HStack>
+        </Wrap>
       )}
     </SettingSection>
   )

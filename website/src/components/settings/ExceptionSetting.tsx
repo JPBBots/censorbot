@@ -60,7 +60,7 @@ export function ExceptionSetting({
   }
 
   return (
-    <HStack>
+    <HStack flexWrap="wrap" w="full">
       <InlineOptionGroup>
         <Text>Anyone with</Text>
         {/* <Selector

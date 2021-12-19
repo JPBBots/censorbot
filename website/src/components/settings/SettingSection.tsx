@@ -23,17 +23,17 @@ import { FaBars, FaSearch } from 'react-icons/fa'
 import { useMinWidth } from '@/hooks/useMinWidth'
 import { sectionSettings, Setting } from './Setting'
 import { searcher } from './settings'
+import { Loading } from '~/styling/Loading'
 
 interface SettingSectionProps extends PropsWithChildren<{}> {
   description?: string
-  section: SectionName | 'Search' | 'Premium'
+  section: SectionName | 'Premium'
   disableSearch?: boolean
 }
 
 export function SettingSection(props: SettingSectionProps) {
   useUser(true)
   const [currentGuild] = useGuild()
-  const router = useRouter()
   const [loginState] = useLoginState()
   const [mobiled] = useMinWidth(840)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -54,11 +54,7 @@ export function SettingSection(props: SettingSectionProps) {
     loginState === LoginState.LoggingIn ||
     !currentGuild
   ) {
-    return (
-      <div style={{ textAlign: 'center' }}>
-        <h1>Loading...</h1>
-      </div>
-    )
+    return <Loading />
   }
 
   const menuButton = mobiled ? (
@@ -105,7 +101,6 @@ export function SettingSection(props: SettingSectionProps) {
               {menuButton}
               {searchTerm === null && (
                 <Text textStyle="heading.xl" alignSelf="start">
-                  {props.disableSearch && menuButton}
                   {props.section}
                 </Text>
               )}
@@ -119,7 +114,7 @@ export function SettingSection(props: SettingSectionProps) {
                 >
                   <InputGroup
                     w={searchTerm === null ? '400px' : 'full'}
-                    maxW={searchTerm === null ? '70vw' : '100vw'}
+                    maxW={searchTerm === null ? '70vw' : undefined}
                     transition="0.4s"
                   >
                     <InputLeftAddon>

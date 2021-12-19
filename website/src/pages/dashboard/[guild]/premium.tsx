@@ -21,14 +21,15 @@ export default function GuildPremium() {
 
   return (
     <SettingSection section="Premium" disableSearch>
-      <Text size="heading.xl">
-        This server {guild?.premium ? 'has premium!' : 'does not have premium'}{' '}
-        <PremiumIcon notColored={!guild?.premium} />
-      </Text>
-      {guild &&
-        ((guild.premium && user?.premium?.guilds.includes(guild?.guild.id)) ??
-          (!guild.premium && user?.premium?.count)) && (
-          <VStack>
+      <VStack alignSelf="flex-start" align="flex-start">
+        <Text size="heading.xl">
+          This server{' '}
+          {guild?.premium ? 'has premium!' : 'does not have premium'}{' '}
+          <PremiumIcon notColored={!guild?.premium} />
+        </Text>
+        {guild &&
+          ((guild.premium && user?.premium?.guilds.includes(guild?.guild.id)) ||
+            (!guild.premium && user?.premium?.count)) && (
             <HStack>
               <Text>Enable premium</Text>
               <Switch
@@ -51,31 +52,31 @@ export default function GuildPremium() {
                 }}
                 isChecked={guild.premium}
               />
+              <Tooltip
+                label={`This will use 1 of your premium servers.
+                You have ${
+                  user.premium.count - user.premium.guilds.length
+                } premium
+                servers remaining`}
+              >
+                ?
+              </Tooltip>
             </HStack>
-            <Tooltip
-              label={`This will use 1 of your premium servers.
-              You have ${
-                user.premium.count - user.premium.guilds.length
-              } premium
-              servers remaining`}
-            >
-              ?
-            </Tooltip>
-          </VStack>
-        )}
-      {guild?.premium ? (
-        settings
-          .filter(
-            (setting) =>
-              setting.premium ??
-              setting.options.some((x) => 'premium' in x && x.premium)
-          )
-          .map((x) => <Setting key={x.title ?? x.options[0].name} {...x} />)
-      ) : (
-        <HStack>
-          <Premium />
-        </HStack>
-      )}
+          )}
+      </VStack>
+      {guild?.premium
+        ? settings
+            .filter(
+              (setting) =>
+                setting.premium ??
+                setting.options.some((x) => 'premium' in x && x.premium)
+            )
+            .map((x) => <Setting key={x.title ?? x.options[0].name} {...x} />)
+        : !user?.premium?.count && (
+            <HStack>
+              <Premium />
+            </HStack>
+          )}
     </SettingSection>
   )
 }
