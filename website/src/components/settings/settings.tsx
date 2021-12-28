@@ -21,7 +21,8 @@ export enum OptionType {
   BitBool,
   Select,
   Number,
-  Exception
+  Exception,
+  Punishments
 }
 
 export const settings: ISetting[] = [
@@ -130,6 +131,29 @@ export const settings: ISetting[] = [
       {
         name: 'exceptions',
         type: OptionType.Exception
+      }
+    ]
+  },
+
+  {
+    title: 'Punishment Expire Time',
+    section: 'Punishments',
+    description: 'Amount of time a warning exists',
+    options: [
+      {
+        name: 'punishments.expires',
+        type: OptionType.Number
+      }
+    ]
+  },
+  {
+    title: 'Punishments',
+    section: 'Punishments',
+    description: 'Punish users for doing things Censor Bot blocks',
+    options: [
+      {
+        name: 'punishments.levels',
+        type: OptionType.Punishments
       }
     ]
   },
@@ -495,6 +519,7 @@ export type IOption =
       }
     >
   | DataOption<OptionType.Exception, {}, {}>
+  | DataOption<OptionType.Punishments, {}, {}>
 
 export interface ISetting {
   title?: string

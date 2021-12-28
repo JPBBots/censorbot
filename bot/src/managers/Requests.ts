@@ -16,7 +16,9 @@ export class Requests {
   editMember(
     guildId: Snowflake,
     userId: Snowflake,
-    member: types.RESTPatchAPIGuildMemberJSONBody,
+    member: types.RESTPatchAPIGuildMemberJSONBody & {
+      communication_disabled_until?: string
+    },
     extra?: RequestData
   ): Promise<types.RESTPatchAPIGuildMemberResult> {
     return this.api.patch(Routes.guildMember(guildId, userId), {
@@ -246,5 +248,25 @@ export class Requests {
       body: new URLSearchParams(request as any),
       contentType: 'urlencoded'
     }) as any
+  }
+
+  timeoutMember(
+    guildId: Snowflake,
+    memberId: Snowflake,
+    length: number,
+    reason?: string
+  ) {
+    return this.editMember(
+      guildId,
+      memberId,
+      {
+        communication_disabled_until: new Date(
+          Date.now() + length
+        ).toISOString()
+      },
+      {
+        reason
+      }
+    )
   }
 }

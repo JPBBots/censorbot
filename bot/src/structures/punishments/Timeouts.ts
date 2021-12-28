@@ -5,13 +5,19 @@ import { PunishmentManager } from './PunishmentManager'
 
 import DJSCollection from '@discordjs/collection'
 
-export interface TimeoutSchema {
+export type TimeoutSchema = {
   guild: Snowflake
   user: Snowflake
   at: number
-  type: TimedPunishments
-  roles?: Snowflake[]
-}
+} & (
+  | {
+      type: PunishmentType.GiveRole
+      role: Snowflake
+    }
+  | {
+      type: PunishmentType.Ban
+    }
+)
 
 export class Timeouts {
   timeouts: DJSCollection<string, NodeJS.Timeout> = new DJSCollection()
@@ -26,20 +32,20 @@ export class Timeouts {
     return this.manager.worker.db.collection('timeouts')
   }
 
-  private async execute(
-    guild: Snowflake,
-    user: Snowflake,
-    type: TimedPunishments,
-    roles?: Snowflake[]
-  ): Promise<void> {
-    this.timeouts.delete(`${user}-${guild}`)
+  private async execute(timeout: TimeoutSchema): Promise<void> {
+    this.timeouts.delete(`${timeout.user}-${timeout.guild}`)
 
-    switch (type) {
+    switch (timeout.type) {
       case PunishmentType.Ban:
-        void this.manager.unban(guild, user)
+        void this.manager.unban(timeout.guild, timeout.user)
         break
-      case PunishmentType.Mute:
-        void this.manager.unmute(guild, user, false, roles)
+      case PunishmentType.GiveRole:
+        void this.manager.removeRole(
+          timeout.guild,
+          timeout.user,
+          timeout.role,
+          false
+        )
         break
     }
   }
@@ -61,30 +67,28 @@ export class Timeouts {
     this.timeouts.set(
       `${timeout.user}-${timeout.guild}`,
       setTimeout(() => {
-        void this.execute(
-          timeout.guild,
-          timeout.user,
-          timeout.type,
-          timeout.roles
-        )
+        void this.execute(timeout)
       }, timeout.at - Date.now())
     )
   }
 
-  public async add(
+  public async add<Type extends TimedPunishments>(
     guild: Snowflake,
     user: Snowflake,
-    type: TimedPunishments,
+    type: Type,
     at: number,
-    roles?: Snowflake[]
+    role?: Type extends PunishmentType.GiveRole
+      ? Required<Snowflake>
+      : undefined
   ): Promise<void> {
     const time = {
       guild,
       user,
       type,
       at,
-      roles
-    }
+      role
+    } as TimeoutSchema
+
     await this.db.updateOne(
       {
         guild,

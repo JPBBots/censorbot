@@ -22,7 +22,7 @@ import {
   Select
 } from '@chakra-ui/react'
 import Pieces from 'utils/Pieces'
-import { Exception, ExceptionType, GuildData } from 'typings'
+import { Exception, ExceptionType, GuildData, PunishmentLevel } from 'typings'
 import { SectionName } from './Sidebar'
 
 import TextareaResizer from 'react-textarea-autosize'
@@ -33,6 +33,7 @@ import { FaPlus } from 'react-icons/fa'
 import Link from 'next/link'
 
 import Router from 'next/router'
+import { PunishmentSetting } from './PunishmentSetting'
 
 export function Option({
   setValue,
@@ -289,6 +290,29 @@ export function Option({
               for more.
             </Text>
           ))}
+      </VStack>
+    )
+  }
+
+  if (option.type === OptionType.Punishments) {
+    const punishments = value as PunishmentLevel[]
+    return (
+      <VStack w="fit-content" spacing={7}>
+        {punishments.map((x, ind) => (
+          <>
+            <PunishmentSetting
+              key={ind}
+              guild={guild}
+              punishment={x}
+              onChange={(val) => {
+                const punishes = [...punishments]
+                punishes[ind] = val
+
+                setValue(punishes)
+              }}
+            />
+          </>
+        ))}
       </VStack>
     )
   }

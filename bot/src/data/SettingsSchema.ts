@@ -7,7 +7,7 @@ import {
   WebhookReplace,
   Exception,
   ExceptionType,
-  Punishment
+  PunishmentLevel
 } from 'typings'
 
 const sfRegex = /^[0-9]{5,50}$/
@@ -39,29 +39,22 @@ export const exceptionSchema = Joi.object<Exception>({
   ).required()
 })
 
-export const punishmentSchema = Joi.object<Punishment>({
+export const punishmentLevelSchema = Joi.object<PunishmentLevel>({
   type: Joi.valid(
-    PunishmentType.Nothing,
-    PunishmentType.Mute,
+    PunishmentType.GiveRole,
     PunishmentType.Kick,
-    PunishmentType.Ban
+    PunishmentType.Ban,
+    PunishmentType.Timeout
   ).required(),
 
   amount: Joi.number().min(1).max(20).required(),
 
-  role: nullableSnowflake.concat(Joi.string().required()),
+  role: SnowflakeString,
 
   time: Joi.number()
     .max(86400000 * 60)
     .allow(null)
-    .required(),
-
-  expires: Joi.number()
-    .max(86400000 * 60)
-    .allow(null)
-    .required(),
-
-  retainRoles: false
+    .required()
 })
 
 export const settingSchema = Joi.object<GuildDB>({
@@ -103,7 +96,12 @@ export const settingSchema = Joi.object<GuildDB>({
     dm: PremiumOnly(false)
   }),
 
-  punishment: punishmentSchema,
+  punishments: Joi.object<GuildDB['punishments']>({
+    expires: Joi.number()
+      .max(86400000 * 60)
+      .allow(null),
+    levels: Joi.array().items(punishmentLevelSchema).max(5)
+  }),
 
   webhook: Joi.object<GuildDB['webhook']>({
     enabled: PremiumOnly(false),
@@ -147,10 +145,6 @@ export const premiumSchema = settingSchema.concat(
         WebhookReplace.Hashtags,
         WebhookReplace.Stars
       )
-    }),
-
-    punishment: Joi.object<Punishment>({
-      retainRoles: boolOverride // TODO
     }),
 
     msg: Joi.object({

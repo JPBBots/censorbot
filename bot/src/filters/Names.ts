@@ -64,14 +64,11 @@ function handleCensor(
     .catch(() => {})
 
   if (
-    !worker.punishments.checkPerms(member.guild_id, db) &&
     !worker.isExcepted(ExceptionType.Punishment, db, { roles: member.roles })
   ) {
-    void worker.punishments.punish(
-      member.guild_id,
-      member.user.id,
-      member.roles
-    )
+    void worker.punishments
+      .punish(member.guild_id, member.user.id, member.roles)
+      .catch()
   }
 }
 

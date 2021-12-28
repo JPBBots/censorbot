@@ -107,6 +107,11 @@ export const Config = {
       why: 'To ban members with punishments'
     },
     {
+      permission: 'moderateMembers',
+      name: 'Timeout Members',
+      why: 'To timeout users with punishments'
+    },
+    {
       permission: 'webhooks',
       name: 'Manage Webhooks',
       why: 'To create resend webhooks (premium)'

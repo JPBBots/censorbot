@@ -138,15 +138,14 @@ function handleDeletion(
       channel: message.channel_id
     })
   ) {
-    const perms = worker.punishments.checkPerms(message.guild_id, db)
-    if (typeof perms === 'string')
-      return void worker.responses.missingPermissions(message.channel_id, perms)
-    if (!perms)
-      void worker.punishments.punish(
-        message.guild_id,
-        message.author.id,
-        message.member.roles
-      )
+    void worker.punishments
+      .punish(message.guild_id, message.author.id, message.member.roles)
+      .catch((err) => {
+        void worker.responses.missingPermissions(
+          message.channel_id,
+          err.message
+        )
+      })
   }
 }
 

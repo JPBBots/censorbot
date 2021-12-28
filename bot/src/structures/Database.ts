@@ -123,6 +123,26 @@ export class Database extends Db {
     // @ts-ignore
     if (!('phishing' in db)) db.phishing = !!db.censor
 
+    if (!('punishments' in db)) {
+      // @ts-ignore
+      db.punishments = { levels: [db.punishment], expires: null }
+      // @ts-expect-error
+      delete db.punishment
+
+      await this.collection('guild_data').updateOne(
+        {
+          // @ts-expect-error
+          id: db.id
+        },
+        {
+          $unset: {
+            punishment: ''
+          },
+          $set: db
+        }
+      )
+    }
+
     if (db.channels) {
       db.exceptions.push(
         ...db.channels.map((id) => ({
@@ -196,11 +216,6 @@ export class Database extends Db {
             enabled: false,
             separate: true,
             replace: WebhookReplace.Spoilers
-          },
-
-          punishment: {
-            ...db.punishment,
-            retainRoles: false
           },
 
           msg: {

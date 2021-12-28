@@ -4,7 +4,8 @@ import { Embed } from '@jadl/embed'
 import Wait from '../utils/Wait'
 
 import { WorkerManager } from '../managers/Worker'
-import { PunishmentType } from 'typings'
+import { PunishmentLevel, PunishmentType } from 'typings'
+import { TimeoutSchema } from '../structures/punishments/Timeouts'
 
 export class WorkerEvents extends ExtendedEmitter {
   unavailables: Set<Snowflake> = new Set()
@@ -148,22 +149,28 @@ export class WorkerEvents extends ExtendedEmitter {
 
     const db = await this.worker.db.config(member.guild_id)
 
-    if (!db.punishment.role || db.punishment.type !== PunishmentType.Mute)
-      return
+    const punishments = db.punishments.levels.filter(
+      (x) =>
+        x.type === PunishmentType.GiveRole && !member.roles.includes(x.role)
+    ) as (PunishmentLevel & { type: PunishmentType.GiveRole })[]
 
-    if (member.roles.includes(db.punishment.role)) return
+    if (!punishments.length) return
 
-    const punishment = await this.worker.punishments.timeouts.db.findOne({
+    const punishment = (await this.worker.punishments.timeouts.db.findOne({
       guild: member.guild_id,
-      user: member.user.id
-    })
+      user: member.user.id,
+      type: PunishmentType.GiveRole,
+      role: {
+        $in: punishments.map((x) => x.role)
+      }
+    })) as TimeoutSchema & { type: PunishmentType.GiveRole }
     if (!punishment) return
 
-    void this.worker.punishments.unmute(
+    void this.worker.punishments.removeRole(
       member.guild_id,
       member.user.id,
-      true,
-      punishment.roles
+      punishment.role,
+      true
     )
   }
 
@@ -173,21 +180,18 @@ export class WorkerEvents extends ExtendedEmitter {
   ): Promise<void> {
     if (!member.user) return
 
-    const db = await this.worker.db.config(member.guild_id)
-
-    if (!db.punishment.role || db.punishment.type !== PunishmentType.Mute)
-      return
-
-    const punishment = await this.worker.punishments.timeouts.db.findOne({
+    const punishment = (await this.worker.punishments.timeouts.db.findOne({
       guild: member.guild_id,
-      user: member.user.id
-    })
+      user: member.user.id,
+      type: PunishmentType.GiveRole
+    })) as TimeoutSchema & { type: PunishmentType.GiveRole }
     if (!punishment) return
 
     void this.worker.requests.addRole(
       member.guild_id,
       member.user.id,
-      db.punishment.role
+      punishment.role,
+      { reason: 'User had role before leaving' }
     )
   }
 

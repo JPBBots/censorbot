@@ -5,13 +5,13 @@ export const filters = ["en", "es", "off", "de", "ru"] as const;
 export type filterType = typeof filters[number];
 
 export enum PunishmentType {
-  Nothing = 0,
-  Mute,
+  GiveRole,
   Kick,
   Ban,
+  Timeout
 }
 
-export type TimedPunishments = PunishmentType.Ban | PunishmentType.Mute;
+export type TimedPunishments = PunishmentType.Ban | PunishmentType.GiveRole | PunishmentType.Timeout
 
 export enum PremiumTypes {
   Premium = "premium",
@@ -31,32 +31,21 @@ export enum CensorMethods {
   Reactions = 4,
 }
 
-export interface Punishment {
-  /**
-   * Type of punishment
-   */
-  type: PunishmentType;
-  /**
-   * How many times a user has to curse
-   */
-  amount: number;
-  /**
-   * What role they get if it's a mute
-   */
-  role: Snowflake | null;
-  /**
-   * Amount of time to keep the punishment going
-   */
-  time: number | null;
-  /**
-   * How long the amount has to expire
-   */
-  expires: number | null;
-  /**
-   * Whether or not to retain a users role over a mute
-   */
-  retainRoles: boolean;
-}
+export type PunishmentLevel = {
+  amount: number,
+} & ({
+  type: PunishmentType.Ban,
+  time: number
+} | {
+  type: PunishmentType.GiveRole,
+  role: Snowflake,
+  time: number
+} | {
+  type: PunishmentType.Timeout,
+  time: number
+} | {
+  type: PunishmentType.Kick
+})
 
 export enum ExceptionType {
   Everything,
@@ -134,7 +123,10 @@ export interface GuildDB {
   /**
    * Punishment settings
    */
-  punishment: Punishment;
+  punishments: {
+    levels: PunishmentLevel[],
+    expires: number | null
+  };
   /**
    * Webhook options
    */

@@ -10,22 +10,18 @@
   "phrases": [],
   "words": [],
   "msg": {
-      "content": false,
-      "deleteAfter": 3000,
-      "dm": false
+    "content": false,
+    "deleteAfter": 3000,
+    "dm": false
   },
-  "punishment": {
-      "type": 0,
-      "amount": 3,
-      "role": null,
-      "time": null,
-      "retainRoles": false,
-      "expires": null
+  "punishments": {
+    "expires": null,
+    "levels": []
   },
   "webhook": {
-      "enabled": false,
-      "replace": 0,
-      "separate": true
+    "enabled": false,
+    "replace": 0,
+    "separate": true
   },
   "channels": [],
   "categories": [],

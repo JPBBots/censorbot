@@ -62,16 +62,13 @@ export async function ReactionHandler(
   )
 
   if (
-    !worker.punishments.checkPerms(reaction.guild_id, db) &&
     !worker.isExcepted(ExceptionType.Punishment, db, {
       roles: reaction.member.roles,
       channel: reaction.channel_id
     })
   ) {
-    void worker.punishments.punish(
-      reaction.guild_id,
-      reaction.member.user.id,
-      reaction.member.roles
-    )
+    void worker.punishments
+      .punish(reaction.guild_id, reaction.member.user.id, reaction.member.roles)
+      .catch()
   }
 }
