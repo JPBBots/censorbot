@@ -52,6 +52,12 @@ export class PunishmentManager {
     return true
   }
 
+  relativeTimeIn(length: number) {
+    return `<t:${Math.floor(
+      new Date(new Date(Date.now() + length).toUTCString()).getTime() / 1000
+    )}:R>`
+  }
+
   async punish(
     guild: Snowflake,
     user: Snowflake,
@@ -78,44 +84,40 @@ export class PunishmentManager {
       )
     }
 
-    const viableLevels = db.punishments.levels.filter(
-      (x) => punish!.warnings.length >= x.amount
+    const level = db.punishments.levels.find(
+      (x) => x.amount === punish!.warnings.length
     )
-    const highestLevel = viableLevels.reduce((a, b) => {
-      if (a?.amount || 0 > b?.amount) return a
-      else return b
-    }, viableLevels.shift())
 
-    if (viableLevels && highestLevel) {
-      const hasPerms = this.hasPerms(guild, highestLevel.type)
+    if (level) {
+      const hasPerms = this.hasPerms(guild, level.type)
       if (typeof hasPerms === 'string') {
         throw new Error(hasPerms)
       }
-      switch (highestLevel.type) {
+      switch (level.type) {
         case PunishmentType.GiveRole:
-          void this.giveRole(guild, user, highestLevel, roles)
+          void this.giveRole(guild, user, level, roles)
           break
         case PunishmentType.Kick:
-          void this.kick(guild, user, highestLevel, roles)
+          void this.kick(guild, user, level, roles)
           break
         case PunishmentType.Ban:
-          void this.ban(guild, user, highestLevel, roles)
+          void this.ban(guild, user, level, roles)
           break
         case PunishmentType.Timeout:
-          void this.timeout(guild, user, highestLevel, roles)
+          void this.timeout(guild, user, level, roles)
           break
       }
-    } else {
-      await this.db.updateOne(
-        { guild, user },
-        {
-          $set: punish
-        },
-        {
-          upsert: true
-        }
-      )
     }
+
+    await this.db.updateOne(
+      { guild, user },
+      {
+        $set: punish
+      },
+      {
+        upsert: true
+      }
+    )
   }
 
   punishmentNames = {
@@ -138,7 +140,7 @@ export class PunishmentManager {
     await this.requests.sendMessage(
       db.log,
       new Embed()
-        .color(0xe74c3c)
+        .color('Red')
         .title(`User ${this.punishmentNames[punishment.type]}`)
         .description(
           `<@${user}> reached ${punishment.amount} warnings.${
@@ -188,7 +190,12 @@ export class PunishmentManager {
         'Reached max warnings'
       )
 
-      await this.sendLog(guild, user, punishment)
+      await this.sendLog(
+        guild,
+        user,
+        punishment,
+        `Will be removed ${this.relativeTimeIn(punishment.time)}`
+      )
     } else {
       await this.sendLog(
         guild,
@@ -220,9 +227,7 @@ export class PunishmentManager {
         punishment,
         `Received <@&${punishment.role}>${
           punishment.time
-            ? `\nWill be unmuted in ${(
-                punishment.time / 60000
-              ).toLocaleString()} minutes`
+            ? `\nWill be removed ${this.relativeTimeIn(punishment.time)}`
             : ''
         }`
       )
@@ -260,7 +265,7 @@ export class PunishmentManager {
       guild,
       user,
       PunishmentType.GiveRole,
-      extra ? 'Manually unmuted.' : 'TODO' // `After ${(db.punishment.time ?? 0) / 60000} minutes`
+      extra ? 'Role manually removed.' : 'TODO' // `After ${(db.punishment.time ?? 0) / 60000} minutes`
     )
   }
 
@@ -302,9 +307,7 @@ export class PunishmentManager {
         user,
         punishment,
         punishment.time
-          ? `Will be unbanned in ${(
-              punishment.time / 60000
-            ).toLocaleString()} minutes`
+          ? `Will be unbanned ${this.relativeTimeIn(punishment.time)}`
           : ''
       )
 

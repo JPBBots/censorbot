@@ -8,10 +8,13 @@ export enum PunishmentType {
   GiveRole,
   Kick,
   Ban,
-  Timeout
+  Timeout,
 }
 
-export type TimedPunishments = PunishmentType.Ban | PunishmentType.GiveRole | PunishmentType.Timeout
+export type TimedPunishments =
+  | PunishmentType.Ban
+  | PunishmentType.GiveRole
+  | PunishmentType.Timeout;
 
 export enum PremiumTypes {
   Premium = "premium",
@@ -32,20 +35,25 @@ export enum CensorMethods {
 }
 
 export type PunishmentLevel = {
-  amount: number,
-} & ({
-  type: PunishmentType.Ban,
-  time: number
-} | {
-  type: PunishmentType.GiveRole,
-  role: Snowflake,
-  time: number
-} | {
-  type: PunishmentType.Timeout,
-  time: number
-} | {
-  type: PunishmentType.Kick
-})
+  amount: number;
+} & (
+  | {
+      type: PunishmentType.Ban;
+      time: number;
+    }
+  | {
+      type: PunishmentType.GiveRole;
+      role: Snowflake;
+      time: number;
+    }
+  | {
+      type: PunishmentType.Timeout;
+      time: number;
+    }
+  | {
+      type: PunishmentType.Kick;
+    }
+);
 
 export enum ExceptionType {
   Everything,
@@ -124,8 +132,8 @@ export interface GuildDB {
    * Punishment settings
    */
   punishments: {
-    levels: PunishmentLevel[],
-    expires: number | null
+    levels: PunishmentLevel[];
+    expires: number | null;
   };
   /**
    * Webhook options

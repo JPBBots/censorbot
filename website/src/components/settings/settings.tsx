@@ -22,7 +22,8 @@ export enum OptionType {
   Select,
   Number,
   Exception,
-  Punishments
+  Punishments,
+  Time
 }
 
 export const settings: ISetting[] = [
@@ -136,17 +137,6 @@ export const settings: ISetting[] = [
   },
 
   {
-    title: 'Punishment Expire Time',
-    section: 'Punishments',
-    description: 'Amount of time a warning exists',
-    options: [
-      {
-        name: 'punishments.expires',
-        type: OptionType.Number
-      }
-    ]
-  },
-  {
     title: 'Punishments',
     section: 'Punishments',
     description: 'Punish users for doing things Censor Bot blocks',
@@ -154,6 +144,20 @@ export const settings: ISetting[] = [
       {
         name: 'punishments.levels',
         type: OptionType.Punishments
+      }
+    ]
+  },
+  {
+    title: 'Warning Expire Time',
+    section: 'Punishments',
+    description: 'Amount of time a warning exists',
+    tooltip:
+      "E.g 5 minutes means that after 5 minutes the warning will expire and doesn't count against the punishment",
+    options: [
+      {
+        name: 'punishments.expires',
+        type: OptionType.Time,
+        max: 86400000 * 60
       }
     ]
   },
@@ -459,7 +463,8 @@ export const searcher = new FuzzySearch(settings, [
   'description',
   'options.name',
   'options.label',
-  'options.description'
+  'options.description',
+  'options.tooltip'
 ])
 
 type DataOption<T extends OptionType, P extends {}, E = {}> = {
@@ -520,11 +525,19 @@ export type IOption =
     >
   | DataOption<OptionType.Exception, {}, {}>
   | DataOption<OptionType.Punishments, {}, {}>
+  | DataOption<
+      OptionType.Time,
+      {},
+      {
+        max?: number
+      }
+    >
 
 export interface ISetting {
   title?: string
   section: SectionName
   description?: string
+  tooltip?: string
   premium?: boolean
   icon?: IconType
   options: IOption[]

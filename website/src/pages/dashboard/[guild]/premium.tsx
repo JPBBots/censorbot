@@ -8,9 +8,10 @@ import Premium from '@/pages/premium'
 import { PremiumIcon } from '~/PremiumIcon'
 import { useUser } from '@/hooks/useAuth'
 import { Switch } from '@chakra-ui/switch'
-import { Tooltip } from '@chakra-ui/tooltip'
 import { Api } from '@/structures/Api'
 import { useDispatch } from 'react-redux'
+
+import { Tooltip } from '~/styling/Tooltip'
 
 import { setUser } from '@/store/reducers/auth.reducer'
 
@@ -52,14 +53,10 @@ export default function GuildPremium() {
                 }}
                 isChecked={guild.premium}
               />
-              <Tooltip
-                label={`This will use 1 of your premium servers.
-                You have ${
-                  user.premium.count - user.premium.guilds.length
-                } premium
+              <Tooltip>
+                {`This will use 1 of your premium servers. You have
+                ${user.premium.count - user.premium.guilds.length} premium
                 servers remaining`}
-              >
-                ?
               </Tooltip>
             </HStack>
           )}

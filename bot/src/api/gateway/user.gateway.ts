@@ -188,7 +188,8 @@ export class UserGateway {
 
     if (!this.hasAccess(self, data.id)) return { error: 'Unauthorized' }
 
-    await this.guilds.set(data.id, Pieces.normalize(data.data))
+    const err = await this.guilds.set(data.id, Pieces.normalize(data.data))
+    if ('error' in (err || {})) return err
 
     return true
   }

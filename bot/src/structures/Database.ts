@@ -218,6 +218,11 @@ export class Database extends Db {
             replace: WebhookReplace.Spoilers
           },
 
+          punishments: {
+            ...db.punishments,
+            levels: db.punishments.levels.slice(0, 5)
+          },
+
           msg: {
             content: db.msg.content
               ? db.msg.content.slice(0, 200)

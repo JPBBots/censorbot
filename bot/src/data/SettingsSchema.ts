@@ -147,6 +147,10 @@ export const premiumSchema = settingSchema.concat(
       )
     }),
 
+    punishments: Joi.object({
+      levels: Joi.array().max(20)
+    }),
+
     msg: Joi.object({
       content: Joi.string().max(1000),
 

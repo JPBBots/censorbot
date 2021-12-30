@@ -19,10 +19,18 @@ import {
   Text,
   VStack,
   HStack,
-  Select
+  Select,
+  Alert,
+  AlertIcon
 } from '@chakra-ui/react'
 import Pieces from 'utils/Pieces'
-import { Exception, ExceptionType, GuildData, PunishmentLevel } from 'typings'
+import {
+  Exception,
+  ExceptionType,
+  GuildData,
+  PunishmentLevel,
+  PunishmentType
+} from 'typings'
 import { SectionName } from './Sidebar'
 
 import TextareaResizer from 'react-textarea-autosize'
@@ -32,8 +40,9 @@ import { FaPlus } from 'react-icons/fa'
 // import { Selector } from '~/functional/Selector'
 import Link from 'next/link'
 
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 import { PunishmentSetting } from './PunishmentSetting'
+import { TimeSelector } from '~/functional/TimeSelector'
 
 export function Option({
   setValue,
@@ -48,6 +57,8 @@ export function Option({
   disable: () => void
   pieces: any
 }) {
+  const router = useRouter()
+
   if (!guild) return <h1>Loading</h1>
 
   let props = { name: option.name }
@@ -224,6 +235,18 @@ export function Option({
     )
   }
 
+  if (option.type === OptionType.Time) {
+    return (
+      <TimeSelector
+        value={value}
+        max={option.max}
+        onChange={(val) => {
+          setValue(val)
+        }}
+      />
+    )
+  }
+
   if (option.type === OptionType.Exception) {
     const exceptions = value as Exception[]
 
@@ -273,31 +296,51 @@ export function Option({
             <Text>Add Exception</Text>
           </HStack>
         )}
-        {premiumLocked &&
-          (guild.premium ? (
-            <Text>Reached the maximum 100 exceptions</Text>
-          ) : (
-            <Text>
-              Reached the maximum 15 exceptions, get{' '}
-              <Link
-                href={{
-                  pathname: '/dashboard/[guild]/premium',
-                  query: Router.query
-                }}
-              >
-                premium
-              </Link>{' '}
-              for more.
-            </Text>
-          ))}
+
+        {premiumLocked && (
+          <Alert
+            status="warning"
+            cursor="pointer"
+            onClick={() => {
+              router.push({
+                pathname: '/dashboard/[guild]/premium',
+                query: router.query
+              })
+            }}
+          >
+            <AlertIcon />
+            {!guild.premium ? (
+              <Text>
+                Reached the maximum 15 punishments, get premium for more.
+              </Text>
+            ) : (
+              'Reached the maximum 100 punishments'
+            )}
+          </Alert>
+        )}
       </VStack>
     )
   }
 
   if (option.type === OptionType.Punishments) {
     const punishments = value as PunishmentLevel[]
+
+    const premiumLocked = !guild.premium
+      ? punishments.length >= 5
+      : punishments.length >= 20
+
+    const multipleOfSame = punishments.some(
+      (x) => punishments.filter((b) => x.amount === b.amount).length > 1
+    )
+
     return (
-      <VStack w="fit-content" spacing={7}>
+      <VStack w="full">
+        {multipleOfSame && (
+          <Alert status="warning">
+            Warning! Multiple of the same punishment amount found. This will
+            cause problems. Only one punishment with the same amount will be ran
+          </Alert>
+        )}
         {punishments.map((x, ind) => (
           <>
             <PunishmentSetting
@@ -310,9 +353,53 @@ export function Option({
 
                 setValue(punishes)
               }}
+              onDelete={() => {
+                setValue(punishments.filter((_, i) => i !== ind))
+              }}
             />
           </>
         ))}
+        {!premiumLocked && (
+          <HStack
+            cursor="pointer"
+            spacing={1}
+            alignSelf="flex-start"
+            onClick={() => {
+              setValue([
+                ...punishments,
+                {
+                  type: PunishmentType.Kick,
+                  amount: 20,
+                  time: null
+                } as PunishmentLevel
+              ])
+            }}
+          >
+            <Icon as={FaPlus} />
+            <Text>Add Punishment</Text>
+          </HStack>
+        )}
+        {premiumLocked && (
+          <Alert
+            status="warning"
+            cursor="pointer"
+            onClick={() => {
+              router.push({
+                pathname: '/dashboard/[guild]/premium',
+                query: router.query
+              })
+            }}
+          >
+            <AlertIcon />
+            {!guild.premium ? (
+              <Text>
+                Reached the maximum 5 punishments, get premium for more.
+              </Text>
+            ) : (
+              'Reached the maximum 20 punishments'
+            )}
+          </Alert>
+        )}
       </VStack>
     )
   }

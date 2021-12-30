@@ -88,7 +88,7 @@ export class GuildsService extends EventEmitter<{
     return guild
   }
 
-  async set(id: Snowflake, db?: GuildDB): Promise<void> {
+  async set(id: Snowflake, db?: GuildDB): Promise<void | { error: string }> {
     const guild = await this.get(id)
 
     if (!db) db = guild.db
@@ -106,7 +106,7 @@ export class GuildsService extends EventEmitter<{
 
     const valid =
       this.database.schemas[guild.premium ? 'premium' : 'normal'].validate(db)
-    if (valid.error) throw { error: valid.error }
+    if (valid.error) return { error: valid.error.message }
 
     db.id = id
 

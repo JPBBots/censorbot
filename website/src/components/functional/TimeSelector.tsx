@@ -37,7 +37,7 @@ export function TimeSelector({ max, onChange, value }: TimeSelectorOptions) {
   }, [value])
 
   return (
-    <Wrap p={4} gridGap={4}>
+    <Wrap gridGap={4} pl={2}>
       <VStack s={0}>
         <Slider
           max={max}
@@ -53,29 +53,28 @@ export function TimeSelector({ max, onChange, value }: TimeSelectorOptions) {
 
           <SliderThumb />
         </Slider>
-        <Text userSelect="none" margin="0px !important">
-          {humanize(maluableValue, { largest: 3 })}
-        </Text>
+        <Tooltip isOpen={editing} label="Time in seconds">
+          <Input
+            value={
+              editing
+                ? Math.floor(maluableValue / 1000)
+                : humanize(value, { largest: 3 })
+            }
+            w="250px"
+            h="20px"
+            onChange={({ target }) => {
+              if (max && Number(target.value) * 1000 > max)
+                setMaluableValue(max)
+              else setMaluableValue(Number(target.value) * 1000)
+            }}
+            onFocus={() => setEditing(true)}
+            onBlur={() => {
+              onChange(maluableValue)
+              setEditing(false)
+            }}
+          />
+        </Tooltip>
       </VStack>
-      <Tooltip isOpen={editing} label="Time in seconds">
-        <Input
-          value={
-            editing
-              ? Math.floor(maluableValue / 1000)
-              : humanize(value, { largest: 1 })
-          }
-          w="150px"
-          h="50px"
-          onChange={({ target }) => {
-            setMaluableValue(Number(target.value) * 1000)
-          }}
-          onFocus={() => setEditing(true)}
-          onBlur={() => {
-            onChange(maluableValue)
-            setEditing(false)
-          }}
-        />
-      </Tooltip>
       <Menu gutter={16}>
         <MenuButton>
           <Icon as={FaChevronDown} />
@@ -88,7 +87,7 @@ export function TimeSelector({ max, onChange, value }: TimeSelectorOptions) {
                 onChange(time)
               }}
             >
-              {humanize(time)}
+              {humanize(time, { largest: 1 })}
             </MenuItem>
           ))}
         </MenuList>
