@@ -45,6 +45,7 @@ import { SnipeCommand } from '../commands/utility/SnipeCommand'
 import { DebugCommand } from '../commands/utility/DebugCommand'
 import { TicketCommand } from '../commands/TicketCommand'
 import { EvalCommand } from '../commands/admin/EvalCommand'
+import { ScanCommand } from '../commands/utility/ScanCommand'
 
 interface CachedThread {
   id: Snowflake
@@ -89,7 +90,8 @@ export class WorkerManager extends Worker<{}> {
       SnipeCommand,
       DebugCommand,
       TicketCommand,
-      EvalCommand
+      EvalCommand,
+      ScanCommand
     ],
     {
       interactionGuild: '569907007465848842'

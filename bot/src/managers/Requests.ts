@@ -1,4 +1,8 @@
-import types, { Snowflake, Routes } from 'discord-api-types/v9'
+import types, {
+  Snowflake,
+  Routes,
+  RESTGetAPIChannelMessagesQuery
+} from 'discord-api-types/v9'
 
 import { MessageTypes, formatMessage } from '@jadl/cmd'
 
@@ -268,5 +272,14 @@ export class Requests {
         reason
       }
     )
+  }
+
+  getMessages(
+    channelId: Snowflake,
+    query: RESTGetAPIChannelMessagesQuery = { limit: 100 }
+  ): Promise<types.RESTGetAPIChannelMessagesResult> {
+    return this.api.get(Routes.channelMessages(channelId), {
+      query: new URLSearchParams(query as Record<string, string>)
+    }) as any
   }
 }

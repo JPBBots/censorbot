@@ -19,6 +19,7 @@ export class HelpCommand {
         'Helpful commands',
         '**/debug**: Debugs the bot in your server\n' +
           '**/snipe**: Snipes the last deleted message\n' +
+          '**/scan**: Scans the last 100 messages and deletes any with curses\n' +
           "**/ticket**: For words that should't be censored"
       )
   }
