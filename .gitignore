@@ -2,6 +2,9 @@ website/build
 website/src/web.json
 website/src/config.json
 website/site.html
+.idea
+.run/
+!bot/.run/
 
 typings/*.js
 typings/*.d.ts

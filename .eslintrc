@@ -2,6 +2,10 @@
   "parserOptions": {
     "ecmaVersion": 2021
   },
+  "extends": [
+    "standard-with-typescript",
+    "plugin:prettier/recommended"
+  ],
   "env": {
     "es6": true
   },
@@ -12,6 +16,9 @@
     "@typescript-eslint/no-dynamic-delete": "off",
     "no-void": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
-    "@typescript-eslint/no-unnecessary-type-assertion": "off"
+    "@typescript-eslint/no-unnecessary-type-assertion": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-invalid-void-type": "off"
   }
 }

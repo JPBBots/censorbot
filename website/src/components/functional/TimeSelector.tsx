@@ -1,7 +1,5 @@
 import {
-  Flex,
   Input,
-  Text,
   VStack,
   Tooltip,
   Menu,

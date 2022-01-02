@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react'
+import React, { PropsWithChildren, useState } from 'react'
 
 import {
   HStack,
@@ -17,7 +17,6 @@ import { LoginButton } from '../button/LoginButton'
 import { useLoginState, useUser } from 'hooks/useAuth'
 import { useGuild } from 'hooks/useGuilds'
 import { LoginState } from 'store/reducers/auth.reducer'
-import { useRouter } from 'next/router'
 
 import { FaBars, FaSearch } from 'react-icons/fa'
 import { useMinWidth } from '@/hooks/useMinWidth'

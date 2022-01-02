@@ -60,8 +60,8 @@ const toColor = (num: number): string => '#' + num.toString(16).padStart(6, '0')
 export default function Staff() {
   const [admins, setAdmins] = useState<AdminUser[]>([])
   useEffect(() => {
-    fetch('https://jpbbots.org/api/admins')
-      .then((x) => x.json())
+    void fetch('https://jpbbots.org/api/admins')
+      .then(async (x) => await x.json())
       .then((admins) => setAdmins(admins))
   }, [])
 

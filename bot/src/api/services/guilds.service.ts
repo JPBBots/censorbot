@@ -24,7 +24,7 @@ export class GuildsService extends EventEmitter<{
     super()
 
     thread.on('GUILD_UPDATED', async (guildId) => {
-      this.updateGuild(guildId)
+      void this.updateGuild(guildId)
     })
   }
 

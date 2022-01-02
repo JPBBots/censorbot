@@ -37,10 +37,8 @@ import TextareaResizer from 'react-textarea-autosize'
 import { Tags } from './Tags'
 import { ExceptionSetting } from './ExceptionSetting'
 import { FaPlus } from 'react-icons/fa'
-// import { Selector } from '~/functional/Selector'
-import Link from 'next/link'
 
-import Router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import { PunishmentSetting } from './PunishmentSetting'
 import { TimeSelector } from '~/functional/TimeSelector'
 
@@ -302,7 +300,7 @@ export function Option({
             status="warning"
             cursor="pointer"
             onClick={() => {
-              router.push({
+              void router.push({
                 pathname: '/dashboard/[guild]/premium',
                 query: router.query
               })
@@ -384,7 +382,7 @@ export function Option({
             status="warning"
             cursor="pointer"
             onClick={() => {
-              router.push({
+              void router.push({
                 pathname: '/dashboard/[guild]/premium',
                 query: router.query
               })

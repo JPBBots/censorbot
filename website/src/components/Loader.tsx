@@ -1,4 +1,4 @@
-import { motion, visualElement } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useLoading } from 'hooks/useLoading'
 import { Logo } from './logo'
 

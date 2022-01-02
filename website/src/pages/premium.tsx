@@ -2,20 +2,12 @@ import { useUser } from '@/hooks/useAuth'
 import { Api } from '@/structures/Api'
 import { Button } from '@chakra-ui/button'
 import { Flex, Text, VStack, Link } from '@chakra-ui/layout'
-import { Icon, Wrap } from '@chakra-ui/react'
+import { Wrap } from '@chakra-ui/react'
 import { PremiumCard } from '@jpbbots/censorbot-components'
 import { useRouter } from 'next/router'
 import React from 'react'
-import { FaCheck, FaTimes } from 'react-icons/fa'
 import { PremiumTypes } from 'typings'
 import { chargebee } from './_app'
-
-const Checkmark = () => {
-  return <Icon as={FaCheck} color="green" />
-}
-const Exmark = () => {
-  return <Icon as={FaTimes} color="red" />
-}
 
 export default function Premium() {
   const [user, login] = useUser(false)

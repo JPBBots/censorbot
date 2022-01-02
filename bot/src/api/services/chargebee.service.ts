@@ -14,7 +14,6 @@ import { Config } from '../../config'
 
 import { DatabaseService } from './database.service'
 import { InterfaceService } from './interface.service'
-import { CacheService } from './cache.service'
 
 const chargebee = chargebeeC as Chargebee.ChargeBee
 

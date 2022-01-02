@@ -1,14 +1,9 @@
 import { Injectable } from '@nestjs/common'
 
 import Crypto from 'crypto'
-import qs from 'querystring'
 import { Config } from '../../config'
 import { ShortGuild, User } from 'typings'
-import {
-  APIUser,
-  RESTPostOAuth2AccessTokenResult,
-  RESTPostOAuth2AccessTokenURLEncodedData
-} from 'discord-api-types'
+import { APIUser, RESTPostOAuth2AccessTokenResult } from 'discord-api-types'
 import { DiscordService } from './discord.service'
 import { PermissionUtils } from 'jadl'
 import { DatabaseService } from './database.service'

@@ -87,7 +87,7 @@ export class UserGateway {
 
   @SubscribeMessage('RELOAD_SELF')
   reloadSelf(@Self() self: SelfData) {
-    if (self.userId) this.users.causeUpdate(self.userId)
+    if (self.userId) void this.users.causeUpdate(self.userId)
   }
 
   @SubscribeMessage('LOGOUT')
@@ -134,7 +134,7 @@ export class UserGateway {
       return { error: 'Unauthorized' }
     }
 
-    this.thread
+    void this.thread
       .sendCommand(
         'IN_GUILDS',
         guilds.map((x) => x.id)
@@ -227,17 +227,17 @@ export class UserGateway {
 
     user.premium.guilds
       .filter((x) => !data.guilds.includes(x))
-      .forEach(async (guild) => {
+      .forEach((guild) => {
         const cur = this.caching.guilds.get(guild)
         if (!cur) return
 
-        await this.db.removeGuildPremium(guild)
-
-        this.guilds.updateGuild(guild)
+        void this.db.removeGuildPremium(guild).then(() => {
+          void this.guilds.updateGuild(guild)
+        })
       })
 
     data.guilds.forEach((guild) => {
-      this.guilds.updateGuild(guild)
+      void this.guilds.updateGuild(guild)
     })
 
     user.premium.guilds = data.guilds

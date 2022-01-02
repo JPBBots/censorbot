@@ -2,9 +2,7 @@ import { Command, Guild, Run, Worker, Me } from '@jadl/cmd'
 import { Embed } from '@jadl/embed'
 import { APIGuild, APIGuildMember } from 'discord-api-types'
 import { PermissionUtils } from 'jadl'
-import { GuildDB } from 'typings'
 import { WorkerManager } from '../../managers/Worker'
-import { Db } from '../decorators/Db'
 
 @Command('debug', 'Debug permissions and more')
 export class DebugCommand {
@@ -12,8 +10,7 @@ export class DebugCommand {
   run(
     @Guild(true) guild: APIGuild,
     @Worker() worker: WorkerManager,
-    @Me() me: APIGuildMember,
-    @Db() db: GuildDB
+    @Me() me: APIGuildMember
   ) {
     const embed = new Embed()
       .title('Debug')

@@ -18,7 +18,7 @@ export default function GuildHome() {
       `/invite?id=${id}&admin=${admin}`,
       'Invite the bot'
     ).then(() => {
-      updateGuild().then((hasGuild) => {
+      void updateGuild().then((hasGuild) => {
         if (hasGuild) {
           const newGuilds: ShortGuild[] = Object.assign([], guilds)
           const g: ShortGuild = Object.assign(

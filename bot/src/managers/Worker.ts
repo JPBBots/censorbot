@@ -110,7 +110,7 @@ export class WorkerManager extends Worker<{}> {
   constructor() {
     super()
 
-    // this.interface.setupWorker(this) TODO
+    this.interface.setupWorker(this)
 
     this.api.on('restDebug', console.debug)
 

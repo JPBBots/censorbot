@@ -29,6 +29,7 @@ export default function GuildPremium() {
           <PremiumIcon notColored={!guild?.premium} />
         </Text>
         {guild &&
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           ((guild.premium && user?.premium?.guilds.includes(guild?.guild.id)) ||
             (!guild.premium && user?.premium?.count)) && (
             <HStack>

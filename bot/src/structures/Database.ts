@@ -56,7 +56,7 @@ export class Database extends Db {
       super.collection(name) as Collection<DatabaseCollections[C]>
   }
 
-  constructor(private comms?: ThreadComms) {
+  constructor(private readonly comms?: ThreadComms) {
     super('localhost', Config.db.username, Config.db.password)
 
     this.comms?.on('GUILD_DUMP', (id) => {
@@ -73,7 +73,7 @@ export class Database extends Db {
     let db =
       ((await this.collection('guild_data').findOne({ id })) as GuildDB) ||
       Object.assign({ id }, DefaultConfig)
-    db = await this._checkForUpdates(db)
+    db = await this._checkForUpdates(db as any)
 
     this.configCache.set(id, db)
 
@@ -81,7 +81,7 @@ export class Database extends Db {
   }
 
   private async _checkForUpdates(
-    db: GuildDB & Record<any, any> & { censor: any }
+    db: Partial<GuildDB> & Record<any, any> & { censor: any; punishment: any }
   ): Promise<GuildDB> {
     if (typeof db.censor === 'object') {
       let bit = 0
@@ -94,7 +94,7 @@ export class Database extends Db {
     }
 
     if (db.matchExact) {
-      if (!db.phrases) db.phrases = [...db.filter]
+      if (!db.phrases) db.phrases = [...db.filter!]
       db.filter = []
 
       delete db.matchExact
@@ -117,21 +117,20 @@ export class Database extends Db {
     if (!db.words) db.words = []
 
     if (!db.nickReplace) db.nickReplace = 'Inappropriate Nickname'
-    // @ts-ignore
+
     if (!('removeNick' in db)) db.removeNick = true
 
-    // @ts-ignore
     if (!('phishing' in db)) db.phishing = !!db.censor
 
     if (!('punishments' in db)) {
-      // @ts-ignore
-      db.punishments = { levels: [db.punishment], expires: null }
-      // @ts-expect-error
+      db.punishments = {
+        levels: db.punishment.type ? [db.punishment] : [],
+        expires: null
+      }
       delete db.punishment
 
       await this.collection('guild_data').updateOne(
         {
-          // @ts-expect-error
           id: db.id
         },
         {
@@ -175,7 +174,7 @@ export class Database extends Db {
       )
     }
 
-    return db
+    return db as GuildDB
   }
 
   async guildPremium(id: Snowflake): Promise<boolean> {

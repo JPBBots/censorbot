@@ -1,9 +1,5 @@
 {
-  "extends": [
-    "standard-with-typescript",
-    "../.eslintrc",
-    "plugin:prettier/recommended"
-  ],
+  "extends": ["../.eslintrc"],
   "overrides": [
     {
       "files": ["src/api/**/*"],

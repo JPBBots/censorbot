@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/promise-function-async */
+
 import types, {
   Snowflake,
   Routes,
@@ -145,7 +147,7 @@ export class Requests {
   async dm(userId: Snowflake, message: MessageTypes) {
     const channel = await this.createDM(userId)
 
-    return this.sendMessage(channel.id, message)
+    return await this.sendMessage(channel.id, message)
   }
 
   leaveGuild(
@@ -250,7 +252,7 @@ export class Requests {
   ): Promise<types.RESTPostOAuth2AccessTokenResult> {
     return this.api.post(Routes.oauth2TokenExchange(), {
       body: new URLSearchParams(request as any),
-      contentType: 'urlencoded'
+      passThroughBody: true
     }) as any
   }
 

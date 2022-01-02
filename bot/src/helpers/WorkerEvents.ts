@@ -152,7 +152,7 @@ export class WorkerEvents extends ExtendedEmitter {
     const punishments = db.punishments.levels.filter(
       (x) =>
         x.type === PunishmentType.GiveRole && !member.roles.includes(x.role)
-    ) as (PunishmentLevel & { type: PunishmentType.GiveRole })[]
+    ) as Array<PunishmentLevel & { type: PunishmentType.GiveRole }>
 
     if (!punishments.length) return
 
@@ -245,16 +245,6 @@ export class WorkerEvents extends ExtendedEmitter {
     void this.worker.methods.react(this.worker, reaction)
   }
 
-  @Event('MESSAGE_CREATE')
-  message(msg: DiscordEventMap['MESSAGE_CREATE']): void {
-    if (
-      msg.content.startsWith('sudo eval') &&
-      msg.author.id === '142408079177285632'
-    ) {
-      console.debug(eval(msg.content.slice('sudo eval '.length)))
-    }
-  }
-
   commands = [
     'help',
     'debug',
@@ -297,7 +287,7 @@ export class WorkerEvents extends ExtendedEmitter {
       )
         return
 
-      this.worker.requests.sendMessage(msg.channel_id, {
+      void this.worker.requests.sendMessage(msg.channel_id, {
         embeds: [
           new Embed()
             .title("We've moved to Slash Commands")

@@ -1,0 +1,31 @@
+{
+  "name": "censorbot",
+  "version": "1.0.0",
+  "description": "Censor Bot is an advanced Anti-Swear Bot that comes with pre-built filters, no work needed! Censor curses, invites and more.",
+  "main": "null",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JPBBots/censorbot.git"
+  },
+  "author": "JPBBots",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/JPBBots/censorbot/issues"
+  },
+  "homepage": "https://github.com/JPBBots/censorbot#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-standard-with-typescript": "^21.0.1",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^5.2.0",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.4"
+  }
+}

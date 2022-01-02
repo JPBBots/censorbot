@@ -66,7 +66,7 @@ export class MasterManager extends Master {
     })
 
     if (!this.config.staging) {
-      // int.setupMaster(this, 'censorbot') TODO
+      int.setupMaster(this, 'censorbot')
 
       AutoPoster(Config.dbl, this)
     }

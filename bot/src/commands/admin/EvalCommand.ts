@@ -43,6 +43,7 @@ export class EvalCommand {
 
       if (masterEval) evaled = await worker.comms.masterEval(code)
       else if (broadcastEval) evaled = await worker.comms.broadcastEval(code)
+      // eslint-disable-next-line no-eval
       else evaled = eval(code)
 
       if (evaled && evaled instanceof Promise) evaled = await evaled

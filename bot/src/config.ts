@@ -88,7 +88,7 @@ export const Config = {
     {
       permission: 'manageNicknames',
       name: 'Manage Nicknames',
-      why: 'To remove innapropriate nicknames',
+      why: 'To remove inappropriate nicknames',
       vital: true
     },
     {

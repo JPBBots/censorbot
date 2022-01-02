@@ -1,9 +1,6 @@
 import { Tooltip as ChakraTooltip } from '@chakra-ui/tooltip'
 
-import { Icon } from '@chakra-ui/icon'
-
-import { FaQuestionCircle } from 'react-icons/fa'
-import { Text, Flex } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 
 export interface TooltipProps {
   children: string

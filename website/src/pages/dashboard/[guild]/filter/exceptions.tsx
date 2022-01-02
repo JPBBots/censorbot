@@ -10,7 +10,7 @@ export default function Exceptions() {
   const [guild, db, setDb] = useGuild()
 
   return (
-    <SettingSection section="Exceptions">
+    <SettingSection section="Exceptions" disableSearch>
       {sectionSettings('Exceptions')}
       {guild && (
         <Wrap alignSelf="flex-start">

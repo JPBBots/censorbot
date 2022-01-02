@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common'
 import { Response } from 'express'
 import { Config } from '../../config'
-import { CacheService } from '../services/cache.service'
 import { ChargeBeeService } from '../services/chargebee.service'
 import { DatabaseService } from '../services/database.service'
 import { GuildsService } from '../services/guilds.service'
@@ -44,6 +43,7 @@ export class ChargeBeeController {
     'payment_failed',
     'customer_deleted'
   ]
+
   positiveEvents = [
     'subscription_created',
     'subscription_activated',
@@ -61,7 +61,7 @@ export class ChargeBeeController {
       throw new HttpException('Invalid Key', HttpStatus.FORBIDDEN)
 
     res.sendStatus(204)
-    ;(async () => {
+    void (async () => {
       if (!body) return
 
       if (this.positiveEvents.includes(body.event_type)) {
@@ -101,7 +101,7 @@ export class ChargeBeeController {
           { id: user.id }
         )
 
-        this.users.causeUpdate(user.id)
+        void this.users.causeUpdate(user.id)
       }
 
       if (this.negativeEvents.includes(body.event_type)) {
@@ -128,7 +128,7 @@ export class ChargeBeeController {
             for (const guild of existingPremium.guilds) {
               await this.db.removeGuildPremium(guild)
 
-              this.guilds.updateGuild(guild)
+              void this.guilds.updateGuild(guild)
             }
 
             await this.db.collection('premium_users').deleteOne({ id: user.id })
@@ -152,7 +152,7 @@ export class ChargeBeeController {
             if (!newGuilds.includes(guild)) {
               await this.db.removeGuildPremium(guild)
 
-              this.guilds.updateGuild(guild)
+              void this.guilds.updateGuild(guild)
             }
           }
 
@@ -165,7 +165,7 @@ export class ChargeBeeController {
             }
           )
         }
-        this.users.causeUpdate(user.id)
+        void this.users.causeUpdate(user.id)
       }
     })()
   }
