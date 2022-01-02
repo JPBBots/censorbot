@@ -23,6 +23,7 @@ import { PunishmentSchema } from './punishments/PunishmentManager'
 import { TimeoutSchema } from './punishments/Timeouts'
 import { TicketBanSchema } from './TicketManager'
 import { ThreadComms } from 'jadl/dist/clustering/ThreadComms'
+import { CustomBotOptions } from 'typings/custombot'
 
 export * from '../data/SettingsSchema'
 
@@ -37,6 +38,7 @@ export interface DatabaseCollections {
   tickets: Ticket
   ticketban: TicketBanSchema
   timeouts: TimeoutSchema
+  custombots: CustomBotOptions
   users: User
 }
 

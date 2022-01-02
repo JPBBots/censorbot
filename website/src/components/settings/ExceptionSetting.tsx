@@ -41,6 +41,10 @@ const ExceptionTypes = [
   {
     label: 'Resends',
     value: ExceptionType.Resend
+  },
+  {
+    label: 'Anti-Hoist',
+    value: ExceptionType.AntiHoist
   }
 ]
 

@@ -5,142 +5,142 @@ import {
   Ticket,
   TicketTest,
   User,
-  PremiumTypes,
-} from "./api";
+  PremiumTypes
+} from './api'
 
-import { Snowflake } from "discord-api-types";
+import { Snowflake } from 'discord-api-types'
 
 export interface Payload {
-  e: string;
-  d: any;
-  i?: number;
+  e: string
+  d: any
+  i?: number
 }
 
-export type Region = "na" | "eu";
+export type Region = 'na' | 'eu'
 
 export interface MetaObject {
-  worker: number;
-  connection: string;
-  region: Region;
+  worker: number
+  connection: string
+  region: Region
 }
 
 interface Variant<Tag extends string, Value> extends Payload {
-  e: Tag;
-  d: Value;
+  e: Tag
+  d: Value
 }
 
-type Values<T> = T[keyof T];
+type Values<T> = T[keyof T]
 
-export type Incoming<Client extends "frontend" | "backend"> = Values<{
+export type Incoming<Client extends 'frontend' | 'backend'> = Values<{
   [Tag in keyof WebSocketEventMap]: Variant<
     Tag,
-    WebSocketEventMap[Tag][Client extends "frontend" ? "receive" : "send"]
-  >;
-}>;
+    WebSocketEventMap[Tag][Client extends 'frontend' ? 'receive' : 'send']
+  >
+}>
 
 export interface WebSocketEventMap {
   RETURN: {
-    receive: any;
-    send: null;
-  };
+    receive: any
+    send: null
+  }
   HELLO: {
     receive: {
-      interval: number;
-      $meta: MetaObject;
-    };
-    send: null;
-  };
+      interval: number
+      $meta: MetaObject
+    }
+    send: null
+  }
   CREATE_HOSTED_PAGE: {
-    receive: { plan: PremiumTypes };
-    send: {};
-  };
+    receive: { plan: PremiumTypes }
+    send: {}
+  }
   CREATE_PORTAL_SESSION: {
-    receive: null;
-    send: {};
-  };
+    receive: null
+    send: {}
+  }
   RELOAD_SELF: {
-    receive: null;
-    send: null;
-  };
+    receive: null
+    send: null
+  }
   HEARTBEAT: {
-    receive: null;
-    send: null;
-  };
+    receive: null
+    send: null
+  }
   LOGOUT: {
-    receive: null;
-    send: null;
-  };
+    receive: null
+    send: null
+  }
   AUTHORIZE: {
     receive: {
-      token: string;
-      customer: boolean;
-    };
-    send: User;
-  };
+      token: string
+      customer: boolean
+    }
+    send: User
+  }
   GET_GUILDS: {
-    receive: null;
-    send: ShortGuild[];
-  };
+    receive: null
+    send: ShortGuild[]
+  }
   SUBSCRIBE: {
-    receive: Snowflake;
-    send: GuildData;
-  };
+    receive: Snowflake
+    send: GuildData
+  }
   UNSUBSCRIBE: {
-    receive: Snowflake;
-    send: null;
-  };
+    receive: Snowflake
+    send: null
+  }
   CHANGE_SETTING: {
     receive: {
-      id: Snowflake;
-      data: any;
-    };
-    send: true;
-  };
+      id: Snowflake
+      data: any
+    }
+    send: true
+  }
   RELOAD: {
-    receive: null;
-    send: null;
-  };
+    receive: null
+    send: null
+  }
   SET_PREMIUM: {
     receive: {
-      guilds: Snowflake[];
-    };
-    send: true;
-  };
+      guilds: Snowflake[]
+    }
+    send: true
+  }
   UPDATE_USER: {
-    receive: User;
-    send: null;
-  };
+    receive: User
+    send: null
+  }
   UPDATE_GUILD: {
-    receive: GuildData;
-    send: null;
-  };
+    receive: GuildData
+    send: null
+  }
   ERROR: {
     receive: {
-      error: string;
-    };
-    send: null;
-  };
+      error: string
+    }
+    send: null
+  }
   // tickets
   GET_TICKETS: {
-    receive: null;
-    send: Ticket[];
-  };
+    receive: null
+    send: Ticket[]
+  }
   TEST_TICKET: {
     receive: {
-      id: ShortID;
-    };
-    send: TicketTest;
-  };
+      id: ShortID
+    }
+    send: TicketTest
+  }
   ACCEPT_TICKET: {
     receive: {
-      id: ShortID;
-    };
-    send: { success: true };
-  };
+      id: ShortID
+    }
+    send: { success: true }
+  }
   DENY_TICKET: {
     receive: {
-      id: ShortID;
-    };
-    send: { success: true };
-  };
+      id: ShortID
+    }
+    send: { success: true }
+  }
 }

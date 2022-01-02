@@ -35,7 +35,8 @@ export const exceptionSchema = Joi.object<Exception>({
     ExceptionType.Punishment,
     ExceptionType.Resend,
     ExceptionType.Response,
-    ExceptionType.Invites
+    ExceptionType.Invites,
+    ExceptionType.AntiHoist
   ).required()
 })
 

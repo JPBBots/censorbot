@@ -3,9 +3,12 @@ import { ApiResponse } from '@nestjs/swagger'
 import { OAuth2Scopes, Snowflake } from 'discord-api-types'
 import { PermissionUtils } from 'jadl'
 import { Config } from '../../config'
+import { DatabaseService } from '../services/database.service'
 
 @Controller()
 export class BaseController {
+  constructor(private readonly database: DatabaseService) {}
+
   @Get('/')
   @ApiResponse({
     status: HttpStatus.OK,
@@ -33,7 +36,10 @@ export class BaseController {
       url:
         'https://discord.com/oauth2/authorize?' +
         new URLSearchParams({
-          client_id: Config.id,
+          client_id: id
+            ? this.database.customBots.find((x) => x.guilds.includes(id))?.id ??
+              Config.id
+            : Config.id,
           guild_id: id,
           scope: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands].join(
             ' '

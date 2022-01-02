@@ -119,7 +119,9 @@ export class ActionBucket {
       })
 
       this.webhooks.set(channel, webhook, () => {
-        if (!webhook) return {}
+        if (!webhook) {
+          return {}
+        }
         void this.worker.requests.deleteWebhook(webhook.id, webhook.token)
         return {}
       })

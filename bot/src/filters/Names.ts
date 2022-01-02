@@ -86,7 +86,8 @@ export async function NameHandler(
     db.antiHoist &&
     isHoisting(name) &&
     worker.hasPerms(member.guild_id, 'manageNicknames') &&
-    worker.isManageable(member.guild_id, member.user.id, member.roles, true)
+    worker.isManageable(member.guild_id, member.user.id, member.roles, true) &&
+    !worker.isExcepted(ExceptionType.AntiHoist, db, { roles: member.roles })
   ) {
     if (name.length >= 32) name = name.substring(1, 32)
     await worker.requests

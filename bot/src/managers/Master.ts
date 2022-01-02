@@ -1,4 +1,4 @@
-import { Master, Cluster, Snowflake } from 'jadl'
+import { Master, Cluster, Snowflake, ThreadEvents } from 'jadl'
 
 import { GatewayIntentBits, ChannelType } from 'discord-api-types'
 
@@ -10,11 +10,14 @@ import { MasterEvents } from '../helpers/MasterEvents'
 
 import { Cache } from '@jpbberry/cache'
 import { ShortID } from 'typings'
+import { CustomBotOptions } from 'typings/custombot'
 
 import AutoPoster from 'topgg-autoposter'
 
 import { Interface } from '@jpbbots/interface'
 import { Requests } from './Requests'
+
+import { CustomBotManager } from '../helpers/CustomBotManager'
 
 const int = new Interface()
 
@@ -62,7 +65,24 @@ export class MasterManager extends Master {
         GatewayIntentBits.GuildMessages |
         GatewayIntentBits.Guilds |
         GatewayIntentBits.GuildMessageReactions |
-        GatewayIntentBits.GuildMembers
+        GatewayIntentBits.GuildMembers,
+
+      log: (msg: string, cluster: Cluster) => {
+        if (cluster?.id === 'API' && msg.startsWith('Started')) msg = 'Started'
+
+        console.log(
+          `%c${
+            cluster
+              ? `Cluster ${cluster.id}${' '.repeat(
+                  // @ts-expect-error
+                  this.longestName - cluster.id.length
+                )}`
+              : // @ts-expect-error
+                `Master ${' '.repeat(Number(this.longestName) + 1)}`
+          } | ${msg}`,
+          'color: white'
+        )
+      }
     })
 
     if (!this.config.staging) {
@@ -79,5 +99,57 @@ export class MasterManager extends Master {
     )
 
     void this.start()
+
+    this.db.on('started', () => {
+      void this.db
+        .collection('custombots')
+        .find({})
+        .toArray()
+        .then((x) => x.forEach((bot) => this.spawnCustomBot(bot)))
+    })
+  }
+
+  readonly customBots: CustomBotManager[] = []
+
+  spawnCustomBot(bot: CustomBotOptions): void {
+    const customBot = new CustomBotManager(this, bot)
+
+    this.customBots.push(customBot)
+  }
+
+  tellAll<K extends keyof ThreadEvents>(
+    event: K,
+    data: ThreadEvents[K]['send'],
+    all?: boolean
+  ): any[] {
+    return [
+      ...super.tellAll(event, data, all),
+      ...this.customBots.map((bot) => bot.tell(event, data))
+    ]
+  }
+
+  async sendToAll<K extends keyof ThreadEvents>(
+    event: K,
+    data: ThreadEvents[K]['send'],
+    all?: boolean
+  ): Promise<Array<ThreadEvents[K]['receive']>> {
+    return [
+      ...(await super.sendToAll(event, data, all)),
+      ...(await Promise.all(
+        this.customBots.map(async (bot) => await bot.sendCommand(event, data))
+      ))
+    ]
+  }
+
+  guildToCluster(guildId: string): Cluster {
+    const custom = this.customBots.find((x) =>
+      x.options.guilds.includes(guildId)
+    )
+
+    if (custom) {
+      return custom as unknown as Cluster
+    }
+
+    return super.guildToCluster(guildId)
   }
 }

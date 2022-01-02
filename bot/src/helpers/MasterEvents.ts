@@ -1,5 +1,5 @@
 import { ExtendedEmitter, Event } from '@jpbberry/typed-emitter'
-import { Snowflake, ThreadEvents } from 'jadl'
+import { Cluster, Snowflake, ThreadEvents } from 'jadl'
 
 import { ResolveFunction } from 'jadl/dist/clustering/ThreadComms'
 
@@ -7,6 +7,7 @@ import { MasterManager } from '../managers/Master'
 import { ReloadNames } from '../types'
 
 import GenerateID from '../utils/GenerateID'
+import { CustomBotManager } from './CustomBotManager'
 
 export class MasterEvents extends ExtendedEmitter {
   constructor(private readonly master: MasterManager) {
@@ -84,14 +85,17 @@ export class MasterEvents extends ExtendedEmitter {
     data: ThreadEvents['IN_GUILDS']['send'],
     resolve: ResolveFunction<'IN_GUILDS'>
   ) {
-    const clusters: Array<{ cluster: string; ids: Snowflake[] }> = []
+    const clusters: Array<{
+      cluster: CustomBotManager | Cluster
+      ids: Snowflake[]
+    }> = []
     data.forEach((id) => {
       const cluster = this.master.guildToCluster(id)
 
-      let clusterObject = clusters.find((x) => x.cluster === cluster.id)
+      let clusterObject = clusters.find((x) => x.cluster.id === cluster.id)
       if (!clusterObject) {
         clusterObject = {
-          cluster: cluster.id,
+          cluster,
           ids: []
         }
 
@@ -104,13 +108,16 @@ export class MasterEvents extends ExtendedEmitter {
     const result: Snowflake[] = []
 
     for (const cluster of clusters) {
-      const ids = await this.master.clusters
-        .get(cluster.cluster)
-        ?.sendCommand('IN_GUILDS', cluster.ids)
+      const ids = await cluster.cluster?.sendCommand('IN_GUILDS', cluster.ids)
 
       if (ids) result.push(...ids)
     }
 
     resolve(result)
+  }
+
+  @Event('UPDATE_CUSTOM_BOTS')
+  updateCustomBots() {
+    void this.master.tellAll('UPDATE_CUSTOM_BOTS', null, true)
   }
 }

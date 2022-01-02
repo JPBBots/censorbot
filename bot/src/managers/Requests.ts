@@ -6,7 +6,7 @@ import types, {
   RESTGetAPIChannelMessagesQuery
 } from 'discord-api-types/v9'
 
-import { MessageTypes, formatMessage } from '@jadl/cmd'
+import { MessageTypes, formatMessage, SendMessageType } from '@jadl/cmd'
 
 import { REST, RequestData } from '@discordjs/rest'
 import { Cache } from '@jpbberry/cache'
@@ -62,8 +62,15 @@ export class Requests {
     message: MessageTypes,
     extra?: RequestData
   ): Promise<types.RESTPostAPIChannelMessageResult> {
+    const msg = formatMessage(message)
     return this.api.post(Routes.channelMessages(channelId), {
-      body: formatMessage(message).data,
+      body:
+        msg.type === SendMessageType.JSON ? JSON.stringify(msg.data) : msg.data,
+      passThroughBody: true,
+      headers:
+        msg.type === SendMessageType.FormData
+          ? msg.data.getHeaders()
+          : { 'Content-Type': 'application/json' },
       ...extra
     }) as any
   }
@@ -219,11 +226,18 @@ export class Requests {
   sendWebhookMessage(
     webhookId: Snowflake,
     webhookToken: string,
-    message: types.RESTPostAPIWebhookWithTokenJSONBody
+    message: MessageTypes
   ): Promise<types.RESTPostAPIWebhookWithTokenWaitResult> {
+    const msg = formatMessage(message)
     return this.api.post(Routes.webhook(webhookId, webhookToken), {
       query: new URLSearchParams({ wait: 'true' }),
-      body: message
+      body:
+        msg.type === SendMessageType.JSON ? JSON.stringify(msg.data) : msg.data,
+      headers:
+        msg.type === SendMessageType.FormData
+          ? msg.data.getHeaders()
+          : { 'Content-Type': 'application/json' },
+      passThroughBody: true
     }) as any
   }
 

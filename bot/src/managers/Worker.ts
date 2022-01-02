@@ -46,6 +46,7 @@ import { DebugCommand } from '../commands/utility/DebugCommand'
 import { TicketCommand } from '../commands/TicketCommand'
 import { EvalCommand } from '../commands/admin/EvalCommand'
 import { ScanCommand } from '../commands/utility/ScanCommand'
+import { CustomBotOptions } from 'typings/custombot'
 
 interface CachedThread {
   id: Snowflake
@@ -123,12 +124,28 @@ export class WorkerManager extends Worker<{}> {
     this._clusterEventHandler.add(this.comms)
 
     console.log = (...msg: string[]) => this.comms.log(msg.join(' '))
+
+    this.db.on('started', () => {
+      void this.updateCustomBots()
+    })
   }
 
   public async isAdmin(id: Snowflake): Promise<boolean> {
     return await fetch(`https://jpbbots.org/api/admin/${id}`)
       .then(async (x) => await x.text())
       .then((x) => !!Number(x))
+  }
+
+  customBots: CustomBotOptions[] = []
+
+  async updateCustomBots() {
+    this.customBots = await this.db.collection('custombots').find({}).toArray()
+  }
+
+  isCustom(guildId?: Snowflake): boolean {
+    if (!guildId) return false
+
+    return this.customBots.some((x) => x.guilds.includes(guildId))
   }
 
   getThreadParent(

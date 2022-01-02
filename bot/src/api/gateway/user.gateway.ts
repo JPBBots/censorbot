@@ -134,12 +134,10 @@ export class UserGateway {
       return { error: 'Unauthorized' }
     }
 
-    void this.thread
-      .sendCommand(
-        'IN_GUILDS',
-        guilds.map((x) => x.id)
-      )
-      .then(console.debug)
+    void this.thread.sendCommand(
+      'IN_GUILDS',
+      guilds.map((x) => x.id)
+    )
 
     this.caching.userGuilds.set(user.id, guilds)
 

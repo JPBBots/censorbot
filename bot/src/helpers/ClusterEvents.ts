@@ -64,4 +64,9 @@ export class ClusterEvents extends ExtendedEmitter {
   inGuilds(guilds: Snowflake[], resolve: ResolveFunction<'IN_GUILDS'>) {
     resolve(guilds.filter((x) => this.worker.guilds.has(x)))
   }
+
+  @Event('UPDATE_CUSTOM_BOTS')
+  updateCustomBots() {
+    void this.worker.updateCustomBots()
+  }
 }

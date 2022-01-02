@@ -102,7 +102,10 @@ export class OAuthService {
       )
       .filter((x) =>
         Config.custom.allowedGuilds
-          ? Config.custom.allowedGuilds.includes(x.id)
+          ? [
+              ...Config.custom.allowedGuilds,
+              ...this.database.customBots.map((a) => a.guilds).flat()
+            ].includes(x.id)
           : true
       )
 
@@ -111,11 +114,17 @@ export class OAuthService {
       newGuilds.map((x) => x.id)
     )
 
-    return newGuilds.map((x) => ({
-      name: x.name,
-      id: x.id,
-      icon: x.icon,
-      joined: inGuilds.includes(x.id)
-    }))
+    return newGuilds.map((x) => {
+      const customName = this.database.customBots.find((a) =>
+        a.guilds.includes(x.id)
+      )?.name
+      return {
+        name: x.name,
+        id: x.id,
+        icon: x.icon,
+        joined: inGuilds.includes(x.id),
+        group: customName ? `${customName} (Custom Bot)` : undefined
+      }
+    })
   }
 }

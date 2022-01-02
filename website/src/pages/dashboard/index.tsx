@@ -17,6 +17,44 @@ import { ShortGuild } from '@/../../typings/api'
 import { useMinWidth } from '@/hooks/useMinWidth'
 import { Loading } from '~/styling/Loading'
 
+export function GuildList({
+  searchTerm,
+  searcher,
+  filter
+}: {
+  searchTerm?: string
+  searcher?: FuzzySearch<ShortGuild>
+  filter?: (guild: ShortGuild) => boolean
+}) {
+  const router = useRouter()
+  return (
+    <Flex spacing={4} alignSelf="flex-start" wrap="wrap" gridGap="15px">
+      {searcher
+        ?.search(searchTerm)
+        .filter(filter || (() => true))
+        .map((guild) => (
+          <GuildPreview
+            key={guild.id}
+            guild={{
+              name: guild.name,
+              iconUrl: guild.icon
+                ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
+                : undefined
+            }}
+            onClick={() => {
+              void router.push({
+                pathname: '/dashboard/[guild]',
+                query: {
+                  guild: guild.id
+                }
+              })
+            }}
+          />
+        ))}
+    </Flex>
+  )
+}
+
 export default function DashboardHome() {
   useUser(true)
   const [loginState] = useLoginState()
@@ -35,6 +73,8 @@ export default function DashboardHome() {
     if (guilds) setSearcher(new FuzzySearch(guilds, ['id', 'name']))
     else setSearcher(undefined)
   }, [guilds])
+
+  const groups = guilds ? [...new Set(guilds.map(x => x.group).filter(x => x))] : undefined
 
   return (
     <VStack padding={3}>
@@ -70,58 +110,21 @@ export default function DashboardHome() {
       </VStack>
       {guilds && (
         <VStack align="left" w="full">
-          <Flex spacing={4} alignSelf="flex-start" wrap="wrap" gridGap="15px">
-            {searcher
-              ?.search(searchTerm)
-              .filter((x) => x.joined)
-              .map((guild) => (
-                <GuildPreview
-                  key={guild.id}
-                  guild={{
-                    name: guild.name,
-                    iconUrl: guild.icon
-                      ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
-                      : undefined
-                  }}
-                  onClick={() => {
-                    void router.push({
-                      pathname: '/dashboard/[guild]',
-                      query: {
-                        guild: guild.id
-                      }
-                    })
-                  }}
-                />
-              ))}
-          </Flex>
+          <GuildList filter={(x) => x.joined && !x.group} { ...({ searchTerm, searcher }) } />
+          {
+            groups?.map(x => <>
+              <Text align="left" textStyle="heading.lg">
+                {x}
+              </Text>
+              <Divider color="lighter.5" />
+              <GuildList filter={(a) => a.group === x} { ...({ searchTerm, searcher }) } />
+            </>)
+          }
           <Text align="left" textStyle="heading.lg">
             Servers without Censor Bot
           </Text>
           <Divider color="lighter.5" />
-          <Flex spacing={4} alignSelf="flex-start" wrap="wrap" gridGap="15px">
-            {searcher
-              ?.search(searchTerm)
-              .filter((x) => !x.joined)
-              .map((guild) => (
-                <GuildPreview
-                  key={guild.id}
-                  guild={{
-                    name: guild.name,
-                    iconUrl: guild.icon
-                      ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
-                      : undefined
-                  }}
-                  onClick={() => {
-                    void router.push({
-                      pathname: '/dashboard/[guild]',
-                      query: {
-                        guild: guild.id
-                      }
-                    })
-                  }}
-                />
-              ))}
-          </Flex>
+          <GuildList filter={(x) => !x.joined} { ...({ searchTerm, searcher }) } />
         </VStack>
       )}
     </VStack>

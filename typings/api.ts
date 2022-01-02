@@ -1,59 +1,59 @@
-import { Snowflake } from "discord-api-types";
+import { Snowflake } from 'discord-api-types'
 
-export const filters = ["en", "es", "off", "de", "ru"] as const;
+export const filters = ['en', 'es', 'off', 'de', 'ru'] as const
 
-export type filterType = typeof filters[number];
+export type filterType = typeof filters[number]
 
 export enum PunishmentType {
   GiveRole,
   Kick,
   Ban,
-  Timeout,
+  Timeout
 }
 
 export type TimedPunishments =
   | PunishmentType.Ban
   | PunishmentType.GiveRole
-  | PunishmentType.Timeout;
+  | PunishmentType.Timeout
 
 export enum PremiumTypes {
-  Premium = "premium",
-  SuperPremium = "super-premium",
-  OwnInstance = "own-instance",
+  Premium = 'premium',
+  SuperPremium = 'super-premium',
+  OwnInstance = 'own-instance'
 }
 
 export enum WebhookReplace {
   Spoilers = 0,
   Hashtags,
-  Stars,
+  Stars
 }
 
 export enum CensorMethods {
   Messages = 1,
   Names = 2,
-  Reactions = 4,
+  Reactions = 4
 }
 
 export type PunishmentLevel = {
-  amount: number;
+  amount: number
 } & (
   | {
-      type: PunishmentType.Ban;
-      time: number;
+      type: PunishmentType.Ban
+      time: number
     }
   | {
-      type: PunishmentType.GiveRole;
-      role: Snowflake;
-      time: number;
+      type: PunishmentType.GiveRole
+      role: Snowflake
+      time: number
     }
   | {
-      type: PunishmentType.Timeout;
-      time: number;
+      type: PunishmentType.Timeout
+      time: number
     }
   | {
-      type: PunishmentType.Kick;
+      type: PunishmentType.Kick
     }
-);
+)
 
 export enum ExceptionType {
   Everything,
@@ -63,54 +63,56 @@ export enum ExceptionType {
   Resend,
   Response,
   Invites,
+  AntiHoist
 }
 
 export interface Exception {
-  role: Snowflake | null;
-  channel: Snowflake | null;
-  type: ExceptionType;
+  role: Snowflake | null
+  channel: Snowflake | null
+  type: ExceptionType
 }
+
 export interface GuildDB {
   /**
    * ID of guild
    */
-  id?: Snowflake;
+  id?: Snowflake
   /**
    * Filters being used
    */
-  filters: filterType[];
+  filters: filterType[]
   /**
    * Censor options
    */
-  censor: number;
-  nickReplace: string;
-  removeNick: boolean;
+  censor: number
+  nickReplace: string
+  removeNick: boolean
 
-  exceptions: Exception[];
+  exceptions: Exception[]
   /**
    * Log channel ID
    */
-  log: Snowflake | null;
+  log: Snowflake | null
   /**
    * List of words to filter
    */
-  filter: string[];
+  filter: string[]
   /**
    * List of words to uncensor
    */
-  uncensor: string[];
+  uncensor: string[]
   /**
    * List of phrases to filter
    */
-  phrases: string[];
+  phrases: string[]
   /**
    * Exact words to filter
    */
-  words: string[];
+  words: string[]
   /**
    * Whether to antihoist users
    */
-  antiHoist: boolean;
+  antiHoist: boolean
   /**
    * Popup message options
    */
@@ -118,189 +120,193 @@ export interface GuildDB {
     /**
      * Message to send
      */
-    content: string | false | null;
+    content: string | false | null
     /**
      * Delete after x ms
      */
-    deleteAfter: number | false;
+    deleteAfter: number | false
     /**
      * Whether or not to DM popup messages
      */
-    dm: boolean;
-  };
+    dm: boolean
+  }
   /**
    * Punishment settings
    */
   punishments: {
-    levels: PunishmentLevel[];
-    expires: number | null;
-  };
+    levels: PunishmentLevel[]
+    expires: number | null
+  }
   /**
    * Webhook options
    */
   webhook: {
-    enabled: boolean;
-    separate: boolean;
-    replace: WebhookReplace;
-  };
-  multi: boolean;
-  prefix: string | null;
-  nsfw: boolean;
-  invites: boolean;
-  dm: boolean;
+    enabled: boolean
+    separate: boolean
+    replace: WebhookReplace
+  }
+  multi: boolean
+  prefix: string | null
+  nsfw: boolean
+  invites: boolean
+  dm: boolean
 
-  toxicity: boolean;
-  images: boolean;
-  ocr: boolean;
-  phishing: boolean;
+  toxicity: boolean
+  images: boolean
+  ocr: boolean
+  phishing: boolean
 
   /**
    * Whether or not the entry is in the database or not
    */
-  notInDb?: boolean;
+  notInDb?: boolean
 }
 
 export interface UserPremium {
   /**
    * Amount of premium servers this user has
    */
-  count: number;
+  count: number
   /**
    * Guilds that are premium for this users
    */
-  guilds: Snowflake[];
+  guilds: Snowflake[]
   /**
    * Whether or not a user is a customer or a patron
    */
-  customer: boolean;
+  customer: boolean
 }
 
 export interface User {
   /**
    * Censor Bot API Token
    */
-  token: string;
+  token: string
   /**
    * ID of user
    */
-  id: Snowflake;
+  id: Snowflake
   /**
    * Username#discriminator of user
    */
-  tag: string;
+  tag: string
   /**
    * Avatar hash
    */
-  avatar: string | null;
+  avatar: string | null
   /**
    * Premium data
    */
-  premium?: UserPremium;
+  premium?: UserPremium
   /**
    * Whether or not user is admin
    */
-  admin?: boolean;
+  admin?: boolean
   /**
    * Email of the user
    */
-  email?: string | null;
+  email?: string | null
 
-  _id?: string;
-  bearer?: string;
+  _id?: string
+  bearer?: string
 }
 
 export interface ShortGuild {
   /**
    * ID of guild
    */
-  id: Snowflake;
+  id: Snowflake
   /**
    * Name of guild
    */
-  name: string;
+  name: string
   /**
    * Whether or not the bot is in the server
    */
-  joined: boolean;
+  joined: boolean
+  /**
+   * Group, if any, to categorize the server
+   */
+  group?: string
   /**
    * CDN Hash of icon
    */
-  icon: string | null;
+  icon: string | null
 }
 
 export interface DashboardChannel {
-  id: Snowflake;
-  name: string;
-  type: number;
-  parent_id?: Snowflake | null;
+  id: Snowflake
+  name: string
+  type: number
+  parent_id?: Snowflake | null
 }
 
 export interface DashboardRole {
-  id: Snowflake;
-  name: string;
-  color: number;
+  id: Snowflake
+  name: string
+  color: number
 }
 
 export interface ExtendedGuild extends ShortGuild {
   /**
    * Array of channels
    */
-  channels: DashboardChannel[];
+  channels: DashboardChannel[]
   /**
    * Array of roles
    */
-  roles: DashboardRole[];
+  roles: DashboardRole[]
 }
 
 export interface GuildData {
   /**
    * Guild data
    */
-  guild: ExtendedGuild;
+  guild: ExtendedGuild
   /**
    * Whether or not guild is premium
    */
-  premium: boolean;
+  premium: boolean
   /**
    * Database data
    */
-  db: GuildDB;
+  db: GuildDB
 }
 
 export interface Cluster {
-  memory: number;
-  uptime: number;
-  id: number;
+  memory: number
+  uptime: number
+  id: number
 }
 export interface Shard {
-  events: number;
-  id: number;
-  ping: number;
-  state: 0 | 1 | 2;
-  connected: boolean;
-  guilds: number;
+  events: number
+  id: number
+  ping: number
+  state: 0 | 1 | 2
+  connected: boolean
+  guilds: number
 }
 
-export type AdminResponse = {
-  cluster: Cluster;
-  shards: Shard[];
-}[];
+export type AdminResponse = Array<{
+  cluster: Cluster
+  shards: Shard[]
+}>
 
 /**
  * 3 character temporary identifier
  */
-export type ShortID = `${string}${string}${string}`;
+export type ShortID = `${string}${string}${string}`
 
 export interface Ticket {
-  id: ShortID;
-  word: string;
-  user: Snowflake;
-  admin?: Snowflake;
-  msg?: Snowflake;
-  accepted: boolean;
+  id: ShortID
+  word: string
+  user: Snowflake
+  admin?: Snowflake
+  msg?: Snowflake
+  accepted: boolean
 }
 
 export interface TicketTest {
-  censored: boolean;
-  places: string[];
+  censored: boolean
+  places: string[]
 }
