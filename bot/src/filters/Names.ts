@@ -1,6 +1,6 @@
-import { WorkerManager } from '../managers/Worker'
-
 import { FilterResponse } from '../structures/Filter'
+
+import { Event } from '@jpbberry/typed-emitter'
 
 import {
   GatewayGuildMemberUpdateDispatchData,
@@ -8,6 +8,8 @@ import {
 } from 'discord-api-types'
 
 import { CensorMethods, ExceptionType, GuildDB } from 'typings/api'
+import { BaseFilterHandler } from './Base'
+import { DiscordEventMap } from 'jadl'
 
 const deHoist = String.fromCharCode(856)
 
@@ -15,97 +17,113 @@ type EventData =
   | GatewayGuildMemberUpdateDispatchData
   | GatewayGuildMemberAddDispatchData
 
-const isHoisting = (name: string): boolean => {
-  const char = name.charCodeAt(0)
-  if (char < 65) return true
-  if (char > 90 && char < 97) return true
+export class NamesFilterHandler extends BaseFilterHandler {
+  static isHoisting = (name: string): boolean => {
+    const char = name.charCodeAt(0)
+    if (char < 65) return true
+    if (char > 90 && char < 97) return true
 
-  return false
-}
+    return false
+  }
 
-function handleCensor(
-  worker: WorkerManager,
-  member: EventData,
-  db: GuildDB,
-  response: FilterResponse
-): void {
-  if (!member.user) return
+  handleCensor(member: EventData, db: GuildDB, response: FilterResponse): void {
+    if (!member.user) return
 
-  const guild = worker.guilds.get(member.guild_id)
-  if (!guild) return
+    const guild = this.worker.guilds.get(member.guild_id)
+    if (!guild) return
 
-  if (
-    !worker.hasPerms(member.guild_id, 'manageNicknames') ||
-    !worker.isManageable(member.guild_id, member.user.id, member.roles, true)
-  ) {
-    if (db.log)
-      void worker.responses.errorLog(
-        db,
-        'Missing permissions to Manage Nicknames'
+    if (
+      !this.worker.hasPerms(member.guild_id, 'manageNicknames') ||
+      !this.worker.isManageable(
+        member.guild_id,
+        member.user.id,
+        member.roles,
+        true
       )
+    ) {
+      if (db.log)
+        void this.worker.responses.errorLog(
+          db,
+          'Missing permissions to Manage Nicknames'
+        )
 
-    return
-  }
+      return
+    }
 
-  void worker.responses.log(
-    CensorMethods.Names,
-    member.nick ?? member.user.username,
-    member,
-    response,
-    db
-  )
-
-  void worker.requests
-    .setNickname(
-      member.guild_id,
-      member.user.id,
-      db.removeNick && member.nick ? null : db.nickReplace
+    void this.worker.responses.log(
+      CensorMethods.Names,
+      member.nick ?? member.user.username,
+      member,
+      response,
+      db
     )
-    .catch(() => {})
 
-  if (
-    !worker.isExcepted(ExceptionType.Punishment, db, { roles: member.roles })
-  ) {
-    void worker.punishments
-      .punish(member.guild_id, member.user.id, member.roles)
-      .catch()
-  }
-}
-
-export async function NameHandler(
-  worker: WorkerManager,
-  member: EventData
-): Promise<void> {
-  if (!member || !member.user || member.user.bot) return
-
-  const db = await worker.db.config(member.guild_id)
-
-  let name = member.nick ?? member.user.username
-
-  if (
-    db.antiHoist &&
-    isHoisting(name) &&
-    worker.hasPerms(member.guild_id, 'manageNicknames') &&
-    worker.isManageable(member.guild_id, member.user.id, member.roles, true) &&
-    !worker.isExcepted(ExceptionType.AntiHoist, db, { roles: member.roles })
-  ) {
-    if (name.length >= 32) name = name.substring(1, 32)
-    await worker.requests
-      .setNickname(member.guild_id, member.user.id, `${deHoist}${name}`)
+    void this.worker.requests
+      .setNickname(
+        member.guild_id,
+        member.user.id,
+        db.removeNick && member.nick ? null : db.nickReplace
+      )
       .catch(() => {})
+
+    if (
+      !this.worker.isExcepted(ExceptionType.Punishment, db, {
+        roles: member.roles
+      })
+    ) {
+      void this.worker.punishments
+        .punish(member.guild_id, member.user.id, member.roles)
+        .catch()
+    }
   }
 
-  if (
-    (db.censor & CensorMethods.Names) === 0 ||
-    worker.isExcepted(ExceptionType.Everything, db, { roles: member.roles })
-  )
-    return
+  @Event('GUILD_MEMBER_UPDATE')
+  @Event('GUILD_MEMBER_ADD')
+  async onMember(
+    member: DiscordEventMap['GUILD_MEMBER_ADD' | 'GUILD_MEMBER_UPDATE']
+  ) {
+    if (!member || !member.user || member.user.bot) return
 
-  if (member.nick === db.nickReplace) return
+    if (this.worker.isCustom(member.guild_id)) return
 
-  const res = worker.test(name, db, { roles: member.roles })
+    const db = await this.worker.db.config(member.guild_id)
 
-  if (!res.censor) return
+    let name = member.nick ?? member.user.username
 
-  handleCensor(worker, member, db, res)
+    if (
+      db.antiHoist &&
+      NamesFilterHandler.isHoisting(name) &&
+      this.worker.hasPerms(member.guild_id, 'manageNicknames') &&
+      this.worker.isManageable(
+        member.guild_id,
+        member.user.id,
+        member.roles,
+        true
+      ) &&
+      !this.worker.isExcepted(ExceptionType.AntiHoist, db, {
+        roles: member.roles
+      })
+    ) {
+      if (name.length >= 32) name = name.substring(1, 32)
+      await this.worker.requests
+        .setNickname(member.guild_id, member.user.id, `${deHoist}${name}`)
+        .catch(() => {})
+    }
+
+    if (
+      (db.censor & CensorMethods.Names) === 0 ||
+      this.worker.isExcepted(ExceptionType.Everything, db, {
+        roles: member.roles
+      })
+    )
+      return
+
+    if (member.nick === db.nickReplace) return
+
+    const res = this.worker.test(name, db, { roles: member.roles })
+
+    if (!res.censor) return
+
+    this.handleCensor(member, db, res)
+  }
 }

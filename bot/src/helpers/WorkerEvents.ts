@@ -225,21 +225,6 @@ export class WorkerEvents extends ExtendedEmitter {
     void this.updateGuild(guild.id)
   }
 
-  @Event('GUILD_MEMBER_UPDATE')
-  @Event('GUILD_MEMBER_ADD')
-  filterName(
-    member: DiscordEventMap['GUILD_MEMBER_UPDATE' | 'GUILD_MEMBER_ADD']
-  ): void {
-    if (this.worker.isCustom(member.guild_id)) return
-    void this.worker.methods.names(this.worker, member)
-  }
-
-  @Event('MESSAGE_REACTION_ADD')
-  filterReaction(reaction: DiscordEventMap['MESSAGE_REACTION_ADD']): void {
-    if (this.worker.isCustom(reaction.guild_id)) return
-    void this.worker.methods.react(this.worker, reaction)
-  }
-
   commands = [
     'help',
     'debug',

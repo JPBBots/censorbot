@@ -19,8 +19,14 @@ export class AntiPhish extends BaseExtension {
         message
       })
     })
-      .then(async (x) => await x.json())
-      .catch(() => ({}))
+      .then(async (x) => {
+        if (!x.ok) throw new Error('OCR Failed')
+
+        return await x.json()
+      })
+      .catch(() => false)
+
+    this.working = !!res
 
     return res?.match ?? false
   }

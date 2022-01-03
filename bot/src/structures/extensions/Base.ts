@@ -9,6 +9,8 @@ export interface Test {
 }
 
 export class BaseExtension {
+  public working = true
+
   cache: Cache<string, Test> = new Cache(Config.ai.cacheWipe)
 
   ai = Config.ai

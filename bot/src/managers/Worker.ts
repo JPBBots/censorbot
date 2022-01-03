@@ -11,7 +11,7 @@ import { Responses } from '../structures/Responses'
 
 import { TicketManager } from '../structures/TicketManager'
 
-import { PerspectiveApi } from '../structures/extensions/PerspectiveApi'
+import { Toxicity } from '../structures/extensions/Toxicity'
 import { AntiNSFW } from '../structures/extensions/AntiNSFW'
 import { Ocr } from '../structures/extensions/Ocr'
 
@@ -23,8 +23,8 @@ import { Collection } from '@discordjs/collection'
 import { ClusterEvents } from '../helpers/ClusterEvents'
 
 import { MessagesFilterHandler } from '../filters/Messages'
-import { NameHandler } from '../filters/Names'
-import { ReactionHandler } from '../filters/Reactions'
+import { NamesFilterHandler } from '../filters/Names'
+import { ReactionsFilterHandler } from '../filters/Reactions'
 
 import { Interface } from '@jpbbots/interface'
 
@@ -70,7 +70,7 @@ export class WorkerManager extends Worker<{}> {
 
   requests = new Requests(this.api)
 
-  perspective = new PerspectiveApi(this)
+  toxicity = new Toxicity(this)
   images = new AntiNSFW(this)
   ocr = new Ocr(this)
   phishing = new AntiPhish(this)
@@ -99,11 +99,6 @@ export class WorkerManager extends Worker<{}> {
     }
   )
 
-  methods = {
-    names: NameHandler,
-    react: ReactionHandler
-  }
-
   private readonly _eventHandler = new WorkerEvents(this)
   private readonly _clusterEventHandler = new ClusterEvents(this)
 
@@ -129,6 +124,8 @@ export class WorkerManager extends Worker<{}> {
     })
 
     new MessagesFilterHandler(this).add(this)
+    new NamesFilterHandler(this).add(this)
+    new ReactionsFilterHandler(this).add(this)
   }
 
   public async isAdmin(id: Snowflake): Promise<boolean> {

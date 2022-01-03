@@ -38,8 +38,14 @@ export class Ocr extends BaseExtension {
         isOverlayRequired: 'true'
       })}`
     )
-      .then(async (x) => (await x.json()) as OcrResult)
+      .then(async (x) => {
+        if (!x.ok) throw new Error('OCR Failed')
+
+        return await x.json()
+      })
       .catch(() => undefined)
+
+    this.working = !!res
 
     return res
   }

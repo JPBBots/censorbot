@@ -2,7 +2,7 @@ import { BaseExtension, Test } from './Base'
 
 import fetch from 'node-fetch'
 
-export class PerspectiveApi extends BaseExtension {
+export class Toxicity extends BaseExtension {
   public async test(text: string): Promise<Test> {
     const tested = this.cache.get(text)
     if (tested) return tested
@@ -21,8 +21,14 @@ export class PerspectiveApi extends BaseExtension {
         })
       }
     )
-      .then(async (x) => await x.json())
+      .then(async (x) => {
+        if (!x.ok) throw new Error('OCR Failed')
+
+        return await x.json()
+      })
       .catch(() => false)
+
+    this.working = !!fetched
 
     if (!fetched) return { bad: false, percent: '0%' }
 

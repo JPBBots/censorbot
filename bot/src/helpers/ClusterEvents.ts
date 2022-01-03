@@ -9,12 +9,6 @@ import { ResolveFunction } from 'jadl/dist/clustering/ThreadComms'
 
 const filterDataDir = path.resolve(__dirname, '../structures/Filter')
 
-const methods = {
-  msg: path.resolve(__dirname, '../filters/Messages'),
-  names: path.resolve(__dirname, '../filters/Names'),
-  reacts: path.resolve(__dirname, '../filters/Reactions')
-}
-
 const rem = (path): void => {
   delete require.cache[require.resolve(path)]
 }
@@ -42,20 +36,6 @@ export class ClusterEvents extends ExtendedEmitter {
         this.worker.actions.popups.clear()
         break
       case 'FILTERS':
-        rem(methods.msg)
-        rem(methods.names)
-        rem(methods.reacts)
-
-        void import(methods.msg).then(({ MessageHandler }) => {
-          this.worker.methods.msg = MessageHandler
-        })
-        void import(methods.names).then(({ NameHandler }) => {
-          this.worker.methods.names = NameHandler
-        })
-        void import(methods.reacts).then(({ ReactionHandler }) => {
-          this.worker.methods.react = ReactionHandler
-        })
-
         break
     }
   }

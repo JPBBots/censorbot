@@ -20,7 +20,11 @@ export class AntiNSFW extends BaseExtension {
       })
       .catch(() => false)
 
-    if (!fetched) return { bad: false, percent: '0%' }
+    this.working = !!fetched
+
+    if (!fetched) {
+      return { bad: false, percent: '0%' }
+    }
 
     const num: number = fetched.output.nsfw_score
 

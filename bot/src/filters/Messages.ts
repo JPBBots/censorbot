@@ -10,7 +10,12 @@ import {
 
 import { Cache } from '@jpbberry/cache'
 
-import { CensorMethods, ExceptionType, GuildDB } from 'typings/api'
+import {
+  CensorMethods,
+  ExceptionType,
+  GuildDB,
+  WebhookReplace
+} from 'typings/api'
 import { OcrLine } from '../structures/extensions/Ocr'
 
 import { Event } from '@jpbberry/typed-emitter'
@@ -23,7 +28,6 @@ interface MultiLine {
   author: Snowflake
   messages: {
     [key: Snowflake]: ContentData
-    // DiscordEventMap['MESSAGE_CREATE' | 'MESSAGE_UPDATE']
   }
 }
 
@@ -34,8 +38,8 @@ interface ContentData {
 }
 
 const replaces = {
-  1: '#',
-  2: '*'
+  [WebhookReplace.Hashtags]: '#',
+  [WebhookReplace.Stars]: '*'
 }
 
 class ContentData {
@@ -129,6 +133,8 @@ export class MessagesFilterHandler extends BaseFilterHandler {
     if (!message.guild_id || !message.author || !channel || !message.member)
       return
 
+    if (this.worker.isCustom(message.guild_id)) return
+
     let multiline = this.multiLineStore.get(message.channel_id)
     if (multiline && multiline.author !== message.author.id) {
       multiline = undefined
@@ -138,8 +144,6 @@ export class MessagesFilterHandler extends BaseFilterHandler {
     if (message.author.bot) return
 
     const db = await this.worker.db.config(message.guild_id)
-
-    if ((db.censor & CensorMethods.Messages) === 0) return
 
     if (
       ![MessageType.Default, MessageType.Reply].includes(
@@ -224,7 +228,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
     if (db.nsfw && channel.nsfw) return
 
     if (db.toxicity && contentData.content) {
-      const prediction = await this.worker.perspective.test(contentData.content)
+      const prediction = await this.worker.toxicity.test(contentData.content)
       if (prediction.bad) {
         contentData.setResponse({
           censor: true,
@@ -284,7 +288,8 @@ export class MessagesFilterHandler extends BaseFilterHandler {
       }
     }
 
-    if (contentData.content) {
+    if ((db.censor & CensorMethods.Messages) === 0) return
+    if (contentData.content && (db.censor & CensorMethods.Messages) !== 0) {
       const response = this.test(contentData.content, db, {
         roles: message.member.roles,
         channel: message.channel_id
@@ -391,7 +396,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
               )
             : contentData.content
 
-        if (db.webhook.replace !== 0)
+        if (db.webhook.replace !== WebhookReplace.Spoilers)
           content = content?.split(/\|\|/g).reduce(
             (a, b) => [
               // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
