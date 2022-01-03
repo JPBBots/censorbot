@@ -11,9 +11,9 @@ import { Responses } from '../structures/Responses'
 
 import { TicketManager } from '../structures/TicketManager'
 
-import { PerspectiveApi } from '../structures/ai/PerspectiveApi'
-import { AntiNSFW } from '../structures/ai/AntiNSFW'
-import { Ocr } from '../structures/ai/Ocr'
+import { PerspectiveApi } from '../structures/extensions/PerspectiveApi'
+import { AntiNSFW } from '../structures/extensions/AntiNSFW'
+import { Ocr } from '../structures/extensions/Ocr'
 
 import { PunishmentManager } from '../structures/punishments/PunishmentManager'
 
@@ -22,7 +22,7 @@ import { Collection } from '@discordjs/collection'
 
 import { ClusterEvents } from '../helpers/ClusterEvents'
 
-import { MessageHandler } from '../filters/Messages'
+import { MessagesFilterHandler } from '../filters/Messages'
 import { NameHandler } from '../filters/Names'
 import { ReactionHandler } from '../filters/Reactions'
 
@@ -35,7 +35,7 @@ import fetch from 'node-fetch'
 
 import { ExceptionType, GuildDB } from 'typings'
 import { WorkerEvents } from '../helpers/WorkerEvents'
-import { AntiPhish } from '../structures/ai/AntiPhish'
+import { AntiPhish } from '../structures/extensions/AntiPhish'
 import { Requests } from './Requests'
 import { CommandHandler, formatMessage } from '@jadl/cmd'
 
@@ -54,7 +54,7 @@ interface CachedThread {
   guildId: Snowflake
 }
 
-interface ExceptedData {
+export interface ExceptedData {
   roles?: Snowflake[]
   channel?: Snowflake
 }
@@ -100,7 +100,6 @@ export class WorkerManager extends Worker<{}> {
   )
 
   methods = {
-    msg: MessageHandler,
     names: NameHandler,
     react: ReactionHandler
   }
@@ -128,6 +127,8 @@ export class WorkerManager extends Worker<{}> {
     this.db.on('started', () => {
       void this.updateCustomBots()
     })
+
+    new MessagesFilterHandler(this).add(this)
   }
 
   public async isAdmin(id: Snowflake): Promise<boolean> {

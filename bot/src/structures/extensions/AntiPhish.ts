@@ -1,11 +1,11 @@
-import { BaseAI } from './Base'
+import { BaseExtension } from './Base'
 
 import fetch from 'node-fetch'
 
 const domainRegex =
   /(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/
 
-export class AntiPhish extends BaseAI {
+export class AntiPhish extends BaseExtension {
   public async resolve(message: string): Promise<boolean> {
     if (!message.match(domainRegex)) return false
 

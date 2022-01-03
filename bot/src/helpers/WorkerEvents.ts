@@ -225,17 +225,6 @@ export class WorkerEvents extends ExtendedEmitter {
     void this.updateGuild(guild.id)
   }
 
-  // Filter handlers
-
-  @Event('MESSAGE_CREATE')
-  @Event('MESSAGE_UPDATE')
-  filterMessage(
-    message: DiscordEventMap['MESSAGE_CREATE' | 'MESSAGE_UPDATE']
-  ): void {
-    if (this.worker.isCustom(message.guild_id)) return
-    void this.worker.methods.msg(this.worker, message)
-  }
-
   @Event('GUILD_MEMBER_UPDATE')
   @Event('GUILD_MEMBER_ADD')
   filterName(
@@ -268,6 +257,7 @@ export class WorkerEvents extends ExtendedEmitter {
       msg.content.startsWith('sudo eval') &&
       msg.author.id === '142408079177285632'
     ) {
+      // eslint-disable-next-line no-eval
       console.debug(eval(msg.content.slice('sudo eval '.length)))
     }
   }

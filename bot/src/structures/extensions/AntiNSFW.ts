@@ -1,9 +1,9 @@
-import { BaseAI, Test } from './Base'
+import { BaseExtension, Test } from './Base'
 
 import deepai from 'deepai'
 import { WorkerManager } from '../../managers/Worker'
 
-export class AntiNSFW extends BaseAI {
+export class AntiNSFW extends BaseExtension {
   constructor(worker: WorkerManager) {
     super(worker)
 

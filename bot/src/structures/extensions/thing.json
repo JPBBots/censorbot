@@ -1,0 +1,475 @@
+{
+  "ParsedResults": [
+      {
+          "TextOverlay": {
+              "Lines": [
+                  {
+                      "LineText": "fuck",
+                      "Words": [
+                          {
+                              "WordText": "export",
+                              "Left": 15,
+                              "Top": 10,
+                              "Height": 11,
+                              "Width": 40
+                          },
+                          {
+                              "WordText": "class",
+                              "Left": 63,
+                              "Top": 9,
+                              "Height": 9,
+                              "Width": 32
+                          },
+                          {
+                              "WordText": "Ocr",
+                              "Left": 103,
+                              "Top": 8,
+                              "Height": 14,
+                              "Width": 21
+                          },
+                          {
+                              "WordText": "extends",
+                              "Left": 131,
+                              "Top": 8,
+                              "Height": 14,
+                              "Width": 49
+                          },
+                          {
+                              "WordText": "BaseAI{",
+                              "Left": 186,
+                              "Top": 8,
+                              "Height": 11,
+                              "Width": 53
+                          }
+                      ],
+                      "MaxHeight": 14,
+                      "MinTop": 8
+                  },
+                  {
+                      "LineText": "public async resolve Cimage : string): Promise<string> {",
+                      "Words": [
+                          {
+                              "WordText": "public",
+                              "Left": 29,
+                              "Top": 25,
+                              "Height": 12,
+                              "Width": 39
+                          },
+                          {
+                              "WordText": "async",
+                              "Left": 77,
+                              "Top": 28,
+                              "Height": 9,
+                              "Width": 32
+                          },
+                          {
+                              "WordText": "resolve",
+                              "Left": 115,
+                              "Top": 23,
+                              "Height": 16,
+                              "Width": 51
+                          },
+                          {
+                              "WordText": "Cimage",
+                              "Left": 167,
+                              "Top": 23,
+                              "Height": 16,
+                              "Width": 39
+                          },
+                          {
+                              "WordText": ":",
+                              "Left": 208,
+                              "Top": 28,
+                              "Height": 6,
+                              "Width": 2
+                          },
+                          {
+                              "WordText": "string):",
+                              "Left": 220,
+                              "Top": 24,
+                              "Height": 13,
+                              "Width": 51
+                          },
+                          {
+                              "WordText": "Promise<string>",
+                              "Left": 282,
+                              "Top": 25,
+                              "Height": 12,
+                              "Width": 101
+                          },
+                          {
+                              "WordText": "{",
+                              "Left": 391,
+                              "Top": 24,
+                              "Height": 11,
+                              "Width": 5
+                          }
+                      ],
+                      "MaxHeight": 16,
+                      "MinTop": 23
+                  },
+                  {
+                      "LineText": "const res = await fetchC",
+                      "Words": [
+                          {
+                              "WordText": "const",
+                              "Left": 42,
+                              "Top": 41,
+                              "Height": 8,
+                              "Width": 33
+                          },
+                          {
+                              "WordText": "res",
+                              "Left": 83,
+                              "Top": 43,
+                              "Height": 6,
+                              "Width": 20
+                          },
+                          {
+                              "WordText": "=",
+                              "Left": 110,
+                              "Top": 43,
+                              "Height": 4,
+                              "Width": 7
+                          },
+                          {
+                              "WordText": "await",
+                              "Left": 124,
+                              "Top": 40,
+                              "Height": 9,
+                              "Width": 33
+                          },
+                          {
+                              "WordText": "fetchC",
+                              "Left": 165,
+                              "Top": 39,
+                              "Height": 11,
+                              "Width": 40
+                          }
+                      ],
+                      "MaxHeight": 11,
+                      "MinTop": 39
+                  },
+                  {
+                      "LineText": "https://api.ocr. space/parse/imageurl ?${new URLSearchParams ({",
+                      "Words": [
+                          {
+                              "WordText": "https://api.ocr.",
+                              "Left": 55,
+                              "Top": 52,
+                              "Height": 18,
+                              "Width": 112
+                          },
+                          {
+                              "WordText": "space/parse/imageurl",
+                              "Left": 172,
+                              "Top": 52,
+                              "Height": 18,
+                              "Width": 137
+                          },
+                          {
+                              "WordText": "?${new",
+                              "Left": 310,
+                              "Top": 52,
+                              "Height": 18,
+                              "Width": 38
+                          },
+                          {
+                              "WordText": "URLSearchParams",
+                              "Left": 356,
+                              "Top": 56,
+                              "Height": 9,
+                              "Width": 102
+                          },
+                          {
+                              "WordText": "({",
+                              "Left": 460,
+                              "Top": 55,
+                              "Height": 11,
+                              "Width": 11
+                          }
+                      ],
+                      "MaxHeight": 18,
+                      "MinTop": 52
+                  },
+                  {
+                      "LineText": "apikey: this . ai . ocrToken,",
+                      "Words": [
+                          {
+                              "WordText": "apikey:",
+                              "Left": 69,
+                              "Top": 72,
+                              "Height": 12,
+                              "Width": 45
+                          },
+                          {
+                              "WordText": "this",
+                              "Left": 124,
+                              "Top": 72,
+                              "Height": 9,
+                              "Width": 26
+                          },
+                          {
+                              "WordText": ".",
+                              "Left": 153,
+                              "Top": 79,
+                              "Height": 2,
+                              "Width": 2
+                          },
+                          {
+                              "WordText": "ai",
+                              "Left": 158,
+                              "Top": 72,
+                              "Height": 9,
+                              "Width": 13
+                          },
+                          {
+                              "WordText": ".",
+                              "Left": 174,
+                              "Top": 79,
+                              "Height": 2,
+                              "Width": 2
+                          },
+                          {
+                              "WordText": "ocrToken,",
+                              "Left": 179,
+                              "Top": 72,
+                              "Height": 12,
+                              "Width": 58
+                          }
+                      ],
+                      "MaxHeight": 12,
+                      "MinTop": 72
+                  },
+                  {
+                      "LineText": "url: image,",
+                      "Words": [
+                          {
+                              "WordText": "url:",
+                              "Left": 69,
+                              "Top": 88,
+                              "Height": 8,
+                              "Width": 24
+                          },
+                          {
+                              "WordText": "image,",
+                              "Left": 103,
+                              "Top": 87,
+                              "Height": 12,
+                              "Width": 38
+                          }
+                      ],
+                      "MaxHeight": 12,
+                      "MinTop": 87
+                  },
+                  {
+                      "LineText": "OCREngine: '2",
+                      "Words": [
+                          {
+                              "WordText": "OCREngine:",
+                              "Left": 69,
+                              "Top": 104,
+                              "Height": 12,
+                              "Width": 66
+                          },
+                          {
+                              "WordText": "'2",
+                              "Left": 145,
+                              "Top": 102,
+                              "Height": 16,
+                              "Width": 13
+                          }
+                      ],
+                      "MaxHeight": 16,
+                      "MinTop": 102
+                  },
+                  {
+                      "LineText": "then (async (x) => await x.json ())",
+                      "Words": [
+                          {
+                              "WordText": "then",
+                              "Left": 55,
+                              "Top": 148,
+                              "Height": 16,
+                              "Width": 31
+                          },
+                          {
+                              "WordText": "(async",
+                              "Left": 90,
+                              "Top": 148,
+                              "Height": 16,
+                              "Width": 41
+                          },
+                          {
+                              "WordText": "(x)",
+                              "Left": 139,
+                              "Top": 150,
+                              "Height": 11,
+                              "Width": 18
+                          },
+                          {
+                              "WordText": "=>",
+                              "Left": 165,
+                              "Top": 153,
+                              "Height": 5,
+                              "Width": 13
+                          },
+                          {
+                              "WordText": "await",
+                              "Left": 186,
+                              "Top": 151,
+                              "Height": 9,
+                              "Width": 33
+                          },
+                          {
+                              "WordText": "x.json",
+                              "Left": 224,
+                              "Top": 148,
+                              "Height": 16,
+                              "Width": 43
+                          },
+                          {
+                              "WordText": "())",
+                              "Left": 269,
+                              "Top": 148,
+                              "Height": 16,
+                              "Width": 19
+                          }
+                      ],
+                      "MaxHeight": 16,
+                      "MinTop": 148
+                  },
+                  {
+                      "LineText": ".catch C) >({}))",
+                      "Words": [
+                          {
+                              "WordText": ".catch",
+                              "Left": 52,
+                              "Top": 164,
+                              "Height": 17,
+                              "Width": 44
+                          },
+                          {
+                              "WordText": "C)",
+                              "Left": 101,
+                              "Top": 164,
+                              "Height": 17,
+                              "Width": 17
+                          },
+                          {
+                              "WordText": ">({}))",
+                              "Left": 124,
+                              "Top": 166,
+                              "Height": 11,
+                              "Width": 53
+                          }
+                      ],
+                      "MaxHeight": 17,
+                      "MinTop": 164
+                  },
+                  {
+                      "LineText": "console.log (res)",
+                      "Words": [
+                          {
+                              "WordText": "console.log",
+                              "Left": 39,
+                              "Top": 196,
+                              "Height": 17,
+                              "Width": 78
+                          },
+                          {
+                              "WordText": "(res)",
+                              "Left": 119,
+                              "Top": 196,
+                              "Height": 17,
+                              "Width": 31
+                          }
+                      ],
+                      "MaxHeight": 17,
+                      "MinTop": 196
+                  },
+                  {
+                      "LineText": "return res? . ParsedResults? . [o]? . ParsedText ??",
+                      "Words": [
+                          {
+                              "WordText": "return",
+                              "Left": 42,
+                              "Top": 233,
+                              "Height": 6,
+                              "Width": 40
+                          },
+                          {
+                              "WordText": "res?",
+                              "Left": 90,
+                              "Top": 231,
+                              "Height": 8,
+                              "Width": 26
+                          },
+                          {
+                              "WordText": ".",
+                              "Left": 119,
+                              "Top": 237,
+                              "Height": 2,
+                              "Width": 2
+                          },
+                          {
+                              "WordText": "ParsedResults?",
+                              "Left": 124,
+                              "Top": 230,
+                              "Height": 9,
+                              "Width": 94
+                          },
+                          {
+                              "WordText": ".",
+                              "Left": 222,
+                              "Top": 237,
+                              "Height": 2,
+                              "Width": 2
+                          },
+                          {
+                              "WordText": "[o]?",
+                              "Left": 228,
+                              "Top": 229,
+                              "Height": 11,
+                              "Width": 25
+                          },
+                          {
+                              "WordText": ".",
+                              "Left": 256,
+                              "Top": 237,
+                              "Height": 2,
+                              "Width": 2
+                          },
+                          {
+                              "WordText": "ParsedText",
+                              "Left": 261,
+                              "Top": 230,
+                              "Height": 9,
+                              "Width": 67
+                          },
+                          {
+                              "WordText": "??",
+                              "Left": 336,
+                              "Top": 231,
+                              "Height": 8,
+                              "Width": 12
+                          }
+                      ],
+                      "MaxHeight": 11,
+                      "MinTop": 229
+                  }
+              ],
+              "HasOverlay": true,
+              "Message": "Total lines: 11"
+          },
+          "TextOrientation": "0",
+          "FileParseExitCode": 1,
+          "ParsedText": "export class Ocr extends BaseAI{\npublic async resolve Cimage : string): Promise<string> {\nconst res = await fetchC\nhttps://api.ocr. space/parse/imageurl ?${new URLSearchParams ({\napikey: this . ai . ocrToken,\nurl: image,\nOCREngine: '2\nthen (async (x) => await x.json ())\n.catch C) >({}))\nconsole.log (res)\nreturn res? . ParsedResults? . [o]? . ParsedText ??",
+          "ErrorMessage": "",
+          "ErrorDetails": ""
+      }
+  ],
+  "OCRExitCode": 1,
+  "IsErroredOnProcessing": false,
+  "ProcessingTimeInMilliseconds": "781"
+}

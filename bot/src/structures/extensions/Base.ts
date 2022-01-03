@@ -8,7 +8,7 @@ export interface Test {
   percent: `${number}%`
 }
 
-export class BaseAI {
+export class BaseExtension {
   cache: Cache<string, Test> = new Cache(Config.ai.cacheWipe)
 
   ai = Config.ai

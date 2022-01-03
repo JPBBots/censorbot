@@ -1,8 +1,8 @@
-import { BaseAI, Test } from './Base'
+import { BaseExtension, Test } from './Base'
 
 import fetch from 'node-fetch'
 
-export class PerspectiveApi extends BaseAI {
+export class PerspectiveApi extends BaseExtension {
   public async test(text: string): Promise<Test> {
     const tested = this.cache.get(text)
     if (tested) return tested

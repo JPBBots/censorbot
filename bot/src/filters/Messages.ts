@@ -1,316 +1,447 @@
-import { WorkerManager } from '../managers/Worker'
-
 import { FilterResponse } from '../structures/Filter'
 
 import {
   Snowflake,
-  GatewayMessageCreateDispatchData,
-  GatewayMessageUpdateDispatchData,
-  MessageType
+  MessageType,
+  ChannelType,
+  APIUser,
+  APIGuildMember
 } from 'discord-api-types'
 
 import { Cache } from '@jpbberry/cache'
 
 import { CensorMethods, ExceptionType, GuildDB } from 'typings/api'
+import { OcrLine } from '../structures/extensions/Ocr'
+
+import { Event } from '@jpbberry/typed-emitter'
+import { BaseFilterHandler } from './Base'
+import { DiscordEventMap } from 'jadl'
+import { SnowflakeUtil } from '../utils/Snowflake'
+import { FileBuilder } from '@jadl/cmd'
 
 interface MultiLine {
   author: Snowflake
   messages: {
-    [key: string]: EventData
+    [key: Snowflake]: ContentData
+    // DiscordEventMap['MESSAGE_CREATE' | 'MESSAGE_UPDATE']
   }
 }
 
-const multiLineStore: Cache<Snowflake, MultiLine> = new Cache(3.6e6)
+interface ContentData {
+  id: Snowflake
+  content?: string
+  images: string[]
+}
 
 const replaces = {
   1: '#',
   2: '*'
 }
 
-type EventData =
-  | GatewayMessageCreateDispatchData
-  | GatewayMessageUpdateDispatchData
+class ContentData {
+  content?: string
+  id: string
+  images: string[] = []
 
-function handleDeletion(
-  worker: WorkerManager,
-  message: EventData,
-  db: GuildDB,
-  response: FilterResponse
-): void {
-  if (!message.guild_id || !message.author || !message.member) return
+  constructor(message: DiscordEventMap['MESSAGE_CREATE' | 'MESSAGE_UPDATE']) {
+    this.id = message.id
 
-  if (!worker.hasPerms(message.guild_id, 'sendMessages', message.channel_id))
-    return
-  if (!worker.hasPerms(message.guild_id, 'embed', message.channel_id)) {
-    return void worker.requests.sendMessage(
-      message.channel_id,
-      'Missing `Embed Links` permission.'
-    )
-  }
-  if (
-    !worker.hasPerms(message.guild_id, 'manageMessages', message.channel_id)
-  ) {
-    return void worker.responses.missingPermissions(
-      message.channel_id,
-      'Manage Messages'
-    )
-  }
-  const multi = multiLineStore.get(message.channel_id)
-
-  void worker.actions.delete(
-    message.channel_id,
-    multi ? Object.values(multi.messages).map((x) => x.id) : [message.id]
-  )
-  const snipeContent = multi
-    ? Object.values(multi.messages)
-        .map((x) => x.content)
-        .join('\n')
-    : message.content
-  if (snipeContent)
-    void worker.snipes.set(
-      message.channel_id,
-      `<@${message.author.id}>: ${snipeContent}`
-    )
-
-  if (multi) multiLineStore.delete(message.channel_id)
-
-  void worker.responses.log(
-    CensorMethods.Messages,
-    message.content ?? 'No Content',
-    message,
-    response,
-    db
-  )
-
-  if (
-    db.msg.content !== false &&
-    !worker.isExcepted(ExceptionType.Response, db, {
-      roles: message.member.roles,
-      channel: message.channel_id
-    })
-  )
-    worker.actions.popup(message.channel_id, message.author.id, db)
-
-  if (
-    response.ranges.length > 0 &&
-    db.webhook.enabled &&
-    message.content &&
-    !worker.isExcepted(ExceptionType.Resend, db, {
-      roles: message.member.roles,
-      channel: message.channel_id
-    })
-  ) {
-    if (!worker.hasPerms(message.guild_id, 'webhooks')) {
-      void worker.responses.missingPermissions(
-        message.channel_id,
-        'Manage Webhooks'
+    this.setContent(message.content)
+      .addImages(message.attachments?.map((x) => x.proxy_url))
+      .addImages(
+        message.embeds
+          ?.map((x) => x.thumbnail?.proxy_url)
+          .filter((x) => x) as string[]
       )
-    } else {
-      let content = worker.filter.surround(
-        message.content,
-        response.ranges,
-        '||'
-      )
-
-      if (db.webhook.replace !== 0)
-        content = content.split(/\|\|/g).reduce(
-          (a, b) => [
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-            a[0] +
-              (a[1] === 1 ? replaces[db.webhook.replace].repeat(b.length) : b),
-            (a[1] as number) * -1
-          ],
-          ['', -1]
-        )[0]
-
-      void worker.actions.sendAs(
-        message.channel_id,
-        message.author,
-        message.member?.nick ?? message.author.username,
-        content
-      )
-    }
   }
 
-  if (
-    !worker.isExcepted(ExceptionType.Punishment, db, {
-      roles: message.member.roles,
-      channel: message.channel_id
-    })
-  ) {
-    void worker.punishments
-      .punish(message.guild_id, message.author.id, message.member.roles)
-      .catch((err) => {
-        void worker.responses.missingPermissions(
-          message.channel_id,
-          err.message
-        )
-      })
+  addImages(images?: string[]) {
+    if (images) this.images.push(...images)
+
+    return this
+  }
+
+  setContent(content?: string) {
+    this.content = content
+
+    return this
   }
 }
 
-export async function MessageHandler(
-  worker: WorkerManager,
-  message: EventData
-): Promise<void> {
-  const channel =
-    worker.channels.get(message.channel_id) ??
-    (message.guild_id
-      ? worker.getThreadParent(message.guild_id, message.channel_id)
-      : undefined)
-  if (!message.guild_id || !message.author || !channel || !message.member)
-    return
+interface OcrInfo {
+  url: string
+  lines: OcrLine[]
+}
 
-  let multiline = multiLineStore.get(message.channel_id)
-  if (multiline && multiline.author !== message.author.id) {
-    multiline = undefined
-    multiLineStore.delete(message.channel_id)
-  }
+export class MessageFilterContext {
+  content?: string
 
-  if (message.author.bot) return
+  contentData: ContentData
+  ocr: OcrInfo[] = []
+  response?: FilterResponse
 
-  const db = await worker.db.config(message.guild_id)
-
-  if ((db.censor & CensorMethods.Messages) === 0) return
-
-  if (
-    ![MessageType.Default, MessageType.Reply].includes(
-      message.type as MessageType
-    ) ||
-    channel.type !== 0 ||
-    worker.isExcepted(ExceptionType.Everything, db, {
-      roles: message.member.roles,
-      channel: message.channel_id
-    })
-  )
-    return
-
-  let content = message.content as string
-
-  if (
-    db.invites &&
-    !worker.isExcepted(ExceptionType.Invites, db, {
-      channel: message.channel_id,
-      roles: message.member.roles
-    })
+  constructor(
+    public readonly message: DiscordEventMap[
+      | 'MESSAGE_CREATE'
+      | 'MESSAGE_UPDATE'] & {
+      guild_id: Snowflake
+      author: APIUser
+      member: APIGuildMember
+    }
   ) {
-    if (content.match(/discord((app)?\.com\/invite|\.gg)\/([-\w]{2,32})/i)) {
-      return handleDeletion(worker, message, db, {
-        censor: true,
-        filters: ['invites'],
-        places: [],
-        ranges: []
-      })
-    }
+    this.contentData = new ContentData(message)
+
+    this.setContent(message.content)
   }
 
-  if (db.phishing) {
-    if (await worker.phishing.resolve(content)) {
-      return handleDeletion(worker, message, db, {
-        censor: true,
-        filters: ['phishing'],
-        places: [],
-        ranges: []
-      })
-    }
+  setContent(content?: string) {
+    if (content) this.content = content
+
+    return this
   }
 
-  if (db.nsfw && channel.nsfw) return
+  addOcrInfo(ocrInfo: OcrInfo) {
+    this.ocr.push(ocrInfo)
 
-  if (db.toxicity) {
-    const prediction = await worker.perspective.test(content)
-    if (prediction.bad) {
-      return handleDeletion(worker, message, db, {
-        censor: true,
-        filters: ['toxicity'],
-        places: [],
-        ranges: [],
-        percentage: prediction.percent
-      })
-    }
+    return this
   }
 
-  const urls: string[] = []
-  if (message.attachments)
-    urls.push(...message.attachments.map((x) => x.proxy_url))
-  if (message.embeds)
-    urls.push(
-      ...(message.embeds
-        .map((x) => x.thumbnail?.proxy_url)
-        .filter((x) => x) as string[])
+  setResponse(response: FilterResponse) {
+    this.response = response
+
+    return this
+  }
+}
+
+export class MessagesFilterHandler extends BaseFilterHandler {
+  multiLineStore: Cache<Snowflake, MultiLine> = new Cache(3.6e6)
+
+  @Event('MESSAGE_CREATE')
+  @Event('MESSAGE_UPDATE')
+  async onMessage(
+    message: DiscordEventMap['MESSAGE_CREATE' | 'MESSAGE_UPDATE']
+  ) {
+    const channel =
+      this.worker.channels.get(message.channel_id) ??
+      (message.guild_id
+        ? this.worker.getThreadParent(message.guild_id, message.channel_id)
+        : undefined)
+    if (!message.guild_id || !message.author || !channel || !message.member)
+      return
+
+    let multiline = this.multiLineStore.get(message.channel_id)
+    if (multiline && multiline.author !== message.author.id) {
+      multiline = undefined
+      this.multiLineStore.delete(message.channel_id)
+    }
+
+    if (message.author.bot) return
+
+    const db = await this.worker.db.config(message.guild_id)
+
+    if ((db.censor & CensorMethods.Messages) === 0) return
+
+    if (
+      ![MessageType.Default, MessageType.Reply].includes(
+        message.type as MessageType
+      ) ||
+      channel.type !== ChannelType.GuildText ||
+      this.worker.isExcepted(ExceptionType.Everything, db, {
+        roles: message.member.roles,
+        channel: message.channel_id
+      })
     )
+      return
 
-  if (db.images) {
-    for (const url of urls) {
-      const res = await worker.images.test(url)
-      if (res.bad) {
-        return handleDeletion(
-          worker,
-          {
-            ...message,
-            content: `${
-              message.content ?? 'No message content'
-            } + [image](${url})`
-          },
-          db,
-          {
-            censor: true,
-            filters: ['images'],
-            places: [],
-            ranges: [],
-            percentage: res.percent
-          }
-        )
+    const contentData = new MessageFilterContext(message as any)
+
+    if (db.multi) {
+      if (!multiline) {
+        multiline = {
+          author: message.author.id,
+          messages: {}
+        }
       }
-      continue
-    }
-  }
 
-  if (db.multi) {
-    if (!multiline) {
-      multiline = {
-        author: message.author.id,
-        messages: {}
-      }
-    }
+      multiline.messages[message.id] = contentData.contentData
 
-    multiline.messages[message.id] = message
+      this.multiLineStore.set(message.channel_id, multiline)
 
-    multiLineStore.set(message.channel_id, multiline)
-
-    content = Object.values(multiline.messages)
-      .sort(
-        (a, b) =>
-          new Date(a.timestamp as string).getTime() -
-          new Date(b.timestamp as string).getTime()
+      contentData.setContent(
+        Object.values(multiline.messages)
+          .sort(
+            (a, b) =>
+              SnowflakeUtil.getTimestamp(a.id).getTime() -
+              SnowflakeUtil.getTimestamp(b.id).getTime()
+          )
+          .map((x) => x.content)
+          .join('\n')
       )
-      .map((x) => x.content)
-      .join('\n')
-  }
+    }
 
-  if (db.ocr) {
-    for (const url of urls) {
-      const scanned = await worker.ocr.resolve(url)
-      if (scanned) {
-        content += `\n${scanned}`
-        content = content.replace(url, '')
-        const possible = message.embeds?.find(
-          (x) => x.thumbnail?.proxy_url === url
+    if (
+      db.invites &&
+      !this.worker.isExcepted(ExceptionType.Invites, db, {
+        channel: message.channel_id,
+        roles: message.member.roles
+      })
+    ) {
+      if (
+        contentData.content?.match(
+          /discord((app)?\.com\/invite|\.gg)\/([-\w]{2,32})/i
         )
+      ) {
+        contentData.setResponse({
+          censor: true,
+          filters: ['invites'],
+          places: [],
+          ranges: []
+        })
+      }
 
-        if (possible?.thumbnail?.url) {
-          content = content.replace(possible.thumbnail.url, '')
+      if (contentData.response)
+        return await this.handleDeletion(contentData, db)
+    }
+
+    if (db.phishing) {
+      if (
+        contentData.content &&
+        (await this.worker.phishing.resolve(contentData.content))
+      ) {
+        contentData.setResponse({
+          censor: true,
+          filters: ['phishing'],
+          places: [],
+          ranges: []
+        })
+      }
+
+      if (contentData.response)
+        return await this.handleDeletion(contentData, db)
+    }
+
+    // TODO: Add ExceptionType.NSFW
+    if (db.nsfw && channel.nsfw) return
+
+    if (db.toxicity && contentData.content) {
+      const prediction = await this.worker.perspective.test(contentData.content)
+      if (prediction.bad) {
+        contentData.setResponse({
+          censor: true,
+          filters: ['toxicity'],
+          places: [],
+          ranges: [],
+          percentage: prediction.percent
+        })
+      }
+
+      if (contentData.response)
+        return await this.handleDeletion(contentData, db)
+    }
+
+    // NSFW
+    if (db.images) {
+      for (const url of contentData.contentData.images) {
+        const res = await this.worker.images.test(url)
+        if (res.bad) {
+          contentData
+            .setContent(
+              `${message.content ?? 'No message content'} + [image](${url})`
+            )
+            .setResponse({
+              censor: true,
+              filters: ['images'],
+              places: [],
+              ranges: [],
+              percentage: res.percent
+            })
+        }
+        continue
+      }
+
+      if (contentData.response)
+        return await this.handleDeletion(contentData, db)
+    }
+
+    if (db.ocr) {
+      for (const url of contentData.contentData.images) {
+        const scanned = await this.worker.ocr.resolve(url)
+        if (scanned) {
+          const current: OcrInfo = { url, lines: [] }
+          for (const scan of scanned.ParsedResults?.[0]?.TextOverlay?.Lines ??
+            []) {
+            const test = this.test(scan.LineText, db, {
+              roles: message.member.roles,
+              channel: message.channel_id
+            })
+            if (test.censor) {
+              current.lines.push(scan)
+              contentData.setResponse({ ...test, ranges: [] })
+            }
+          }
+          contentData.addOcrInfo(current)
         }
       }
     }
+
+    if (contentData.content) {
+      const response = this.test(contentData.content, db, {
+        roles: message.member.roles,
+        channel: message.channel_id
+      })
+
+      if (response?.censor) contentData.setResponse(response)
+    }
+
+    if (!contentData.response?.censor) return
+
+    return await this.handleDeletion(contentData, db)
   }
 
-  const response = worker.test(content, db, {
-    roles: message.member.roles,
-    channel: message.channel_id
-  })
+  async handleDeletion(
+    contentData: MessageFilterContext,
+    db: GuildDB
+  ): Promise<void> {
+    const { message } = contentData
+    if (
+      !this.worker.hasPerms(
+        message.guild_id,
+        'sendMessages',
+        message.channel_id
+      )
+    )
+      return
+    if (!this.worker.hasPerms(message.guild_id, 'embed', message.channel_id)) {
+      return void this.worker.requests.sendMessage(
+        message.channel_id,
+        'Missing `Embed Links` permission.'
+      )
+    }
+    if (
+      !this.worker.hasPerms(
+        message.guild_id,
+        'manageMessages',
+        message.channel_id
+      )
+    ) {
+      return void this.worker.responses.missingPermissions(
+        message.channel_id,
+        'Manage Messages'
+      )
+    }
+    const multi = this.multiLineStore.get(message.channel_id)
 
-  if (!response.censor) return
+    void this.worker.actions.delete(
+      message.channel_id,
+      multi ? Object.values(multi.messages).map((x) => x.id) : [message.id]
+    )
+    const snipeContent = multi
+      ? Object.values(multi.messages)
+          .map((x) => x.content)
+          .join('\n')
+      : contentData.content
+    if (snipeContent)
+      void this.worker.snipes.set(
+        message.channel_id,
+        `<@${message.author.id}>: ${snipeContent}`
+      )
 
-  return handleDeletion(worker, { ...message, content }, db, response)
+    if (multi) this.multiLineStore.delete(message.channel_id)
+
+    void this.worker.responses.log(
+      CensorMethods.Messages,
+      contentData.content ?? 'No Content',
+      message,
+      contentData.response!,
+      db
+    )
+
+    if (
+      db.msg.content !== false &&
+      !this.worker.isExcepted(ExceptionType.Response, db, {
+        roles: message.member.roles,
+        channel: message.channel_id
+      })
+    )
+      this.worker.actions.popup(message.channel_id, message.author.id, db)
+
+    if (
+      db.webhook.enabled &&
+      !this.worker.isExcepted(ExceptionType.Resend, db, {
+        roles: message.member.roles,
+        channel: message.channel_id
+      }) &&
+      !contentData.response?.filters.includes('invites') &&
+      !contentData.response?.filters.includes('phishing') &&
+      !contentData.response?.filters.includes('toxicity') &&
+      !contentData.response?.filters.includes('images')
+    ) {
+      if (!this.worker.hasPerms(message.guild_id, 'webhooks')) {
+        void this.worker.responses.missingPermissions(
+          message.channel_id,
+          'Manage Webhooks'
+        )
+      } else {
+        let content =
+          contentData.content && contentData.response!.ranges.length > 0
+            ? this.worker.filter.surround(
+                contentData.content,
+                contentData.response!.ranges,
+                '||'
+              )
+            : contentData.content
+
+        if (db.webhook.replace !== 0)
+          content = content?.split(/\|\|/g).reduce(
+            (a, b) => [
+              // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+              a[0] +
+                (a[1] === 1
+                  ? replaces[db.webhook.replace].repeat(b.length)
+                  : b),
+              (a[1] as number) * -1
+            ],
+            ['', -1]
+          )[0]
+
+        const messageToSend = contentData.ocr.length
+          ? new FileBuilder().extra({ content })
+          : {
+              content
+            }
+
+        if (messageToSend instanceof FileBuilder) {
+          for (const ocr of contentData.ocr) {
+            messageToSend.add(
+              'resend.png',
+              await this.worker.ocr.cover(ocr.url, ocr.lines)
+            )
+          }
+        }
+
+        void this.worker.actions.sendAs(
+          message.channel_id,
+          message.author,
+          message.member?.nick ?? message.author.username,
+          messageToSend
+        )
+      }
+    }
+
+    if (
+      !this.worker.isExcepted(ExceptionType.Punishment, db, {
+        roles: message.member.roles,
+        channel: message.channel_id
+      })
+    ) {
+      void this.worker.punishments
+        .punish(message.guild_id, message.author.id, message.member.roles)
+        .catch((err) => {
+          void this.worker.responses.missingPermissions(
+            message.channel_id,
+            err.message
+          )
+        })
+    }
+  }
 }

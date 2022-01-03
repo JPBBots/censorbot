@@ -1,4 +1,5 @@
 import Collection from '@discordjs/collection'
+import { FileBuilder, MessageTypes } from '@jadl/cmd'
 import { Cache } from '@jpbberry/cache'
 
 import {
@@ -110,7 +111,7 @@ export class ActionBucket {
     channel: Snowflake,
     user: APIUser,
     name: string,
-    content: string
+    messageInfo: MessageTypes
   ): Promise<void> {
     let webhook = this.webhooks.get(channel)
     if (!webhook) {
@@ -127,21 +128,30 @@ export class ActionBucket {
       })
     }
 
+    const extra = {
+      username: name,
+      avatar_url: `https://cdn.discordapp.com/${
+        user.avatar
+          ? `avatars/${user.id}/${user.avatar}`
+          : `embed/avatars/${Number(user.discriminator) % 5}`
+      }.png`,
+      allowed_mentions: {
+        parse: [AllowedMentionsTypes.User]
+      }
+    }
+
+    if (messageInfo instanceof FileBuilder)
+      messageInfo.extra({ ...((messageInfo.data.extra as {}) ?? {}), ...extra })
+    if (typeof messageInfo === 'object' && 'content' in messageInfo)
+      messageInfo = {
+        ...extra,
+        content: messageInfo.content?.slice(0, 2048)
+      }
+
     await this.worker.requests.sendWebhookMessage(
       webhook.id,
       webhook.token as string,
-      {
-        content: content.slice(0, 2048),
-        username: name,
-        avatar_url: `https://cdn.discordapp.com/${
-          user.avatar
-            ? `avatars/${user.id}/${user.avatar}`
-            : `embed/avatars/${Number(user.discriminator) % 5}`
-        }.png`,
-        allowed_mentions: {
-          parse: [AllowedMentionsTypes.User]
-        }
-      }
+      messageInfo
     )
   }
 }
