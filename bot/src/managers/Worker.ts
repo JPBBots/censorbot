@@ -36,7 +36,7 @@ import fetch from 'node-fetch'
 import { ExceptionType, GuildDB } from 'typings'
 import { WorkerEvents } from '../helpers/WorkerEvents'
 import { AntiPhish } from '../structures/extensions/AntiPhish'
-import { Requests } from './Requests'
+import { Requests } from '../helpers/Requests'
 import { CommandHandler, formatMessage } from '@jadl/cmd'
 
 import { DashboardCommand } from '../commands/info/DashboardCommand'

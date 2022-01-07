@@ -15,7 +15,7 @@ import { CustomBotOptions } from 'typings/custombot'
 import AutoPoster from 'topgg-autoposter'
 
 import { Interface } from '@jpbbots/interface'
-import { Requests } from './Requests'
+import { Requests } from '../helpers/Requests'
 
 import { CustomBotManager } from '../helpers/CustomBotManager'
 

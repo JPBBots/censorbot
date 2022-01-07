@@ -26,7 +26,13 @@ interface AdminUser {
 const SECTIONS = [
   {
     name: 'Team',
-    ranks: ['Founder', 'Developer', 'Communication Director', 'Admin']
+    ranks: [
+      'Founder',
+      'Designer',
+      'Developer',
+      'Communication Director',
+      'Admin'
+    ]
   },
   {
     name: 'Support',
@@ -116,6 +122,10 @@ export default function Staff() {
                                   new Date(),
                                   new Date(admin.since)
                                 )}`}
+                                hasArrow
+                                bg="darker.100"
+                                p={2}
+                                borderRadius="md"
                               >
                                 <Text color="brand.100" textStyle="label.sm">
                                   {admin.since}
