@@ -5,13 +5,12 @@ import { useHeadless, useUser } from 'hooks/useAuth'
 import { useRouter } from 'next/router'
 import { stats } from 'structures/StatsManager'
 
-import { useMinWidth } from '@/hooks/useMinWidth'
 import { Api } from '@/structures/Api'
+import { wMT } from '@/hooks/useScreenSize'
 
 export function NavBar() {
   const [user, login, logout] = useUser(false)
-  const [includeNavBar] = useMinWidth(675)
-  const [useSmallText] = useMinWidth(515)
+  const showNavItems = wMT(675)
   const router = useRouter()
   const [headless] = useHeadless()
 
@@ -34,12 +33,12 @@ export function NavBar() {
           cursor: 'pointer'
         }}
         textProps={{
-          textStyle: useSmallText ? 'label.md' : 'heading.xl'
+          textStyle: wMT(515) ? 'heading.xl' : 'label.md'
         }}
       >
         <NavActions
           actions={
-            !includeNavBar
+            showNavItems
               ? [
                   {
                     label: 'Support'
@@ -76,7 +75,7 @@ export function NavBar() {
               Payment Portal
             </MenuItem>
           )}
-          {includeNavBar && (
+          {!showNavItems && (
             <>
               <MenuItem
                 onClick={() => {

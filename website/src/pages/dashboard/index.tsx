@@ -14,8 +14,8 @@ import { FaSearch } from 'react-icons/fa'
 
 import FuzzySearch from 'fuzzy-search'
 import { ShortGuild } from '@/../../typings/api'
-import { useMinWidth } from '@/hooks/useMinWidth'
 import { Loading } from '~/styling/Loading'
+import { wMT } from '@/hooks/useScreenSize'
 
 export function GuildList({
   searchTerm,
@@ -31,7 +31,7 @@ export function GuildList({
     <Flex spacing={4} alignSelf="flex-start" wrap="wrap" gridGap="15px">
       {searcher
         ?.search(searchTerm)
-        .filter(filter || (() => true))
+        .filter(filter ?? (() => true))
         .map((guild) => (
           <GuildPreview
             key={guild.id}
@@ -59,9 +59,8 @@ export default function DashboardHome() {
   useUser(true)
   const [loginState] = useLoginState()
   const [guilds] = useGuilds()
-  const router = useRouter()
 
-  const [dontShowSearch] = useMinWidth(970)
+  const showSearch = wMT(970)
 
   const [searcher, setSearcher] = useState<FuzzySearch<ShortGuild> | undefined>(
     undefined
@@ -74,7 +73,9 @@ export default function DashboardHome() {
     else setSearcher(undefined)
   }, [guilds])
 
-  const groups = guilds ? [...new Set(guilds.map(x => x.group).filter(x => x))] : undefined
+  const groups = guilds
+    ? [...new Set(guilds.map((x) => x.group).filter((x) => x))]
+    : undefined
 
   return (
     <VStack padding={3}>
@@ -89,7 +90,7 @@ export default function DashboardHome() {
           <>
             <HStack w="full" justify="space-between">
               <Text textStyle="heading.lg">Select a server to get started</Text>
-              {!dontShowSearch && (
+              {showSearch && (
                 <InputGroup w="350px" maxW="70vw" display="inline-flex">
                   <InputLeftAddon>
                     <Icon color="brand.100" as={FaSearch} />
@@ -110,21 +111,27 @@ export default function DashboardHome() {
       </VStack>
       {guilds && (
         <VStack align="left" w="full">
-          <GuildList filter={(x) => x.joined && !x.group} { ...({ searchTerm, searcher }) } />
-          {
-            groups?.map(x => <>
+          <GuildList
+            filter={(x) => x.joined && !x.group}
+            {...{ searchTerm, searcher }}
+          />
+          {groups?.map((x) => (
+            <>
               <Text align="left" textStyle="heading.lg">
                 {x}
               </Text>
               <Divider color="lighter.5" />
-              <GuildList filter={(a) => a.group === x} { ...({ searchTerm, searcher }) } />
-            </>)
-          }
+              <GuildList
+                filter={(a) => a.group === x}
+                {...{ searchTerm, searcher }}
+              />
+            </>
+          ))}
           <Text align="left" textStyle="heading.lg">
             Servers without Censor Bot
           </Text>
           <Divider color="lighter.5" />
-          <GuildList filter={(x) => !x.joined} { ...({ searchTerm, searcher }) } />
+          <GuildList filter={(x) => !x.joined} {...{ searchTerm, searcher }} />
         </VStack>
       )}
     </VStack>

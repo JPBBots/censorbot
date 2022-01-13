@@ -18,21 +18,25 @@
     {
       "name": "Testing",
       "id": "569907007465848842",
+      "joined": true,
       "icon": null
     },
     {
       "name": "Testing Server",
       "id": "5699070074658488422",
+      "joined": true,
       "icon": null
     },
     {
       "name": "Testing Server S",
       "id": "5699070074658488423",
+      "joined": false,
       "icon": null
     },
     {
       "name": "Icon",
       "id": "399688888739692552",
+      "joined": false,
       "icon": "ac697b53513bc89e8d3ec599c3621cd2"
     }
   ],

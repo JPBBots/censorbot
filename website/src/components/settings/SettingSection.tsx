@@ -19,10 +19,10 @@ import { useGuild } from 'hooks/useGuilds'
 import { LoginState } from 'store/reducers/auth.reducer'
 
 import { FaBars, FaSearch } from 'react-icons/fa'
-import { useMinWidth } from '@/hooks/useMinWidth'
 import { sectionSettings, Setting } from './Setting'
 import { searcher } from './settings'
 import { Loading } from '~/styling/Loading'
+import { wLT } from '@/hooks/useScreenSize'
 
 interface SettingSectionProps extends PropsWithChildren<{}> {
   description?: string
@@ -34,7 +34,7 @@ export function SettingSection(props: SettingSectionProps) {
   useUser(true)
   const [currentGuild] = useGuild()
   const [loginState] = useLoginState()
-  const [mobiled] = useMinWidth(840)
+  const mobiled = wLT(840)
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState<string | null>(null)
 
