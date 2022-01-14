@@ -1,16 +1,19 @@
 import { MenuItem } from '@chakra-ui/menu'
 import { Box } from '@chakra-ui/layout'
-import { Header, NavActions } from '@jpbbots/censorbot-components'
 import { useHeadless, useUser } from 'hooks/useAuth'
 import { useRouter } from 'next/router'
 import { stats } from 'structures/StatsManager'
+
+import { Header } from './Header'
+import { NavActions } from './NavActions'
 
 import { Api } from '@/structures/Api'
 import { wMT } from '@/hooks/useScreenSize'
 
 export function NavBar() {
   const [user, login, logout] = useUser(false)
-  const showNavItems = wMT(675)
+  const showText = wMT(675)
+  const showNavItems = wMT(475)
   const router = useRouter()
   const [headless] = useHeadless()
 
@@ -33,6 +36,7 @@ export function NavBar() {
           cursor: 'pointer'
         }}
         textProps={{
+          display: showText ? undefined : 'none',
           textStyle: wMT(515) ? 'heading.xl' : 'label.md'
         }}
       >

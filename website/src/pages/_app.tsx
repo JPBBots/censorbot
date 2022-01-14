@@ -2,7 +2,7 @@ import type { AppProps } from 'next/app'
 
 import React from 'react'
 
-import { NavBar } from '~/navbar/Navbar'
+import { NavBar } from '~/Navbar'
 import { Header } from '~/Header'
 
 import './Global.scss'

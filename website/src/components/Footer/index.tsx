@@ -1,11 +1,11 @@
-import { Footer as CBFooter } from '@jpbbots/censorbot-components'
 import { useRouter } from 'next/router'
+import { GenericFooter } from './GenericFooter'
 
 export function Footer() {
   const router = useRouter()
 
   return (
-    <CBFooter
+    <GenericFooter
       name="Censor Bot"
       companyName="JPBBots"
       copyrightYear="2017-2021"

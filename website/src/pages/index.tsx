@@ -1,102 +1,336 @@
-import React from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { Button, HStack, Image, Text, VStack, Box } from '@chakra-ui/react'
 
-import BRANDING from 'BRANDING'
+import DashboardExample from 'images/dashboardexample.png'
+import PhoneDashboard from 'images/phonedashboard.png'
+import DiscordChat from 'images/discordchat.png'
 
-import { LandingSection } from '~/landing/LandingSection'
+import { Lower, Upper } from '~/LandingSectionSvg'
+import { PremiumIcon } from '~/PremiumIcon'
+import { Footer } from '~/Footer'
 
-import Aos from 'aos'
-import 'aos/dist/aos.css'
-import { LandingExample } from '~/landing/LandingExample'
-import Router, { useRouter } from 'next/router'
-import { HStack, VStack, Text, Button } from '@chakra-ui/react'
-import { useMinWidth } from '@/hooks/useMinWidth'
+import { MiddleWrap } from '~/MiddleWrap'
 
-import { Footer } from '~/footer/Footer'
+import { UWS, wLT, wMT } from '@/hooks/useScreenSize'
+import { animate } from 'framer-motion'
+import { useRouter } from 'next/router'
+
+const DESCRIPTION_FONT_SIZE = '24px'
+
+const DESKTOP_WIDTH = 1920
+const TABLET_WIDTH = 1353
+const MOBILE_WIDTH = 790
+
+const ULW = (sizes: { mobile?: any; tablet?: any; desktop?: any }) => {
+  return UWS({
+    [DESKTOP_WIDTH]: sizes.desktop,
+    [TABLET_WIDTH]: sizes.desktop,
+    [MOBILE_WIDTH]: sizes.tablet,
+    0: sizes.mobile
+  })
+}
 
 export default function Landing() {
   const router = useRouter()
-  const [mobiled] = useMinWidth(1190)
 
-  React.useEffect(() => {
-    Aos.init({ duration: 400 })
-    void Router.prefetch('/dashboard')
-  }, [])
+  const [serverCount] = useState(64393)
+
+  const countRef = useRef<HTMLParagraphElement>(null)
+
+  useEffect(() => {
+    const controls = animate(60000, serverCount, {
+      duration: 1,
+      onUpdate(value: number) {
+        countRef.current!.innerText = Number(value.toFixed(0)).toLocaleString()
+      }
+    })
+
+    return () => controls.stop()
+  }, [serverCount])
+
+  const imageHeight = ULW({
+    desktop: 281,
+    tablet: 403,
+    mobile: 175.14
+  })
+
+  const imageWidth = ULW({
+    desktop: 509,
+    tablet: 729,
+    mobile: 315.63
+  })
+
+  const headingFontSize = ULW({
+    desktop: '72px',
+    tablet: '60px',
+    mobile: '36px'
+  })
+
+  const alignCenter = wLT(TABLET_WIDTH)
 
   return (
-    <VStack margin={mobiled ? '30px 10px' : '30px 200px'}>
-      <HStack gridGap="200px">
-        <VStack
-          maxW="500px"
-          alignItems={mobiled ? 'center' : 'flex-start'}
-          textAlign={mobiled ? 'center' : 'left'}
-        >
-          <Text fontSize="3rem">{BRANDING.title}</Text>
-          <Text color="lighter.40" fontSize="1.4rem">
-            {BRANDING.title2}
-          </Text>
-          <Button
-            onClick={() => {
-              void router.push('/dashboard')
-            }}
+    <VStack pt={50}>
+      <VStack justifyContent="center" alignItems="center" spacing={10} pb={50}>
+        <VStack spacing="16px">
+          <Text
+            textStyle="heading.xl"
+            fontSize={ULW({
+              desktop: '96px',
+              tablet: '72px',
+              mobile: '36px'
+            })}
+            textAlign="center"
+            color="brand.100"
           >
-            Get Started
-          </Button>
+            Get started immediately
+          </Text>
+          <MiddleWrap
+            spacing="15px"
+            fontSize={ULW({
+              desktop: '36px',
+              tablet: '28px',
+              mobile: '18px'
+            })}
+          >
+            <Text textStyle="label.md" fontSize="inherit">
+              No setup
+            </Text>
+            <Text textStyle="label.md" fontSize="inherit">
+              No hassle
+            </Text>
+            <Text textStyle="label.md" fontSize="inherit">
+              No headaches
+            </Text>
+          </MiddleWrap>
+        </VStack>
 
-          <Text fontSize="0.7rem">
-            Used in more than {(60000).toLocaleString()} servers!
+        <HStack>
+          <Button
+            variant="primary"
+            onClick={async () => await router.push('/dashboard')}
+          >
+            Invite Censor Bot
+          </Button>
+          <Button onClick={async () => await router.push('/dashboard')}>
+            Dashboard
+          </Button>
+        </HStack>
+
+        <VStack
+          spacing={1}
+          fontSize={ULW({
+            tablet: '24px',
+            mobile: '18px'
+          })}
+        >
+          <Text textStyle="label.md" fontSize="inherit">
+            Serving{' '}
+            <Text
+              textStyle="label.md"
+              color="brand.100"
+              fontSize="inherit"
+              ref={countRef}
+              as="span"
+            >
+              60,000
+            </Text>{' '}
+            communities on Discord
+          </Text>
+          <Text
+            textStyle="label.md"
+            textAlign="center"
+            color="lighter.40"
+            fontSize="inherit"
+            p={ULW({ tablet: '0px', mobile: '16px' })}
+          >
+            The largest and most customizable anti-swear and filtering bot
           </Text>
         </VStack>
 
-        {mobiled ? (
-          ''
-        ) : (
-          <LandingExample example={BRANDING.mainImage} align="right" />
-        )}
-      </HStack>
+        <MiddleWrap spacing="8px" m={ULW({ tablet: '2px', mobile: '0px' })}>
+          {wMT(TABLET_WIDTH) && (
+            <Image
+              src={DiscordChat.src}
+              h={imageHeight}
+              w={imageWidth}
+              boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
+              borderRadius={20}
+              flexGrow={0}
+            />
+          )}
+          <Image
+            src={DashboardExample.src}
+            h={imageHeight}
+            w={imageWidth}
+            boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
+            borderRadius={20}
+            flexGrow={0}
+          />
+        </MiddleWrap>
+      </VStack>
 
-      <VStack>
-        {BRANDING.examples.map((x, ind) => (
-          <div key={ind}>
-            <LandingSection
-              ind={ind}
-              href="/"
-              example={x.example}
-              title={x.title}
-              align={ind % 2 ? 'right' : 'left'}
+      <VStack py="0px" w="full" spacing={0}>
+        <Upper />
+        <Box w="full" bg="brand.100">
+          <MiddleWrap
+            p={ULW({
+              desktop: '0px 20px',
+              tablet: '50px 20px',
+              mobile: '32px 64px'
+            })}
+            spacing="100px"
+          >
+            <VStack
+              textAlign={alignCenter ? 'center' : 'right'}
+              alignItems={alignCenter ? 'center' : 'flex-end'}
+              justifyContent="flex-end"
             >
-              {x.description}
-            </LandingSection>
-            <div
-              style={{
-                height: '50px'
-              }}
-            ></div>
-          </div>
-        ))}
+              <Text textStyle="heading.xl" fontSize={headingFontSize}>
+                #1 for Customization
+              </Text>
+              <Text
+                textStyle="label.md"
+                fontSize={DESCRIPTION_FONT_SIZE}
+                maxW={707}
+              >
+                Easily customize Censor Bot to your needs, you can start with
+                pre-made filters or make your own. Easily add filter exceptions
+                or manage custom punishments!
+              </Text>
+              <Button
+                bg="darker.80"
+                _hover={{ bg: 'darker.100' }}
+                onClick={async () => await router.push('/dashboard')}
+              >
+                Dashboard
+              </Button>
+            </VStack>
+
+            {wMT(TABLET_WIDTH) && (
+              <Box borderRadius={66}>
+                <Image src={PhoneDashboard.src} w={432} h={686} />
+              </Box>
+            )}
+          </MiddleWrap>
+        </Box>
+        <Lower />
       </VStack>
 
-      <VStack
-        data-aos="fade-up"
-        data-aos-anchor-placement="top-bottom"
-        textAlign="center"
-      >
-        <Text textStyle="heading.xl">Are you ready to go?</Text>
-        <Text textStyle="heading.sm">Let's start cleaning your server!</Text>
-        <Button
-          onClick={() => {
-            window.open('/invite', '_blank')
-          }}
-        >
-          Invite
-        </Button>
+      <VStack py={100} w="full" spacing={0}>
+        <MiddleWrap wrap="wrap-reverse" spacing="20px">
+          <Image
+            src={DashboardExample.src}
+            h={imageHeight}
+            width={imageWidth}
+            boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
+            borderRadius={20}
+            flexGrow={0}
+          />
+          <VStack
+            textAlign={alignCenter ? 'center' : 'left'}
+            alignItems={alignCenter ? 'center' : 'flex-start'}
+            justifyContent="flex-start"
+            px="64px"
+          >
+            <Text textStyle="heading.xl" fontSize={headingFontSize}>
+              What is Censor Bot
+            </Text>
+            <Text
+              textStyle="label.md"
+              fontSize={DESCRIPTION_FONT_SIZE}
+              maxW={707}
+            >
+              Censor Bot is a simple, yet powerful anti-swear bot for your
+              Discord server. It comes with pre-built filters managed by Censor
+              Bot's curated staff team, keeping them up to date and accurate at
+              all times.
+            </Text>
+            <Button>Read more</Button>
+          </VStack>
+        </MiddleWrap>
       </VStack>
-      {new Array(5).fill(null).map((x, i) => (
-        <br key={i} />
-      ))}
+
+      <VStack py={100} w="full" spacing={0} bg="darker.10">
+        <MiddleWrap spacing="20px">
+          <VStack
+            textAlign={alignCenter ? 'center' : 'right'}
+            alignItems={alignCenter ? 'center' : 'flex-end'}
+            justifyContent="flex-end"
+            px="64px"
+          >
+            <Text
+              textStyle="heading.xl"
+              fontSize={headingFontSize}
+              color="brand.100"
+            >
+              Premium Features
+            </Text>
+            <Text
+              textStyle="label.md"
+              fontSize={DESCRIPTION_FONT_SIZE}
+              maxW={707}
+            >
+              Can't get enough customization? Customize more with{' '}
+              <PremiumIcon />{' '}
+              <Text color="brand.100" as="span" fontSize="inherit">
+                Censor Bot Premium
+              </Text>
+              . Gain access to increased filter limits, AI features, image
+              filtering and more!
+            </Text>
+            <Button
+              color="brand.100"
+              onClick={async () => await router.push('/premium')}
+            >
+              Get Premium
+            </Button>
+          </VStack>
+          <Image
+            src={DashboardExample.src}
+            h={imageHeight}
+            width={imageWidth}
+            boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
+            borderRadius={20}
+            flexGrow={0}
+          />
+        </MiddleWrap>
+      </VStack>
+
+      <VStack py={50} spacing={5}>
+        <VStack textAlign="center" alignContent="center">
+          <Text textStyle="heading.xl" fontSize={headingFontSize}>
+            Get started now
+          </Text>
+          <Text
+            maxW="33vw"
+            minW="350px"
+            textStyle="label.md"
+            color="lighter.60"
+            fontSize={DESCRIPTION_FONT_SIZE}
+          >
+            Simply invite the bot to get started. No additional setup is
+            required. Easily add or change new or existing features through the
+            dashboard at your own pace!
+          </Text>
+        </VStack>
+        <MiddleWrap spacing="5px">
+          <Button
+            variant="primary"
+            onClick={async () => await router.push('/dashboard')}
+          >
+            Get Started
+          </Button>
+        </MiddleWrap>
+        <Text fontFamily="Kalam" color="lighter.60" fontSize={15}>
+          Keeping your servers{' '}
+          <Text color="brand.100" as="span">
+            clean
+          </Text>
+          , since 2017
+        </Text>
+      </VStack>
+
       <Footer />
-      {new Array(2).fill(null).map((x, i) => (
-        <br key={i} />
-      ))}
     </VStack>
   )
 }

@@ -1,6 +1,5 @@
 import { Input } from '@chakra-ui/input'
-import { VStack } from '@chakra-ui/layout'
-import { Flex } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/layout'
 import { Select } from '@chakra-ui/select'
 import { Tag } from '@jpbbots/censorbot-components'
 
@@ -49,8 +48,20 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
   }
 
   return (
-    <VStack align="left">
-      <Flex wrap="wrap" gridGap={2}>
+    <Flex
+      wrap="wrap"
+      align="left"
+      bg="lighter.5"
+      borderRadius="md"
+      pl={value.length > 0 ? '10px' : '0px'}
+    >
+      <Flex
+        wrap="wrap"
+        gridGap={2}
+        bg="transparent"
+        alignContent="center"
+        pr={value.length > 0 ? '10px' : '0px'}
+      >
         {value.map((tagValue) => {
           const val = whitelist
             ? whitelist.find((x) => x.id === tagValue) ?? { value: tagValue }
@@ -58,6 +69,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
 
           return (
             <Tag
+              h="39px"
               key={val.value}
               label={val.value}
               color={val.color ? String(val.color) : undefined}
@@ -70,8 +82,9 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
       </Flex>
       {whitelist ? (
         <Select
-          w="400px"
           maxW="80vw"
+          w="150px"
+          bg="transparent"
           onChange={({ target }) => {
             if (target.value === '_') return
 
@@ -103,8 +116,9 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
               ? settings.maxMessage
               : placeholder
           }
-          w="400px"
           maxW="80vw"
+          w="fit-content"
+          bg="transparent"
           maxLength={settings.maxLength}
           onKeyDown={(ev) => {
             if (ev.key === 'Backspace' && !ev.currentTarget.value) {
@@ -139,6 +153,6 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
           }}
         />
       )}
-    </VStack>
+    </Flex>
   )
 }

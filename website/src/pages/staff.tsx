@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from 'react'
 import { Loading } from '~/styling/Loading'
 
-import { Footer } from '~/footer/Footer'
+import { Footer } from '~/Footer'
 
 interface AdminUser {
   id: string

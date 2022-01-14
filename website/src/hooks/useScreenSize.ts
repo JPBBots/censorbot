@@ -9,7 +9,6 @@ const useWindowSize = () => {
   useEffect(() => {
     if ('window' in global) {
       const handler = () => {
-        console.log(window.innerWidth, window.innerHeight)
         setState({
           width: window.innerWidth,
           height: window.innerHeight

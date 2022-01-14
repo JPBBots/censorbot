@@ -1,16 +1,16 @@
 import { useUser } from '@/hooks/useAuth'
-import { MainButton } from './MainButton'
+import { Button } from '@chakra-ui/react'
 
 export function LoginButton({ name = 'Login' }: { name?: string }) {
   const [, login] = useUser(false)
 
   return (
-    <MainButton
+    <Button
       onClick={() => {
         void login()
       }}
     >
       {name}
-    </MainButton>
+    </Button>
   )
 }

@@ -1,7 +1,7 @@
 import { FlexProps, Flex } from '@chakra-ui/react'
 
 export function MiddleWrap(
-  props: FlexProps & { spacing?: number; reverse?: boolean }
+  props: FlexProps & { spacing?: `${number}px`; reverse?: boolean }
 ) {
   return (
     <Flex

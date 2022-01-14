@@ -1,7 +1,10 @@
 const fs = require('fs')
 const path = require('path')
 
-const links = fs.readdirSync(path.resolve(__dirname, './src/pages/api')).filter(x => x.endsWith('.tsx')).map(x => x.split('.')[0])
+const links = fs
+  .readdirSync(path.resolve(__dirname, './src/pages/api'))
+  .filter((x) => x.endsWith('.tsx'))
+  .map((x) => x.split('.')[0])
 
 module.exports = {
   reactStrictMode: true,
@@ -9,12 +12,14 @@ module.exports = {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 5
   },
-  async rewrites () {
+  async rewrites() {
     return [
-      ...links.map(name => ({
-        source: `/${name}:path*`, destination: `/api/${name}`
+      ...links.map((name) => ({
+        source: `/${name}:path*`,
+        destination: `/api/${name}`
       })),
-      { source: '/servers/:path*', destination: '/dashboard/:path*' }
+      { source: '/servers/:path*', destination: '/dashboard/:path*' },
+      { source: '/landing', destination: '/' }
     ]
   }
 }

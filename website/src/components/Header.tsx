@@ -11,9 +11,6 @@ export function Header() {
       />
       <title>Censor Bot</title>
 
-      <link rel="prefetch" href={BRANDING.mainImage} />
-      <link rel="prefetch" href={BRANDING.examples[0].example} />
-
       <meta property="og:image" content={BRANDING.logo} />
       <meta name="theme-color" content="#ea5455" />
       <meta property="og:title" content={BRANDING.name} />
