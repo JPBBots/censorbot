@@ -243,12 +243,14 @@ export class Filter {
     const content = this.resolve(text)
 
     let censor = false
-    const res: FilterResultInfo = {
+    const res = {
       type: FilterType.BaseFilter,
       ranges: [],
       filters: [],
       places: []
-    }
+    } as FilterResultInfo & {
+      type: FilterType.BaseFilter | FilterType.ServerFilter
+    } & { filters: string[]; ranges?: Range[] }
 
     const scanFor: {
       [key in baseFilters | 'server']?: JPBExp[]
@@ -290,7 +292,7 @@ export class Filter {
     content.forEach((piece) => {
       let done = false
       if (
-        res.ranges.some(
+        res.ranges?.some(
           (x) =>
             x[0] !== undefined &&
             x[1] !== undefined &&
@@ -305,8 +307,10 @@ export class Filter {
 
           done = true
 
+          if (key === 'server') res.type = FilterType.ServerFilter
+
           censor = true
-          res.ranges.push(piece.i)
+          if (res.type === FilterType.BaseFilter) res.ranges.push(piece.i)
           if (!res.filters.includes(key as baseFilters))
             res.filters.push(key as baseFilters)
           res.places.push(part)
@@ -317,14 +321,16 @@ export class Filter {
       }
     })
 
-    for (let i = 0; i < res.ranges.length; i++) {
-      if (res.ranges[i + 1] && res.ranges[i][1] === res.ranges[i + 1][0]) {
-        res.ranges[i + 1][0] = res.ranges[i][0]
-        delete res.ranges[i]
+    if (res.type === FilterType.BaseFilter) {
+      for (let i = 0; i < res.ranges.length; i++) {
+        if (res.ranges[i + 1] && res.ranges[i][1] === res.ranges[i + 1][0]) {
+          res.ranges[i + 1][0] = res.ranges[i][0]
+          delete res.ranges[i]
+        }
       }
-    }
 
-    res.ranges = res.ranges.filter((x) => x).reverse()
+      res.ranges = res.ranges.filter((x) => x).reverse()
+    }
 
     return censor ? res : null
   }
