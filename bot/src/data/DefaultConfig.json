@@ -16,7 +16,8 @@
   },
   "punishments": {
     "expires": null,
-    "levels": []
+    "levels": [],
+    "allow": 63
   },
   "webhook": {
     "enabled": false,

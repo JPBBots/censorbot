@@ -12,7 +12,7 @@ import {
   InputGroup,
   InputLeftAddon
 } from '@chakra-ui/react'
-import { Sidebar, sections, SectionName } from './Sidebar'
+import { Aside, sections, SectionName } from './Aside'
 import { LoginButton } from '../button/LoginButton'
 import { useLoginState, useUser } from 'hooks/useAuth'
 import { useGuild } from 'hooks/useGuilds'
@@ -82,7 +82,7 @@ export function SettingSection(props: SettingSectionProps) {
       overflow="hidden"
     >
       {(!mobiled || menuOpen) && (
-        <Sidebar
+        <Aside
           selected={currentSection?.name}
           premium={props.section === 'Premium'}
           opened={mobiled && menuOpen}

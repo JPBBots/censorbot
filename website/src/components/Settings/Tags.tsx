@@ -29,6 +29,15 @@ export interface TagsProps {
 export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
   const { whitelist } = settings
 
+  const inputProps: any = {
+    _hover: {
+      bg: 'transparent'
+    },
+
+    maxWidth: '80vw',
+    bg: 'transparent'
+  }
+
   const remove = (val: string) => {
     let removing: string
     if (whitelist) {
@@ -53,6 +62,9 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
       align="left"
       bg="lighter.5"
       borderRadius="md"
+      _hover={{
+        bg: 'lighter.10'
+      }}
       pl={value.length > 0 ? '10px' : '0px'}
     >
       <Flex
@@ -73,6 +85,9 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
               key={val.value}
               label={val.value}
               color={val.color ? String(val.color) : undefined}
+              _hover={{
+                bg: 'brand.20'
+              }}
               isRole={settings.role}
               isChannel={settings.channel}
               onDelete={() => remove(tagValue)}
@@ -82,9 +97,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
       </Flex>
       {whitelist ? (
         <Select
-          maxW="80vw"
           w="150px"
-          bg="transparent"
           onChange={({ target }) => {
             if (target.value === '_') return
 
@@ -96,6 +109,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
               target.value = '_'
             }
           }}
+          {...inputProps}
         >
           <option value="_">{placeholder}</option>
           {whitelist
@@ -116,10 +130,9 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
               ? settings.maxMessage
               : placeholder
           }
-          maxW="80vw"
           w="fit-content"
-          bg="transparent"
           maxLength={settings.maxLength}
+          {...inputProps}
           onKeyDown={(ev) => {
             if (ev.key === 'Backspace' && !ev.currentTarget.value) {
               return remove(value[value.length - 1])

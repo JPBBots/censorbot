@@ -40,7 +40,7 @@ export class ReactionsFilterHandler extends BaseFilterHandler {
       channel: reaction.channel_id
     })
 
-    if (!res.censor) return
+    if (!res) return
 
     if (
       !this.worker.hasPerms(
@@ -69,7 +69,8 @@ export class ReactionsFilterHandler extends BaseFilterHandler {
       !this.worker.isExcepted(ExceptionType.Punishment, db, {
         roles: reaction.member.roles,
         channel: reaction.channel_id
-      })
+      }) &&
+      (db.punishments.allow & res.type) !== 0
     ) {
       void this.worker.punishments
         .punish(

@@ -2,8 +2,13 @@ import { APIMessage, ChannelType, Snowflake } from 'discord-api-types'
 import { WorkerManager } from '../managers/Worker'
 
 import { Embed } from '@jadl/embed'
-import { FilterResponse } from './Filter'
 import { CensorMethods, GuildDB } from 'typings'
+import {
+  baseFilterNames,
+  FilterResultInfo,
+  FilterType,
+  filterTypeNames
+} from 'typings/filter'
 
 const LENGTH_MESSAGE = '- messsage too long'
 const DESCRIPTION_MAX_LENGTH = 2048
@@ -65,7 +70,7 @@ export class Responses {
     type: CensorMethods,
     content: string,
     data: any,
-    response: FilterResponse,
+    response: FilterResultInfo,
     db: GuildDB
   ): Promise<void> {
     if (!db.log || !db.id || !this.canLog(db.id, db.log)) return
@@ -97,23 +102,26 @@ export class Responses {
           )
     }
 
-    content = this.worker.filter.surround(content, response.ranges, '__')
-    if (content.length > DESCRIPTION_MAX_LENGTH) {
-      content =
-        content.slice(0, DESCRIPTION_MAX_LENGTH - LENGTH_MESSAGE.length) +
-        LENGTH_MESSAGE
+    if (response.type === FilterType.BaseFilter) {
+      content = this.worker.filter.surround(content, response.ranges, '__')
+      if (content.length > DESCRIPTION_MAX_LENGTH) {
+        content =
+          content.slice(0, DESCRIPTION_MAX_LENGTH - LENGTH_MESSAGE.length) +
+          LENGTH_MESSAGE
+      }
     }
 
     embed
       .description(`${content || 'None'}`)
       .field(
         'Filter(s)',
-        response.filters.map((x) => this.worker.filter.masks[x]).join(', ') ||
-          'None',
+        (response.type === FilterType.BaseFilter
+          ? response.filters.map((x) => baseFilterNames[x]).join(', ')
+          : filterTypeNames[response.type]) || 'None',
         true
       )
 
-    if (response.percentage) {
+    if ('percentage' in response) {
       embed.field('Prediction', response.percentage || '0%', true)
     }
 

@@ -31,7 +31,7 @@ import {
   PunishmentLevel,
   PunishmentType
 } from 'typings'
-import { SectionName } from './Sidebar'
+import { SectionName } from './Aside'
 
 import TextareaResizer from 'react-textarea-autosize'
 import { Tags } from './Tags'

@@ -1,4 +1,4 @@
-import { SettingSection } from '~/settings/SettingSection'
+import { SettingSection } from '~/Settings'
 
 export default function Bot() {
   return <SettingSection section="Bot" />

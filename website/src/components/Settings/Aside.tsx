@@ -109,19 +109,14 @@ export const sections = [
 
 export type SectionName = typeof sections[number]['name']
 
-interface SidebarOptions {
+interface AsideOptions {
   selected?: string
   premium?: boolean
   opened: boolean
   onClose?: () => void
 }
 
-export function Sidebar({
-  selected,
-  premium,
-  opened,
-  ...props
-}: SidebarOptions) {
+export function Aside({ selected, premium, opened, ...props }: AsideOptions) {
   const [guild] = useGuild()
   const { height } = useWindowSize()
 

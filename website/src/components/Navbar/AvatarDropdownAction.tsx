@@ -1,4 +1,6 @@
 import { FaChevronDown } from 'react-icons/fa'
+import { forwardRef } from 'react'
+
 import {
   Avatar,
   Box,
@@ -25,10 +27,10 @@ const activeState = {
   }
 }
 
-export const AvatarDropdownAction = ({
-  avatarUrl,
-  ...menuButtonProps
-}: AvatarDropdownActionProps) => (
+export const AvatarDropdownAction = forwardRef<
+  HTMLButtonElement,
+  AvatarDropdownActionProps
+>(({ avatarUrl, ...menuButtonProps }, ref) => (
   <MenuButton
     as={Button}
     size="none"
@@ -39,6 +41,7 @@ export const AvatarDropdownAction = ({
     zIndex={2}
     spacing={0}
     rounded="sm"
+    ref={ref}
     color="lighter.60"
     position="relative"
     shadow="no-outline"
@@ -78,4 +81,4 @@ export const AvatarDropdownAction = ({
       </Center>
     </HStack>
   </MenuButton>
-)
+))

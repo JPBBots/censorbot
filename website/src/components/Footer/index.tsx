@@ -8,7 +8,7 @@ export function Footer() {
     <GenericFooter
       name="Censor Bot"
       companyName="JPBBots"
-      copyrightYear="2017-2021"
+      copyrightYear="2017-2022"
       links={[
         {
           label: 'Contact Us',

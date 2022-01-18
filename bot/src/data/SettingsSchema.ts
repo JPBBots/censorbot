@@ -1,7 +1,6 @@
 import Joi, { ValidationError } from 'joi'
 import {
   GuildDB,
-  filters,
   CensorMethods,
   PunishmentType,
   WebhookReplace,
@@ -9,6 +8,7 @@ import {
   ExceptionType,
   PunishmentLevel
 } from 'typings'
+import { allFilterTypes, BASE_FILTERS } from 'typings/filter'
 
 const sfRegex = /^[0-9]{5,50}$/
 
@@ -61,7 +61,7 @@ export const punishmentLevelSchema = Joi.object<PunishmentLevel>({
 export const settingSchema = Joi.object<GuildDB>({
   id: SnowflakeString,
 
-  filters: Joi.array().items(...filters),
+  filters: Joi.array().items(...BASE_FILTERS),
 
   exceptions: Joi.array().items(exceptionSchema).max(15),
 
@@ -101,7 +101,10 @@ export const settingSchema = Joi.object<GuildDB>({
     expires: Joi.number()
       .max(86400000 * 60)
       .allow(null),
-    levels: Joi.array().items(punishmentLevelSchema).max(5)
+    levels: Joi.array().items(punishmentLevelSchema).max(5),
+    allow: Joi.number()
+      .min(0)
+      .max(allFilterTypes + 1)
   }),
 
   webhook: Joi.object<GuildDB['webhook']>({

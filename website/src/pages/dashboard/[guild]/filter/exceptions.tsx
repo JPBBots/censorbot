@@ -1,9 +1,9 @@
-import { SettingSection } from '~/settings/SettingSection'
-import { sectionSettings } from '~/settings/Setting'
+import { SettingSection, sectionSettings } from '~/Settings'
+
 import { useGuild } from '@/hooks/useGuilds'
 import { Select } from '@chakra-ui/select'
 import { Text, VStack } from '@chakra-ui/layout'
-import { ExceptionType } from '@/../../typings/api'
+import { ExceptionType } from 'typings/api'
 import { Wrap } from '@chakra-ui/react'
 
 export default function Exceptions() {

@@ -1,24 +1,21 @@
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable no-control-regex */
 import filter from '../data/filter'
 
 import { JPBExp } from './JPBExp'
 
-import { filterType, GuildDB } from 'typings/api'
+import { GuildDB } from 'typings/api'
+import {
+  baseFilters,
+  FilterResultInfo,
+  FilterType,
+  Range
+} from 'typings/filter'
 delete require.cache[require.resolve('../data/filter')]
 
 function inRange(x: number, min: number, max: number): boolean {
   return (x - min) * (x - max) <= 0
 }
-
-type filterName =
-  | filterType
-  | 'server'
-  | 'invites'
-  | 'toxicity'
-  | 'images'
-  | 'phishing'
-
-type Range = [number, number] | []
 
 interface ResolvedPiece {
   i: Range
@@ -26,39 +23,12 @@ interface ResolvedPiece {
   n?: boolean
 }
 
-export interface FilterResponse {
-  censor: boolean
-  ranges: Range[]
-  filters: filterName[]
-  places: Array<JPBExp | string>
-  percentage?: string
-}
-
 const removeRegex = /\x1D|\x1F/
 
-type filterObj = {
-  [key in filterType]: JPBExp[]
-}
-
-const filtObj = {} as filterObj // ଈ
-
 export class Filter {
-  masks: {
-    [key in filterName]: string
-  } = {
-    en: 'English',
-    es: 'Spanish',
-    off: 'Offensive',
-    de: 'German',
-    ru: 'Russian',
-    server: 'Server',
-    invites: 'Invites',
-    toxicity: 'Toxicity',
-    images: 'Anti-NSFW Image',
-    phishing: 'Anti-Phishing'
-  }
-
-  filters = Object.keys(filter.filters).reduce<filterObj>((a, b) => {
+  filters = Object.keys(filter.filters).reduce<{
+    [key in baseFilters]?: JPBExp[]
+  }>((a, b) => {
     a[b] = Object.keys(filter.filters[b]).reduce<JPBExp[]>((c, d) => {
       c.push(new JPBExp(d, filter.filters[b][d]))
 
@@ -66,7 +36,7 @@ export class Filter {
     }, [])
 
     return a
-  }, filtObj)
+  }, {})
 
   surround(text: string, ranges: Range[], sur: string): string {
     text = text.replace(removeRegex, '').replace(/<a?:(\w+):(\d+)>/g, '$1') // emojis
@@ -265,18 +235,23 @@ export class Filter {
     text: string,
     db: Pick<GuildDB, 'phrases' | 'filter' | 'filters' | 'uncensor' | 'words'>,
     exceptions?: { server: boolean; prebuilt: boolean }
-  ): FilterResponse {
+  ):
+    | (FilterResultInfo & {
+        type: FilterType.BaseFilter | FilterType.ServerFilter
+      })
+    | null {
     const content = this.resolve(text)
 
-    const res: FilterResponse = {
-      censor: false,
+    let censor = false
+    const res: FilterResultInfo = {
+      type: FilterType.BaseFilter,
       ranges: [],
       filters: [],
       places: []
     }
 
     const scanFor: {
-      [key in filterName]?: JPBExp[]
+      [key in baseFilters | 'server']?: JPBExp[]
     } = {}
     if (!exceptions?.server)
       scanFor.server = db.filter.map((x) => new JPBExp(x))
@@ -286,9 +261,7 @@ export class Filter {
         const phrases = db.phrases.filter((x) => text.toLowerCase().includes(x))
         if (phrases.length > 0) {
           return {
-            censor: true,
-            ranges: [],
-            filters: ['server'],
+            type: FilterType.ServerFilter,
             places: phrases
           }
         }
@@ -300,9 +273,7 @@ export class Filter {
 
         if (words.length > 0) {
           return {
-            censor: true,
-            ranges: [],
-            filters: ['server'],
+            type: FilterType.ServerFilter,
             places: words
           }
         }
@@ -311,7 +282,7 @@ export class Filter {
 
     if (!exceptions?.prebuilt) {
       for (const filt in this.filters) {
-        if (db.filters.includes(filt as filterType))
+        if (db.filters.includes(filt as baseFilters))
           scanFor[filt] = this.filters[filt]
       }
     }
@@ -334,10 +305,10 @@ export class Filter {
 
           done = true
 
-          res.censor = true
+          censor = true
           res.ranges.push(piece.i)
-          if (!res.filters.includes(key as filterName))
-            res.filters.push(key as filterName)
+          if (!res.filters.includes(key as baseFilters))
+            res.filters.push(key as baseFilters)
           res.places.push(part)
 
           break
@@ -355,6 +326,6 @@ export class Filter {
 
     res.ranges = res.ranges.filter((x) => x).reverse()
 
-    return res
+    return censor ? res : null
   }
 }

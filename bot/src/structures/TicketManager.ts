@@ -1,13 +1,14 @@
 import { Collection } from 'mongodb'
 import { WorkerManager } from '../managers/Worker'
 
-import { filters, Ticket } from 'typings/api'
+import { Ticket } from 'typings/api'
 import { APIUser, Snowflake } from 'discord-api-types'
 
 import GenerateID from '../utils/GenerateID'
 import { NonFatalError } from '../utils/NonFatalError'
 
 import { Embed } from '@jadl/embed'
+import { BASE_FILTERS } from 'typings/filter'
 
 export interface TicketBanSchema {
   id: Snowflake
@@ -80,9 +81,9 @@ export class TicketManager {
       uncensor: [],
       phrases: [],
       words: [],
-      filters: [...filters]
+      filters: [...BASE_FILTERS]
     })
-    if (!res.censor)
+    if (!res)
       throw new NonFatalError('Phrase is not censored by the base filter.')
 
     const tickets = await this.db.find({}).toArray()

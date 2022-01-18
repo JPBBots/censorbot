@@ -7,12 +7,13 @@ import type { DeepPartial } from 'redux'
 
 import { CensorMethods, GuildData, WebhookReplace } from 'typings'
 
-import type { SectionName } from './Sidebar'
+import type { SectionName } from './Aside'
 
 import FuzzySearch from 'fuzzy-search'
 import { ChannelType } from '@/types'
 import { TagProps } from '@chakra-ui/tag'
 import { TagsSettings } from './Tags'
+import { FilterType, filterTypeNames } from '@/../../typings/filter'
 
 export enum OptionType {
   Boolean = 0,
@@ -160,6 +161,23 @@ export const settings: ISetting[] = [
         max: 86400000 * 60
       }
     ]
+  },
+  {
+    title: 'Punish When',
+    section: 'Punishments',
+    description: 'Punish users when any of the following rules are triggered',
+    options: Object.values(FilterType)
+      .map((x) =>
+        typeof x === 'number'
+          ? {
+              type: OptionType.BitBool,
+              name: 'punishments.allow',
+              label: filterTypeNames[x as FilterType],
+              bit: x
+            }
+          : (null as any)
+      )
+      .filter((x) => x)
   },
 
   {
@@ -457,15 +475,19 @@ export const settings: ISetting[] = [
   }
 ]
 
-export const searcher = new FuzzySearch(settings, [
-  'title',
-  'section',
-  'description',
-  'options.name',
-  'options.label',
-  'options.description',
-  'options.tooltip'
-])
+export const searcher = new FuzzySearch(
+  settings,
+  [
+    'title',
+    'section',
+    'description',
+    'options.name',
+    'options.label',
+    'options.description',
+    'options.tooltip'
+  ],
+  { sort: true }
+)
 
 type DataOption<T extends OptionType, P extends {}, E = {}> = {
   name: string

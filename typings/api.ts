@@ -1,8 +1,5 @@
 import { Snowflake } from 'discord-api-types'
-
-export const filters = ['en', 'es', 'off', 'de', 'ru'] as const
-
-export type filterType = typeof filters[number]
+import { baseFilters } from './filter'
 
 export enum PunishmentType {
   GiveRole,
@@ -29,9 +26,9 @@ export enum WebhookReplace {
 }
 
 export enum CensorMethods {
-  Messages = 1,
-  Names = 2,
-  Reactions = 4
+  Messages = 1 << 0,
+  Names = 1 << 1,
+  Reactions = 1 << 2
 }
 
 export type PunishmentLevel = {
@@ -80,7 +77,7 @@ export interface GuildDB {
   /**
    * Filters being used
    */
-  filters: filterType[]
+  filters: baseFilters[]
   /**
    * Censor options
    */
@@ -136,6 +133,7 @@ export interface GuildDB {
   punishments: {
     levels: PunishmentLevel[]
     expires: number | null
+    allow: number
   }
   /**
    * Webhook options

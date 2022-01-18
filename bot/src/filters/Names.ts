@@ -1,4 +1,4 @@
-import { FilterResponse } from '../structures/Filter'
+import { FilterResultInfo } from 'typings/filter'
 
 import { Event } from '@jpbberry/typed-emitter'
 
@@ -26,7 +26,11 @@ export class NamesFilterHandler extends BaseFilterHandler {
     return false
   }
 
-  handleCensor(member: EventData, db: GuildDB, response: FilterResponse): void {
+  handleCensor(
+    member: EventData,
+    db: GuildDB,
+    response: FilterResultInfo
+  ): void {
     if (!member.user) return
 
     const guild = this.worker.guilds.get(member.guild_id)
@@ -69,7 +73,8 @@ export class NamesFilterHandler extends BaseFilterHandler {
     if (
       !this.worker.isExcepted(ExceptionType.Punishment, db, {
         roles: member.roles
-      })
+      }) &&
+      (db.punishments.allow & response.type) !== 0
     ) {
       void this.worker.punishments
         .punish(member.guild_id, member.user.id, member.roles)
@@ -120,9 +125,9 @@ export class NamesFilterHandler extends BaseFilterHandler {
 
     if (member.nick === db.nickReplace) return
 
-    const res = this.worker.test(name, db, { roles: member.roles })
+    const res = this.test(name, db, { roles: member.roles })
 
-    if (!res.censor) return
+    if (!res) return
 
     this.handleCensor(member, db, res)
   }

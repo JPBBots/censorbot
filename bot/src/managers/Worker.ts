@@ -5,7 +5,7 @@ import { Embed } from '@jadl/embed'
 import { Config } from '../config'
 
 import { Database } from '../structures/Database'
-import { Filter, FilterResponse } from '../structures/Filter'
+import { Filter } from '../structures/Filter'
 import { ActionBucket } from '../structures/ActionBucket'
 import { Responses } from '../structures/Responses'
 
@@ -250,13 +250,6 @@ export class WorkerManager extends Worker<{}> {
       }
 
       return false
-    })
-  }
-
-  test(content: string, db: GuildDB, data: ExceptedData): FilterResponse {
-    return this.filter.test(content, db, {
-      server: this.isExcepted(ExceptionType.ServerFilter, db, data),
-      prebuilt: this.isExcepted(ExceptionType.PreBuiltFilter, db, data)
     })
   }
 

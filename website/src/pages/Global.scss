@@ -23,6 +23,7 @@ body {
 #__next {
   display: flex;
   flex-wrap: wrap;
+  overflow-x: hidden;
 }
 
 #swal2-title, .swal2-html-container {
@@ -44,9 +45,10 @@ body {
 ::-webkit-scrollbar-thumb{
   background: #B3AFB3 !important;
   border-radius: 6px;
-}
-::-webkit-scrollbar-thumb:hover{
-  background: #B3AFB3;
+
+  :hover{
+    background: #B3AFB3;
+  }
 }
 ::-webkit-scrollbar-track{
   background: transparent;

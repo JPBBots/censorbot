@@ -1,4 +1,4 @@
-import { FilterResponse } from '../structures/Filter'
+import { FilterResultInfo, FilterType } from 'typings/filter'
 
 import {
   Snowflake,
@@ -82,7 +82,7 @@ export class MessageFilterContext {
 
   contentData: ContentData
   ocr: OcrInfo[] = []
-  response?: FilterResponse
+  response?: FilterResultInfo
 
   constructor(
     public readonly message: DiscordEventMap[
@@ -110,7 +110,7 @@ export class MessageFilterContext {
     return this
   }
 
-  setResponse(response: FilterResponse) {
+  setResponse(response: FilterResultInfo) {
     this.response = response
 
     return this
@@ -196,10 +196,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
         )
       ) {
         contentData.setResponse({
-          censor: true,
-          filters: ['invites'],
-          places: [],
-          ranges: []
+          type: FilterType.Invites
         })
       }
 
@@ -213,10 +210,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
         (await this.worker.phishing.resolve(contentData.content))
       ) {
         contentData.setResponse({
-          censor: true,
-          filters: ['phishing'],
-          places: [],
-          ranges: []
+          type: FilterType.Phishing
         })
       }
 
@@ -231,10 +225,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
       const prediction = await this.worker.toxicity.test(contentData.content)
       if (prediction.bad) {
         contentData.setResponse({
-          censor: true,
-          filters: ['toxicity'],
-          places: [],
-          ranges: [],
+          type: FilterType.Toxicity,
           percentage: prediction.percent
         })
       }
@@ -253,10 +244,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
               `${message.content ?? 'No message content'} + [image](${url})`
             )
             .setResponse({
-              censor: true,
-              filters: ['images'],
-              places: [],
-              ranges: [],
+              type: FilterType.Images,
               percentage: res.percent
             })
         }
@@ -278,9 +266,9 @@ export class MessagesFilterHandler extends BaseFilterHandler {
               roles: message.member.roles,
               channel: message.channel_id
             })
-            if (test.censor) {
+            if (test) {
               current.lines.push(scan)
-              contentData.setResponse({ ...test, ranges: [] })
+              contentData.setResponse({ ...test })
             }
           }
           contentData.addOcrInfo(current)
@@ -295,10 +283,10 @@ export class MessagesFilterHandler extends BaseFilterHandler {
         channel: message.channel_id
       })
 
-      if (response?.censor) contentData.setResponse(response)
+      if (response) contentData.setResponse(response)
     }
 
-    if (!contentData.response?.censor) return
+    if (!contentData.response) return
 
     return await this.handleDeletion(contentData, db)
   }
@@ -376,10 +364,8 @@ export class MessagesFilterHandler extends BaseFilterHandler {
         roles: message.member.roles,
         channel: message.channel_id
       }) &&
-      !contentData.response?.filters.includes('invites') &&
-      !contentData.response?.filters.includes('phishing') &&
-      !contentData.response?.filters.includes('toxicity') &&
-      !contentData.response?.filters.includes('images')
+      (contentData.response?.type === FilterType.BaseFilter ||
+        contentData.response?.type === FilterType.ServerFilter)
     ) {
       if (!this.worker.hasPerms(message.guild_id, 'webhooks')) {
         void this.worker.responses.missingPermissions(
@@ -388,7 +374,9 @@ export class MessagesFilterHandler extends BaseFilterHandler {
         )
       } else {
         let content =
-          contentData.content && contentData.response!.ranges.length > 0
+          contentData.content &&
+          contentData.response!.type === FilterType.BaseFilter &&
+          contentData.response!.ranges.length > 0
             ? this.worker.filter.surround(
                 contentData.content,
                 contentData.response!.ranges,
@@ -437,7 +425,8 @@ export class MessagesFilterHandler extends BaseFilterHandler {
       !this.worker.isExcepted(ExceptionType.Punishment, db, {
         roles: message.member.roles,
         channel: message.channel_id
-      })
+      }) &&
+      (db.punishments.allow & contentData.response!.type) !== 0
     ) {
       void this.worker.punishments
         .punish(message.guild_id, message.author.id, message.member.roles)

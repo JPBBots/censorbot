@@ -1,8 +1,7 @@
 import { useGuild } from '@/hooks/useGuilds'
 import { HStack, Text, VStack } from '@chakra-ui/layout'
-import { Setting } from '~/settings/Setting'
-import { settings } from '~/settings/settings'
-import { SettingSection } from '~/settings/SettingSection'
+
+import { Setting, settings, SettingSection } from '~/Settings'
 
 import Premium from '@/pages/premium'
 import { PremiumIcon } from '~/PremiumIcon'

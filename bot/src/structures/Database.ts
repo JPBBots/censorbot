@@ -24,6 +24,7 @@ import { TimeoutSchema } from './punishments/Timeouts'
 import { TicketBanSchema } from './TicketManager'
 import { ThreadComms } from 'jadl/dist/clustering/ThreadComms'
 import { CustomBotOptions } from 'typings/custombot'
+import { allFilterTypes } from 'typings/filter'
 
 export * from '../data/SettingsSchema'
 
@@ -127,7 +128,8 @@ export class Database extends Db {
     if (!('punishments' in db)) {
       db.punishments = {
         levels: db.punishment.type ? [db.punishment] : [],
-        expires: null
+        expires: null,
+        allow: allFilterTypes
       }
       delete db.punishment
 

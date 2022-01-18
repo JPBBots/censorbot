@@ -147,7 +147,7 @@ export default function Landing() {
           </Text>
         </VStack>
 
-        <MiddleWrap spacing="8px" m={ULW({ tablet: '2px', mobile: '0px' })}>
+        <MiddleWrap spacing="25px" m={ULW({ tablet: '2px', mobile: '0px' })}>
           {wMT(TABLET_WIDTH) && (
             <Image
               src={DiscordChat.src}
@@ -155,7 +155,6 @@ export default function Landing() {
               w={imageWidth}
               boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
               borderRadius={20}
-              flexGrow={0}
             />
           )}
           <Image
@@ -164,7 +163,6 @@ export default function Landing() {
             w={imageWidth}
             boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
             borderRadius={20}
-            flexGrow={0}
           />
         </MiddleWrap>
       </VStack>
