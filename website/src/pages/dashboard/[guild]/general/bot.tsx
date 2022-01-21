@@ -1,5 +1,5 @@
-import { SettingSection } from '~/Settings'
+import { DashboardSection } from '~/Settings'
 
 export default function Bot() {
-  return <SettingSection section="Bot" />
+  return <DashboardSection section="Bot" />
 }

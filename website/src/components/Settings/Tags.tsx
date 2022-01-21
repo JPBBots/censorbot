@@ -66,6 +66,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
         bg: 'lighter.10'
       }}
       pl={value.length > 0 ? '10px' : '0px'}
+      pt="2px"
     >
       <Flex
         wrap="wrap"

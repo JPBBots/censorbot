@@ -24,13 +24,13 @@ import { searcher } from './settings'
 import { Loading } from '~/styling/Loading'
 import { wLT } from '@/hooks/useScreenSize'
 
-interface SettingSectionProps extends PropsWithChildren<{}> {
+interface DashboardSectionProps extends PropsWithChildren<{}> {
   description?: string
   section: SectionName | 'Premium'
   disableSearch?: boolean
 }
 
-export function SettingSection(props: SettingSectionProps) {
+export function DashboardSection(props: DashboardSectionProps) {
   useUser(true)
   const [currentGuild] = useGuild()
   const [loginState] = useLoginState()

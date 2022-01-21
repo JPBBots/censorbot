@@ -1,5 +1,5 @@
-import { SettingSection } from '~/Settings'
+import { DashboardSection } from '~/Settings'
 
 export default function Punishments() {
-  return <SettingSection section="Punishments" />
+  return <DashboardSection section="Punishments" />
 }

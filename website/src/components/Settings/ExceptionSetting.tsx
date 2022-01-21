@@ -84,6 +84,7 @@ export function ExceptionSetting({
           }
           value={exception.role ?? 'none'}
           w="200px"
+          size="sm"
           maxW="20vw"
         >
           <option value="none">Any role</option>
@@ -111,6 +112,7 @@ export function ExceptionSetting({
           }
           value={exception.channel ?? 'none'}
           w="200px"
+          size="sm"
           maxW="20vw"
         >
           <option value="none">Any channel</option>
@@ -134,6 +136,7 @@ export function ExceptionSetting({
           onChange={({ target }) => change({ type: Number(target.value) })}
           value={exception.type}
           w="200px"
+          size="sm"
           maxW="20vw"
         >
           {ExceptionTypes.map((x) => (
@@ -142,15 +145,16 @@ export function ExceptionSetting({
             </option>
           ))}
         </Select>
+
+        <Icon
+          cursor="pointer"
+          fontSize={20}
+          as={FaTrash}
+          onClick={() => {
+            onDelete?.()
+          }}
+        />
       </InlineOptionGroup>
-      <Icon
-        cursor="pointer"
-        fontSize={20}
-        as={FaTrash}
-        onClick={() => {
-          onDelete?.()
-        }}
-      />
     </HStack>
   )
 }

@@ -250,20 +250,24 @@ export class Filter {
       places: []
     } as FilterResultInfo & {
       type: FilterType.BaseFilter | FilterType.ServerFilter
-    } & { filters: string[]; ranges?: Range[] }
+    } & { filters: string[] }
 
     const scanFor: {
       [key in baseFilters | 'server']?: JPBExp[]
     } = {}
-    if (!exceptions?.server)
+    if (!exceptions?.server) {
       scanFor.server = db.filter.map((x) => new JPBExp(x))
 
-    if (!exceptions?.server) {
       if (db.phrases) {
         const phrases = db.phrases.filter((x) => text.toLowerCase().includes(x))
         if (phrases.length > 0) {
+          censor = true
+          res.type = FilterType.ServerFilter
+          res.places.push(...phrases)
+          res.ranges.push([])
           return {
             type: FilterType.ServerFilter,
+            ranges: [],
             places: phrases
           }
         }
@@ -271,14 +275,16 @@ export class Filter {
 
       if (db.words) {
         const split = text.split(' ')
-        const words = db.words.filter((x) => split.includes(x))
 
-        if (words.length > 0) {
-          return {
-            type: FilterType.ServerFilter,
-            places: words
+        db.words.forEach((word, index) => {
+          if (split.includes(word)) {
+            censor = true
+
+            res.type = FilterType.ServerFilter
+            res.ranges.push([index, index])
+            res.places.push(word)
           }
-        }
+        })
       }
     }
 
@@ -310,8 +316,8 @@ export class Filter {
           if (key === 'server') res.type = FilterType.ServerFilter
 
           censor = true
-          if (res.type === FilterType.BaseFilter) res.ranges.push(piece.i)
-          if (!res.filters.includes(key as baseFilters))
+          res.ranges.push(piece.i)
+          if (!res.filters.includes(key as baseFilters) && key !== 'server')
             res.filters.push(key as baseFilters)
           res.places.push(part)
 

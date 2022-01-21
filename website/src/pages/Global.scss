@@ -59,3 +59,10 @@ body {
 grammarly-extension {
   display: none; // LLLLL
 }
+
+.chakra-portal {
+  z-index: 999 !important;
+  > div > div {
+    max-width: 50vw !important;
+  }
+}

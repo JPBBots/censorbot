@@ -1,5 +1,5 @@
-import { SettingSection } from '~/Settings'
+import { DashboardSection } from '~/Settings'
 
 export default function General() {
-  return <SettingSection section="General" />
+  return <DashboardSection section="General" />
 }

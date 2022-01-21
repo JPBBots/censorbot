@@ -10,7 +10,8 @@ export const Tooltip = ({ children }: TooltipProps) => {
   return (
     <ChakraTooltip
       hasArrow
-      bg="darker.100"
+      bg="black"
+      opacity={100}
       p={2}
       borderRadius="md"
       label={`${children}`}

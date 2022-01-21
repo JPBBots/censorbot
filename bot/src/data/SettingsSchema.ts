@@ -52,10 +52,7 @@ export const punishmentLevelSchema = Joi.object<PunishmentLevel>({
 
   role: SnowflakeString,
 
-  time: Joi.number()
-    .max(86400000 * 60)
-    .allow(null)
-    .required()
+  time: Joi.number().max(2629800000).allow(null).required()
 })
 
 export const settingSchema = Joi.object<GuildDB>({
@@ -99,7 +96,7 @@ export const settingSchema = Joi.object<GuildDB>({
 
   punishments: Joi.object<GuildDB['punishments']>({
     expires: Joi.number()
-      .max(86400000 * 60)
+      .max(2629800000 * 2)
       .allow(null),
     levels: Joi.array().items(punishmentLevelSchema).max(5),
     allow: Joi.number()

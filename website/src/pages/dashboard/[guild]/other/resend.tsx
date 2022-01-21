@@ -1,5 +1,5 @@
-import { SettingSection } from '~/Settings'
+import { DashboardSection } from '~/Settings'
 
 export default function Resend() {
-  return <SettingSection section="Resend" />
+  return <DashboardSection section="Resend" />
 }

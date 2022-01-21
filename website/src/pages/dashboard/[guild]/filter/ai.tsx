@@ -1,5 +1,5 @@
-import { SettingSection } from '~/Settings'
+import { DashboardSection } from '~/Settings'
 
 export default function AI() {
-  return <SettingSection section="AI" />
+  return <DashboardSection section="AI" />
 }

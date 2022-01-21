@@ -9,12 +9,7 @@ import {
   Icon,
   Wrap
 } from '@chakra-ui/react'
-import {
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb
-} from '@chakra-ui/slider'
+
 import { useEffect, useState } from 'react'
 
 import humanize from 'humanize-duration'
@@ -26,6 +21,8 @@ export interface TimeSelectorOptions {
   value: number
 }
 
+const MONTH_TIME = 2629800000
+
 export function TimeSelector({ max, onChange, value }: TimeSelectorOptions) {
   const [editing, setEditing] = useState(false)
 
@@ -35,32 +32,20 @@ export function TimeSelector({ max, onChange, value }: TimeSelectorOptions) {
   }, [value])
 
   return (
-    <Wrap gridGap={4} pl={2}>
+    <Wrap gridGap={4}>
       <VStack s={0}>
-        <Slider
-          max={max}
-          value={value}
-          w="205px"
-          onChange={(newValue) => {
-            onChange(newValue)
-          }}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-
-          <SliderThumb />
-        </Slider>
         <Tooltip isOpen={editing} label="Time in seconds">
           <Input
             value={
               editing
                 ? Math.floor(maluableValue / 1000)
-                : humanize(value, { largest: 3 })
+                : humanize(value, { largest: 2 })
             }
-            w="250px"
+            w="230px"
             h="20px"
             onChange={({ target }) => {
+              if (isNaN(Number(target.value))) return
+
               if (max && Number(target.value) * 1000 > max)
                 setMaluableValue(max)
               else setMaluableValue(Number(target.value) * 1000)
@@ -78,16 +63,29 @@ export function TimeSelector({ max, onChange, value }: TimeSelectorOptions) {
           <Icon as={FaChevronDown} />
         </MenuButton>
         <MenuList>
-          {[60e3, 300000, 600000, 3.6e6, 8.64e7, 6.048e8, max!].map((time) => (
-            <MenuItem
-              key={time}
-              onClick={() => {
-                onChange(time)
-              }}
-            >
-              {humanize(time, { largest: 1 })}
-            </MenuItem>
-          ))}
+          {[
+            60e3,
+            300000,
+            600000,
+            3.6e6,
+            8.64e7,
+            6.048e8,
+            MONTH_TIME,
+            max! > MONTH_TIME ? MONTH_TIME * 2 : undefined
+          ].map((time) =>
+            time ? (
+              <MenuItem
+                key={time}
+                onClick={() => {
+                  onChange(time)
+                }}
+              >
+                {humanize(time, { largest: 1 })}
+              </MenuItem>
+            ) : (
+              ''
+            )
+          )}
         </MenuList>
       </Menu>
     </Wrap>

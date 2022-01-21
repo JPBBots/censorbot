@@ -158,7 +158,7 @@ export const settings: ISetting[] = [
       {
         name: 'punishments.expires',
         type: OptionType.Time,
-        max: 86400000 * 60
+        max: 2629800000 * 2
       }
     ]
   },

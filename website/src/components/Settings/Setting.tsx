@@ -1,9 +1,7 @@
 import { useGuild } from '@/hooks/useGuilds'
 import { IOption, ISetting, OptionType, settings } from './settings'
 
-import { Section } from '@jpbbots/censorbot-components'
-
-import { Option as CCOption } from '~/functional/Option'
+import { Option } from '~/functional/Option'
 
 import { updateObject } from '@/utils/updateObject'
 
@@ -41,8 +39,9 @@ import { FaPlus } from 'react-icons/fa'
 import { useRouter } from 'next/router'
 import { PunishmentSetting } from './PunishmentSetting'
 import { TimeSelector } from '~/functional/TimeSelector'
+import { SettingSection } from '~/Dashboard'
 
-export function Option({
+export function SettingOption({
   setValue,
   guild,
   pieces,
@@ -72,7 +71,7 @@ export function Option({
 
   if (option.type === OptionType.Boolean) {
     return (
-      <CCOption
+      <Option
         {...props}
         isChecked={value}
         label={option.label}
@@ -216,7 +215,7 @@ export function Option({
 
   if (option.type === OptionType.BitBool) {
     return (
-      <CCOption
+      <Option
         onChange={({ target }) => {
           console.log(value, target.checked, option)
           if (target.checked) {
@@ -253,7 +252,7 @@ export function Option({
       : exceptions.length >= 100
 
     return (
-      <VStack w="fit-content" spacing={7}>
+      <VStack w="fit-content">
         {exceptions.map((x, ind) => (
           <>
             <ExceptionSetting
@@ -417,15 +416,16 @@ export function Setting(setting: ISetting) {
     pieces[setting.disable.property] === setting.disable.disableValue
 
   return (
-    <Section
+    <SettingSection
       title={setting.title}
       description={setting.description}
       isPremium={setting.premium}
+      tooltip={setting.tooltip}
       icon={setting.icon && <Icon as={setting.icon} />}
     >
       {!disabled &&
         setting.options.map((opt, i) => (
-          <Option
+          <SettingOption
             key={i}
             option={opt}
             setValue={(value) => {
@@ -459,7 +459,7 @@ export function Setting(setting: ISetting) {
             {setting.disable.disableButton ?? 'Disable'}
           </Button>
         ))}
-    </Section>
+    </SettingSection>
   )
 }
 

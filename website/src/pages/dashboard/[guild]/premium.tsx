@@ -1,7 +1,7 @@
 import { useGuild } from '@/hooks/useGuilds'
 import { HStack, Text, VStack } from '@chakra-ui/layout'
 
-import { Setting, settings, SettingSection } from '~/Settings'
+import { Setting, settings, DashboardSection } from '~/Settings'
 
 import Premium from '@/pages/premium'
 import { PremiumIcon } from '~/PremiumIcon'
@@ -20,7 +20,7 @@ export default function GuildPremium() {
   const dispatch = useDispatch()
 
   return (
-    <SettingSection section="Premium" disableSearch>
+    <DashboardSection section="Premium" disableSearch>
       <VStack alignSelf="flex-start" align="flex-start">
         <Text size="heading.xl">
           This server{' '}
@@ -74,6 +74,6 @@ export default function GuildPremium() {
               <Premium />
             </HStack>
           )}
-    </SettingSection>
+    </DashboardSection>
   )
 }

@@ -374,9 +374,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
         )
       } else {
         let content =
-          contentData.content &&
-          contentData.response!.type === FilterType.BaseFilter &&
-          contentData.response!.ranges.length > 0
+          contentData.content && contentData.response!.ranges.length > 0
             ? this.worker.filter.surround(
                 contentData.content,
                 contentData.response!.ranges,

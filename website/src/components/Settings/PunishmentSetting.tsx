@@ -107,7 +107,7 @@ export function PunishmentSetting({
               onChange={(val) => {
                 setValue({ time: val })
               }}
-              max={2419200000}
+              max={2629800000}
               value={punishment.time}
             />
           </>

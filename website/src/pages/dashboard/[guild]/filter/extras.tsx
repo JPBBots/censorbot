@@ -1,4 +1,4 @@
-import { SettingSection } from '~/Settings'
+import { DashboardSection } from '~/Settings'
 export default function Filter() {
-  return <SettingSection section="Extras" />
+  return <DashboardSection section="Extras" />
 }

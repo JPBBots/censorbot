@@ -50,6 +50,7 @@ export type FilterResultInfo =
   | {
       type: FilterType.ServerFilter
       places: string[]
+      ranges: Range[]
     }
   | {
       type: FilterType.Images | FilterType.Toxicity

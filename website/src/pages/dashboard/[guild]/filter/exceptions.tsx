@@ -1,4 +1,4 @@
-import { SettingSection, sectionSettings } from '~/Settings'
+import { DashboardSection, sectionSettings } from '~/Settings'
 
 import { useGuild } from '@/hooks/useGuilds'
 import { Select } from '@chakra-ui/select'
@@ -10,7 +10,7 @@ export default function Exceptions() {
   const [guild, db, setDb] = useGuild()
 
   return (
-    <SettingSection section="Exceptions" disableSearch>
+    <DashboardSection section="Exceptions" disableSearch>
       {sectionSettings('Exceptions')}
       {guild && (
         <Wrap alignSelf="flex-start">
@@ -71,6 +71,6 @@ export default function Exceptions() {
           </VStack>
         </Wrap>
       )}
-    </SettingSection>
+    </DashboardSection>
   )
 }
