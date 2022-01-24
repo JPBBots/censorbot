@@ -1,5 +1,5 @@
 {
-  "include": ["src/**/*", "src/data/filter/**/*.json", "src/.run/*.ts", "__tests__"],
+  "include": ["src/**/*", "src/data/filter/**/*.json", "src/.run/*.ts"],
   "compilerOptions": {
     "target": "ES2020",
     "outDir": "./dist",

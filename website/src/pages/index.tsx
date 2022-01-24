@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Button, HStack, Image, Text, VStack, Box } from '@chakra-ui/react'
 
 import DashboardExample from 'images/dashboardexample.png'
@@ -7,13 +7,14 @@ import DiscordChat from 'images/discordchat.png'
 
 import { Lower, Upper } from '~/LandingSectionSvg'
 import { PremiumIcon } from '~/PremiumIcon'
-import { Footer } from '~/Footer'
 
 import { MiddleWrap } from '~/MiddleWrap'
 
 import { UWS, wLT, wMT } from '@/hooks/useScreenSize'
 import { animate } from 'framer-motion'
 import { useRouter } from 'next/router'
+import { useServerCount } from '@/hooks/useMeta'
+import { Root } from '~/Root'
 
 const DESCRIPTION_FONT_SIZE = '24px'
 
@@ -33,7 +34,7 @@ const ULW = (sizes: { mobile?: any; tablet?: any; desktop?: any }) => {
 export default function Landing() {
   const router = useRouter()
 
-  const [serverCount] = useState(64393)
+  const [serverCount] = useServerCount()
 
   const countRef = useRef<HTMLParagraphElement>(null)
 
@@ -69,7 +70,7 @@ export default function Landing() {
   const alignCenter = wLT(TABLET_WIDTH)
 
   return (
-    <VStack pt={50}>
+    <Root pt={50}>
       <VStack justifyContent="center" alignItems="center" spacing={10} pb={50}>
         <VStack spacing="16px">
           <Text
@@ -327,8 +328,6 @@ export default function Landing() {
           , since 2017
         </Text>
       </VStack>
-
-      <Footer />
-    </VStack>
+    </Root>
   )
 }

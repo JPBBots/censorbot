@@ -4,6 +4,7 @@ import { HStack, VStack, Text, Link, Flex } from '@chakra-ui/layout'
 import { motion } from 'framer-motion'
 import { MiddleWrap } from '~/MiddleWrap'
 import { wLT } from '@/hooks/useScreenSize'
+import { useRouter } from 'next/router'
 
 export interface FooterOptions {
   name: string
@@ -22,6 +23,7 @@ export interface FooterOptions {
 
 export const GenericFooter = (props: FooterOptions) => {
   const wrapping = wLT(1000)
+  const router = useRouter()
 
   const infoText = (
     <VStack px="64px" textAlign="center" justifyContent="center">
@@ -55,7 +57,14 @@ export const GenericFooter = (props: FooterOptions) => {
             ❤
           </Text>
         </motion.span>{' '}
-        by JPBBerry
+        by{' '}
+        <Link
+          href="javascript:void(0)"
+          onClick={async () => await router.push('/staff')}
+          textDecor="underline"
+        >
+          JPBBots
+        </Link>
       </Text>
     </VStack>
   )
@@ -65,6 +74,7 @@ export const GenericFooter = (props: FooterOptions) => {
       w="full"
       align="center"
       justify="center"
+      justifySelf="flex-end"
       wrap="wrap"
       py="10vh"
       px="3vw"
@@ -79,7 +89,7 @@ export const GenericFooter = (props: FooterOptions) => {
         {!wrapping && infoText}
       </VStack>
 
-      <MiddleWrap w="half" spacing="25px">
+      <MiddleWrap w="half" spacing="25px" alignItems="flex-start">
         {props.links.map((cat) => (
           <VStack key={cat.label}>
             <Text color="lighter.60" textStyle="label.sm">

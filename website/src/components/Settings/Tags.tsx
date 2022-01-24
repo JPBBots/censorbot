@@ -1,7 +1,18 @@
 import { Input } from '@chakra-ui/input'
 import { Flex } from '@chakra-ui/layout'
-import { Select } from '@chakra-ui/select'
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Icon,
+  HStack,
+  Text
+} from '@chakra-ui/react'
+import { FaPlus } from 'react-icons/fa'
 import { Tag } from '@jpbbots/censorbot-components'
+
+import { useState } from 'react'
 
 export interface ITag {
   id?: string
@@ -28,14 +39,17 @@ export interface TagsProps {
 
 export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
   const { whitelist } = settings
+  const [focusing, setFocusing] = useState(false)
 
   const inputProps: any = {
-    _hover: {
-      bg: 'transparent'
+    bg: 'transparent !important',
+    border: 'none !important',
+
+    onFocus: () => {
+      setFocusing(true)
     },
 
-    maxWidth: '80vw',
-    bg: 'transparent'
+    maxWidth: '80vw'
   }
 
   const remove = (val: string) => {
@@ -65,16 +79,11 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
       _hover={{
         bg: 'lighter.10'
       }}
-      pl={value.length > 0 ? '10px' : '0px'}
-      pt="2px"
+      border="2px solid"
+      borderColor={focusing ? 'brand.100' : 'transparent'}
+      p="10px"
     >
-      <Flex
-        wrap="wrap"
-        gridGap={2}
-        bg="transparent"
-        alignContent="center"
-        pr={value.length > 0 ? '10px' : '0px'}
-      >
+      <Flex wrap="wrap" gridGap={2} bg="transparent" alignContent="center">
         {value.map((tagValue) => {
           const val = whitelist
             ? whitelist.find((x) => x.id === tagValue) ?? { value: tagValue }
@@ -97,30 +106,36 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
         })}
       </Flex>
       {whitelist ? (
-        <Select
-          w="150px"
-          onChange={({ target }) => {
-            if (target.value === '_') return
-
-            const val = whitelist.find((x) => x.id === target.value)
-
-            if (val?.id) {
-              if (!value.includes(val.id)) add(val.id)
-
-              target.value = '_'
-            }
+        <Menu
+          gutter={16}
+          onOpen={() => {
+            setFocusing(true)
           }}
-          {...inputProps}
+          onClose={() => {
+            setFocusing(false)
+          }}
         >
-          <option value="_">{placeholder}</option>
-          {whitelist
-            .filter((a) => !value.some((b) => a.id === b))
-            .map((x) => (
-              <option key={x.id} value={x.id}>
-                {x.value}
-              </option>
-            ))}
-        </Select>
+          <MenuButton px="16px">
+            <HStack spacing="8px">
+              <Icon as={FaPlus} />
+              <Text>{placeholder}</Text>
+            </HStack>
+          </MenuButton>
+          <MenuList>
+            {whitelist
+              .filter((a) => !value.some((x) => x === a.id))
+              .map((tag) => (
+                <MenuItem
+                  key={tag.id}
+                  onClick={() => {
+                    add(tag.id!)
+                  }}
+                >
+                  {tag.value}
+                </MenuItem>
+              ))}
+          </MenuList>
+        </Menu>
       ) : (
         <Input
           disabled={settings.maxTags ? value.length >= settings.maxTags : false}
@@ -131,7 +146,14 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
               ? settings.maxMessage
               : placeholder
           }
-          w="fit-content"
+          w={
+            settings.maxTags && settings.maxMessage
+              ? value.length >= settings.maxTags
+                ? `${settings.maxMessage.length}em`
+                : 'fit-content'
+              : 'fit-content'
+          }
+          h="39px"
           maxLength={settings.maxLength}
           {...inputProps}
           onKeyDown={(ev) => {
@@ -161,6 +183,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
             if (target.value) {
               target.value = ''
             }
+            setFocusing(false)
           }}
           onChange={({ target }) => {
             if (target.value === ' ') target.value = ''

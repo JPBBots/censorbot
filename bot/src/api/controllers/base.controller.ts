@@ -41,6 +41,7 @@ export class BaseController {
               Config.id
             : Config.id,
           guild_id: id,
+          disable_guild_select: String(id !== 'undefined'),
           scope: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands].join(
             ' '
           ),

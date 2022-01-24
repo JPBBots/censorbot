@@ -22,6 +22,7 @@ export interface MetaObject {
   worker: number
   connection: string
   region: Region
+  serverCount: number
 }
 
 interface Variant<Tag extends string, Value> extends Payload {
@@ -39,15 +40,8 @@ export type Incoming<Client extends 'frontend' | 'backend'> = Values<{
 }>
 
 export interface WebSocketEventMap {
-  RETURN: {
-    receive: any
-    send: null
-  }
   HELLO: {
-    receive: {
-      interval: number
-      $meta: MetaObject
-    }
+    receive: MetaObject
     send: null
   }
   CREATE_HOSTED_PAGE: {

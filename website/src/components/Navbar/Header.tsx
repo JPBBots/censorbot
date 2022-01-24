@@ -4,7 +4,7 @@ import { Box, HStack, StackProps, Text, TextProps } from '@chakra-ui/react'
 import { CensorBotIcon } from '~/CensorBotIcon'
 
 const ICON_SIZE = '40px'
-const HEADER_HEIGHT = '90px'
+export const HEADER_HEIGHT = '90px'
 
 export interface HeaderProps extends PropsWithChildren<unknown> {
   title: string

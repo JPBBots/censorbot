@@ -8,6 +8,10 @@ import { Config } from '../../config'
 export class CacheService {
   users: Cache<Snowflake, User> = new Cache(Config.dashboardOptions.wipeTimeout)
 
+  meta: Cache<'serverCount', number> = new Cache(
+    Config.dashboardOptions.wipeTimeout
+  )
+
   userGuilds: Cache<Snowflake, ShortGuild[]> = new Cache(
     Config.dashboardOptions.wipeTimeout
   )

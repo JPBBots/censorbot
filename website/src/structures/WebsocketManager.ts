@@ -1,4 +1,4 @@
-import { WebSocketEventMap } from 'typings/websocket'
+import { MetaObject, WebSocketEventMap } from 'typings/websocket'
 import { Logger } from './Logger'
 
 import headlessHandlers from './headlessHandler'
@@ -12,6 +12,7 @@ import { setUser } from 'store/reducers/auth.reducer'
 import { io } from 'socket.io-client'
 import { Api } from './Api'
 import { setLoading } from '@/store/reducers/loading.reducer'
+import { setServerCount } from '@/store/reducers/meta.reducer'
 
 type EventMap = {
   [key in keyof WebSocketEventMap]: WebSocketEventMap[key]['receive']
@@ -19,6 +20,7 @@ type EventMap = {
 
 export class WebsocketManager extends ExtendedEmitter {
   public ws = io('', { path: '/ws' })
+  public meta?: MetaObject
   ping = -1
 
   constructor() {
@@ -64,25 +66,27 @@ export class WebsocketManager extends ExtendedEmitter {
     return await new Promise((resolve, reject) => {
       if (stats.headless) {
         if (headlessHandlers[event])
-          resolve(headlessHandlers[event]?.(data) as any)
+          resolve(headlessHandlers[event]?.(data as any) as any)
       }
 
       this.ws.emit(event, data, (dat: any) => {
         if (dat?.error) {
-          this.log('Got error ' + dat.error)
+          this.log('Got error ' + String(dat.error))
           if (dat.error === 'Unauthorized' && Api.token && !tryingLogin) {
             Api.getUser(true)
-              .then(() => {
-                return Api.getGuilds(true).then(() => {
-                  return this.request(event, data).then((x) => resolve(x))
+              .then(async () => {
+                return await Api.getGuilds(true).then(async () => {
+                  return await this.request(event, data).then((x) => resolve(x))
                 })
               })
               .catch(() => {
                 Api.logout(false)
-                Api.login().then((user) => {
+                void Api.login().then((user) => {
                   if (user)
-                    Api.getGuilds(true).then(() => {
-                      return this.request(event, data).then((x) => resolve(x))
+                    void Api.getGuilds(true).then(async () => {
+                      return await this.request(event, data)
+                        .then((x) => resolve(x))
+                        .catch((err) => reject(err))
                     })
                 })
               })
@@ -101,6 +105,13 @@ export class WebsocketManager extends ExtendedEmitter {
   @Event('RELOAD')
   onReload() {
     location.reload()
+  }
+
+  @Event('HELLO')
+  onHello(data: EventMap['HELLO']) {
+    this.meta = data
+
+    store.dispatch(setServerCount(data.serverCount))
   }
 
   @Event('CHANGE_SETTING')

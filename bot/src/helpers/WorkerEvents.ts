@@ -1,5 +1,5 @@
 import { Event, ExtendedEmitter } from '@jpbberry/typed-emitter'
-import { DiscordEventMap, Snowflake } from 'jadl'
+import { DiscordEventMap, Shard, Snowflake } from 'jadl'
 import { Embed } from '@jadl/embed'
 import Wait from '../utils/Wait'
 
@@ -28,6 +28,17 @@ export class WorkerEvents extends ExtendedEmitter {
         }
       })
     })
+  }
+
+  @Event('SHARD_READY')
+  statusUpdates(shard: Shard) {
+    this.worker.comms.tell('STATUS_UPDATE', null)
+
+    if (!shard.eventNames().includes('CLOSED')) {
+      shard.on('CLOSED', () => {
+        this.worker.comms.tell('STATUS_UPDATE', null)
+      })
+    }
   }
 
   @Event('GUILD_CREATE')

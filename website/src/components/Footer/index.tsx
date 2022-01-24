@@ -39,8 +39,8 @@ export function Footer() {
               url: '/vote'
             },
             {
-              label: 'Staff',
-              onClick: () => void router.push('/staff')
+              label: 'Status',
+              onClick: () => void router.push('/status')
             }
           ]
         },

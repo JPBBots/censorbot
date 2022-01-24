@@ -5,13 +5,12 @@ import {
   Avatar,
   Divider,
   Flex,
-  Tooltip,
-  Box
+  Tooltip
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { Loading } from '~/styling/Loading'
 
-import { Footer } from '~/Footer'
+import { Root } from '~/Root'
 
 interface AdminUser {
   id: string
@@ -72,7 +71,7 @@ export default function Staff() {
   }, [])
 
   return (
-    <VStack>
+    <Root>
       <VStack align="left" p={4}>
         {admins.length ? (
           SECTIONS.map((section) => (
@@ -144,8 +143,6 @@ export default function Staff() {
           <Loading />
         )}
       </VStack>
-      <Box h={100} />
-      <Footer />
-    </VStack>
+    </Root>
   )
 }

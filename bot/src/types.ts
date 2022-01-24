@@ -59,5 +59,9 @@ declare module 'jadl/dist/clustering/ThreadComms' {
       send: null
       receive: null
     }
+    STATUS_UPDATE: {
+      send: null
+      receive: null
+    }
   }
 }

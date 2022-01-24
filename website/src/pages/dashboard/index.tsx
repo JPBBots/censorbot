@@ -28,7 +28,7 @@ export function GuildList({
 }) {
   const router = useRouter()
   return (
-    <Flex spacing={4} alignSelf="flex-start" wrap="wrap" gridGap="15px">
+    <Flex alignSelf="flex-start" wrap="wrap" gridGap="15px">
       {searcher
         ?.search(searchTerm)
         .filter(filter ?? (() => true))
@@ -78,7 +78,7 @@ export default function DashboardHome() {
     : undefined
 
   return (
-    <VStack padding={3}>
+    <VStack p="20px">
       <VStack w="full">
         {(loginState === LoginState.Loading ||
           loginState === LoginState.LoggingIn) && (

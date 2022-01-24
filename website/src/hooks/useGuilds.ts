@@ -12,9 +12,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Pieces from 'utils/Pieces'
 import { DeepPartial } from '@chakra-ui/react'
-import { GuildDB, ShortGuild } from 'typings'
+import { GuildDB } from 'typings'
 import headlessData from '@/structures/headlessData.json'
-import { current } from '@reduxjs/toolkit'
 
 export const useGuildsState = (): RootState['guilds'] =>
   useSelector((state: RootState) => state.guilds)
@@ -25,7 +24,7 @@ export const useGuilds = () => {
   const dispatch = useDispatch()
   const { guilds } = useGuildsState()
   const [loginState] = useLoginState()
-  const [user, login] = useUser(true)
+  const [user] = useUser(true)
 
   useEffect(() => {
     if (!guilds && !requesting && user) {
@@ -124,7 +123,7 @@ export const useGuild = () => {
     },
     needsInvite,
     id,
-    () => checkForGuild()
+    async () => await checkForGuild()
   ] as const
 }
 

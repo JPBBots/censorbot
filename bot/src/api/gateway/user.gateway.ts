@@ -4,7 +4,8 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  ConnectedSocket
+  ConnectedSocket,
+  OnGatewayConnection
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 
@@ -24,14 +25,15 @@ import { ChargeBeeService } from '../services/chargebee.service'
 import Pieces from '../../utils/Pieces'
 import { ThreadService } from '../services/thread.service'
 
-export type SocketConnection = Socket & { data: SelfData }
-
 type EventMap = {
   [key in keyof WebSocketEventMap]: WebSocketEventMap[key]['receive']
 }
+export type SocketConnection = Socket<{
+  [key in keyof EventMap]: (val: EventMap[key]) => void
+}> & { data: SelfData }
 
 @WebSocketGateway({ path: '/ws', pingInterval: 45e3 })
-export class UserGateway {
+export class UserGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server<{
     [key in keyof WebSocketEventMap]: (
@@ -83,6 +85,26 @@ export class UserGateway {
     if (!cache.some((x) => x.id === id)) return false
 
     return true
+  }
+
+  async handleConnection(client: SocketConnection) {
+    let serverCount = this.caching.meta.get('serverCount')
+
+    if (!serverCount) {
+      serverCount = (await this.thread.getStats()).reduce(
+        (z, x) => z + x.shards.reduce((a, b) => a + b.guilds, 0),
+        0
+      )
+
+      this.caching.meta.set('serverCount', serverCount)
+    }
+
+    client.emit('HELLO', {
+      connection: client.id,
+      region: 'na',
+      worker: 1,
+      serverCount
+    })
   }
 
   @SubscribeMessage('RELOAD_SELF')

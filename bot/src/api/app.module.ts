@@ -21,6 +21,7 @@ import { GuildsService } from './services/guilds.service'
 import { ThreadService } from './services/thread.service'
 import { PremiumController } from './controllers/premium.controller'
 import { ChargeBeeController } from './controllers/chargebee.controller'
+import { StatusController } from './controllers/status.controller'
 
 @Module({
   imports: [GatewayAuthGuard],
@@ -28,7 +29,8 @@ import { ChargeBeeController } from './controllers/chargebee.controller'
     BaseController,
     DiscordAuthController,
     PremiumController,
-    ChargeBeeController
+    ChargeBeeController,
+    StatusController
   ],
   providers: [
     Database,

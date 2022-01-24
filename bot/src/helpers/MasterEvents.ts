@@ -120,4 +120,9 @@ export class MasterEvents extends ExtendedEmitter {
   updateCustomBots() {
     void this.master.tellAll('UPDATE_CUSTOM_BOTS', null, true)
   }
+
+  @Event('STATUS_UPDATE')
+  statusUpdate() {
+    void this.master.api.tell('STATUS_UPDATE', null)
+  }
 }

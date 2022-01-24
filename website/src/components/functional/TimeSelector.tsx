@@ -34,7 +34,15 @@ export function TimeSelector({ max, onChange, value }: TimeSelectorOptions) {
   return (
     <Wrap gridGap={4}>
       <VStack s={0}>
-        <Tooltip isOpen={editing} label="Time in seconds">
+        <Tooltip
+          isOpen={editing}
+          label="Time in seconds"
+          hasArrow
+          bg="black"
+          opacity={100}
+          p={2}
+          borderRadius="md"
+        >
           <Input
             value={
               editing
