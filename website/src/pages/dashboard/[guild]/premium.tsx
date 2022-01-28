@@ -3,7 +3,6 @@ import { HStack, Text, VStack } from '@chakra-ui/layout'
 
 import { Setting, settings, DashboardSection } from '~/Settings'
 
-import Premium from '@/pages/premium'
 import { PremiumIcon } from '~/PremiumIcon'
 import { useUser } from '@/hooks/useAuth'
 import { Switch } from '@chakra-ui/switch'
@@ -13,6 +12,7 @@ import { useDispatch } from 'react-redux'
 import { Tooltip } from '~/styling/Tooltip'
 
 import { setUser } from '@/store/reducers/auth.reducer'
+import { BuyPremium } from '~/BuyPremium'
 
 export default function GuildPremium() {
   const [guild] = useGuild()
@@ -71,7 +71,7 @@ export default function GuildPremium() {
             .map((x) => <Setting key={x.title ?? x.options[0].name} {...x} />)
         : !user?.premium?.count && (
             <HStack>
-              <Premium />
+              <BuyPremium />
             </HStack>
           )}
     </DashboardSection>

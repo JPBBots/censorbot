@@ -10,9 +10,8 @@ import {
 import { Server, Socket } from 'socket.io'
 
 import { SelfData, Self } from '../decorators/self.decorator'
-// import { GatewayAuthGuard } from '../guards/authorized.guard'
 
-import { Snowflake } from 'jadl'
+import { Snowflake, State } from 'jadl'
 
 import { WebSocketEventMap } from 'typings/websocket'
 import { UsersService } from '../services/users.service'
@@ -24,6 +23,7 @@ import { ChargeBeeService } from '../services/chargebee.service'
 
 import Pieces from '../../utils/Pieces'
 import { ThreadService } from '../services/thread.service'
+import { StatusService } from '../services/status.service'
 
 type EventMap = {
   [key in keyof WebSocketEventMap]: WebSocketEventMap[key]['receive']
@@ -48,7 +48,8 @@ export class UserGateway implements OnGatewayConnection {
     private readonly caching: CacheService,
     private readonly guilds: GuildsService,
     private readonly chargebee: ChargeBeeService,
-    private readonly thread: ThreadService
+    private readonly thread: ThreadService,
+    private readonly status: StatusService
   ) {
     guilds.on('GUILD_SETTINGS_UPDATE', (dat) => {
       this.server
@@ -66,6 +67,10 @@ export class UserGateway implements OnGatewayConnection {
         _id: undefined,
         bearer: undefined
       })
+    })
+
+    status.on('CLEAR_CACHE', () => {
+      this.server.emit('UNCACHE', null)
     })
   }
 
@@ -179,6 +184,11 @@ export class UserGateway implements OnGatewayConnection {
     if (self.subscribedGuild) await sock.leave(self.subscribedGuild)
 
     await sock.join(data)
+
+    const shard = await this.status.getShardForGuild(data)
+
+    if (shard && shard.state !== State.CONNECTED)
+      return { error: 'Offline in Shard' }
 
     const guild = await this.guilds
       .get(data)

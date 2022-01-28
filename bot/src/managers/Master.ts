@@ -28,7 +28,7 @@ export class MasterManager extends Master {
 
   requests = new Requests(this.rest)
 
-  private readonly _handleEvents = new MasterEvents(this)
+  public handleEvents = new MasterEvents(this)
 
   helpme: Cache<ShortID, { code: ShortID; id: Snowflake }> = new Cache(5e5)
 
@@ -82,7 +82,8 @@ export class MasterManager extends Master {
           } | ${msg}`,
           'color: white'
         )
-      }
+      },
+      shards: 10
     })
 
     if (!this.config.staging) {
@@ -90,8 +91,6 @@ export class MasterManager extends Master {
 
       AutoPoster(Config.dbl, this)
     }
-
-    this._handleEvents.add(this.handlers as any)
 
     this.api = this.spawnProcess(
       'API',

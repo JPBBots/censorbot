@@ -30,7 +30,7 @@ const useWindowSize = () => {
   return state
 }
 
-export const UWS = (windowSizes: { [key: number]: any }) => {
+export const uWS = (windowSizes: { [key: number]: any }) => {
   const { width } = useWindowSize()
 
   const sizes = Object.keys(windowSizes).sort(
@@ -70,4 +70,17 @@ export const wMT = (num: number) => {
   }, [windowDimensions.width])
 
   return meetsWidth
+}
+
+export const DESKTOP_WIDTH = 1920
+export const TABLET_WIDTH = 1353
+export const MOBILE_WIDTH = 790
+
+export const uDW = (sizes: { mobile?: any; tablet?: any; desktop?: any }) => {
+  return uWS({
+    [DESKTOP_WIDTH]: sizes.desktop,
+    [TABLET_WIDTH]: sizes.desktop,
+    [MOBILE_WIDTH]: sizes.tablet,
+    0: sizes.mobile
+  })
 }

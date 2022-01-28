@@ -7,8 +7,10 @@ import {
   Text,
   Flex,
   Image,
-  Box,
-  Button
+  Button,
+  Input,
+  InputGroup,
+  InputLeftAddon
 } from '@chakra-ui/react'
 
 import Router from 'next/router'
@@ -23,7 +25,7 @@ import {
   FaLocationArrow,
   FaComments,
   FaTimes,
-  FaSignOutAlt
+  FaSearch
 } from 'react-icons/fa'
 import { PremiumIcon } from '~/PremiumIcon'
 import { useGuild } from 'hooks/useGuilds'
@@ -114,6 +116,7 @@ interface AsideOptions {
   premium?: boolean
   opened: boolean
   onClose?: () => void
+  onSearchOpen: () => void
 }
 
 export function Aside({ selected, premium, opened, ...props }: AsideOptions) {
@@ -128,7 +131,7 @@ export function Aside({ selected, premium, opened, ...props }: AsideOptions) {
             {guild && (
               <>
                 <HStack w="full" padding="1px">
-                  {opened ? (
+                  {opened && (
                     <Icon
                       cursor="pointer"
                       fontSize="30px"
@@ -137,24 +140,6 @@ export function Aside({ selected, premium, opened, ...props }: AsideOptions) {
                       as={FaTimes}
                       onClick={() => props.onClose?.()}
                     />
-                  ) : (
-                    <Box
-                      as={Button}
-                      h="50px"
-                      w="50px"
-                      display="inline-flex"
-                      onClick={async () =>
-                        await Router.push({ pathname: '/dashboard' })
-                      }
-                    >
-                      <Icon
-                        cursor="pointer"
-                        fontSize="30px"
-                        color="lighter.20"
-                        transform="rotate(180deg)"
-                        as={FaSignOutAlt}
-                      />
-                    </Box>
                   )}
                   <HStack
                     w="full"
@@ -189,6 +174,28 @@ export function Aside({ selected, premium, opened, ...props }: AsideOptions) {
               }}
             />
             <Divider color="lighter.5" />
+            {opened && (
+              <HStack
+                _focus={{
+                  transition: '0.5s'
+                }}
+                justifyContent="flex-end"
+                w="full"
+              >
+                <InputGroup transition="0.4s" w="full">
+                  <InputLeftAddon>
+                    <Icon color="brand.100" as={FaSearch} />
+                  </InputLeftAddon>
+
+                  <Input
+                    placeholder="Search settings..."
+                    onFocus={() => {
+                      props.onSearchOpen()
+                    }}
+                  />
+                </InputGroup>
+              </HStack>
+            )}
             {Object.keys(CATEGORIES).map((category) => (
               <Category title={category} key={category}>
                 {sections

@@ -1,4 +1,4 @@
-import { Divider, HStack, Text, VStack, Flex } from '@chakra-ui/layout'
+import { Divider, HStack, Text, VStack } from '@chakra-ui/layout'
 import { useLoginState, useUser } from 'hooks/useAuth'
 import { useGuilds } from 'hooks/useGuilds'
 import React, { useEffect, useState } from 'react'
@@ -9,13 +9,13 @@ import { LoginButton } from '~/button/LoginButton'
 import { GuildPreview } from '@jpbbots/censorbot-components'
 import { useRouter } from 'next/router'
 import { Input } from '@chakra-ui/input'
-import { InputGroup, InputLeftAddon, Icon } from '@chakra-ui/react'
+import { InputGroup, InputLeftAddon, Icon, Wrap } from '@chakra-ui/react'
 import { FaSearch } from 'react-icons/fa'
 
 import FuzzySearch from 'fuzzy-search'
 import { ShortGuild } from '@/../../typings/api'
 import { Loading } from '~/styling/Loading'
-import { wMT } from '@/hooks/useScreenSize'
+import { uDW, wMT } from '@/hooks/useScreenSize'
 
 export function GuildList({
   searchTerm,
@@ -28,7 +28,12 @@ export function GuildList({
 }) {
   const router = useRouter()
   return (
-    <Flex alignSelf="flex-start" wrap="wrap" gridGap="15px">
+    <Wrap
+      alignSelf="flex-start"
+      justify={uDW({ tablet: 'flex-start', mobile: 'center' })}
+      w="full"
+      gridGap="15px"
+    >
       {searcher
         ?.search(searchTerm)
         .filter(filter ?? (() => true))
@@ -51,7 +56,7 @@ export function GuildList({
             }}
           />
         ))}
-    </Flex>
+    </Wrap>
   )
 }
 
@@ -77,6 +82,8 @@ export default function DashboardHome() {
     ? [...new Set(guilds.map((x) => x.group).filter((x) => x))]
     : undefined
 
+  const groupTextStyle = uDW({ tablet: 'heading.lg', mobile: 'heading.sm' })
+
   return (
     <VStack p="20px">
       <VStack w="full">
@@ -89,7 +96,9 @@ export default function DashboardHome() {
         {loginState === LoginState.LoggedIn && guilds && (
           <>
             <HStack w="full" justify="space-between">
-              <Text textStyle="heading.lg">Select a server to get started</Text>
+              <Text textStyle={groupTextStyle}>
+                Select a server to get started
+              </Text>
               {showSearch && (
                 <InputGroup w="350px" maxW="70vw" display="inline-flex">
                   <InputLeftAddon>
@@ -117,7 +126,7 @@ export default function DashboardHome() {
           />
           {groups?.map((x) => (
             <>
-              <Text align="left" textStyle="heading.lg">
+              <Text align="left" textStyle={groupTextStyle}>
                 {x}
               </Text>
               <Divider color="lighter.5" />
@@ -127,7 +136,7 @@ export default function DashboardHome() {
               />
             </>
           ))}
-          <Text align="left" textStyle="heading.lg">
+          <Text align="left" textStyle={groupTextStyle}>
             Servers without Censor Bot
           </Text>
           <Divider color="lighter.5" />

@@ -6,7 +6,13 @@ import { stats } from './StatsManager'
 
 import { Event, ExtendedEmitter } from '@jpbberry/typed-emitter'
 import { store } from 'store'
-import { setCurrentGuild, setDb } from 'store/reducers/guilds.reducer'
+import {
+  setCurrentGuild,
+  setDb,
+  setGuilds,
+  setNeedsInvite,
+  setOfflineInShard
+} from 'store/reducers/guilds.reducer'
 import { setUser } from 'store/reducers/auth.reducer'
 
 import { io } from 'socket.io-client'
@@ -43,7 +49,8 @@ export class WebsocketManager extends ExtendedEmitter {
       if (user && Api.guildId)
         void Api.getGuild(Api.guildId)
           .then((guild) => {
-            if (!guild || 'notInGuild' in guild) return
+            if (!guild || 'notInGuild' in guild || 'offlineInShard' in guild)
+              return
 
             store.dispatch(setCurrentGuild(guild))
           })
@@ -130,5 +137,30 @@ export class WebsocketManager extends ExtendedEmitter {
   @Event('UPDATE_GUILD')
   onGuildUpdate(data: EventMap['UPDATE_GUILD']) {
     store.dispatch(setCurrentGuild(data))
+  }
+
+  @Event('UNCACHE')
+  uncache() {
+    Api.getGuilds()
+      .then((guilds) => {
+        store.dispatch(setGuilds(guilds))
+        if (guilds && Api.guildId) {
+          void Api.getGuild(Api.guildId)
+            .then((guild) => {
+              if (!guild || 'offlineInShard' in guild) return
+
+              store.dispatch(setOfflineInShard(false))
+
+              if ('notInGuild' in guild) {
+                store.dispatch(setCurrentGuild(undefined))
+                store.dispatch(setNeedsInvite(true))
+              } else {
+                store.dispatch(setCurrentGuild(guild))
+              }
+            })
+            .catch()
+        }
+      })
+      .catch(() => {})
   }
 }

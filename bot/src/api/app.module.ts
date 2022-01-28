@@ -22,6 +22,7 @@ import { ThreadService } from './services/thread.service'
 import { PremiumController } from './controllers/premium.controller'
 import { ChargeBeeController } from './controllers/chargebee.controller'
 import { StatusController } from './controllers/status.controller'
+import { StatusService } from './services/status.service'
 
 @Module({
   imports: [GatewayAuthGuard],
@@ -46,6 +47,7 @@ import { StatusController } from './controllers/status.controller'
     OAuthService,
     UsersService,
     ChargeBeeService,
+    StatusService,
 
     UserGateway
   ]

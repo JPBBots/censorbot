@@ -10,26 +10,13 @@ import { PremiumIcon } from '~/PremiumIcon'
 
 import { MiddleWrap } from '~/MiddleWrap'
 
-import { UWS, wLT, wMT } from '@/hooks/useScreenSize'
+import { uDW, wLT, wMT, TABLET_WIDTH } from '@/hooks/useScreenSize'
 import { animate } from 'framer-motion'
 import { useRouter } from 'next/router'
 import { useServerCount } from '@/hooks/useMeta'
 import { Root } from '~/Root'
 
 const DESCRIPTION_FONT_SIZE = '24px'
-
-const DESKTOP_WIDTH = 1920
-const TABLET_WIDTH = 1353
-const MOBILE_WIDTH = 790
-
-const ULW = (sizes: { mobile?: any; tablet?: any; desktop?: any }) => {
-  return UWS({
-    [DESKTOP_WIDTH]: sizes.desktop,
-    [TABLET_WIDTH]: sizes.desktop,
-    [MOBILE_WIDTH]: sizes.tablet,
-    0: sizes.mobile
-  })
-}
 
 export default function Landing() {
   const router = useRouter()
@@ -49,19 +36,19 @@ export default function Landing() {
     return () => controls.stop()
   }, [serverCount])
 
-  const imageHeight = ULW({
+  const imageHeight = uDW({
     desktop: 281,
     tablet: 403,
     mobile: 175.14
   })
 
-  const imageWidth = ULW({
+  const imageWidth = uDW({
     desktop: 509,
     tablet: 729,
     mobile: 315.63
   })
 
-  const headingFontSize = ULW({
+  const headingFontSize = uDW({
     desktop: '72px',
     tablet: '60px',
     mobile: '36px'
@@ -75,7 +62,7 @@ export default function Landing() {
         <VStack spacing="16px">
           <Text
             textStyle="heading.xl"
-            fontSize={ULW({
+            fontSize={uDW({
               desktop: '96px',
               tablet: '72px',
               mobile: '36px'
@@ -87,7 +74,7 @@ export default function Landing() {
           </Text>
           <MiddleWrap
             spacing="15px"
-            fontSize={ULW({
+            fontSize={uDW({
               desktop: '36px',
               tablet: '28px',
               mobile: '18px'
@@ -119,7 +106,7 @@ export default function Landing() {
 
         <VStack
           spacing={1}
-          fontSize={ULW({
+          fontSize={uDW({
             tablet: '24px',
             mobile: '18px'
           })}
@@ -142,13 +129,13 @@ export default function Landing() {
             textAlign="center"
             color="lighter.40"
             fontSize="inherit"
-            p={ULW({ tablet: '0px', mobile: '16px' })}
+            p={uDW({ tablet: '0px', mobile: '16px' })}
           >
             The largest and most customizable anti-swear and filtering bot
           </Text>
         </VStack>
 
-        <MiddleWrap spacing="25px" m={ULW({ tablet: '2px', mobile: '0px' })}>
+        <MiddleWrap spacing="25px" m={uDW({ tablet: '2px', mobile: '0px' })}>
           {wMT(TABLET_WIDTH) && (
             <Image
               src={DiscordChat.src}
@@ -172,7 +159,7 @@ export default function Landing() {
         <Upper />
         <Box w="full" bg="brand.100">
           <MiddleWrap
-            p={ULW({
+            p={uDW({
               desktop: '0px 20px',
               tablet: '50px 20px',
               mobile: '32px 64px'

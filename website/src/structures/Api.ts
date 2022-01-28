@@ -7,7 +7,6 @@ import Router from 'next/router'
 import { Snowflake } from 'discord-api-types'
 import { updateObject } from 'utils/updateObject'
 import Pieces from 'utils/Pieces'
-import Swal from 'sweetalert2'
 import { store } from '@/store'
 import { setUser } from '@/store/reducers/auth.reducer'
 import { chargebee } from '@/pages/_app'
@@ -50,8 +49,8 @@ export class Api {
   }
 
   static async createPortal() {
-    chargebee?.setPortalSession(() => {
-      return this.ws.request('CREATE_PORTAL_SESSION')
+    chargebee?.setPortalSession(async () => {
+      return await this.ws.request('CREATE_PORTAL_SESSION')
     })
 
     chargebee?.createChargebeePortal().open()
@@ -97,14 +96,14 @@ export class Api {
     return guilds
   }
 
-  static async getGuild(
-    id: Snowflake
-  ): Promise<GuildData | { notInGuild: boolean } | undefined> {
+  static async getGuild(id: Snowflake) {
     this.log(`Subscribing to ${id}`)
 
     const guild = await this.ws.request('SUBSCRIBE', id).catch((err) => {
       if (err.message === 'Not In Guild') {
         return { notInGuild: true }
+      } else if (err.message === 'Offline in Shard') {
+        return { offlineInShard: true }
       }
     })
 

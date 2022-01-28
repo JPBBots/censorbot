@@ -1,17 +1,18 @@
-import { ExtendedEmitter, Event } from '@jpbberry/typed-emitter'
+import { Event } from '@jpbberry/typed-emitter'
 import { Cluster, Snowflake, ThreadEvents } from 'jadl'
 
 import { ResolveFunction } from 'jadl/dist/clustering/ThreadComms'
 
 import { MasterManager } from '../managers/Master'
 import { ReloadNames } from '../types'
+import { EventAdder } from '../utils/EventAdder'
 
 import GenerateID from '../utils/GenerateID'
 import { CustomBotManager } from './CustomBotManager'
 
-export class MasterEvents extends ExtendedEmitter {
+export class MasterEvents extends EventAdder<any> {
   constructor(private readonly master: MasterManager) {
-    super()
+    super(master.handlers)
   }
 
   @Event('RELOAD')

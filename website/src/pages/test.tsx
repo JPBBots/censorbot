@@ -1,3 +1,3 @@
 export default function Test() {
-  return <div>a</div>
+  return <div></div>
 }

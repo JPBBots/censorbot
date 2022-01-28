@@ -95,37 +95,32 @@ export class WorkerManager extends Worker<{}> {
       ScanCommand
     ],
     {
-      interactionGuild: '569907007465848842'
+      interactionGuild: this.config.staging ? '569907007465848842' : undefined
     }
   )
 
-  private readonly _eventHandler = new WorkerEvents(this)
-  private readonly _clusterEventHandler = new ClusterEvents(this)
+  public eventHandler = new WorkerEvents(this)
+  public clusterEventHandler = new ClusterEvents(this)
+
+  public messagesFilterHandler = new MessagesFilterHandler(this)
+  public namesFilterHandler = new NamesFilterHandler(this)
+  public reactionsFilterHandler = new ReactionsFilterHandler(this)
 
   constructor() {
     super()
 
     this.interface.setupWorker(this)
 
-    this.api.on('restDebug', console.debug)
-
     this.setStatus(
       this.config.custom.status?.[0] ?? 'watching',
       this.config.custom.status?.[1] ?? 'For Bad Words'
     )
-
-    this._eventHandler.add(this)
-    this._clusterEventHandler.add(this.comms)
 
     console.log = (...msg: string[]) => this.comms.log(msg.join(' '))
 
     this.db.on('started', () => {
       void this.updateCustomBots()
     })
-
-    new MessagesFilterHandler(this).add(this)
-    new NamesFilterHandler(this).add(this)
-    new ReactionsFilterHandler(this).add(this)
   }
 
   public async isAdmin(id: Snowflake): Promise<boolean> {

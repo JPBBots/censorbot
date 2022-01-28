@@ -12,7 +12,7 @@ import {
 import { FaPlus } from 'react-icons/fa'
 import { Tag } from '@jpbbots/censorbot-components'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 export interface ITag {
   id?: string
@@ -40,6 +40,7 @@ export interface TagsProps {
 export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
   const { whitelist } = settings
   const [focusing, setFocusing] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const inputProps: any = {
     bg: 'transparent !important',
@@ -82,6 +83,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
       border="2px solid"
       borderColor={focusing ? 'brand.100' : 'transparent'}
       p="10px"
+      onClick={() => inputRef.current?.focus()}
     >
       <Flex wrap="wrap" gridGap={2} bg="transparent" alignContent="center">
         {value.map((tagValue) => {
@@ -188,6 +190,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
           onChange={({ target }) => {
             if (target.value === ' ') target.value = ''
           }}
+          ref={inputRef}
         />
       )}
     </Flex>

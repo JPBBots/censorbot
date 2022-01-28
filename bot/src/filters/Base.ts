@@ -1,10 +1,10 @@
-import { ExtendedEmitter } from '@jpbberry/typed-emitter'
 import { GuildDB, ExceptionType } from 'typings'
 import { WorkerManager, ExceptedData } from '../managers/Worker'
+import { EventAdder } from '../utils/EventAdder'
 
-export class BaseFilterHandler extends ExtendedEmitter {
+export class BaseFilterHandler extends EventAdder<WorkerManager> {
   constructor(public readonly worker: WorkerManager) {
-    super()
+    super(worker)
   }
 
   test(content: string, db: GuildDB, data: ExceptedData) {

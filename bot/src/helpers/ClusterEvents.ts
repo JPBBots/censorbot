@@ -1,11 +1,12 @@
 import { WorkerManager } from '../managers/Worker'
 
-import { ExtendedEmitter, Event } from '@jpbberry/typed-emitter'
+import { Event } from '@jpbberry/typed-emitter'
 
 import path from 'path'
 import { ReloadNames } from '../types'
-import { Snowflake } from 'jadl'
+import { Snowflake, Thread } from 'jadl'
 import { ResolveFunction } from 'jadl/dist/clustering/ThreadComms'
+import { EventAdder } from '../utils/EventAdder'
 
 const filterDataDir = path.resolve(__dirname, '../structures/Filter')
 
@@ -13,9 +14,9 @@ const rem = (path): void => {
   delete require.cache[require.resolve(path)]
 }
 
-export class ClusterEvents extends ExtendedEmitter {
+export class ClusterEvents extends EventAdder<Thread> {
   constructor(private worker: WorkerManager) {
-    super()
+    super(worker.comms)
   }
 
   @Event('RELOAD')

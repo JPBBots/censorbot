@@ -1,6 +1,11 @@
 import { Snowflake } from 'discord-api-types'
 import { useDispatch, useSelector } from 'react-redux'
-import { setCurrentGuild, setGuilds } from 'store/reducers/guilds.reducer'
+import {
+  setCurrentGuild,
+  setGuilds,
+  setNeedsInvite,
+  setOfflineInShard
+} from 'store/reducers/guilds.reducer'
 import { Api } from 'structures/Api'
 import { RootState } from '../store'
 
@@ -55,22 +60,19 @@ export const useGuild = () => {
 
   const dispatch = useDispatch()
   const [user] = useUser(true)
-  const { currentGuild, volatileDb } = useGuildsState()
+  const { currentGuild, volatileDb, needsInvite, offlineInShard } =
+    useGuildsState()
   const [loginState] = useLoginState()
   const [guilds] = useGuilds()
-
-  const [needsInvite, setNeedsInvite] = useState(false)
 
   const [id, setId] = useState<Snowflake | undefined>(undefined)
 
   useEffect(() => {
-    console.log('changed')
     setId(Api.guildId)
   }, [router.query])
 
   const checkForGuild = async () => {
     if (selectedGuild === id && currentGuild) return
-    setNeedsInvite(false)
     if (headless) {
       dispatch(setCurrentGuild(headlessData.currentGuild as any))
     }
@@ -91,7 +93,11 @@ export const useGuild = () => {
         selectedGuild = id
 
         if ('notInGuild' in guild) {
-          setNeedsInvite(true)
+          dispatch(setNeedsInvite(true))
+
+          return null
+        } else if ('offlineInShard' in guild) {
+          dispatch(setOfflineInShard(true))
 
           return null
         } else {
@@ -103,6 +109,13 @@ export const useGuild = () => {
     }
   }
   useEffect(() => void checkForGuild(), [loginState, guilds, id, user])
+
+  useEffect(() => {
+    if (currentGuild) {
+      dispatch(setNeedsInvite(false))
+      dispatch(setOfflineInShard(false))
+    }
+  }, [currentGuild])
 
   return [
     currentGuild,
@@ -122,6 +135,7 @@ export const useGuild = () => {
       })
     },
     needsInvite,
+    offlineInShard,
     id,
     async () => await checkForGuild()
   ] as const

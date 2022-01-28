@@ -1,4 +1,4 @@
-import { Event, ExtendedEmitter } from '@jpbberry/typed-emitter'
+import { Event } from '@jpbberry/typed-emitter'
 import { DiscordEventMap, Shard, Snowflake } from 'jadl'
 import { Embed } from '@jadl/embed'
 import Wait from '../utils/Wait'
@@ -6,12 +6,13 @@ import Wait from '../utils/Wait'
 import { WorkerManager } from '../managers/Worker'
 import { PunishmentLevel, PunishmentType } from 'typings'
 import { TimeoutSchema } from '../structures/punishments/Timeouts'
+import { EventAdder } from '../utils/EventAdder'
 
-export class WorkerEvents extends ExtendedEmitter {
+export class WorkerEvents extends EventAdder<WorkerManager> {
   unavailables: Set<Snowflake> = new Set()
 
   constructor(private readonly worker: WorkerManager) {
-    super()
+    super(worker)
 
     this.worker.comms.on('START', () => {
       this.worker.cacheManager.on('GUILD_CREATE', (guild) => {

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState } from 'react'
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
 
 import {
   HStack,
@@ -10,7 +10,8 @@ import {
   Input,
   Icon,
   InputGroup,
-  InputLeftAddon
+  InputLeftAddon,
+  Button
 } from '@chakra-ui/react'
 import { Aside, sections, SectionName } from './Aside'
 import { LoginButton } from '../button/LoginButton'
@@ -38,6 +39,14 @@ export function DashboardSection(props: DashboardSectionProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState<string | null>(null)
 
+  const searchRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (!menuOpen && searchTerm === '') {
+      searchRef.current?.focus()
+    }
+  }, [menuOpen, searchTerm])
+
   const currentSection = sections.find((x) => x.name === props.section)
 
   if (loginState === LoginState.LoggedOut) {
@@ -57,16 +66,15 @@ export function DashboardSection(props: DashboardSectionProps) {
   }
 
   const menuButton = mobiled ? (
-    <Icon
-      as={FaBars}
+    <Button
       onClick={() => {
         setMenuOpen(!menuOpen)
       }}
-      margin="10px"
-      color="lighter.20"
-      cursor="pointer"
-      fontSize={30}
-    />
+      margin="5px"
+      bg="transparent"
+    >
+      <Icon as={FaBars} cursor="pointer" color="lighter.20" fontSize={30} />
+    </Button>
   ) : (
     ''
   )
@@ -79,7 +87,7 @@ export function DashboardSection(props: DashboardSectionProps) {
       w="full"
       h="100%"
       maxH="100%"
-      overflow="hidden"
+      overflowY="hidden"
     >
       {(!mobiled || menuOpen) && (
         <Aside
@@ -87,34 +95,26 @@ export function DashboardSection(props: DashboardSectionProps) {
           premium={props.section === 'Premium'}
           opened={mobiled && menuOpen}
           onClose={() => setMenuOpen(false)}
+          onSearchOpen={() => {
+            setMenuOpen(false)
+            setSearchTerm('')
+          }}
         />
       )}
       {(!mobiled || (mobiled && !menuOpen)) && (
         <Flex flexGrow={1} maxH="100%" h="100%" overflowY="scroll">
           <VStack padding="8px 20px" w="full" h="inherit">
-            <HStack
-              flexWrap="wrap"
-              justify={mobiled ? 'flex-start' : 'space-between'}
-              w="full"
-            >
+            <HStack justify={mobiled ? 'flex-start' : 'space-between'} w="full">
               {menuButton}
               {searchTerm === null && (
-                <Text textStyle="heading.xl" alignSelf="start">
-                  {props.section}
-                </Text>
+                <Text textStyle="heading.xl">{props.section}</Text>
               )}
-              {!props.disableSearch && (
-                <HStack
-                  w={searchTerm === null ? undefined : 'full'}
-                  _focus={{
-                    transition: '0.5s'
-                  }}
-                  justifyContent="flex-end"
-                >
+              {!props.disableSearch && (!mobiled || searchTerm !== null) && (
+                <HStack w="full" justifyContent="flex-end">
                   <InputGroup
                     w={searchTerm === null ? '400px' : 'full'}
                     maxW={searchTerm === null ? '70vw' : undefined}
-                    transition="0.4s"
+                    transition="0.5s"
                   >
                     <InputLeftAddon>
                       <Icon color="brand.100" as={FaSearch} />
@@ -129,6 +129,7 @@ export function DashboardSection(props: DashboardSectionProps) {
                       onBlur={() => {
                         if (!searchTerm) setSearchTerm(null)
                       }}
+                      ref={searchRef}
                     />
                   </InputGroup>
                 </HStack>

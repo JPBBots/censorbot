@@ -266,6 +266,7 @@ export class Requests {
   ): Promise<types.RESTPostOAuth2AccessTokenResult> {
     return this.api.post(Routes.oauth2TokenExchange(), {
       body: new URLSearchParams(request as any),
+      auth: false,
       passThroughBody: true
     }) as any
   }

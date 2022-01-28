@@ -64,6 +64,10 @@ export interface WebSocketEventMap {
     receive: null
     send: null
   }
+  UNCACHE: {
+    receive: null
+    send: null
+  }
   AUTHORIZE: {
     receive: {
       token: string
