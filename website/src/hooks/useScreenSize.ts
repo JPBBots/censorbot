@@ -30,6 +30,9 @@ const useWindowSize = () => {
   return state
 }
 
+/**
+ * Use dynamic sizes
+ */
 export const uWS = (windowSizes: { [key: number]: any }) => {
   const { width } = useWindowSize()
 
@@ -50,6 +53,10 @@ export const uWS = (windowSizes: { [key: number]: any }) => {
   return size
 }
 
+/**
+ * Width less than
+ * @param num Width
+ */
 export const wLT = (num: number) => {
   const windowDimensions = useWindowSize()
   const [meetsWidth, setMeetsWidth] = useState(false)
@@ -61,6 +68,10 @@ export const wLT = (num: number) => {
   return meetsWidth
 }
 
+/**
+ * Width more than
+ * @param num Width
+ */
 export const wMT = (num: number) => {
   const windowDimensions = useWindowSize()
   const [meetsWidth, setMeetsWidth] = useState(false)
@@ -76,6 +87,9 @@ export const DESKTOP_WIDTH = 1920
 export const TABLET_WIDTH = 1353
 export const MOBILE_WIDTH = 790
 
+/**
+ * Device constant (use Device Width)
+ */
 export const uDW = (sizes: { mobile?: any; tablet?: any; desktop?: any }) => {
   return uWS({
     [DESKTOP_WIDTH]: sizes.desktop,

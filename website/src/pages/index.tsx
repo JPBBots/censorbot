@@ -26,15 +26,20 @@ export default function Landing() {
   const countRef = useRef<HTMLParagraphElement>(null)
 
   useEffect(() => {
-    const controls = animate(60000, serverCount, {
-      duration: 1,
-      onUpdate(value: number) {
-        countRef.current!.innerText = Number(value.toFixed(0)).toLocaleString()
-      }
-    })
+    if (countRef) {
+      const controls = animate(60000, serverCount, {
+        duration: 1,
+        onUpdate(value: number) {
+          if (countRef.current)
+            countRef.current.innerText = Number(
+              value.toFixed(0)
+            ).toLocaleString()
+        }
+      })
 
-    return () => controls.stop()
-  }, [serverCount])
+      return () => controls.stop()
+    }
+  }, [serverCount, countRef])
 
   const imageHeight = uDW({
     desktop: 281,
@@ -194,7 +199,7 @@ export default function Landing() {
 
             {wMT(TABLET_WIDTH) && (
               <Box borderRadius={66}>
-                <Image src={PhoneDashboard.src} w={432} h={686} />
+                <Image src={PhoneDashboard.src} w={452} h={686} />
               </Box>
             )}
           </MiddleWrap>

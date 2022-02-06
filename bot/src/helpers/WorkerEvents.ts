@@ -39,6 +39,10 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
       shard.on('CLOSED', () => {
         this.worker.comms.tell('STATUS_UPDATE', null)
       })
+
+      shard.on('RESUMED', () => {
+        this.worker.comms.tell('STATUS_UPDATE', null)
+      })
     }
   }
 
@@ -249,33 +253,17 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
   ]
 
   @Event('MESSAGE_CREATE')
-  message(msg: DiscordEventMap['MESSAGE_CREATE']): void {
-    if (
-      msg.content.startsWith('sudo eval') &&
-      msg.author.id === '142408079177285632'
-    ) {
-      // eslint-disable-next-line no-eval
-      console.debug(eval(msg.content.slice('sudo eval '.length)))
-    }
-  }
-
-  @Event('MESSAGE_CREATE')
   async command(msg: DiscordEventMap['MESSAGE_CREATE']) {
     if (this.worker.isCustom(msg.guild_id)) return
     if (!msg.guild_id) return
 
     const config = await this.worker.db.config(msg.guild_id)
 
-    const prefixes = [
-      `<@${this.worker.user.id}>`,
-      `<@!${this.worker.user.id}>`,
-      '+',
-      config.prefix
-    ]
+    if (config.prefix && !msg.content.startsWith(config.prefix)) return
 
     if (
       this.commands.some((a) =>
-        prefixes.some(
+        [config.prefix].some(
           (b) =>
             msg.content.startsWith(`${b}${a}`) ||
             msg.content.startsWith(`${b} ${a}`)

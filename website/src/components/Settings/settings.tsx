@@ -154,11 +154,18 @@ export const settings: ISetting[] = [
     description: 'Amount of time a warning exists',
     tooltip:
       "E.g 5 minutes means that after 5 minutes the warning will expire and doesn't count against the punishment",
+    disable: {
+      disableValue: null,
+      enableValue: 10000,
+      property: 'punishments.expires',
+      disableButton: 'Never'
+    },
     options: [
       {
         name: 'punishments.expires',
         type: OptionType.Time,
-        max: 2629800000 * 2
+        max: 2629800000 * 2,
+        nullIs: 'Never'
       }
     ]
   },
@@ -552,6 +559,7 @@ export type IOption =
       {},
       {
         max?: number
+        nullIs?: string
       }
     >
 

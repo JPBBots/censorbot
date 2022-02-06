@@ -35,7 +35,7 @@ export function DashboardSection(props: DashboardSectionProps) {
   useUser(true)
   const [currentGuild] = useGuild()
   const [loginState] = useLoginState()
-  const mobiled = wLT(840)
+  const mobiled = wLT(980)
   const [menuOpen, setMenuOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState<string | null>(null)
 
@@ -88,19 +88,21 @@ export function DashboardSection(props: DashboardSectionProps) {
       h="100%"
       maxH="100%"
       overflowY="hidden"
+      overflowX="hidden"
     >
-      {(!mobiled || menuOpen) && (
-        <Aside
-          selected={currentSection?.name}
-          premium={props.section === 'Premium'}
-          opened={mobiled && menuOpen}
-          onClose={() => setMenuOpen(false)}
-          onSearchOpen={() => {
-            setMenuOpen(false)
-            setSearchTerm('')
-          }}
-        />
-      )}
+      {/* {(!mobiled || menuOpen) && ( */}
+      <Aside
+        selected={currentSection?.name}
+        premium={props.section === 'Premium'}
+        opened={mobiled && menuOpen}
+        mobiled={mobiled}
+        onClose={() => setMenuOpen(false)}
+        onSearchOpen={() => {
+          setMenuOpen(false)
+          setSearchTerm('')
+        }}
+      />
+      {/* )} */}
       {(!mobiled || (mobiled && !menuOpen)) && (
         <Flex flexGrow={1} maxH="100%" h="100%" overflowY="scroll">
           <VStack padding="8px 20px" w="full" h="inherit">

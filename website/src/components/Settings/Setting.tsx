@@ -237,6 +237,7 @@ export function SettingOption({
       <TimeSelector
         value={value}
         max={option.max}
+        nullIs={option.nullIs}
         onChange={(val) => {
           setValue(val)
         }}

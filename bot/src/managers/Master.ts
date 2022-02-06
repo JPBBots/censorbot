@@ -82,8 +82,7 @@ export class MasterManager extends Master {
           } | ${msg}`,
           'color: white'
         )
-      },
-      shards: 10
+      }
     })
 
     if (!this.config.staging) {

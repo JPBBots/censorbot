@@ -46,6 +46,8 @@ import { DebugCommand } from '../commands/utility/DebugCommand'
 import { TicketCommand } from '../commands/TicketCommand'
 import { EvalCommand } from '../commands/admin/EvalCommand'
 import { ScanCommand } from '../commands/utility/ScanCommand'
+import { WarningsCommand } from '../commands/utility/WarningsCommand'
+
 import { CustomBotOptions } from 'typings/custombot'
 
 interface CachedThread {
@@ -92,7 +94,8 @@ export class WorkerManager extends Worker<{}> {
       DebugCommand,
       TicketCommand,
       EvalCommand,
-      ScanCommand
+      ScanCommand,
+      WarningsCommand
     ],
     {
       interactionGuild: this.config.staging ? '569907007465848842' : undefined
@@ -121,6 +124,8 @@ export class WorkerManager extends Worker<{}> {
     this.db.on('started', () => {
       void this.updateCustomBots()
     })
+
+    this.interface.commands.setupOldCommand(['+'], this.eventHandler.commands)
   }
 
   public async isAdmin(id: Snowflake): Promise<boolean> {

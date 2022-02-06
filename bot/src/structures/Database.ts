@@ -17,7 +17,6 @@ import SafeConfig from '../data/SafeConfig.json'
 import { settingSchema, premiumSchema } from '../data/SettingsSchema'
 
 import { Database as Db } from '@jpbbots/interface/dist/Database'
-import { Collection } from 'mongodb'
 import { CustomerSchema } from '../types'
 import { PunishmentSchema } from './punishments/PunishmentManager'
 import { TimeoutSchema } from './punishments/Timeouts'
@@ -54,13 +53,14 @@ export class Database extends Db {
     premium: premiumSchema
   }
 
+  // @ts-expect-error
   get collection() {
     return <C extends keyof DatabaseCollections>(name: C) =>
-      super.collection(name) as Collection<DatabaseCollections[C]>
+      super.collection<DatabaseCollections[C]>(name)
   }
 
   constructor(private readonly comms?: ThreadComms) {
-    super('localhost', Config.db.username, Config.db.password)
+    super('localhost', Config.db.username, Config.db.password, true)
 
     this.comms?.on('GUILD_DUMP', (id) => {
       this.configCache.delete(id)

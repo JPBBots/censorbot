@@ -13,6 +13,7 @@ import { FaPlus } from 'react-icons/fa'
 import { Tag } from '@jpbbots/censorbot-components'
 
 import { useRef, useState } from 'react'
+import { wLT } from '@/hooks/useScreenSize'
 
 export interface ITag {
   id?: string
@@ -42,15 +43,15 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
   const [focusing, setFocusing] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  const inputFlip = wLT(390)
+
   const inputProps: any = {
     bg: 'transparent !important',
     border: 'none !important',
 
     onFocus: () => {
       setFocusing(true)
-    },
-
-    maxWidth: '80vw'
+    }
   }
 
   const remove = (val: string) => {
@@ -191,6 +192,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
             if (target.value === ' ') target.value = ''
           }}
           ref={inputRef}
+          maxW={inputFlip ? '50vw' : '80vw'}
         />
       )}
     </Flex>

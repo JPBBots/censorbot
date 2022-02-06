@@ -115,22 +115,35 @@ interface AsideOptions {
   selected?: string
   premium?: boolean
   opened: boolean
+  mobiled: boolean
   onClose?: () => void
   onSearchOpen: () => void
 }
 
-export function Aside({ selected, premium, opened, ...props }: AsideOptions) {
+export function Aside({
+  selected,
+  premium,
+  opened,
+  mobiled,
+  ...props
+}: AsideOptions) {
   const [guild] = useGuild()
   const { height } = useWindowSize()
 
   return (
-    <Flex h={height - 90} zIndex={999} backgroundColor="darker.20">
+    <Flex
+      h={height - 90}
+      zIndex={999}
+      transition="0.5s"
+      w={mobiled ? (opened ? 'full' : '0px') : undefined}
+      backgroundColor="darker.20"
+    >
       <Flex overflowY="scroll" overflowX="hidden">
         <VStack padding={2} h="fit-content">
           <VStack w={opened ? '95vw' : '308px'} spacing={2}>
             {guild && (
               <>
-                <HStack w="full" padding="1px">
+                <HStack w="full" padding="1px 20px">
                   {opened && (
                     <Icon
                       cursor="pointer"

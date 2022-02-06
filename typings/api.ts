@@ -36,12 +36,12 @@ export type PunishmentLevel = {
 } & (
   | {
       type: PunishmentType.Ban
-      time: number
+      time: number | null
     }
   | {
       type: PunishmentType.GiveRole
       role: Snowflake
-      time: number
+      time: number | null
     }
   | {
       type: PunishmentType.Timeout

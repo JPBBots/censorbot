@@ -76,7 +76,20 @@ export function PunishmentSetting({
               <MenuItem
                 key={type}
                 onClick={() => {
-                  setValue({ type: Number(type) })
+                  const punishmentType = Number(type)
+                  const newTime =
+                    punishmentType === PunishmentType.Timeout ? 60e3 : null
+
+                  setValue({
+                    type: punishmentType,
+                    time:
+                      'time' in punishment &&
+                      (!!punishment.time ||
+                        (punishmentType === PunishmentType.Timeout &&
+                          punishment.time !== null))
+                        ? punishment.time
+                        : newTime
+                  })
                 }}
               >
                 {punishmentLevels[type]}
@@ -105,9 +118,14 @@ export function PunishmentSetting({
             for
             <TimeSelector
               onChange={(val) => {
-                setValue({ time: val })
+                setValue({ time: val as any })
               }}
               max={2629800000}
+              nullIs={
+                punishment.type === PunishmentType.Timeout
+                  ? undefined
+                  : 'Forever'
+              }
               value={punishment.time}
             />
           </>
