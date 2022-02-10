@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import Crypto from 'crypto'
 import { Config } from '../../config'
-import { ShortGuild, User } from 'typings'
+import { ShortGuild, User } from '@jpbbots/cb-typings'
 import { APIUser, RESTPostOAuth2AccessTokenResult } from 'discord-api-types'
 import { DiscordService } from './discord.service'
 import { PermissionUtils } from 'jadl'
@@ -29,8 +29,8 @@ export class OAuthService {
       .digest('hex')
   }
 
-  async callback(code: string, host: string): Promise<string> {
-    const oauthUser = await this._bearer(code, host)
+  async callback(code: string, host: string, https: boolean): Promise<string> {
+    const oauthUser = await this._bearer(code, host, https)
     if (!oauthUser) throw new Error('Invalid Code')
 
     const user = await this.getUser(oauthUser.access_token)
@@ -56,7 +56,8 @@ export class OAuthService {
 
   private async _bearer(
     code: string,
-    host: string
+    host: string,
+    https: boolean
   ): Promise<RESTPostOAuth2AccessTokenResult | false> {
     const user = await this.rest
       .authorizeToken({
@@ -64,9 +65,9 @@ export class OAuthService {
         client_secret: Config.oauth.secret,
         code,
         grant_type: 'authorization_code',
-        redirect_uri: `https://${host}/api/auth/discord/callback`,
-        // @ts-expect-error
-        scope: Config.dashboardOptions.scopes.join(' ')
+        redirect_uri: `${https ? 'https' : 'http'}://${host}${
+          https ? '' : ':2136'
+        }/api/auth/discord/callback`
       })
       .catch((err) => {
         console.log(err)

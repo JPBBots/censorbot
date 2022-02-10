@@ -13,7 +13,7 @@ import { InputGroup, InputLeftAddon, Icon, Wrap } from '@chakra-ui/react'
 import { FaSearch } from 'react-icons/fa'
 
 import FuzzySearch from 'fuzzy-search'
-import { ShortGuild } from '@/../../typings/api'
+import { ShortGuild } from '@jpbbots/cb-typings'
 import { Loading } from '~/styling/Loading'
 import { uDW, wMT } from '@/hooks/useScreenSize'
 

@@ -1,6 +1,6 @@
 import { MessageTypes } from '@jadl/cmd'
 import { APIMessage, Snowflake } from 'discord-api-types'
-import { ShortID } from 'typings'
+import { ShortID } from '@jpbbots/cb-typings'
 
 export const Reloaders = ['COMMANDS', 'FILTER', 'CACHE', 'FILTERS'] as const
 

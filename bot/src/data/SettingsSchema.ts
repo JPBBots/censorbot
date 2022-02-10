@@ -6,9 +6,10 @@ import {
   WebhookReplace,
   Exception,
   ExceptionType,
-  PunishmentLevel
-} from 'typings'
-import { allFilterTypes, BASE_FILTERS } from 'typings/filter'
+  PunishmentLevel,
+  allFilterTypes,
+  BASE_FILTERS
+} from '@jpbbots/cb-typings'
 
 const sfRegex = /^[0-9]{5,50}$/
 

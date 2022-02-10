@@ -1,4 +1,4 @@
-import { CustomBotOptions } from 'typings/custombot'
+import { CustomBotOptions } from '@jpbbots/cb-typings'
 import { WorkerManager } from './Worker'
 
 export class CustomBot extends WorkerManager {

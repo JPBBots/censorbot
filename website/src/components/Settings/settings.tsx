@@ -5,7 +5,13 @@ import type { IconType } from 'react-icons/lib'
 
 import type { DeepPartial } from 'redux'
 
-import { CensorMethods, GuildData, WebhookReplace } from 'typings'
+import {
+  CensorMethods,
+  GuildData,
+  WebhookReplace,
+  FilterType,
+  filterTypeNames
+} from '@jpbbots/cb-typings'
 
 import type { SectionName } from './Aside'
 
@@ -13,7 +19,6 @@ import FuzzySearch from 'fuzzy-search'
 import { ChannelType } from '@/types'
 import { TagProps } from '@chakra-ui/tag'
 import { TagsSettings } from './Tags'
-import { FilterType, filterTypeNames } from '@/../../typings/filter'
 
 export enum OptionType {
   Boolean = 0,

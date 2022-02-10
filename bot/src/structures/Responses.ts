@@ -2,13 +2,14 @@ import { APIMessage, ChannelType, Snowflake } from 'discord-api-types'
 import { WorkerManager } from '../managers/Worker'
 
 import { Embed } from '@jadl/embed'
-import { CensorMethods, GuildDB } from 'typings'
 import {
+  CensorMethods,
+  GuildDB,
   baseFilterNames,
   FilterResultInfo,
   FilterType,
   filterTypeNames
-} from 'typings/filter'
+} from '@jpbbots/cb-typings'
 
 const LENGTH_MESSAGE = '- messsage too long'
 const DESCRIPTION_MAX_LENGTH = 2048

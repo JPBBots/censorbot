@@ -14,7 +14,7 @@ import {
   Button,
   HStack
 } from '@chakra-ui/react'
-import { GuildData, PunishmentLevel, PunishmentType } from 'typings/api'
+import { GuildData, PunishmentLevel, PunishmentType } from '@jpbbots/cb-typings'
 import { TimeSelector } from '~/functional/TimeSelector'
 
 import { FaTrash } from 'react-icons/fa'
@@ -84,9 +84,9 @@ export function PunishmentSetting({
                     type: punishmentType,
                     time:
                       'time' in punishment &&
-                      (!!punishment.time ||
-                        (punishmentType === PunishmentType.Timeout &&
-                          punishment.time !== null))
+                        (!!punishment.time ||
+                          (punishmentType === PunishmentType.Timeout &&
+                            punishment.time !== null))
                         ? punishment.time
                         : newTime
                   })
@@ -114,22 +114,22 @@ export function PunishmentSetting({
         {(punishment.type === PunishmentType.Ban ||
           punishment.type === PunishmentType.GiveRole ||
           punishment.type === PunishmentType.Timeout) && (
-          <>
-            for
-            <TimeSelector
-              onChange={(val) => {
-                setValue({ time: val as any })
-              }}
-              max={2629800000}
-              nullIs={
-                punishment.type === PunishmentType.Timeout
-                  ? undefined
-                  : 'Forever'
-              }
-              value={punishment.time}
-            />
-          </>
-        )}
+            <>
+              for
+              <TimeSelector
+                onChange={(val) => {
+                  setValue({ time: val as any })
+                }}
+                max={2629800000}
+                nullIs={
+                  punishment.type === PunishmentType.Timeout
+                    ? undefined
+                    : 'Forever'
+                }
+                value={punishment.time}
+              />
+            </>
+          )}
       </Wrap>
 
       <Icon

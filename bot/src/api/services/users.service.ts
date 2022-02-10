@@ -1,7 +1,7 @@
 import { EventEmitter } from '@jpbberry/typed-emitter'
 import { Injectable } from '@nestjs/common'
 import { Snowflake } from 'discord-api-types'
-import { User, UserPremium } from 'typings'
+import { User, UserPremium } from '@jpbbots/cb-typings'
 
 import { CacheService } from './cache.service'
 import { ChargeBeeService } from './chargebee.service'

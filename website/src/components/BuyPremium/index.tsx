@@ -6,7 +6,7 @@ import { Spinner } from '@chakra-ui/react'
 import { PremiumCard } from '@jpbbots/censorbot-components'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { PremiumTypes } from 'typings'
+import { PremiumTypes } from '@jpbbots/cb-typings'
 import { chargebee } from 'pages/_app'
 
 export function BuyPremium() {

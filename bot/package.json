@@ -5,7 +5,9 @@
   "main": "./dist/.run/master.js",
   "scripts": {
     "test": "jest ./__tests__",
-    "build": "rm -rf ./dist && tsc"
+    "build": "rm -rf ./dist && tsc",
+    "prestart": "npm run build",
+    "start": "node ./dist/.run/master.js"
   },
   "repository": {
     "type": "git",
@@ -19,14 +21,15 @@
   "homepage": "https://github.com/jpbberry/censorbot#readme",
   "dependencies": {
     "@discordjs/collection": "^0.2.1",
-    "@discordjs/rest": "^0.2.0-canary.0",
+    "@discordjs/rest": "^0.3.0-dev.1644235835.b936103",
     "@jadl/cmd": "^0.3.0",
-    "@jadl/embed": "0.0.3",
+    "@jadl/embed": "^0.0.3",
     "@jpbberry/cache": "^1.0.4",
     "@jpbberry/load-routes": "^1.0.3",
     "@jpbberry/typed-emitter": "^1.2.1",
+    "@jpbbots/cb-typings": "^1.0.0",
     "@jpbbots/interface": "^2.2.1",
-    "@nestjs/common": "^8.0.6",
+    "@nestjs/common": "^8.2.6",
     "@nestjs/core": "^8.0.6",
     "@nestjs/platform-express": "^8.0.6",
     "@nestjs/platform-socket.io": "^8.0.6",
@@ -34,10 +37,10 @@
     "@nestjs/websockets": "^8.0.6",
     "chargebee": "^2.6.5",
     "crypto": "^1.0.1",
-    "deepai": "^1.0.17",
+    "deepai": "1.0.17",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "jadl": "^0.1.6",
+    "jadl": "^0.1.7",
     "joi": "^17.4.1",
     "mongodb": "^3.7.0",
     "node-fetch": "^2.6.1",
@@ -66,8 +69,9 @@
     "chargebee-typescript": "^2.0.9",
     "discord-api-types": "^0.26.0",
     "jest": "^27.4.7",
-    "typescript": "^4.4.2",
-    "typings": "file:../typings"
+    "prettier": "^2.5.1",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.4.2"
   },
   "types": "./types.ts"
 }

@@ -13,7 +13,7 @@ import { SelfData, Self } from '../decorators/self.decorator'
 
 import { Snowflake, State } from 'jadl'
 
-import { WebSocketEventMap } from 'typings/websocket'
+import { WebSocketEventMap } from '@jpbbots/cb-typings'
 import { UsersService } from '../services/users.service'
 import { CacheService } from '../services/cache.service'
 import { OAuthService } from '../services/oauth.service'

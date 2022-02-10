@@ -7,8 +7,10 @@ import {
   GuildDB,
   Ticket,
   User,
-  WebhookReplace
-} from 'typings/api'
+  WebhookReplace,
+  CustomBotOptions,
+  allFilterTypes
+} from '@jpbbots/cb-typings'
 import { Snowflake } from 'discord-api-types'
 
 import DefaultConfig from '../data/DefaultConfig.json'
@@ -22,8 +24,6 @@ import { PunishmentSchema } from './punishments/PunishmentManager'
 import { TimeoutSchema } from './punishments/Timeouts'
 import { TicketBanSchema } from './TicketManager'
 import { ThreadComms } from 'jadl/dist/clustering/ThreadComms'
-import { CustomBotOptions } from 'typings/custombot'
-import { allFilterTypes } from 'typings/filter'
 
 export * from '../data/SettingsSchema'
 
@@ -60,7 +60,12 @@ export class Database extends Db {
   }
 
   constructor(private readonly comms?: ThreadComms) {
-    super('localhost', Config.db.username, Config.db.password, true)
+    super(
+      process.env.DB_URL ?? 'localhost',
+      Config.db.username,
+      Config.db.password,
+      false
+    )
 
     this.comms?.on('GUILD_DUMP', (id) => {
       this.configCache.delete(id)

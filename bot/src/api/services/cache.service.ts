@@ -1,7 +1,7 @@
 import { Cache } from '@jpbberry/cache'
 import { Injectable } from '@nestjs/common'
 import { Snowflake } from 'jadl'
-import { GuildData, ShortGuild, User } from 'typings'
+import { GuildData, ShortGuild, User } from '@jpbbots/cb-typings'
 import { Config } from '../../config'
 
 @Injectable()

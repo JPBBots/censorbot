@@ -1,4 +1,9 @@
-import { FilterResultInfo } from 'typings/filter'
+import {
+  FilterResultInfo,
+  CensorMethods,
+  ExceptionType,
+  GuildDB
+} from '@jpbbots/cb-typings'
 
 import { Event } from '@jpbberry/typed-emitter'
 
@@ -6,8 +11,6 @@ import {
   GatewayGuildMemberUpdateDispatchData,
   GatewayGuildMemberAddDispatchData
 } from 'discord-api-types'
-
-import { CensorMethods, ExceptionType, GuildDB } from 'typings/api'
 import { BaseFilterHandler } from './Base'
 import { DiscordEventMap } from 'jadl'
 

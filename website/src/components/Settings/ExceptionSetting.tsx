@@ -1,4 +1,4 @@
-import { GuildData, Exception, ExceptionType } from '@/../../typings/api'
+import { GuildData, Exception, ExceptionType } from '@jpbbots/cb-typings'
 import { DeepPartial, HStack, Text, Icon, Select } from '@chakra-ui/react'
 import { InlineOptionGroup } from '@jpbbots/censorbot-components'
 import React from 'react'

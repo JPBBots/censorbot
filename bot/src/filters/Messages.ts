@@ -1,4 +1,11 @@
-import { FilterResultInfo, FilterType } from 'typings/filter'
+import {
+  FilterResultInfo,
+  FilterType,
+  CensorMethods,
+  ExceptionType,
+  GuildDB,
+  WebhookReplace
+} from '@jpbbots/cb-typings'
 
 import {
   Snowflake,
@@ -9,13 +16,6 @@ import {
 } from 'discord-api-types'
 
 import { Cache } from '@jpbberry/cache'
-
-import {
-  CensorMethods,
-  ExceptionType,
-  GuildDB,
-  WebhookReplace
-} from 'typings/api'
 import { OcrLine } from '../structures/extensions/Ocr'
 
 import { Event } from '@jpbberry/typed-emitter'
@@ -42,7 +42,7 @@ const replaces = {
   [WebhookReplace.Stars]: '*'
 }
 
-class ContentData {
+class ContentData implements ContentData {
   content?: string
   id: string
   images: string[] = []

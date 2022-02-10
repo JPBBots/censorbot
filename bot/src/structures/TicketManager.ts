@@ -1,14 +1,13 @@
 import { Collection } from 'mongodb'
 import { WorkerManager } from '../managers/Worker'
 
-import { Ticket } from 'typings/api'
+import { Ticket, BASE_FILTERS } from '@jpbbots/cb-typings'
 import { APIUser, Snowflake } from 'discord-api-types'
 
 import GenerateID from '../utils/GenerateID'
 import { NonFatalError } from '../utils/NonFatalError'
 
 import { Embed } from '@jadl/embed'
-import { BASE_FILTERS } from 'typings/filter'
 
 export interface TicketBanSchema {
   id: Snowflake

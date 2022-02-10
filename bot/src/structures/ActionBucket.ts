@@ -9,7 +9,7 @@ import {
   Snowflake
 } from 'discord-api-types'
 
-import { GuildDB } from 'typings/api'
+import { GuildDB } from '@jpbbots/cb-typings'
 
 import { WorkerManager } from '../managers/Worker'
 
@@ -27,7 +27,7 @@ export class ActionBucket {
   popups: Collection<string, true> = new Collection()
   webhooks: Cache<Snowflake, APIWebhook> = new Cache(30e3)
 
-  constructor(public worker: WorkerManager) {}
+  constructor(public worker: WorkerManager) { }
 
   public async delete(channel: Snowflake, message: Snowflake[]): Promise<void> {
     let bucket = this.messages.get(channel)
@@ -42,7 +42,7 @@ export class ActionBucket {
     }
 
     if (bucket.amount <= this.worker.config.actionRetention) {
-      this.worker.requests.bulkDeleteMessages(channel, message).catch(() => {})
+      this.worker.requests.bulkDeleteMessages(channel, message).catch(() => { })
 
       bucket.amount++
       bucket.timeout = setTimeout(() => {
@@ -77,7 +77,7 @@ export class ActionBucket {
 
     this.worker.requests
       .bulkDeleteMessages(channel, bucket.msgs)
-      .catch(() => {})
+      .catch(() => { })
   }
 
   public popup(channel: Snowflake, user: Snowflake, db: GuildDB): void {
@@ -104,7 +104,7 @@ export class ActionBucket {
         this.worker.requests.deleteMessage(channel, msg.id).catch(console.log)
         this.popups.delete(id)
       })
-      .catch(() => {})
+      .catch(() => { })
   }
 
   public async sendAs(
@@ -130,11 +130,10 @@ export class ActionBucket {
 
     const extra = {
       username: name,
-      avatar_url: `https://cdn.discordapp.com/${
-        user.avatar
-          ? `avatars/${user.id}/${user.avatar}`
-          : `embed/avatars/${Number(user.discriminator) % 5}`
-      }.png`,
+      avatar_url: `https://cdn.discordapp.com/${user.avatar
+        ? `avatars/${user.id}/${user.avatar}`
+        : `embed/avatars/${Number(user.discriminator) % 5}`
+        }.png`,
       allowed_mentions: {
         parse: [AllowedMentionsTypes.User]
       }

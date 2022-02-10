@@ -1,4 +1,4 @@
-import { ShortGuild } from 'typings/api'
+import { ShortGuild } from '@jpbbots/cb-typings'
 
 import { FaArrowLeft } from 'react-icons/fa'
 

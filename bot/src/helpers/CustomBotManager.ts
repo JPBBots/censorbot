@@ -1,5 +1,5 @@
 import { ThreadComms } from 'jadl/dist/clustering/ThreadComms'
-import { CustomBotOptions } from 'typings/custombot'
+import { CustomBotOptions } from '@jpbbots/cb-typings'
 
 import { Worker } from 'worker_threads'
 import path from 'path'

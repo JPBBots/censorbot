@@ -33,7 +33,7 @@ import { Cache } from '@jpbberry/cache'
 import util from 'util'
 import fetch from 'node-fetch'
 
-import { ExceptionType, GuildDB } from 'typings'
+import { ExceptionType, GuildDB, CustomBotOptions } from '@jpbbots/cb-typings'
 import { WorkerEvents } from '../helpers/WorkerEvents'
 import { AntiPhish } from '../structures/extensions/AntiPhish'
 import { Requests } from '../helpers/Requests'
@@ -47,8 +47,6 @@ import { TicketCommand } from '../commands/TicketCommand'
 import { EvalCommand } from '../commands/admin/EvalCommand'
 import { ScanCommand } from '../commands/utility/ScanCommand'
 import { WarningsCommand } from '../commands/utility/WarningsCommand'
-
-import { CustomBotOptions } from 'typings/custombot'
 
 interface CachedThread {
   id: Snowflake

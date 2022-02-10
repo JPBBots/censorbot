@@ -1,6 +1,6 @@
 import { Snowflake } from 'discord-api-types'
 import { Collection } from 'mongodb'
-import { PunishmentType, TimedPunishments } from 'typings'
+import { PunishmentType, TimedPunishments } from '@jpbbots/cb-typings'
 import { PunishmentManager } from './PunishmentManager'
 
 import DJSCollection from '@discordjs/collection'
@@ -10,14 +10,14 @@ export type TimeoutSchema = {
   user: Snowflake
   at: number
 } & (
-  | {
+    | {
       type: PunishmentType.GiveRole
       role: Snowflake
     }
-  | {
+    | {
       type: PunishmentType.Ban
     }
-)
+  )
 
 export class Timeouts {
   timeouts: DJSCollection<string, NodeJS.Timeout> = new DJSCollection()
@@ -26,7 +26,7 @@ export class Timeouts {
     void this.checkTimeouts()
   }, 15e4)
 
-  constructor(public manager: PunishmentManager) {}
+  constructor(public manager: PunishmentManager) { }
 
   get db(): Collection<TimeoutSchema> {
     return this.manager.worker.db.collection('timeouts')

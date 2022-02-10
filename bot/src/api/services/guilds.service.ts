@@ -1,7 +1,7 @@
 import { EventEmitter } from '@jpbberry/typed-emitter'
 import { Injectable } from '@nestjs/common'
 import { Snowflake } from 'discord-api-types'
-import { GuildData, GuildDB } from 'typings'
+import { GuildData, GuildDB } from '@jpbbots/cb-typings'
 
 import patch from '../../utils/Patch'
 import pieces from '../../utils/Pieces'

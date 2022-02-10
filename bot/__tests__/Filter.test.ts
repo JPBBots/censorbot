@@ -1,4 +1,4 @@
-import { FilterType } from 'typings/filter'
+import { FilterType } from '@jpbbots/cb-typings'
 import { Filter } from '../src/structures/Filter'
 
 type filterSettings = Parameters<Filter['test']>[1]

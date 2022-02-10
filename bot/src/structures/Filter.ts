@@ -4,13 +4,13 @@ import filter from '../data/filter'
 
 import { JPBExp } from './JPBExp'
 
-import { GuildDB } from 'typings/api'
 import {
   baseFilters,
   FilterResultInfo,
   FilterType,
-  Range
-} from 'typings/filter'
+  Range,
+  GuildDB
+} from '@jpbbots/cb-typings'
 delete require.cache[require.resolve('../data/filter')]
 
 function inRange(x: number, min: number, max: number): boolean {

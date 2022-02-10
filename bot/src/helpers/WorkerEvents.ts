@@ -4,7 +4,7 @@ import { Embed } from '@jadl/embed'
 import Wait from '../utils/Wait'
 
 import { WorkerManager } from '../managers/Worker'
-import { PunishmentLevel, PunishmentType } from 'typings'
+import { PunishmentLevel, PunishmentType } from '@jpbbots/cb-typings'
 import { TimeoutSchema } from '../structures/punishments/Timeouts'
 import { EventAdder } from '../utils/EventAdder'
 
@@ -280,14 +280,7 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
         return
 
       void this.worker.requests.sendMessage(msg.channel_id, {
-        embeds: [
-          new Embed()
-            .title("We've moved to Slash Commands")
-            .description(
-              'All commands are now exclusively slash commands, type / to see the available commands.'
-            )
-            .render()
-        ]
+        embeds: [this.worker.interface.commands.slashCommandEmbed.render()]
       })
     }
   }

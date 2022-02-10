@@ -3,7 +3,7 @@ import { DashboardSection, sectionSettings } from '~/Settings'
 import { useGuild } from '@/hooks/useGuilds'
 import { Select } from '@chakra-ui/select'
 import { Text, VStack } from '@chakra-ui/layout'
-import { ExceptionType } from 'typings/api'
+import { ExceptionType } from '@jpbbots/cb-typings'
 import { Wrap } from '@chakra-ui/react'
 
 export default function Exceptions() {

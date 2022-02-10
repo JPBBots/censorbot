@@ -9,8 +9,7 @@ import { Database } from '../structures/Database'
 import { MasterEvents } from '../helpers/MasterEvents'
 
 import { Cache } from '@jpbberry/cache'
-import { ShortID } from 'typings'
-import { CustomBotOptions } from 'typings/custombot'
+import { ShortID, CustomBotOptions } from '@jpbbots/cb-typings'
 
 import AutoPoster from 'topgg-autoposter'
 
@@ -139,7 +138,7 @@ export class MasterManager extends Master {
     ]
   }
 
-  guildToCluster(guildId: string): Cluster {
+  guildToCluster(guildId: Snowflake): Cluster {
     const custom = this.customBots.find((x) =>
       x.options.guilds.includes(guildId)
     )

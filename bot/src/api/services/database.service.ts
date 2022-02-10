@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { CustomBotOptions } from 'typings/custombot'
+import { CustomBotOptions } from '@jpbbots/cb-typings'
 import { Database } from '../../structures/Database'
 import { ThreadService } from './thread.service'
 

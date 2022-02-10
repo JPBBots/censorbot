@@ -10,7 +10,7 @@ import {
   Header
 } from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
-import { OAuth2Scopes } from 'discord-api-types'
+import { OAuth2Scopes, RESTOAuth2AuthorizationQuery } from 'discord-api-types'
 import { Response } from 'express'
 import { Config } from '../../../config'
 import { OAuthService } from '../../services/oauth.service'
@@ -18,6 +18,14 @@ import { OAuthService } from '../../services/oauth.service'
 @Controller('auth/discord')
 export class DiscordAuthController {
   constructor(private readonly oauth: OAuthService) {}
+
+  private getHttps(referer: string) {
+    return referer.startsWith('https')
+  }
+
+  private getUrl(host: string, https: boolean) {
+    return `${https ? 'https' : 'http'}://${host}${https ? '' : ':2136'}`
+  }
 
   @Get('/')
   @ApiResponse({
@@ -27,22 +35,30 @@ export class DiscordAuthController {
   @Redirect()
   goToLogin(
     @Query() query: { d?: string; email?: 'true' | 'false' },
-    @Headers('host') host: string
+    @Headers('host') host: string,
+    @Headers('referer') referer: string
   ) {
+    const authQuery: RESTOAuth2AuthorizationQuery = {
+      client_id: Config.id,
+      redirect_uri: `${this.getUrl(
+        host,
+        this.getHttps(referer)
+      )}/api/auth/discord/callback`,
+      response_type: 'code',
+      prompt: 'none',
+      scope: Config.dashboardOptions.scopes
+        .concat(query.email === 'true' ? [OAuth2Scopes.Email] : [])
+        .join(' '),
+      state: this.getHttps(referer) ? 'true' : 'false'
+    }
     return {
       url:
         `https://${
           query.d ? `${query.d as string}.` : ''
         }discord.com/oauth2/authorize?` +
-        new URLSearchParams({
-          client_id: Config.id,
-          redirect_uri: `https://${host}/api/auth/discord/callback`,
-          response_type: 'code',
-          prompt: 'none',
-          scope: Config.dashboardOptions.scopes
-            .concat(query.email === 'true' ? [OAuth2Scopes.Email] : [])
-            .join(' ')
-        }).toString()
+        new URLSearchParams(
+          authQuery as unknown as Record<string, string>
+        ).toString()
     }
   }
 
@@ -54,6 +70,7 @@ export class DiscordAuthController {
   })
   async callback(
     @Query('code') code: string | undefined,
+    @Query('state') https: 'true' | 'false',
     @Headers('host') host: string,
     @Res() res: Response
   ) {
@@ -61,7 +78,7 @@ export class DiscordAuthController {
 
     let token: string
     try {
-      token = await this.oauth.callback(code, host)
+      token = await this.oauth.callback(code, host, https === 'true')
       if (!token)
         throw new HttpException(
           'Internal Server Error',

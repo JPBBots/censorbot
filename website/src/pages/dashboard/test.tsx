@@ -9,7 +9,7 @@ import { Selector } from '~/functional/Selector'
 // import { Select, HStack, VStack, Text, DeepPartial, Icon, Divider } from '@chakra-ui/react'
 // import { useGuild } from '@/hooks/useGuilds'
 // import { SettingSection } from '~/settings/SettingSection'
-// import { Exception, ExceptionType } from 'typings/api'
+// import { Exception, ExceptionType } from '@jpbbots/cb-typings'
 // import { Section } from '@jpbbots/censorbot-components'
 
 export default function Test() {
@@ -40,7 +40,7 @@ export default function Test() {
         role
         placeholder="Search @role"
         value="123123"
-        onChange={() => {}}
+        onChange={() => { }}
       >
         {[
           {
@@ -62,7 +62,7 @@ export default function Test() {
         channel
         placeholder="Search #channel"
         value="123123"
-        onChange={() => {}}
+        onChange={() => { }}
       >
         {[
           {

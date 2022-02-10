@@ -1,4 +1,4 @@
-import { GuildDB, ExceptionType } from 'typings'
+import { GuildDB, ExceptionType } from '@jpbbots/cb-typings'
 import { WorkerManager, ExceptedData } from '../managers/Worker'
 import { EventAdder } from '../utils/EventAdder'
 

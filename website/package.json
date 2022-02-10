@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 8535",
+    "dev": "next dev -p 80",
     "build": "next build",
-    "start": "next start -p 8535",
+    "start": "next start -p 80",
     "lint": "next lint"
   },
   "dependencies": {
@@ -14,6 +14,7 @@
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
     "@jpbberry/typed-emitter": "^1.2.1",
+    "@jpbbots/cb-typings": "^1.0.0",
     "@jpbbots/censorbot-components": "^3.3.1",
     "@reduxjs/toolkit": "^1.6.1",
     "@types/aos": "^3.0.4",
@@ -33,8 +34,10 @@
     "react-spring": "^9.4.2",
     "react-textarea-autosize": "^8.3.3",
     "react-use": "^17.3.1",
+    "sass": "^1.49.7",
     "socket.io-client": "^4.2.0",
     "styled-components": "^5.3.1",
+    "swc": "^1.0.11",
     "sweetalert2": "^11.1.4",
     "sweetalert2-react-content": "^4.1.1",
     "swr": "^1.1.2"
@@ -50,9 +53,7 @@
     "@types/react-redux": "^7.1.18",
     "@zeit/next-typescript": "^1.1.1",
     "eslint-plugin-react": "^7.28.0",
-    "sass": "^1.39.0",
-    "typescript": "4.3.4",
-    "typings": "file:../typings"
+    "typescript": "4.3.4"
   },
   "types": "./src/types.d.ts"
 }

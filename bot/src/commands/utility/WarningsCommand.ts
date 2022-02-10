@@ -1,7 +1,7 @@
 import { Command, Guild, Worker, SubCommand, Options } from '@jadl/cmd'
 import { Embed } from '@jadl/embed'
 import { APIGuild, APIGuildMember } from 'discord-api-types'
-import { GuildDB } from 'typings'
+import { GuildDB } from '@jpbbots/cb-typings'
 import { WorkerManager } from '../../managers/Worker'
 import { Db } from '../decorators/Db'
 

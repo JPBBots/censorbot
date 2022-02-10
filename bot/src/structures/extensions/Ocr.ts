@@ -65,6 +65,6 @@ export class Ocr extends BaseExtension {
       }
     }
 
-    return canvas.toBuffer('image/png')
+    return await canvas.toBuffer('png')
   }
 }

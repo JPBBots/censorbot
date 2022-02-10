@@ -1,4 +1,4 @@
-import { ShortID } from 'typings'
+import { ShortID } from '@jpbbots/cb-typings'
 
 function generate(notAllow: string[] = []): ShortID {
   let text = ''

@@ -1,4 +1,4 @@
-import { MetaObject, WebSocketEventMap } from 'typings/websocket'
+import { MetaObject, WebSocketEventMap } from '@jpbbots/cb-typings'
 import { Logger } from './Logger'
 
 import headlessHandlers from './headlessHandler'

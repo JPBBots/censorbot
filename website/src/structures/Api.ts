@@ -1,4 +1,4 @@
-import { GuildData, User } from 'typings'
+import { GuildData, User } from '@jpbbots/cb-typings'
 import { Utils } from 'utils/Utils'
 import { Logger } from './Logger'
 import { WebsocketManager } from './WebsocketManager'
@@ -170,6 +170,6 @@ export class Api {
 }
 
 if ('window' in global) {
-  ;(global as any).api = Api
-  ;(global as any).store = store
+  ; (global as any).api = Api
+    ; (global as any).store = store
 }
