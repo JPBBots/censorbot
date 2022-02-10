@@ -1,7 +1,7 @@
 import { useGuild } from '@/hooks/useGuilds'
 import { IOption, ISetting, OptionType, settings } from './settings'
 
-import { Option } from '~/functional/Option'
+import { Option } from '~/Option'
 
 import { updateObject } from '@/utils/updateObject'
 

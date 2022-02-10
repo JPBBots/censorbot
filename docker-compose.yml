@@ -19,9 +19,6 @@ services:
       - influx
       - censorbot
 
-    environment:
-      - DB_URL=mongo
-
     entrypoint: ["npm", "start"]
     restart: unless-stopped
   

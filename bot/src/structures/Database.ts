@@ -61,10 +61,10 @@ export class Database extends Db {
 
   constructor(private readonly comms?: ThreadComms) {
     super(
-      process.env.DB_URL ?? 'localhost',
+      process.env.DB_URL ?? 'mongodb',
       Config.db.username,
       Config.db.password,
-      false
+      true
     )
 
     this.comms?.on('GUILD_DUMP', (id) => {
