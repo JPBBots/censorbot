@@ -7,9 +7,10 @@ import {
   Exception,
   ExceptionType,
   PunishmentLevel,
-  allFilterTypes,
-  BASE_FILTERS
+  BASE_FILTERS,
+  FilterType
 } from '@jpbbots/cb-typings'
+import { enumCombiner } from '../utils/enumCombiner'
 
 const sfRegex = /^[0-9]{5,50}$/
 
@@ -63,13 +64,7 @@ export const settingSchema = Joi.object<GuildDB>({
 
   exceptions: Joi.array().items(exceptionSchema).max(15),
 
-  censor: Joi.number()
-    .min(0)
-    .max(
-      Object.values<number>(
-        CensorMethods as unknown as Record<string, number>
-      ).reduce((a, b) => a | b, 0)
-    ),
+  censor: Joi.number().min(0).max(enumCombiner(CensorMethods)),
 
   nickReplace: Joi.string().max(32),
 
@@ -100,9 +95,7 @@ export const settingSchema = Joi.object<GuildDB>({
       .max(2629800000 * 2)
       .allow(null),
     levels: Joi.array().items(punishmentLevelSchema).max(5),
-    allow: Joi.number()
-      .min(0)
-      .max(allFilterTypes + 1)
+    allow: Joi.number().min(0).max(enumCombiner(FilterType))
   }),
 
   webhook: Joi.object<GuildDB['webhook']>({

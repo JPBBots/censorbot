@@ -47,6 +47,7 @@ import { TicketCommand } from '../commands/TicketCommand'
 import { EvalCommand } from '../commands/admin/EvalCommand'
 import { ScanCommand } from '../commands/utility/ScanCommand'
 import { WarningsCommand } from '../commands/utility/WarningsCommand'
+import { ThreadsFilterHandler } from '../filters/Threads'
 
 interface CachedThread {
   id: Snowflake
@@ -106,6 +107,7 @@ export class WorkerManager extends Worker<{}> {
   public messagesFilterHandler = new MessagesFilterHandler(this)
   public namesFilterHandler = new NamesFilterHandler(this)
   public reactionsFilterHandler = new ReactionsFilterHandler(this)
+  public threadsFilterHandler = new ThreadsFilterHandler(this)
 
   constructor() {
     super()

@@ -9,7 +9,7 @@ import {
   User,
   WebhookReplace,
   CustomBotOptions,
-  allFilterTypes
+  FilterType
 } from '@jpbbots/cb-typings'
 import { Snowflake } from 'discord-api-types'
 
@@ -24,6 +24,7 @@ import { PunishmentSchema } from './punishments/PunishmentManager'
 import { TimeoutSchema } from './punishments/Timeouts'
 import { TicketBanSchema } from './TicketManager'
 import { ThreadComms } from 'jadl/dist/clustering/ThreadComms'
+import { enumCombiner } from '../utils/enumCombiner'
 
 export * from '../data/SettingsSchema'
 
@@ -134,7 +135,7 @@ export class Database extends Db {
       db.punishments = {
         levels: db.punishment.type ? [db.punishment] : [],
         expires: null,
-        allow: allFilterTypes
+        allow: enumCombiner(FilterType)
       }
       delete db.punishment
 

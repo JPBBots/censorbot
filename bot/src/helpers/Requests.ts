@@ -299,4 +299,13 @@ export class Requests {
       query: new URLSearchParams(query as Record<string, string>)
     }) as any
   }
+
+  editChannel(
+    channelId: Snowflake,
+    edit: types.RESTPatchAPIChannelJSONBody
+  ): Promise<types.RESTPatchAPIChannelResult> {
+    return this.api.patch(Routes.channel(channelId), {
+      body: edit
+    }) as any
+  }
 }

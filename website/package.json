@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 80",
+    "dev": "next dev -p 7312",
     "build": "next build",
     "start": "next start -p 80",
     "lint": "next lint"
@@ -14,7 +14,7 @@
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
     "@jpbberry/typed-emitter": "^1.2.1",
-    "@jpbbots/cb-typings": "^1.0.0",
+    "@jpbbots/cb-typings": "^1.0.2",
     "@jpbbots/censorbot-components": "^3.3.1",
     "@reduxjs/toolkit": "^1.6.1",
     "@types/aos": "^3.0.4",

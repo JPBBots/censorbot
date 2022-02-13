@@ -307,6 +307,12 @@ export const settings: ISetting[] = [
         label: 'Filter reactions on messages',
         type: OptionType.BitBool,
         bit: CensorMethods.Reactions
+      },
+      {
+        name: 'censor',
+        label: 'Filter thread names',
+        type: OptionType.BitBool,
+        bit: CensorMethods.Threads
       }
     ]
   },

@@ -101,6 +101,10 @@ export class Responses {
             }> on [this message](${`https://discord.com/channels/${data.guild_id}/${data.channel_id}/${data.message_id}`})`,
             true
           )
+        break
+      case CensorMethods.Threads:
+        embed.title('Changed Thread Name').field('Thread', `<#${data}>`, true)
+        break
     }
 
     if (response.type === FilterType.BaseFilter) {

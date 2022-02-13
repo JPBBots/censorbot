@@ -1,0 +1,47 @@
+import { Event } from '@jpbberry/typed-emitter'
+import { CensorMethods, ExceptionType } from '@jpbbots/cb-typings'
+import { DiscordEventMap } from 'jadl'
+import { BaseFilterHandler } from './Base'
+
+export class ThreadsFilterHandler extends BaseFilterHandler {
+  NAME_REPLACEMENT = 'Inappropriate Name'
+  @Event('THREAD_CREATE')
+  @Event('THREAD_UPDATE')
+  async onThread(thread: DiscordEventMap['THREAD_CREATE' | 'THREAD_UPDATE']) {
+    if (!thread.guild_id || !thread.name) return
+    if (this.worker.isCustom(thread.guild_id)) return
+
+    const db = await this.worker.db.config(thread.guild_id)
+
+    if (
+      (db.censor & CensorMethods.Threads) === 0 ||
+      this.worker.isExcepted(ExceptionType.Everything, db, {
+        channel: thread.parent_id!
+      })
+    )
+      return
+
+    if (thread.name === this.NAME_REPLACEMENT) return
+
+    const res = this.test(thread.name, db, {
+      channel: thread.parent_id!
+    })
+
+    if (!res) return
+
+    if (!this.worker.hasPerms(thread.guild_id, 'manageThreads', thread.id))
+      return
+
+    await this.worker.requests.editChannel(thread.id, {
+      name: this.NAME_REPLACEMENT
+    })
+
+    void this.worker.responses.log(
+      CensorMethods.Threads,
+      thread.name,
+      thread.id,
+      res,
+      db
+    )
+  }
+}

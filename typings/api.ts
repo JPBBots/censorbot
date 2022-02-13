@@ -28,7 +28,8 @@ export enum WebhookReplace {
 export enum CensorMethods {
   Messages = 1 << 0,
   Names = 1 << 1,
-  Reactions = 1 << 2
+  Reactions = 1 << 2,
+  Threads = 1 << 3
 }
 
 export type PunishmentLevel = {
