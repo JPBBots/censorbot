@@ -29,7 +29,8 @@ export enum CensorMethods {
   Messages = 1 << 0,
   Names = 1 << 1,
   Reactions = 1 << 2,
-  Threads = 1 << 3
+  Threads = 1 << 3,
+  Avatars = 1 << 4
 }
 
 export type PunishmentLevel = {

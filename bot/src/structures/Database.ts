@@ -16,7 +16,7 @@ import { Snowflake } from 'discord-api-types'
 import DefaultConfig from '../data/DefaultConfig.json'
 import SafeConfig from '../data/SafeConfig.json'
 
-import { settingSchema, premiumSchema } from '../data/SettingsSchema'
+import { settingSchema } from '../data/SettingsSchema'
 
 import { Database as Db } from '@jpbbots/interface/dist/Database'
 import { CustomerSchema } from '../types'
@@ -49,10 +49,7 @@ export class Database extends Db {
   defaultConfig = DefaultConfig
   safeConfig = SafeConfig
 
-  schemas = {
-    normal: settingSchema,
-    premium: premiumSchema
-  }
+  schema = settingSchema
 
   // @ts-expect-error
   get collection() {
@@ -218,6 +215,8 @@ export class Database extends Db {
           uncensor: db.uncensor.slice(0, 150),
           phrases: db.phrases.slice(0, 150),
           words: db.words.slice(0, 150),
+
+          censor: db.censor & ~CensorMethods.Avatars,
 
           exceptions: db.exceptions.slice(0, 15),
 

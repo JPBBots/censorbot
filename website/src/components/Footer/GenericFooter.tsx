@@ -59,7 +59,7 @@ export const GenericFooter = (props: FooterOptions) => {
         </motion.span>{' '}
         by{' '}
         <Link
-          href="javascript:void(0)"
+          href="#"
           onClick={async () => await router.push('/staff')}
           textDecor="underline"
         >

@@ -1,4 +1,4 @@
-import Joi, { ValidationError } from 'joi'
+import Joi, { CustomValidator, ValidationError } from 'joi'
 import {
   GuildDB,
   CensorMethods,
@@ -12,7 +12,28 @@ import {
 } from '@jpbbots/cb-typings'
 import { enumCombiner } from '../utils/enumCombiner'
 
+const enumArray = (enumObj: any) =>
+  Object.values(enumObj).filter((x) => typeof x === 'number')
+
 const sfRegex = /^[0-9]{5,50}$/
+
+const bitWise = (
+  enumObj: any,
+  premiumBits?: number[]
+): CustomValidator<number> => {
+  const full = enumCombiner(enumObj)
+  return (value, helpers) => {
+    if (value < 0 || value > full) {
+      return helpers.error('not.bitwise')
+    }
+
+    if (premiumBits?.some((x) => (value & x) !== 0)) {
+      return helpers.error('not.premium')
+    }
+
+    return value
+  }
+}
 
 const SnowflakeString = Joi.string()
   .regex(sfRegex)
@@ -22,33 +43,42 @@ const SnowflakeString = Joi.string()
 
 const nullableSnowflake = SnowflakeString.concat(Joi.string().allow(null))
 
-export const PremiumOnly = (type: any): Joi.Schema =>
-  Joi.valid(type).error(
-    (errs) => new ValidationError('This is premium only!', errs[0], errs[0])
-  )
+const premiumValidate = (
+  nonPremium: Joi.SchemaLike,
+  premium: Joi.SchemaLike,
+  start: Joi.Schema | typeof Joi = Joi
+): Joi.Schema =>
+  start.when('premium', {
+    switch: [
+      {
+        is: false,
+        then: nonPremium
+      },
+      { is: true, then: premium }
+    ]
+  })
+
+const premiumMax = <T extends 'string' | 'array' | 'number'>(
+  type: T,
+  nonPremium: number,
+  premium: number
+): ReturnType<typeof Joi[T]> =>
+  premiumValidate(
+    Joi[type]().max(nonPremium),
+    Joi[type]().max(premium),
+    Joi[type]()
+  ) as any
+
+const premiumBoolean = premiumValidate(Joi.valid(false), Joi.bool())
 
 export const exceptionSchema = Joi.object<Exception>({
   channel: nullableSnowflake,
   role: nullableSnowflake,
-  type: Joi.valid(
-    ExceptionType.Everything,
-    ExceptionType.PreBuiltFilter,
-    ExceptionType.ServerFilter,
-    ExceptionType.Punishment,
-    ExceptionType.Resend,
-    ExceptionType.Response,
-    ExceptionType.Invites,
-    ExceptionType.AntiHoist
-  ).required()
+  type: Joi.valid(...enumArray(ExceptionType)).required()
 })
 
 export const punishmentLevelSchema = Joi.object<PunishmentLevel>({
-  type: Joi.valid(
-    PunishmentType.GiveRole,
-    PunishmentType.Kick,
-    PunishmentType.Ban,
-    PunishmentType.Timeout
-  ).required(),
+  type: Joi.valid(...enumArray(PunishmentType)).required(),
 
   amount: Joi.number().min(1).max(20).required(),
 
@@ -57,14 +87,19 @@ export const punishmentLevelSchema = Joi.object<PunishmentLevel>({
   time: Joi.number().max(2629800000).allow(null).required()
 })
 
-export const settingSchema = Joi.object<GuildDB>({
+export const settingSchema = Joi.object<GuildDB & { premium: boolean }>({
+  premium: Joi.bool().required(),
+
   id: SnowflakeString,
 
   filters: Joi.array().items(...BASE_FILTERS),
 
-  exceptions: Joi.array().items(exceptionSchema).max(15),
+  exceptions: premiumMax('array', 15, 100).items(exceptionSchema),
 
-  censor: Joi.number().min(0).max(enumCombiner(CensorMethods)),
+  censor: premiumValidate(
+    Joi.number().custom(bitWise(CensorMethods, [CensorMethods.Avatars])),
+    Joi.number().custom(bitWise(CensorMethods))
+  ),
 
   nickReplace: Joi.string().max(32),
 
@@ -72,92 +107,72 @@ export const settingSchema = Joi.object<GuildDB>({
 
   log: nullableSnowflake,
 
-  filter: Joi.array().items(Joi.string().max(20)).max(150),
+  filter: premiumMax('array', 150, 1500).items(Joi.string().max(20)),
 
-  uncensor: Joi.array().items(Joi.string().max(20)).max(150),
+  uncensor: premiumMax('array', 150, 1500).items(Joi.string().max(20)),
 
-  phrases: Joi.array().items(Joi.string().max(50)).max(150),
+  words: premiumMax('array', 150, 1500).items(Joi.string().max(20)),
 
-  words: Joi.array().items(Joi.string().max(20)).max(150),
+  phrases: premiumMax('array', 150, 1000).items(Joi.string().max(50)),
 
   antiHoist: Joi.bool(),
 
-  msg: Joi.object<GuildDB['msg']>({
-    content: Joi.string().max(200).allow(null, false),
+  msg: premiumValidate(
+    Joi.object(),
+    Joi.object({
+      content: Joi.string().max(1000),
+      deleteAfter: Joi.number().max(600e3)
+    }),
+    Joi.object<GuildDB['msg']>({
+      content: Joi.string().max(200).allow(null, false),
 
-    deleteAfter: Joi.number().allow(false).max(120e3),
+      deleteAfter: Joi.number().max(120e3).allow(false),
 
-    dm: PremiumOnly(false)
-  }),
+      dm: premiumBoolean
+    })
+  ),
 
-  punishments: Joi.object<GuildDB['punishments']>({
-    expires: Joi.number()
-      .max(2629800000 * 2)
-      .allow(null),
-    levels: Joi.array().items(punishmentLevelSchema).max(5),
-    allow: Joi.number().min(0).max(enumCombiner(FilterType))
-  }),
+  punishments: premiumValidate(
+    Joi.object(),
+    Joi.object({
+      levels: Joi.array().max(20)
+    }),
+    Joi.object<GuildDB['punishments']>({
+      expires: Joi.number()
+        .max(2629800000 * 2)
+        .allow(null),
+      levels: Joi.array().items(punishmentLevelSchema).max(5),
+      allow: Joi.number().custom(bitWise(FilterType))
+    })
+  ),
 
-  webhook: Joi.object<GuildDB['webhook']>({
-    enabled: PremiumOnly(false),
-    separate: PremiumOnly(true),
-    replace: PremiumOnly(WebhookReplace.Spoilers)
-  }),
+  webhook: premiumValidate(
+    Joi.object<GuildDB['webhook']>({
+      enabled: false,
+      separate: true,
+      replace: WebhookReplace.Spoilers
+    }),
+    Joi.object<GuildDB['webhook']>({
+      enabled: Joi.bool(),
+      separate: Joi.bool(),
+      replace: Joi.number().valid(...enumArray(WebhookReplace))
+    })
+  ),
 
-  multi: PremiumOnly(false),
+  multi: premiumValidate(Joi.valid(false), Joi.bool()),
   prefix: Joi.string().allow(null),
 
   nsfw: Joi.bool(),
 
   invites: Joi.bool(),
 
-  dm: PremiumOnly(false),
+  dm: premiumBoolean,
 
-  toxicity: PremiumOnly(false),
-  images: PremiumOnly(false),
-  ocr: PremiumOnly(false),
+  toxicity: premiumBoolean,
+  images: premiumBoolean,
+  ocr: premiumBoolean,
   phishing: Joi.bool()
+}).messages({
+  'not.bitwise': 'Not a valid BitWise value!',
+  'not.premium': 'This is premium only!'
 })
-
-const boolOverride = Joi.valid(Joi.override, true, false)
-
-export const premiumSchema = settingSchema.concat(
-  Joi.object({
-    dm: boolOverride,
-
-    filter: Joi.array().max(1500),
-    uncensor: Joi.array().max(1500),
-    phrases: Joi.array().max(1000),
-
-    exceptions: Joi.array().max(100),
-
-    webhook: Joi.object<GuildDB['webhook']>({
-      enabled: boolOverride,
-      separate: boolOverride,
-      replace: Joi.valid(
-        Joi.override,
-        WebhookReplace.Spoilers,
-        WebhookReplace.Hashtags,
-        WebhookReplace.Stars
-      )
-    }),
-
-    punishments: Joi.object({
-      levels: Joi.array().max(20)
-    }),
-
-    msg: Joi.object({
-      content: Joi.string().max(1000),
-
-      deleteAfter: Joi.number().max(600e3),
-
-      dm: boolOverride
-    }),
-
-    multi: boolOverride,
-
-    toxicity: boolOverride,
-    images: boolOverride,
-    ocr: boolOverride
-  })
-)

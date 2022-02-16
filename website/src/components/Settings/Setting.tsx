@@ -137,8 +137,8 @@ export function SettingOption({
             value === 'none' && option.allowNone
               ? null
               : option.number
-                ? Number(value)
-                : value
+              ? Number(value)
+              : value
           )
         }}
         w="400px"

@@ -104,8 +104,10 @@ export class GuildsService extends EventEmitter<{
       )
     }
 
-    const valid =
-      this.database.schemas[guild.premium ? 'premium' : 'normal'].validate(db)
+    const valid = this.database.schema.validate({
+      premium: guild.premium,
+      ...db
+    })
     if (valid.error) return { error: valid.error.message }
 
     db.id = id
