@@ -1,9 +1,10 @@
 import { useGuild } from '@/hooks/useGuilds'
 import { IOption, ISetting, OptionType, settings } from './settings'
-
+import NextLink from 'next/link'
 import { Option } from '~/Option'
 
 import { updateObject } from '@/utils/updateObject'
+import { PermissionUtils, humanReadablePermissions } from '@/utils/Permissions'
 
 import {
   Button,
@@ -227,6 +228,7 @@ export function SettingOption({
         {...props}
         name={`${option.name}.${option.bit}`}
         isChecked={(value & option.bit) !== 0}
+        isPremium={option.premium}
         label={option.label}
       />
     )
@@ -296,25 +298,23 @@ export function SettingOption({
         )}
 
         {premiumLocked && (
-          <Alert
-            status="warning"
-            cursor="pointer"
-            onClick={() => {
-              void router.push({
-                pathname: '/dashboard/[guild]/premium',
-                query: router.query
-              })
+          <NextLink
+            href={{
+              pathname: '/dashboard/[guild]/premium',
+              query: router.query
             }}
           >
-            <AlertIcon />
-            {!guild.premium ? (
-              <Text>
-                Reached the maximum 15 punishments, get premium for more.
-              </Text>
-            ) : (
-              'Reached the maximum 100 punishments'
-            )}
-          </Alert>
+            <Alert status="warning" cursor="pointer">
+              <AlertIcon />
+              {!guild.premium ? (
+                <Text>
+                  Reached the maximum 15 punishments, get premium for more.
+                </Text>
+              ) : (
+                'Reached the maximum 100 punishments'
+              )}
+            </Alert>
+          </NextLink>
         )}
       </VStack>
     )
@@ -378,25 +378,23 @@ export function SettingOption({
           </HStack>
         )}
         {premiumLocked && (
-          <Alert
-            status="warning"
-            cursor="pointer"
-            onClick={() => {
-              void router.push({
-                pathname: '/dashboard/[guild]/premium',
-                query: router.query
-              })
+          <NextLink
+            href={{
+              pathname: '/dashboard/[guild]/premium',
+              query: router.query
             }}
           >
-            <AlertIcon />
-            {!guild.premium ? (
-              <Text>
-                Reached the maximum 5 punishments, get premium for more.
-              </Text>
-            ) : (
-              'Reached the maximum 20 punishments'
-            )}
-          </Alert>
+            <Alert status="warning" cursor="pointer">
+              <AlertIcon />
+              {!guild.premium ? (
+                <Text>
+                  Reached the maximum 5 punishments, get premium for more.
+                </Text>
+              ) : (
+                'Reached the maximum 20 punishments'
+              )}
+            </Alert>
+          </NextLink>
         )}
       </VStack>
     )
@@ -424,6 +422,20 @@ export function Setting(setting: ISetting) {
       tooltip={setting.tooltip}
       icon={setting.icon && <Icon as={setting.icon} />}
     >
+      {setting.requiredPermission &&
+        !PermissionUtils.has(
+          guild.guild.permissions,
+          setting.requiredPermission
+        ) && (
+          <Alert status="warning">
+            <AlertIcon />
+            <Text>
+              The bot is missing the{' '}
+              {humanReadablePermissions[setting.requiredPermission]}{' '}
+              permissions, which is required for this setting.
+            </Text>
+          </Alert>
+        )}
       {!disabled &&
         setting.options.map((opt, i) => (
           <SettingOption

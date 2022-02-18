@@ -64,6 +64,18 @@ export class MasterEvents extends EventAdder<any> {
     this.master.api.tell('GUILD_UPDATED', guild)
   }
 
+  @Event('GUILD_GET')
+  guildGet(
+    _cluster,
+    guild: Snowflake,
+    resolve: ResolveFunction<'GUILD_GET'>
+  ): void {
+    void this.master
+      .guildToCluster(guild)
+      .sendCommand('GUILD_GET', guild)
+      .then((guildInfo) => resolve(guildInfo))
+  }
+
   @Event('SEND_WEBHOOK')
   sendWebhook(
     _cluster,

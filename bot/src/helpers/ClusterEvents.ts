@@ -4,7 +4,7 @@ import { Event } from '@jpbberry/typed-emitter'
 
 import path from 'path'
 import { ReloadNames } from '../types'
-import { Snowflake, Thread } from 'jadl'
+import { PermissionUtils, Snowflake, Thread } from 'jadl'
 import { ResolveFunction } from 'jadl/dist/clustering/ThreadComms'
 import { EventAdder } from '../utils/EventAdder'
 
@@ -39,6 +39,43 @@ export class ClusterEvents extends EventAdder<Thread> {
       case 'FILTERS':
         break
     }
+  }
+
+  @Event('GUILD_GET')
+  getGuild(guildId: Snowflake, resolve: ResolveFunction<'GUILD_GET'>) {
+    const guild = Object.assign({}, this.worker.guilds.get(guildId))
+
+    if (!guild || !guild.id) return resolve({ error: 'Not in guild' })
+
+    resolve({
+      id: guild.id,
+      name: guild.name,
+      icon: guild.icon,
+      joined: true,
+      channels: this.worker.channels
+        .filter((x) => x.guild_id === guild.id)
+        .array()
+        .map((x) => ({
+          id: x.id,
+          name: x.name ?? '',
+          type: x.type,
+          parent_id: x.parent_id
+        })),
+      roles: (this.worker.guildRoles.get(guild.id)?.array() ?? [])
+        .filter((x) => !x.managed && x.id !== guild.id)
+        .map((x) => ({
+          id: x.id,
+          name: x.name,
+          color: x.color
+        })),
+      permissions: Number(
+        PermissionUtils.combine({
+          guild: guild,
+          member: this.worker.selfMember.get(guildId)!,
+          roleList: this.worker.guildRoles.get(guildId)
+        })
+      )
+    })
   }
 
   @Event('IN_GUILDS')

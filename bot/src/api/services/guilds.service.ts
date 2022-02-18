@@ -43,7 +43,7 @@ export class GuildsService extends EventEmitter<{
   }
 
   private async getGuild(guildId: Snowflake): Promise<GuildData> {
-    const guild = await this.thread.sendCommand('GET_GUILD', { id: guildId })
+    const guild = await this.thread.sendCommand('GUILD_GET', guildId)
 
     if (!guild || !guild.channels || !guild.roles)
       throw new Error('Not In Guild')
@@ -53,25 +53,7 @@ export class GuildsService extends EventEmitter<{
       .forEach((g) => (g.find((x) => x.id === guild.id)!.joined = true))
 
     return {
-      guild: {
-        name: guild.name,
-        icon: guild.icon,
-        id: guild.id,
-        joined: true,
-        channels: guild.channels.map((x) => ({
-          id: x.id,
-          name: x.name ?? '',
-          type: x.type,
-          parent_id: x.parent_id
-        })),
-        roles: guild.roles
-          .filter((x) => !x.managed && x.id !== guild.id)
-          .map((x) => ({
-            id: x.id,
-            name: x.name,
-            color: x.color
-          }))
-      },
+      guild,
       premium: await this.database.guildPremium(guild.id),
       db: await this.database.config(guild.id)
     }

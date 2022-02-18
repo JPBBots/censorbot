@@ -7,10 +7,11 @@ import { LoginState } from '@/store/reducers/auth.reducer'
 import { LoginButton } from '~/button/LoginButton'
 
 import { GuildPreview } from '@jpbbots/censorbot-components'
-import { useRouter } from 'next/router'
 import { Input } from '@chakra-ui/input'
 import { InputGroup, InputLeftAddon, Icon, Wrap } from '@chakra-ui/react'
 import { FaSearch } from 'react-icons/fa'
+
+import NextLink from 'next/link'
 
 import FuzzySearch from 'fuzzy-search'
 import { ShortGuild } from '@jpbbots/cb-typings'
@@ -26,7 +27,6 @@ export function GuildList({
   searcher?: FuzzySearch<ShortGuild>
   filter?: (guild: ShortGuild) => boolean
 }) {
-  const router = useRouter()
   return (
     <Wrap
       alignSelf="flex-start"
@@ -38,23 +38,16 @@ export function GuildList({
         ?.search(searchTerm)
         .filter(filter ?? (() => true))
         .map((guild) => (
-          <GuildPreview
-            key={guild.id}
-            guild={{
-              name: guild.name,
-              iconUrl: guild.icon
-                ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
-                : undefined
-            }}
-            onClick={() => {
-              void router.push({
-                pathname: '/dashboard/[guild]',
-                query: {
-                  guild: guild.id
-                }
-              })
-            }}
-          />
+          <NextLink key={guild.id} href={`/dashboard/${guild.id}`} passHref>
+            <GuildPreview
+              guild={{
+                name: guild.name,
+                iconUrl: guild.icon
+                  ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
+                  : undefined
+              }}
+            />
+          </NextLink>
         ))}
     </Wrap>
   )

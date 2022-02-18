@@ -4,14 +4,14 @@ import { Button } from '@chakra-ui/button'
 import { Flex, Text, VStack } from '@chakra-ui/layout'
 import { Spinner } from '@chakra-ui/react'
 import { PremiumCard } from '@jpbbots/censorbot-components'
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { PremiumTypes } from '@jpbbots/cb-typings'
 import { chargebee } from 'pages/_app'
 
+import NextLink from 'next/link'
+
 export function BuyPremium() {
   const [user, login] = useUser(false)
-  const router = useRouter()
 
   const [processing, setProcessing] = useState(false)
 
@@ -60,9 +60,9 @@ export function BuyPremium() {
             <Text textStyle="label.md">
               Enjoy your {user.premium.count} servers
             </Text>
-            <Button onClick={() => void router.push('/dashboard')}>
-              Go to dashboard
-            </Button>
+            <NextLink href="/dashboard" passHref>
+              <Button onClick={() => {}}>Go to dashboard</Button>
+            </NextLink>
             <Text textStyle="label.sm">
               Manage your payment through the user dropdown
             </Text>

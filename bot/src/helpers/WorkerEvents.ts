@@ -236,6 +236,14 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
     if (roleOrChannel.guild_id) void this.updateGuild(roleOrChannel.guild_id)
   }
 
+  @Event('GUILD_MEMBER_UPDATE')
+  onGuildMemberUpdate(member: DiscordEventMap['GUILD_MEMBER_UPDATE']) {
+    if (this.worker.isCustom(member.guild_id)) return
+    if (member.user.id === this.worker.user.id) {
+      void this.updateGuild(member.guild_id)
+    }
+  }
+
   @Event('GUILD_UPDATE')
   onGuildUpdate(guild: DiscordEventMap['GUILD_UPDATE']): void {
     void this.updateGuild(guild.id)

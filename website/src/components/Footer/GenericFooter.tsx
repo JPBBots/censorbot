@@ -1,10 +1,11 @@
 import { CensorBotIcon } from '@jpbbots/censorbot-components'
 import { HStack, VStack, Text, Link, Flex } from '@chakra-ui/layout'
 
+import NextLink from 'next/link'
+
 import { motion } from 'framer-motion'
 import { MiddleWrap } from '~/MiddleWrap'
 import { wLT } from '@/hooks/useScreenSize'
-import { useRouter } from 'next/router'
 
 export interface FooterOptions {
   name: string
@@ -23,7 +24,6 @@ export interface FooterOptions {
 
 export const GenericFooter = (props: FooterOptions) => {
   const wrapping = wLT(1000)
-  const router = useRouter()
 
   const infoText = (
     <VStack px="64px" textAlign="center" justifyContent="center">
@@ -58,13 +58,11 @@ export const GenericFooter = (props: FooterOptions) => {
           </Text>
         </motion.span>{' '}
         by{' '}
-        <Link
-          href="#"
-          onClick={async () => await router.push('/staff')}
-          textDecor="underline"
-        >
-          JPBBots
-        </Link>
+        <NextLink href="/staff" passHref>
+          <Link href="#" onClick={() => {}} textDecor="underline">
+            JPBBots
+          </Link>
+        </NextLink>
       </Text>
     </VStack>
   )

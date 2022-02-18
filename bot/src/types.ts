@@ -1,6 +1,6 @@
 import { MessageTypes } from '@jadl/cmd'
 import { APIMessage, Snowflake } from 'discord-api-types'
-import { ShortID } from '@jpbbots/cb-typings'
+import { ExtendedGuild, ShortID } from '@jpbbots/cb-typings'
 
 export const Reloaders = ['COMMANDS', 'FILTER', 'CACHE', 'FILTERS'] as const
 
@@ -42,6 +42,10 @@ declare module 'jadl/dist/clustering/ThreadComms' {
     GUILD_UPDATED: {
       send: Snowflake
       receive: null
+    }
+    GUILD_GET: {
+      send: Snowflake
+      receive: ExtendedGuild
     }
     SEND_WEBHOOK: {
       send: {

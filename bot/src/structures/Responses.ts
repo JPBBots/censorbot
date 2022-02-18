@@ -105,6 +105,11 @@ export class Responses {
       case CensorMethods.Threads:
         embed.title('Changed Thread Name').field('Thread', `<#${data}>`, true)
         break
+      case CensorMethods.Avatars:
+        embed
+          .title('Kicked Member for NSFW Avatar')
+          .field('User', `<@${data.user.id}>`, true)
+        break
     }
 
     if (response.type === FilterType.BaseFilter) {

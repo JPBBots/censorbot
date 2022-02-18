@@ -4,8 +4,9 @@ import { Cache } from '@jpbberry/cache'
 
 import {
   AllowedMentionsTypes,
-  APIUser,
+  APIGuildMember,
   APIWebhook,
+  APIUser,
   Snowflake
 } from 'discord-api-types'
 
@@ -27,7 +28,7 @@ export class ActionBucket {
   popups: Collection<string, true> = new Collection()
   webhooks: Cache<Snowflake, APIWebhook> = new Cache(30e3)
 
-  constructor(public worker: WorkerManager) { }
+  constructor(public worker: WorkerManager) {}
 
   public async delete(channel: Snowflake, message: Snowflake[]): Promise<void> {
     let bucket = this.messages.get(channel)
@@ -42,7 +43,7 @@ export class ActionBucket {
     }
 
     if (bucket.amount <= this.worker.config.actionRetention) {
-      this.worker.requests.bulkDeleteMessages(channel, message).catch(() => { })
+      this.worker.requests.bulkDeleteMessages(channel, message).catch(() => {})
 
       bucket.amount++
       bucket.timeout = setTimeout(() => {
@@ -77,7 +78,7 @@ export class ActionBucket {
 
     this.worker.requests
       .bulkDeleteMessages(channel, bucket.msgs)
-      .catch(() => { })
+      .catch(() => {})
   }
 
   public popup(channel: Snowflake, user: Snowflake, db: GuildDB): void {
@@ -104,22 +105,23 @@ export class ActionBucket {
         this.worker.requests.deleteMessage(channel, msg.id).catch(console.log)
         this.popups.delete(id)
       })
-      .catch(() => { })
+      .catch(() => {})
   }
 
   public async sendAs(
-    channel: Snowflake,
-    user: APIUser,
+    channelId: Snowflake,
+    guildId: Snowflake,
+    member: APIGuildMember & { user: APIUser },
     name: string,
     messageInfo: MessageTypes
   ): Promise<void> {
-    let webhook = this.webhooks.get(channel)
+    let webhook = this.webhooks.get(channelId)
     if (!webhook) {
-      webhook = await this.worker.requests.createWebhook(channel, {
+      webhook = await this.worker.requests.createWebhook(channelId, {
         name: 'Censor Bot Resend Webhook'
       })
 
-      this.webhooks.set(channel, webhook, () => {
+      this.webhooks.set(channelId, webhook, () => {
         if (!webhook) {
           return {}
         }
@@ -128,12 +130,19 @@ export class ActionBucket {
       })
     }
 
+    const avatarUrl = member.avatar
+      ? this.worker.api.cdn.guildMemberAvatar(
+          guildId,
+          member.user.id,
+          member.avatar
+        )
+      : member.user.avatar
+      ? this.worker.api.cdn.avatar(member.user.id, member.user.avatar)
+      : this.worker.api.cdn.defaultAvatar(Number(member.user.discriminator) % 5)
+
     const extra = {
       username: name,
-      avatar_url: `https://cdn.discordapp.com/${user.avatar
-        ? `avatars/${user.id}/${user.avatar}`
-        : `embed/avatars/${Number(user.discriminator) % 5}`
-        }.png`,
+      avatar_url: avatarUrl,
       allowed_mentions: {
         parse: [AllowedMentionsTypes.User]
       }

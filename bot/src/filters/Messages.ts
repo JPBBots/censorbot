@@ -412,7 +412,11 @@ export class MessagesFilterHandler extends BaseFilterHandler {
 
         void this.worker.actions.sendAs(
           message.channel_id,
-          message.author,
+          message.guild_id,
+          {
+            ...message.member,
+            user: message.author
+          },
           message.member?.nick ?? message.author.username,
           messageToSend
         )

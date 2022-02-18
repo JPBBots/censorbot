@@ -16,7 +16,7 @@ export interface PunishmentSchema {
 export class PunishmentManager {
   timeouts = new Timeouts(this)
 
-  constructor(public worker: WorkerManager) { }
+  constructor(public worker: WorkerManager) {}
 
   get db(): Collection<PunishmentSchema> {
     return this.worker.db.collection('punish')
@@ -143,7 +143,8 @@ export class PunishmentManager {
         .color('Red')
         .title(`User ${this.punishmentNames[punishment.type]}`)
         .description(
-          `<@${user}> reached ${punishment.amount} warnings.${extra ? `\n\n${extra}` : ''
+          `<@${user}> reached ${punishment.amount} warnings.${
+            extra ? `\n\n${extra}` : ''
           }`
         )
         .timestamp()
@@ -224,9 +225,10 @@ export class PunishmentManager {
         guild,
         user,
         punishment,
-        `Received <@&${punishment.role}>${punishment.time
-          ? `\nWill be removed ${this.relativeTimeIn(punishment.time)}`
-          : ''
+        `Received <@&${punishment.role}>${
+          punishment.time
+            ? `\nWill be removed ${this.relativeTimeIn(punishment.time)}`
+            : ''
         }`
       )
 
@@ -328,7 +330,7 @@ export class PunishmentManager {
   }
 
   async unban(guild: Snowflake, user: Snowflake): Promise<void> {
-    await this.requests.unbanMember(guild, user).catch(() => { })
+    await this.requests.unbanMember(guild, user).catch(() => {})
 
     await this.timeouts.remove(guild, user)
 

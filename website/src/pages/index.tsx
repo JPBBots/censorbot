@@ -8,19 +8,17 @@ import DiscordChat from 'images/discordchat.png'
 import { Lower, Upper } from '~/LandingSectionSvg'
 import { PremiumIcon } from '~/PremiumIcon'
 
+import NextLink from 'next/link'
 import { MiddleWrap } from '~/MiddleWrap'
 
 import { uDW, wLT, wMT, TABLET_WIDTH } from '@/hooks/useScreenSize'
 import { animate } from 'framer-motion'
-import { useRouter } from 'next/router'
 import { useServerCount } from '@/hooks/useMeta'
 import { Root } from '~/Root'
 
 const DESCRIPTION_FONT_SIZE = '24px'
 
 export default function Landing() {
-  const router = useRouter()
-
   const [serverCount] = useServerCount()
 
   const countRef = useRef<HTMLParagraphElement>(null)
@@ -98,15 +96,15 @@ export default function Landing() {
         </VStack>
 
         <HStack>
-          <Button
-            variant="primary"
-            onClick={async () => await router.push('/dashboard')}
-          >
-            Invite Censor Bot
-          </Button>
-          <Button onClick={async () => await router.push('/dashboard')}>
-            Dashboard
-          </Button>
+          <NextLink href="/dashboard" passHref>
+            <Button variant="primary" onClick={() => {}}>
+              Invite Censor Bot
+            </Button>
+          </NextLink>
+
+          <NextLink href="/dashboard" passHref>
+            <Button onClick={() => {}}>Dashboard</Button>
+          </NextLink>
         </HStack>
 
         <VStack
@@ -188,13 +186,15 @@ export default function Landing() {
                 pre-made filters or make your own. Easily add filter exceptions
                 or manage custom punishments!
               </Text>
-              <Button
-                bg="darker.80"
-                _hover={{ bg: 'darker.100' }}
-                onClick={async () => await router.push('/dashboard')}
-              >
-                Dashboard
-              </Button>
+              <NextLink href="/dashboard" passHref>
+                <Button
+                  bg="darker.80"
+                  _hover={{ bg: 'darker.100' }}
+                  onClick={() => {}}
+                >
+                  Dashboard
+                </Button>
+              </NextLink>
             </VStack>
 
             {wMT(TABLET_WIDTH) && (
@@ -269,12 +269,11 @@ export default function Landing() {
               . Gain access to increased filter limits, AI features, image
               filtering and more!
             </Text>
-            <Button
-              color="brand.100"
-              onClick={async () => await router.push('/premium')}
-            >
-              Get Premium
-            </Button>
+            <NextLink href="/premium" passHref>
+              <Button color="brand.100" onClick={() => {}}>
+                Get Premium
+              </Button>
+            </NextLink>
           </VStack>
           <Image
             src={DashboardExample.src}
@@ -305,12 +304,11 @@ export default function Landing() {
           </Text>
         </VStack>
         <MiddleWrap spacing="5px">
-          <Button
-            variant="primary"
-            onClick={async () => await router.push('/dashboard')}
-          >
-            Get Started
-          </Button>
+          <NextLink href="/dashboard" passHref>
+            <Button variant="primary" onClick={() => {}}>
+              Get Started
+            </Button>
+          </NextLink>
         </MiddleWrap>
         <Text fontFamily="Kalam" color="lighter.60" fontSize={15}>
           Keeping your servers{' '}

@@ -1,14 +1,13 @@
 import { useGuild, useGuilds } from '@/hooks/useGuilds'
 import { Center, VStack, Text, Button } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
 import { NeedsInvite } from '~/NeedsInvite'
 import { Loading } from '~/styling/Loading'
 import Filter from './filter/index'
+import NextLink from 'next/link'
 
 export default function GuildHome() {
   const [guild, , , needsInvite, inOfflineShard, id] = useGuild()
   const [guilds] = useGuilds()
-  const router = useRouter()
 
   if (inOfflineShard) {
     return (
@@ -18,13 +17,9 @@ export default function GuildHome() {
             Censor Bot is experiencing some issues
           </Text>
           <Text textStyle="heading.lg">Check back in a bit</Text>
-          <Button
-            onClick={() => {
-              void router.push('/dashboard')
-            }}
-          >
-            Back
-          </Button>
+          <NextLink href="/dashboard" passHref>
+            <Button>Back</Button>
+          </NextLink>
         </VStack>
       </Center>
     )

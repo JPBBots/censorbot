@@ -256,6 +256,10 @@ export interface ExtendedGuild extends ShortGuild {
    * Array of roles
    */
   roles: DashboardRole[]
+  /**
+   * Permissions bit
+   */
+  permissions: number
 }
 
 export interface GuildData {

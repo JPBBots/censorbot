@@ -7,6 +7,8 @@ import { stats } from 'structures/StatsManager'
 import { Header } from './Header'
 import { NavActions } from './NavActions'
 
+import NextLink from 'next/link'
+
 import { Api } from '@/structures/Api'
 import { wMT } from '@/hooks/useScreenSize'
 
@@ -81,21 +83,13 @@ export function NavBar() {
           )}
           {!showNavItems && (
             <>
-              <MenuItem
-                onClick={() => {
-                  void router.push('/dashboard')
-                }}
-              >
-                Dashboard
-              </MenuItem>
+              <NextLink href="/dashboard" passHref>
+                <MenuItem onClick={() => {}}>Dashboard</MenuItem>
+              </NextLink>
 
-              <MenuItem
-                onClick={() => {
-                  void router.push('/')
-                }}
-              >
-                Support
-              </MenuItem>
+              <NextLink href="/" passHref>
+                <MenuItem onClick={() => {}}>Support</MenuItem>
+              </NextLink>
             </>
           )}
           <MenuItem onClick={() => void router.push('/premium')}>

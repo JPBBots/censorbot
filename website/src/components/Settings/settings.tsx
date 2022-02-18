@@ -1,6 +1,8 @@
 import { InputProps } from '@chakra-ui/input'
 import type { OptionProps } from '@jpbbots/censorbot-components'
 
+import { PermissionUtils } from '@/utils/Permissions'
+
 import type { IconType } from 'react-icons/lib'
 
 import type { DeepPartial } from 'redux'
@@ -47,6 +49,7 @@ export const settings: ISetting[] = [
   },
   {
     title: 'Censor Invites',
+    requiredPermission: 'manageMessages',
     section: 'Extras',
     options: [
       {
@@ -58,6 +61,7 @@ export const settings: ISetting[] = [
   },
   {
     title: 'Anti-Phishing',
+    requiredPermission: 'manageMessages',
     section: 'Extras',
     options: [
       {
@@ -80,6 +84,7 @@ export const settings: ISetting[] = [
   },
   {
     title: 'Anti-Hoist',
+    requiredPermission: 'manageNicknames',
     section: 'Extras',
     options: [
       {
@@ -93,6 +98,7 @@ export const settings: ISetting[] = [
 
   {
     title: 'Toxicity Filter',
+    requiredPermission: 'manageMessages',
     section: 'AI',
     options: [
       {
@@ -105,6 +111,7 @@ export const settings: ISetting[] = [
   },
   {
     title: 'Anti-NSFW Images',
+    requiredPermission: 'manageMessages',
     section: 'AI',
     options: [
       {
@@ -118,6 +125,7 @@ export const settings: ISetting[] = [
   },
   {
     title: 'OCR - Optical Character Recognition',
+    requiredPermission: 'manageMessages',
     section: 'AI',
     options: [
       {
@@ -194,6 +202,7 @@ export const settings: ISetting[] = [
 
   {
     title: 'Pre-made filters',
+    requiredPermission: 'manageMessages',
     description:
       'Pick pre-made filters that apply for your needs, created and maintained by the makers of Censor Bot',
     section: 'General',
@@ -216,8 +225,10 @@ export const settings: ISetting[] = [
   },
   {
     title: 'Server Filter',
-    description:
-      'Simple words that are used up against an advanced resolution system, removes any special characters',
+    requiredPermission: 'manageMessages',
+    tooltip:
+      'Matched up against an advanced character recognition system. All special/look-alike characters will be removed or replaced',
+    description: 'Simple words that add on to the pre-built filters',
     section: 'General',
     options: [
       {
@@ -234,8 +245,10 @@ export const settings: ISetting[] = [
   },
   {
     title: 'Phrase Filter',
-    description:
-      'Advanced phrases/combinations that are not resolved like the server filter, allows spaces',
+    requiredPermission: 'manageMessages',
+    tooltip:
+      'Allows spaces and exactly matches an entire message. Does not account for special characters (easily bypassable)',
+    description: 'Advanced phrases/combinations to censor',
     section: 'General',
     options: [
       {
@@ -253,8 +266,10 @@ export const settings: ISetting[] = [
   },
   {
     title: 'Word Filter',
-    description:
-      "Similar to the phrase filter except that it matches anything between spaces and if the word doesn't exactly match a single word it wont censor",
+    requiredPermission: 'manageMessages',
+    tooltip:
+      'Only matches words that are surrounded by spaces, e.g if "hello" was in your word filter, "ahellob" would not be censored, but "a hello b" would',
+    description: 'Full words to censor',
     section: 'General',
     options: [
       {
@@ -288,6 +303,7 @@ export const settings: ISetting[] = [
   },
   {
     title: 'Censor Methods',
+    requiredPermission: 'manageMessages',
     section: 'General',
     options: [
       {
@@ -313,11 +329,19 @@ export const settings: ISetting[] = [
         label: 'Filter thread names',
         type: OptionType.BitBool,
         bit: CensorMethods.Threads
+      },
+      {
+        name: 'censor',
+        label: 'Kick users with inappropriate profile pictures',
+        type: OptionType.BitBool,
+        bit: CensorMethods.Avatars,
+        premium: true
       }
     ]
   },
   {
     title: 'Nickname Replacement',
+    requiredPermission: 'manageNicknames',
     description: 'Nickname to set when a users nickname is inappropriate',
     section: 'General',
     options: [
@@ -332,6 +356,7 @@ export const settings: ISetting[] = [
   },
   {
     title: 'Remove Nickname',
+    requiredPermission: 'manageNicknames',
     section: 'General',
     options: [
       {
@@ -375,6 +400,7 @@ export const settings: ISetting[] = [
   },
   {
     title: 'Log Channel',
+    requiredPermission: 'sendMessages',
     description: 'Channel to log all curses and punishments',
     section: 'Bot',
     options: [
@@ -409,6 +435,7 @@ export const settings: ISetting[] = [
 
   {
     section: 'Resend',
+    requiredPermission: 'webhooks',
     options: [
       {
         name: 'webhook.enabled',
@@ -444,6 +471,7 @@ export const settings: ISetting[] = [
 
   {
     title: 'Message Content',
+    requiredPermission: 'embed',
     description: 'What the message will say',
     section: 'Response',
     disable: {
@@ -537,7 +565,11 @@ export type IOption =
         placeholder: string
       }
     >
-  | DataOption<OptionType.BitBool, OptionProps, { bit: number; label: string }>
+  | DataOption<
+      OptionType.BitBool,
+      OptionProps,
+      { bit: number; label: string; premium?: boolean }
+    >
   | DataOption<
       OptionType.Select,
       JSX.IntrinsicElements['select'],
@@ -581,6 +613,7 @@ export interface ISetting {
   tooltip?: string
   premium?: boolean
   icon?: IconType
+  requiredPermission?: keyof typeof PermissionUtils['bits']
   options: IOption[]
 
   disable?: {
