@@ -25,6 +25,8 @@
     "separate": true,
     "ignored": []
   },
+  "channels": [],
+  "roles": [],
   "exceptions": [],
   "nsfw": true,
   "multi": false,

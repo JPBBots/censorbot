@@ -84,7 +84,14 @@ export const punishmentLevelSchema = Joi.object<PunishmentLevel>({
 
   role: SnowflakeString,
 
-  time: Joi.number().max(2629800000).allow(null).required()
+  time: Joi.number()
+    .max(5259600000)
+    .allow(null)
+    .required()
+    .when('type', {
+      is: PunishmentType.Timeout,
+      then: Joi.number().max(2629800000)
+    })
 })
 
 export const settingSchema = Joi.object<GuildDB & { premium: boolean }>({
@@ -94,7 +101,10 @@ export const settingSchema = Joi.object<GuildDB & { premium: boolean }>({
 
   filters: Joi.array().items(...BASE_FILTERS),
 
-  exceptions: premiumMax('array', 15, 100).items(exceptionSchema),
+  channels: premiumMax('array', 5, 999).items(SnowflakeString),
+  roles: premiumMax('array', 5, 999).items(SnowflakeString),
+
+  exceptions: premiumMax('array', 5, 100).items(exceptionSchema),
 
   censor: premiumValidate(
     Joi.number().custom(bitWise(CensorMethods, [CensorMethods.Avatars])),

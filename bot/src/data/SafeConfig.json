@@ -9,6 +9,9 @@
   "uncensor": [],
   "phrases": [],
   "words": [],
+  "channels": [],
+  "roles": [],
+  "exceptions": [],
   "msg": {
     "content": false,
     "deleteAfter": 3000,
@@ -24,7 +27,6 @@
     "replace": 0,
     "separate": true
   },
-  "channels": [],
   "categories": [],
   "nsfw": true,
   "multi": false,

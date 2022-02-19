@@ -87,6 +87,9 @@ export interface GuildDB {
   nickReplace: string
   removeNick: boolean
 
+  channels: Snowflake[]
+  roles: Snowflake[]
+
   exceptions: Exception[]
   /**
    * Log channel ID

@@ -3,7 +3,6 @@ import { Cache } from '@jpbberry/cache'
 
 import {
   CensorMethods,
-  ExceptionType,
   GuildDB,
   Ticket,
   User,
@@ -149,33 +148,17 @@ export class Database extends Db {
       )
     }
 
-    if (db.channels) {
-      db.exceptions.push(
-        ...db.channels.map((id) => ({
-          channel: id,
-          role: null,
-          type: ExceptionType.Everything
-        }))
-      )
+    if (!db.channels) db.channels = []
+    if (!db.roles) db.roles = []
 
-      db.exceptions.push(
-        ...db.role.map((id) => ({
-          channel: null,
-          role: id,
-          type: ExceptionType.Everything
-        }))
-      )
+    if (db.role) {
+      db.roles = db.role
 
-      delete db.channels
       delete db.role
 
       await this.collection('guild_data').updateOne(
         { id: db.id },
         {
-          $unset: {
-            channels: '',
-            role: ''
-          },
           $set: db
         }
       )
@@ -218,7 +201,9 @@ export class Database extends Db {
 
           censor: db.censor & ~CensorMethods.Avatars,
 
-          exceptions: db.exceptions.slice(0, 15),
+          channels: db.channels.slice(0, 5),
+          roles: db.roles.slice(0, 5),
+          exceptions: db.exceptions.slice(0, 5),
 
           webhook: {
             enabled: false,

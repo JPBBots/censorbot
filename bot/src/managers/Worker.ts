@@ -235,9 +235,16 @@ export class WorkerManager extends Worker<{}> {
 
   isExcepted(
     type: ExceptionType,
-    { exceptions }: Pick<GuildDB, 'exceptions'>,
+    {
+      exceptions,
+      channels,
+      roles
+    }: Pick<GuildDB, 'exceptions' | 'channels' | 'roles'>,
     data: ExceptedData
   ): boolean {
+    if (data.channel && channels.includes(data.channel)) return true
+    if (data.roles && roles.some((x) => data.roles?.includes(x))) return true
+
     return exceptions.some((x) => {
       if (x.type === ExceptionType.Everything || x.type === type) {
         if (x.role && data.roles) {

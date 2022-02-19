@@ -13,7 +13,7 @@ import { FaPlus } from 'react-icons/fa'
 import { Tag } from '@jpbbots/censorbot-components'
 
 import { useRef, useState } from 'react'
-import { wLT } from '@/hooks/useScreenSize'
+import { uDW, wLT } from '@/hooks/useScreenSize'
 
 export interface ITag {
   id?: string
@@ -69,6 +69,8 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
   }
 
   const add = (val: string) => {
+    if (settings.maxTags && value.length + 1 > settings.maxTags) return
+
     onChange?.([...value, val])
   }
 
@@ -81,6 +83,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
       _hover={{
         bg: 'lighter.10'
       }}
+      w="fit-content"
       border="2px solid"
       borderColor={focusing ? 'brand.100' : 'transparent'}
       p="10px"
@@ -118,13 +121,20 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
             setFocusing(false)
           }}
         >
-          <MenuButton px="16px">
+          <MenuButton
+            px="16px"
+            disabled={!!settings.maxTags && value.length >= settings.maxTags}
+          >
             <HStack spacing="8px">
               <Icon as={FaPlus} />
               <Text>{placeholder}</Text>
             </HStack>
           </MenuButton>
-          <MenuList>
+          <MenuList
+            maxH={uDW({ mobile: '200px', tablet: '400px' })}
+            overflowY="scroll"
+            p="2px"
+          >
             {whitelist
               .filter((a) => !value.some((x) => x === a.id))
               .map((tag) => (
@@ -134,6 +144,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
                     add(tag.id!)
                   }}
                 >
+                  {settings.channel ? '#' : settings.role ? '@' : ''}
                   {tag.value}
                 </MenuItem>
               ))}

@@ -3,7 +3,6 @@ import { IOption, ISetting, OptionType, settings } from './settings'
 import NextLink from 'next/link'
 import { Option } from '~/Option'
 
-import { updateObject } from '@/utils/updateObject'
 import { PermissionUtils, humanReadablePermissions } from '@/utils/Permissions'
 
 import {
@@ -59,14 +58,7 @@ export function SettingOption({
 
   if (!guild) return <h1>Loading</h1>
 
-  let props = { name: option.name }
-
-  if (option.props) {
-    props = updateObject(props, option.props)
-  }
-  if (option.premiumProps && guild.premium) {
-    props = updateObject(props, option.premiumProps)
-  }
+  const props = { name: option.name }
 
   const value = pieces[option.name]
 
@@ -173,15 +165,41 @@ export function SettingOption({
 
   if (option.type === OptionType.Tags) {
     return (
-      <Tags
-        {...props}
-        settings={option.settings(guild)}
-        placeholder={option.placeholder}
-        value={value}
-        onChange={(val) => {
-          setValue(val)
-        }}
-      />
+      <VStack w="full" align="left">
+        {option.premiumMaxTags &&
+          option.maxTags &&
+          !guild.premium &&
+          value.length >= option.maxTags && (
+            <NextLink
+              href={{
+                pathname: '/dashboard/[guild]/premium',
+                query: router.query
+              }}
+            >
+              <Alert status="warning" cursor="pointer">
+                <AlertIcon />
+                <Text>
+                  Reached the maximum of {option.maxTags}. Get premium for more!
+                </Text>
+              </Alert>
+            </NextLink>
+          )}
+        <Tags
+          {...props}
+          settings={{
+            ...option,
+            ...(option.fn?.(guild) ?? {}),
+            ...(guild.premium
+              ? { maxTags: option.premiumMaxTags ?? option.maxTags }
+              : {})
+          }}
+          placeholder={option.placeholder}
+          value={value}
+          onChange={(val) => {
+            setValue(val)
+          }}
+        />
+      </VStack>
     )
   }
 
@@ -218,7 +236,6 @@ export function SettingOption({
     return (
       <Option
         onChange={({ target }) => {
-          console.log(value, target.checked, option)
           if (target.checked) {
             setValue(value | option.bit)
           } else {
@@ -239,7 +256,9 @@ export function SettingOption({
       <TimeSelector
         value={value}
         max={option.max}
+        times={option.times}
         nullIs={option.nullIs}
+        nullIsFalse={option.nullIsFalse}
         onChange={(val) => {
           setValue(val)
         }}
@@ -251,7 +270,7 @@ export function SettingOption({
     const exceptions = value as Exception[]
 
     const premiumLocked = !guild.premium
-      ? exceptions.length >= 15
+      ? exceptions.length >= 5
       : exceptions.length >= 100
 
     return (
@@ -440,7 +459,10 @@ export function Setting(setting: ISetting) {
         setting.options.map((opt, i) => (
           <SettingOption
             key={i}
-            option={opt}
+            option={{
+              ...opt,
+              ...(guild.premium ? opt.premiumProps ?? {} : {})
+            }}
             setValue={(value) => {
               setValue(opt.name, value)
             }}

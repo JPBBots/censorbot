@@ -1,6 +1,3 @@
-import { InputProps } from '@chakra-ui/input'
-import type { OptionProps } from '@jpbbots/censorbot-components'
-
 import { PermissionUtils } from '@/utils/Permissions'
 
 import type { IconType } from 'react-icons/lib'
@@ -19,7 +16,6 @@ import type { SectionName } from './Aside'
 
 import FuzzySearch from 'fuzzy-search'
 import { ChannelType } from '@/types'
-import { TagProps } from '@chakra-ui/tag'
 import { TagsSettings } from './Tags'
 
 export enum OptionType {
@@ -138,7 +134,50 @@ export const settings: ISetting[] = [
   },
 
   {
-    title: 'Exceptions',
+    title: 'Ignore Channels',
+    section: 'Exceptions',
+    description: 'List of channels to ignore',
+    options: [
+      {
+        name: 'channels',
+        type: OptionType.Tags,
+        placeholder: 'Add channels',
+        channel: true,
+        maxTags: 5,
+        premiumMaxTags: Infinity,
+        fn: ({ guild }) => ({
+          whitelist: guild.channels.map((x) => ({
+            id: x.id,
+            value: x.name
+          }))
+        })
+      }
+    ]
+  },
+  {
+    title: 'Ignore Roles',
+    section: 'Exceptions',
+    description: 'List of roles to ignore',
+    options: [
+      {
+        name: 'roles',
+        type: OptionType.Tags,
+        placeholder: 'Add roles',
+        role: true,
+        maxTags: 5,
+        premiumMaxTags: Infinity,
+        fn: ({ guild }) => ({
+          whitelist: guild.roles.map((x) => ({
+            id: x.id,
+            value: x.name
+          }))
+        })
+      }
+    ]
+  },
+
+  {
+    title: 'Advanced Exceptions',
     section: 'Exceptions',
     description:
       'List of exceptions that bypass the default nature of the bot based on specific circumstances',
@@ -167,17 +206,14 @@ export const settings: ISetting[] = [
     description: 'Amount of time a warning exists',
     tooltip:
       "E.g 5 minutes means that after 5 minutes the warning will expire and doesn't count against the punishment",
-    disable: {
-      disableValue: null,
-      enableValue: 10000,
-      property: 'punishments.expires',
-      disableButton: 'Never'
-    },
     options: [
       {
         name: 'punishments.expires',
         type: OptionType.Time,
-        max: 2629800000 * 2,
+        max: 5184000000,
+        times: [
+          60e3, 300000, 600000, 3.6e6, 8.64e7, 6.048e8, 2629800000, 5259600000
+        ],
         nullIs: 'Never'
       }
     ]
@@ -210,15 +246,13 @@ export const settings: ISetting[] = [
       {
         name: 'filters',
         type: OptionType.Tags,
-        settings: () => ({
-          whitelist: [
-            { id: 'en', value: 'English' },
-            { id: 'es', value: 'Spanish' },
-            { id: 'off', value: 'Offensive' },
-            { id: 'de', value: 'German' },
-            { id: 'ru', value: 'Russian' }
-          ]
-        }),
+        whitelist: [
+          { id: 'en', value: 'English' },
+          { id: 'es', value: 'Spanish' },
+          { id: 'off', value: 'Offensive' },
+          { id: 'de', value: 'German' },
+          { id: 'ru', value: 'Russian' }
+        ],
         placeholder: 'Add filters'
       }
     ]
@@ -233,12 +267,11 @@ export const settings: ISetting[] = [
     options: [
       {
         name: 'filter',
-        settings: ({ premium }) => ({
-          maxTags: premium ? 1500 : 150,
-          maxMessage: 'You need premium to add more words',
-          maxLength: 20
-        }),
         type: OptionType.Tags,
+        maxMessage: 'You need premium to add more words',
+        maxLength: 20,
+        maxTags: 150,
+        premiumMaxTags: 1500,
         placeholder: 'Add words'
       }
     ]
@@ -254,12 +287,11 @@ export const settings: ISetting[] = [
       {
         name: 'phrases',
         type: OptionType.Tags,
-        settings: ({ premium }) => ({
-          maxLength: 50,
-          allowSpaces: true,
-          maxMessage: 'You need premium to add more words',
-          maxTags: premium ? 1500 : 150
-        }),
+        maxLength: 50,
+        allowSpaces: true,
+        maxMessage: 'You need premium to add more words',
+        maxTags: 150,
+        premiumMaxTags: 1500,
         placeholder: 'Add phrases'
       }
     ]
@@ -275,11 +307,10 @@ export const settings: ISetting[] = [
       {
         name: 'words',
         type: OptionType.Tags,
-        settings: ({ premium }) => ({
-          maxLength: 20,
-          maxMessage: 'You need premium to add more words',
-          maxTags: premium ? 1500 : 150
-        }),
+        maxLength: 20,
+        maxMessage: 'You need premium to add more words',
+        maxTags: 150,
+        premiumMaxTags: 1500,
         placeholder: 'Add words'
       }
     ]
@@ -292,11 +323,10 @@ export const settings: ISetting[] = [
       {
         name: 'uncensor',
         type: OptionType.Tags,
-        settings: ({ premium }) => ({
-          maxLength: 20,
-          maxMessage: 'You need premium to add more words',
-          maxTags: premium ? 1500 : 150
-        }),
+        maxLength: 20,
+        maxMessage: 'You need premium to add more words',
+        maxTags: 150,
+        premiumMaxTags: 1500,
         placeholder: 'Add words'
       }
     ]
@@ -348,9 +378,7 @@ export const settings: ISetting[] = [
       {
         name: 'nickReplace',
         type: OptionType.Input,
-        props: {
-          maxLength: 32
-        }
+        max: 32
       }
     ]
   },
@@ -491,19 +519,18 @@ export const settings: ISetting[] = [
   {
     title: 'Delete After',
     description:
-      'Time in seconds it will take until the response is automatically deleted',
+      'Time it will take until the response is automatically deleted',
     section: 'Response',
-    disable: {
-      property: 'msg.deleteAfter',
-      disableButton: 'Never',
-      disableValue: false,
-      enableValue: 3000
-    },
     options: [
       {
         name: 'msg.deleteAfter',
-        type: OptionType.Number,
-        multiplier: 1000
+        type: OptionType.Time,
+        times: [3e3, 10e3, 60e3, 120e3],
+        nullIs: 'Never',
+        nullIsFalse: true,
+        premiumProps: {
+          times: [3e3, 10e3, 60e3, 120e3, 240e3, 600e3]
+        }
       }
     ]
   },
@@ -535,44 +562,37 @@ export const searcher = new FuzzySearch(
   { sort: true }
 )
 
-type DataOption<T extends OptionType, P extends {}, E = {}> = {
+type DataOption<T extends OptionType, E = {}> = {
   name: string
   type: T
-  props?: DeepPartial<P>
-  premiumProps?: DeepPartial<P>
+  premiumProps?: DeepPartial<E>
 } & E
 
 export type IOption =
-  | DataOption<
-      OptionType.Boolean,
-      OptionProps,
-      { premium?: boolean; label: string }
-    >
+  | DataOption<OptionType.Boolean, { premium?: boolean; label: string }>
   | DataOption<
       OptionType.Input,
-      JSX.IntrinsicElements['input'],
       {
         noneDisable?: boolean
         textarea?: boolean
+        max?: number
         default?: string
       }
     >
   | DataOption<
       OptionType.Tags,
-      TagProps,
-      {
-        settings: (guild: GuildData) => TagsSettings
+      TagsSettings & {
+        fn?: (guild: GuildData) => DeepPartial<TagsSettings>
+        premiumMaxTags?: number
         placeholder: string
       }
     >
   | DataOption<
       OptionType.BitBool,
-      OptionProps,
       { bit: number; label: string; premium?: boolean }
     >
   | DataOption<
       OptionType.Select,
-      JSX.IntrinsicElements['select'],
       {
         allowNone?: boolean
         number?: boolean
@@ -590,19 +610,19 @@ export type IOption =
     >
   | DataOption<
       OptionType.Number,
-      InputProps,
       {
         multiplier?: number
       }
     >
-  | DataOption<OptionType.Exception, {}, {}>
-  | DataOption<OptionType.Punishments, {}, {}>
+  | DataOption<OptionType.Exception, {}>
+  | DataOption<OptionType.Punishments, {}>
   | DataOption<
       OptionType.Time,
-      {},
       {
         max?: number
         nullIs?: string
+        nullIsFalse?: boolean
+        times: number[]
       }
     >
 

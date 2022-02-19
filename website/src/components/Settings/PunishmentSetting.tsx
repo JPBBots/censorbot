@@ -33,6 +33,8 @@ const punishmentLevels = {
   [PunishmentType.Timeout]: 'timed out'
 }
 
+const BASE_TIMES = [60e3, 300000, 600000, 3.6e6, 8.64e7, 6.048e8, 2629800000]
+
 export function PunishmentSetting({
   punishment,
   guild,
@@ -77,6 +79,8 @@ export function PunishmentSetting({
                 key={type}
                 onClick={() => {
                   const punishmentType = Number(type)
+                  if (punishment.type === punishmentType) return
+
                   const newTime =
                     punishmentType === PunishmentType.Timeout ? 60e3 : null
 
@@ -84,10 +88,12 @@ export function PunishmentSetting({
                     type: punishmentType,
                     time:
                       'time' in punishment &&
-                        (!!punishment.time ||
-                          (punishmentType === PunishmentType.Timeout &&
-                            punishment.time !== null))
-                        ? punishment.time
+                      (!!punishment.time ||
+                        (punishmentType === PunishmentType.Timeout &&
+                          punishment.time !== null))
+                        ? (punishment.time ?? 0) > 2629800000
+                          ? 2629800000
+                          : punishment.time
                         : newTime
                   })
                 }}
@@ -114,22 +120,31 @@ export function PunishmentSetting({
         {(punishment.type === PunishmentType.Ban ||
           punishment.type === PunishmentType.GiveRole ||
           punishment.type === PunishmentType.Timeout) && (
-            <>
-              for
-              <TimeSelector
-                onChange={(val) => {
-                  setValue({ time: val as any })
-                }}
-                max={2629800000}
-                nullIs={
-                  punishment.type === PunishmentType.Timeout
-                    ? undefined
-                    : 'Forever'
-                }
-                value={punishment.time}
-              />
-            </>
-          )}
+          <>
+            for
+            <TimeSelector
+              onChange={(val) => {
+                setValue({ time: val as any })
+              }}
+              max={
+                punishment.type === PunishmentType.Timeout
+                  ? 2629800000
+                  : 5259600000
+              }
+              times={
+                punishment.type === PunishmentType.Timeout
+                  ? BASE_TIMES
+                  : BASE_TIMES.concat(5259600000)
+              }
+              nullIs={
+                punishment.type === PunishmentType.Timeout
+                  ? undefined
+                  : 'Forever'
+              }
+              value={punishment.time}
+            />
+          </>
+        )}
       </Wrap>
 
       <Icon

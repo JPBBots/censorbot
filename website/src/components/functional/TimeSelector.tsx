@@ -17,12 +17,12 @@ import { FaChevronDown } from 'react-icons/fa'
 
 export interface TimeSelectorOptions {
   value: number | null
-  onChange: (value: number | null) => void
+  times: Array<string | number>
+  onChange: (value: number | null | false) => void
   nullIs?: string
+  nullIsFalse?: boolean
   max?: number
 }
-
-const MONTH_TIME = 2629800000
 
 export function TimeSelector(opts: TimeSelectorOptions) {
   const [editing, setEditing] = useState(false)
@@ -32,19 +32,7 @@ export function TimeSelector(opts: TimeSelectorOptions) {
     setMaluableValue(opts.value)
   }, [opts.value])
 
-  const times: Array<string | number> = [
-    60e3,
-    300000,
-    600000,
-    3.6e6,
-    8.64e7,
-    6.048e8,
-    MONTH_TIME
-  ]
-
-  if (opts.max! > MONTH_TIME) {
-    times.push(MONTH_TIME * 2)
-  }
+  const times = [...opts.times]
 
   if (opts.nullIs) {
     times.unshift(opts.nullIs)
@@ -68,7 +56,8 @@ export function TimeSelector(opts: TimeSelectorOptions) {
                 ? maluableValue === null
                   ? 0
                   : Math.floor(maluableValue / 1000)
-                : opts.nullIs && opts.value === null
+                : opts.nullIs &&
+                  opts.value === (opts.nullIsFalse ? false : null)
                 ? opts.nullIs
                 : humanize(opts.value ?? 0, { largest: 2 })
             }
@@ -99,11 +88,15 @@ export function TimeSelector(opts: TimeSelectorOptions) {
               key={time}
               onClick={() => {
                 if (time === opts.nullIs) {
-                  opts.onChange(null)
+                  opts.onChange(opts.nullIsFalse ? false : null)
                 } else opts.onChange(time as number)
               }}
             >
-              {typeof time === 'number' ? humanize(time, { largest: 1 }) : time}
+              {typeof time === 'number'
+                ? time === 5259600000
+                  ? '2 months'
+                  : humanize(time, { largest: 1 })
+                : time}
             </MenuItem>
           ))}
         </MenuList>
