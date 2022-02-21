@@ -44,12 +44,10 @@ export const SettingSection = ({
           )}
           <Divider color="lighter.5" />
           {description && (
-            <HStack>
-              <Text textStyle="default" color="lighter.40">
-                {description}
-              </Text>
+            <Text textStyle="default" color="lighter.40">
+              {description}
               {tooltip && <Tooltip>{tooltip}</Tooltip>}
-            </HStack>
+            </Text>
           )}
         </Fragment>
       )}

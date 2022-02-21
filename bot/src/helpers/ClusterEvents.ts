@@ -87,4 +87,9 @@ export class ClusterEvents extends EventAdder<Thread> {
   updateCustomBots() {
     void this.worker.updateCustomBots()
   }
+
+  @Event('UPDATE_FILTER')
+  updateFilter() {
+    void this.worker.updateFilters()
+  }
 }

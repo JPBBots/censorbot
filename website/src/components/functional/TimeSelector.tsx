@@ -15,6 +15,11 @@ import { useEffect, useState } from 'react'
 import humanize from 'humanize-duration'
 import { FaChevronDown } from 'react-icons/fa'
 
+const TIME_CONV: Record<number, string> = {
+  2419000000: '1 month',
+  5259600000: '2 months'
+}
+
 export interface TimeSelectorOptions {
   value: number | null
   times: Array<string | number>
@@ -59,6 +64,8 @@ export function TimeSelector(opts: TimeSelectorOptions) {
                 : opts.nullIs &&
                   opts.value === (opts.nullIsFalse ? false : null)
                 ? opts.nullIs
+                : opts.value && TIME_CONV[opts.value]
+                ? TIME_CONV[opts.value]
                 : humanize(opts.value ?? 0, { largest: 2 })
             }
             w="230px"
@@ -93,8 +100,8 @@ export function TimeSelector(opts: TimeSelectorOptions) {
               }}
             >
               {typeof time === 'number'
-                ? time === 5259600000
-                  ? '2 months'
+                ? TIME_CONV[time]
+                  ? TIME_CONV[time]
                   : humanize(time, { largest: 1 })
                 : time}
             </MenuItem>

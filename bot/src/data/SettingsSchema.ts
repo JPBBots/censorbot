@@ -90,7 +90,7 @@ export const punishmentLevelSchema = Joi.object<PunishmentLevel>({
     .required()
     .when('type', {
       is: PunishmentType.Timeout,
-      then: Joi.number().max(2629800000)
+      then: Joi.number().max(2419000000)
     })
 })
 
@@ -152,7 +152,8 @@ export const settingSchema = Joi.object<GuildDB & { premium: boolean }>({
         .max(2629800000 * 2)
         .allow(null),
       levels: Joi.array().items(punishmentLevelSchema).max(5),
-      allow: Joi.number().custom(bitWise(FilterType))
+      allow: Joi.number().custom(bitWise(FilterType)),
+      log: nullableSnowflake
     })
   ),
 

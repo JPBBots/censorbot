@@ -25,18 +25,66 @@ interface ResolvedPiece {
 
 const removeRegex = /\x1D|\x1F/
 
+export enum FilterDatabaseEntryType {
+  BaseFilter = 0,
+  RegExp
+}
+
+export type FilterDatabaseEntry =
+  | {
+      type: FilterDatabaseEntryType.BaseFilter
+      filter: baseFilters
+      filterData: Record<string, string[]>
+    }
+  | {
+      type: FilterDatabaseEntryType.RegExp
+      name: RegExpTypes
+      regex: string
+    }
+
+type RegExpTypes = 'combining' | 'link' | 'email'
+
 export class Filter {
-  filters = Object.keys(filter.filters).reduce<{
+  filters: {
     [key in baseFilters]?: JPBExp[]
-  }>((a, b) => {
-    a[b] = Object.keys(filter.filters[b]).reduce<JPBExp[]>((c, d) => {
-      c.push(new JPBExp(d, filter.filters[b][d]))
+  } = {}
 
-      return c
-    }, [])
+  regex: {
+    [key in RegExpTypes]: RegExp
+  }
 
-    return a
-  }, {})
+  import(data: FilterDatabaseEntry[]) {
+    for (const entry of data) {
+      if (entry.type === FilterDatabaseEntryType.BaseFilter) {
+        this.filters[entry.filter] = Object.keys(entry.filterData).reduce<
+          JPBExp[]
+        >((c, d) => {
+          c.push(new JPBExp(d, entry.filterData[d]))
+
+          return c
+        }, [])
+      } else if (entry.type === FilterDatabaseEntryType.RegExp) {
+        this.regex[entry.name] = new RegExp(entry.regex, 'g')
+      }
+    }
+  }
+
+  export(): FilterDatabaseEntry[] {
+    const arr: FilterDatabaseEntry[] = []
+    for (const key in this.filters) {
+      arr.push({
+        type: FilterDatabaseEntryType.BaseFilter,
+        filter: key as baseFilters,
+        filterData: this.filters[key as baseFilters]!.reduce((a, b) => {
+          a[b._text] = b.uncensorText
+
+          return a
+        }, {})
+      })
+    }
+
+    return arr
+  }
 
   surround(text: string, ranges: Range[], sur: string): string {
     text = text.replace(removeRegex, '').replace(/<a?:(\w+):(\d+)>/g, '$1') // emojis
@@ -296,7 +344,6 @@ export class Filter {
     }
 
     content.forEach((piece) => {
-      let done = false
       if (
         res.ranges?.some(
           (x) =>
@@ -311,8 +358,6 @@ export class Filter {
         for (const part of scanFor[key]) {
           if (!part.test(piece.t, db.uncensor)) continue
 
-          done = true
-
           if (key === 'server') res.type = FilterType.ServerFilter
 
           censor = true
@@ -320,10 +365,7 @@ export class Filter {
           if (!res.filters.includes(key as baseFilters) && key !== 'server')
             res.filters.push(key as baseFilters)
           res.places.push(part)
-
-          break
         }
-        if (done) break
       }
     })
 

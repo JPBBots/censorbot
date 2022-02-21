@@ -24,6 +24,7 @@ import { ChargeBeeService } from '../services/chargebee.service'
 import Pieces from '../../utils/Pieces'
 import { ThreadService } from '../services/thread.service'
 import { StatusService } from '../services/status.service'
+import { TicketsService } from '../services/tickets.service'
 
 type EventMap = {
   [key in keyof WebSocketEventMap]: WebSocketEventMap[key]['receive']
@@ -49,7 +50,8 @@ export class UserGateway implements OnGatewayConnection {
     private readonly guilds: GuildsService,
     private readonly chargebee: ChargeBeeService,
     private readonly thread: ThreadService,
-    private readonly status: StatusService
+    private readonly status: StatusService,
+    private readonly tickets: TicketsService
   ) {
     guilds.on('GUILD_SETTINGS_UPDATE', (dat) => {
       this.server
@@ -326,5 +328,59 @@ export class UserGateway implements OnGatewayConnection {
     return hostedPage.hosted_page
   }
 
-  // TODO TICKETS
+  // TODO: TICKETS
+
+  @SubscribeMessage('GET_TICKETS')
+  async getTickets(@Self() self: SelfData) {
+    const user = this.getSelf(self)
+
+    if (!user?.admin) return { error: 'Not admin' }
+
+    return await this.tickets.getTickets()
+  }
+
+  @SubscribeMessage('TEST_TICKET')
+  async testTicket(
+    @Self() self: SelfData,
+    @MessageBody() ticket: EventMap['TEST_TICKET']
+  ) {
+    const user = this.getSelf(self)
+
+    if (!user?.admin) return { error: 'Not admin' }
+
+    return await this.tickets.testTicket(ticket.id, ticket.bypasses)
+  }
+
+  @SubscribeMessage('ACCEPT_TICKET')
+  async acceptTicket(
+    @Self() self: SelfData,
+    @MessageBody() ticket: EventMap['ACCEPT_TICKET']
+  ) {
+    const user = this.getSelf(self)
+
+    if (!user?.admin) return { error: 'Not admin' }
+
+    const filter = await this.tickets.createNewFilter()
+    this.tickets.addBypasses(filter, ticket.bypasses)
+
+    await this.tickets.exportFilterToDatabase(filter)
+
+    await this.tickets.accept(ticket.id)
+
+    return { success: true }
+  }
+
+  @SubscribeMessage('DENY_TICKET')
+  async denyTicket(
+    @Self() self: SelfData,
+    @MessageBody() ticket: EventMap['DENY_TICKET']
+  ) {
+    const user = this.getSelf(self)
+
+    if (!user?.admin) return { error: 'Not admin' }
+
+    await this.tickets.deny(ticket.id)
+
+    return { success: true }
+  }
 }

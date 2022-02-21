@@ -125,9 +125,17 @@ export class WorkerManager extends Worker<{}> {
 
     this.db.on('started', () => {
       void this.updateCustomBots()
+
+      void this.updateFilters()
     })
 
     this.interface.commands.setupOldCommand(['+'], this.eventHandler.commands)
+  }
+
+  public async updateFilters() {
+    const entries = await this.db.collection('filter_data').find({}).toArray()
+
+    this.filter.import(entries)
   }
 
   public async isAdmin(id: Snowflake): Promise<boolean> {

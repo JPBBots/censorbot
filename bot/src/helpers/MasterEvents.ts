@@ -138,4 +138,9 @@ export class MasterEvents extends EventAdder<any> {
   statusUpdate() {
     void this.master.api.tell('STATUS_UPDATE', null)
   }
+
+  @Event('UPDATE_FILTER')
+  updateFilter() {
+    this.master.tellAll('UPDATE_FILTER', null, true)
+  }
 }

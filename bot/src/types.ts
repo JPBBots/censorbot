@@ -67,5 +67,9 @@ declare module 'jadl/dist/clustering/ThreadComms' {
       send: null
       receive: null
     }
+    UPDATE_FILTER: {
+      send: null
+      receive: null
+    }
   }
 }

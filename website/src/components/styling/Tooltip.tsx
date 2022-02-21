@@ -17,14 +17,17 @@ export const Tooltip = ({ children }: TooltipProps) => {
       label={`${children}`}
     >
       <Flex
+        display="inline-flex"
         borderRadius="full"
         bg="lighter.20"
+        mx="4px"
         p={2}
         w="25px"
         h="25px"
         alignItems="center"
         justifyItems="center"
         userSelect="none"
+        color="white"
       >
         ?
       </Flex>

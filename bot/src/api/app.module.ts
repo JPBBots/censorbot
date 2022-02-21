@@ -23,6 +23,7 @@ import { PremiumController } from './controllers/premium.controller'
 import { ChargeBeeController } from './controllers/chargebee.controller'
 import { StatusController } from './controllers/status.controller'
 import { StatusService } from './services/status.service'
+import { TicketsService } from './services/tickets.service'
 
 @Module({
   imports: [GatewayAuthGuard],
@@ -48,6 +49,7 @@ import { StatusService } from './services/status.service'
     UsersService,
     ChargeBeeService,
     StatusService,
+    TicketsService,
 
     UserGateway
   ]

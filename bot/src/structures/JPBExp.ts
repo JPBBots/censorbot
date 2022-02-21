@@ -3,7 +3,8 @@
  * @extends RegExp
  */
 export class JPBExp extends RegExp {
-  public uncensor: RegExp[]
+  public uncensor: RegExp[] = []
+  public uncensorText: string[] = []
 
   /**
    * JPBExp
@@ -13,7 +14,12 @@ export class JPBExp extends RegExp {
   constructor(public _text: string, uncensor: string[] = []) {
     super(_text)
 
-    this.uncensor = uncensor.map((x) => new RegExp(x))
+    uncensor.forEach((x) => this.addUncensor(x))
+  }
+
+  addUncensor(text: string) {
+    this.uncensor.push(new RegExp(text))
+    this.uncensorText.push(text)
   }
 
   /**

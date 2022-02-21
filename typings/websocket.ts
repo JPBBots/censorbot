@@ -126,14 +126,20 @@ export interface WebSocketEventMap {
   TEST_TICKET: {
     receive: {
       id: ShortID
+      bypasses?: {
+        [key: string]: string
+      }
     }
     send: TicketTest
   }
   ACCEPT_TICKET: {
     receive: {
       id: ShortID
+      bypasses: {
+        [key: string]: string
+      }
     }
-    send: { success: true }
+    send: { success: boolean }
   }
   DENY_TICKET: {
     receive: {

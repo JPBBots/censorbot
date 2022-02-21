@@ -61,12 +61,6 @@ export const sections = [
     icon: <Icon as={FaCog} />
   },
   {
-    name: 'Exceptions',
-    category: 'Filter',
-    href: '/filter/exceptions',
-    icon: <Icon as={FaFilter} />
-  },
-  {
     name: 'Extras',
     category: 'Filter',
     href: '/filter/extras',
@@ -78,6 +72,12 @@ export const sections = [
     href: '/filter/ai',
     icon: <Icon as={FaVial} />,
     premium: true
+  },
+  {
+    name: 'Exceptions',
+    category: 'Filter',
+    href: '/filter/exceptions',
+    icon: <Icon as={FaFilter} />
   },
 
   {

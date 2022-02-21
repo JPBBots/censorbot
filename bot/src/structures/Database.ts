@@ -24,6 +24,7 @@ import { TimeoutSchema } from './punishments/Timeouts'
 import { TicketBanSchema } from './TicketManager'
 import { ThreadComms } from 'jadl/dist/clustering/ThreadComms'
 import { enumCombiner } from '../utils/enumCombiner'
+import { FilterDatabaseEntry } from './Filter'
 
 export * from '../data/SettingsSchema'
 
@@ -40,6 +41,7 @@ export interface DatabaseCollections {
   timeouts: TimeoutSchema
   custombots: CustomBotOptions
   users: User
+  filter_data: FilterDatabaseEntry
 }
 
 export class Database extends Db {
@@ -131,7 +133,8 @@ export class Database extends Db {
       db.punishments = {
         levels: db.punishment.type ? [db.punishment] : [],
         expires: null,
-        allow: enumCombiner(FilterType)
+        allow: enumCombiner(FilterType),
+        log: null
       }
       delete db.punishment
 

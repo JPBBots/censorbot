@@ -20,7 +20,8 @@
   "punishments": {
     "expires": null,
     "levels": [],
-    "allow": 0
+    "allow": 0,
+    "log": null
   },
   "webhook": {
     "enabled": false,

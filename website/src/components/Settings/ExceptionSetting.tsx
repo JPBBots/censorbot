@@ -40,6 +40,7 @@ const ExceptionTypes = [
   },
   {
     label: 'Resends',
+    premium: true,
     value: ExceptionType.Resend
   },
   {
@@ -67,17 +68,6 @@ export function ExceptionSetting({
     <HStack flexWrap="wrap" w="full">
       <InlineOptionGroup>
         <Text>Anyone with</Text>
-        {/* <Selector
-        role
-        value={exception.role}
-        placeholder="Select @role"
-        onChange={(role) => change({ role })}>
-          {guild.guild.r.map(x => ({
-            label: x.name,
-            value: x.id,
-            color: x.color
-          }))}
-      </Selector> */}
         <Select
           onChange={({ target }) =>
             change({ role: target.value === 'none' ? null : target.value })
@@ -96,16 +86,6 @@ export function ExceptionSetting({
         </Select>
 
         <Text>in channel</Text>
-        {/* <Selector
-        channel
-        value={exception.channel}
-        placeholder="Select #channel"
-        onChange={(channel) => change({ channel })}>
-          {guild.guild.c.map(x => ({
-            label: x.name,
-            value: x.id
-          }))}
-      </Selector> */}
         <Select
           onChange={({ target }) =>
             change({ channel: target.value === 'none' ? null : target.value })
@@ -124,14 +104,6 @@ export function ExceptionSetting({
         </Select>
 
         <Text>bypasses</Text>
-        {/* <Selector
-        value={exception.type}
-        placeholder="Select bypass"
-        onChange={(type) => change({ type })}>
-          {
-            ExceptionTypes
-          }
-      </Selector> */}
         <Select
           onChange={({ target }) => change({ type: Number(target.value) })}
           value={exception.type}
@@ -139,11 +111,13 @@ export function ExceptionSetting({
           size="sm"
           maxW="20vw"
         >
-          {ExceptionTypes.map((x) => (
-            <option key={x.value} value={x.value}>
-              {x.label}
-            </option>
-          ))}
+          {ExceptionTypes.filter((x) => (x.premium ? guild.premium : true)).map(
+            (x) => (
+              <option key={x.value} value={x.value}>
+                {x.label}
+              </option>
+            )
+          )}
         </Select>
 
         <Icon

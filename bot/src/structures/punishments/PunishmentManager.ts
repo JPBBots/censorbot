@@ -1,4 +1,4 @@
-import { Snowflake } from 'discord-api-types'
+import { APIMessage, Snowflake } from 'discord-api-types'
 import { Embed } from '@jadl/embed'
 import { Collection } from 'mongodb'
 import { GuildDB, PunishmentLevel, PunishmentType } from '@jpbbots/cb-typings'
@@ -84,11 +84,11 @@ export class PunishmentManager {
       )
     }
 
-    const level = db.punishments.levels.find(
-      (x) => x.amount === punish!.warnings.length
-    )
+    const level =
+      db.punishments.levels.find((x) => x.amount === punish!.warnings.length) ??
+      db.punishments.levels.sort((a, b) => a.amount - b.amount).pop()
 
-    if (level) {
+    if (level && level.amount < punish!.warnings.length) {
       const hasPerms = this.hasPerms(guild, level.type)
       if (typeof hasPerms === 'string') {
         throw new Error(hasPerms)
@@ -120,60 +120,24 @@ export class PunishmentManager {
     )
   }
 
-  punishmentNames = {
-    [PunishmentType.GiveRole]: 'Given Role',
-    [PunishmentType.Ban]: 'Banned',
-    [PunishmentType.Kick]: 'Kicked',
-    [PunishmentType.Timeout]: 'Timed Out'
-  }
+  log(guild: Snowflake, positive: boolean) {
+    return new Embed<Promise<APIMessage | null>>(async (embed) => {
+      return await (async () => {
+        const db = await this.config(guild)
+        const logChannel = db.punishments.log ?? db.log
 
-  async sendLog(
-    guild: Snowflake,
-    user: Snowflake,
-    punishment: PunishmentLevel,
-    extra?: string
-  ): Promise<void> {
-    const db = await this.config(guild)
-    if (!db.log || !db.id || !this.worker.responses.canLog(db.id, db.log))
-      return
-
-    await this.requests.sendMessage(
-      db.log,
-      new Embed()
-        .color('Red')
-        .title(`User ${this.punishmentNames[punishment.type]}`)
-        .description(
-          `<@${user}> reached ${punishment.amount} warnings.${
-            extra ? `\n\n${extra}` : ''
-          }`
+        if (
+          !logChannel ||
+          !db.id ||
+          !this.worker.responses.canLog(db.id, logChannel)
         )
-        .timestamp()
-    )
-  }
+          return null
 
-  positivePunishmentNames = {
-    [PunishmentType.GiveRole]: 'Removed Role',
-    [PunishmentType.Ban]: 'Unbanned'
-  }
-
-  async sendPositiveLog(
-    guild: Snowflake,
-    user: Snowflake,
-    type: PunishmentType,
-    extra?: string
-  ): Promise<void> {
-    const db = await this.config(guild)
-    if (!db.log || !db.id || !this.worker.responses.canLog(db.id, db.log))
-      return
-
-    await this.requests.sendMessage(
-      db.log,
-      new Embed()
-        .color(0x2ecc71)
-        .title(`User ${this.positivePunishmentNames[type]}`)
-        .description(`<@${user}>${extra ? `\n\n${extra}` : ''}`)
-        .timestamp()
-    )
+        return await this.requests.sendMessage(logChannel, embed)
+      })()
+    })
+      .color(positive ? 0x2ecc71 : 'Red')
+      .timestamp()
   }
 
   async timeout(
@@ -182,28 +146,26 @@ export class PunishmentManager {
     punishment: PunishmentLevel & { type: PunishmentType.Timeout },
     roles: Snowflake[]
   ) {
-    if (this.worker.isManageable(guild, user, roles)) {
+    const manageable = this.worker.isManageable(guild, user, roles)
+    if (manageable) {
       await this.requests.timeoutMember(
         guild,
         user,
         punishment.time,
         'Reached max warnings'
       )
-
-      await this.sendLog(
-        guild,
-        user,
-        punishment,
-        `Will be removed ${this.relativeTimeIn(punishment.time)}`
-      )
-    } else {
-      await this.sendLog(
-        guild,
-        user,
-        punishment,
-        '(Though the user was unable to be timed out due to permissions)'
-      )
     }
+
+    await this.log(guild, false)
+      .title('User Timed Out')
+      .description(
+        `<@${user}> reached ${punishment.amount} warnings\n\n${
+          manageable
+            ? `Will be removed ${this.relativeTimeIn(punishment.time)}`
+            : '(Though the user was unable to be timed out due to permissions)'
+        }`
+      )
+      .send()
   }
 
   async giveRole(
@@ -218,19 +180,9 @@ export class PunishmentManager {
     )
       throw new NonFatalError('No muted role has been set')
 
-    if (this.worker.isManageable(guild, user, roles, false)) {
+    const manageable = this.worker.isManageable(guild, user, roles, false)
+    if (manageable) {
       await this.requests.addRole(guild, user, punishment.role)
-
-      await this.sendLog(
-        guild,
-        user,
-        punishment,
-        `Received <@&${punishment.role}>${
-          punishment.time
-            ? `\nWill be removed ${this.relativeTimeIn(punishment.time)}`
-            : ''
-        }`
-      )
 
       if (punishment.time) {
         await this.timeouts.add(
@@ -241,32 +193,40 @@ export class PunishmentManager {
           punishment.role
         )
       }
-    } else {
-      await this.sendLog(
-        guild,
-        user,
-        punishment,
-        '(Though the user was unable to be muted due to permissions)'
-      )
     }
+
+    await this.log(guild, false)
+      .title('User Given Role')
+      .description(
+        `<@${user}> reached ${punishment.amount} warnings\n\n${
+          manageable
+            ? `Received <@&${punishment.role}>${
+                punishment.time
+                  ? `\nWill be removed ${this.relativeTimeIn(punishment.time)}`
+                  : ''
+              }`
+            : '(Though the user was unable to be given the role due to permissions)'
+        }`
+      )
+      .send()
   }
 
   async removeRole(
     guild: Snowflake,
     user: Snowflake,
     role: Snowflake,
-    extra: boolean
+    manual: boolean
   ): Promise<void> {
     await this.requests.removeRole(guild, user, role)
 
     await this.timeouts.remove(guild, user)
 
-    void this.sendPositiveLog(
-      guild,
-      user,
-      PunishmentType.GiveRole,
-      extra ? 'Role manually removed.' : 'TODO' // `After ${(db.punishment.time ?? 0) / 60000} minutes`
-    )
+    await this.log(guild, true)
+      .title(`Role Removed from User`)
+      .description(
+        `<@${user}>\n\nRole ${manual ? 'manually' : 'automatically'} removed`
+      )
+      .send()
   }
 
   async kick(
@@ -275,20 +235,23 @@ export class PunishmentManager {
     punishment: PunishmentLevel & { type: PunishmentType.Kick },
     roles: Snowflake[]
   ): Promise<void> {
-    if (this.worker.isManageable(guild, user, roles)) {
+    const manageable = this.worker.isManageable(guild, user, roles)
+    if (manageable) {
       await this.requests.kickMember(guild, user, {
         reason: 'Reached max warnings'
       })
-
-      await this.sendLog(guild, user, punishment)
-    } else {
-      await this.sendLog(
-        guild,
-        user,
-        punishment,
-        '(Though the user was unable to be kicked due to permissions)'
-      )
     }
+
+    await this.log(guild, false)
+      .title('User Kicked')
+      .description(
+        `<@${user}> reached ${punishment.amount} warnings\n\n${
+          manageable
+            ? ''
+            : '(Though the user was unable to be kicked due to permissions)'
+        }`
+      )
+      .send()
   }
 
   async ban(
@@ -297,19 +260,11 @@ export class PunishmentManager {
     punishment: PunishmentLevel & { type: PunishmentType.Ban },
     roles: Snowflake[]
   ): Promise<void> {
-    if (this.worker.isManageable(guild, user, roles)) {
+    const manageable = this.worker.isManageable(guild, user, roles)
+    if (manageable) {
       await this.requests.banMember(guild, user, {
         reason: 'Reached max warnings.'
       })
-
-      await this.sendLog(
-        guild,
-        user,
-        punishment,
-        punishment.time
-          ? `Will be unbanned ${this.relativeTimeIn(punishment.time)}`
-          : ''
-      )
 
       if (punishment.time) {
         await this.timeouts.add(
@@ -319,14 +274,20 @@ export class PunishmentManager {
           Date.now() + punishment.time
         )
       }
-    } else {
-      await this.sendLog(
-        guild,
-        user,
-        punishment,
-        '(Though the user was unable to be banned due to permissions)'
-      )
     }
+
+    await this.log(guild, false)
+      .title('User Banned')
+      .description(
+        `<@${user}> reached ${punishment.amount} warnings\n\n${
+          manageable
+            ? punishment.time
+              ? `Will be unbanned ${this.relativeTimeIn(punishment.time)}`
+              : ''
+            : '(Though the user was unable to be banned due to permissions)'
+        }`
+      )
+      .send()
   }
 
   async unban(guild: Snowflake, user: Snowflake): Promise<void> {
@@ -334,11 +295,9 @@ export class PunishmentManager {
 
     await this.timeouts.remove(guild, user)
 
-    await this.sendPositiveLog(
-      guild,
-      user,
-      PunishmentType.Ban,
-      'TODO' // `After ${(db.punishment.time ?? 0) / 60000} minutes`
-    )
+    await this.log(guild, true)
+      .title('User Unbanned')
+      .description(`<@${user}>`) // TODO: something?
+      .send()
   }
 }

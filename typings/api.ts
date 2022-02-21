@@ -139,6 +139,7 @@ export interface GuildDB {
     levels: PunishmentLevel[]
     expires: number | null
     allow: number
+    log: Snowflake | null
   }
   /**
    * Webhook options

@@ -33,7 +33,8 @@ const punishmentLevels = {
   [PunishmentType.Timeout]: 'timed out'
 }
 
-const BASE_TIMES = [60e3, 300000, 600000, 3.6e6, 8.64e7, 6.048e8, 2629800000]
+const MONTH_TIME = 2419000000
+const BASE_TIMES = [60e3, 300000, 600000, 3.6e6, 8.64e7, 6.048e8, MONTH_TIME]
 
 export function PunishmentSetting({
   punishment,
@@ -91,8 +92,8 @@ export function PunishmentSetting({
                       (!!punishment.time ||
                         (punishmentType === PunishmentType.Timeout &&
                           punishment.time !== null))
-                        ? (punishment.time ?? 0) > 2629800000
-                          ? 2629800000
+                        ? (punishment.time ?? 0) > MONTH_TIME
+                          ? MONTH_TIME
                           : punishment.time
                         : newTime
                   })
@@ -128,7 +129,7 @@ export function PunishmentSetting({
               }}
               max={
                 punishment.type === PunishmentType.Timeout
-                  ? 2629800000
+                  ? MONTH_TIME
                   : 5259600000
               }
               times={

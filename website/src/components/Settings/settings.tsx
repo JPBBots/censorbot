@@ -201,6 +201,40 @@ export const settings: ISetting[] = [
     ]
   },
   {
+    title: 'Punishments Log Channel',
+    section: 'Punishments',
+    description: 'Log channnel for punishments only',
+    tooltip: 'If unspecified, will default to the normal log channel',
+    options: [
+      {
+        name: 'punishments.log',
+        type: OptionType.Select,
+        allowNone: true,
+        channel: true,
+        placeholder: 'Search #channel',
+        options: ({ guild }) =>
+          guild.channels
+            .filter((x) => x.type === ChannelType.GuildText && !x.parent_id)
+            .map((x) => ({
+              value: x.id,
+              label: x.name
+            })),
+        categories: ({ guild }) =>
+          guild.channels
+            .filter((x) => x.type === ChannelType.GuildCategory)
+            .map((x) => ({
+              name: x.name.toUpperCase(),
+              children: guild.channels
+                .filter((a) => a.parent_id === x.id)
+                .map((b) => ({
+                  label: b.name,
+                  value: b.id
+                }))
+            }))
+      }
+    ]
+  },
+  {
     title: 'Warning Expire Time',
     section: 'Punishments',
     description: 'Amount of time a warning exists',
