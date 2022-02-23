@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable no-control-regex */
-import filter from '../data/filter'
-
 import { JPBExp } from './JPBExp'
 
 import {
@@ -25,9 +23,13 @@ interface ResolvedPiece {
 
 const removeRegex = /\x1D|\x1F/
 
+const firstShortWords = ['an', 'as', 'us', 'be']
+const shortWords = ['it', 'at', 'xd']
+
 export enum FilterDatabaseEntryType {
   BaseFilter = 0,
-  RegExp
+  RegExp,
+  Chars
 }
 
 export type FilterDatabaseEntry =
@@ -41,8 +43,18 @@ export type FilterDatabaseEntry =
       name: RegExpTypes
       regex: string
     }
+  | {
+      type: FilterDatabaseEntryType.Chars
+      chars: Record<string, string[]>
+    }
 
-type RegExpTypes = 'combining' | 'link' | 'email'
+type RegExpTypes =
+  | 'combining'
+  | 'link'
+  | 'email'
+  | 'both'
+  | 'replaceSpaces'
+  | 'replaceNothing'
 
 export class Filter {
   filters: {
@@ -51,7 +63,14 @@ export class Filter {
 
   regex: {
     [key in RegExpTypes]: RegExp
-  }
+  } = {
+    link: /https?:\/\/(www\.)?([-a-zA-Z0-9@:%._+~#=]{1,256})\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g,
+    email:
+      /([a-zA-Z0-9_\-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)/g,
+    both: /(https?:\/\/(www\.)?([-a-zA-Z0-9@:%._+~#=]{1,256})\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)|([a-zA-Z0-9_\-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?))/g
+  } as any
+
+  converter: Record<string, string> = {}
 
   import(data: FilterDatabaseEntry[]) {
     for (const entry of data) {
@@ -64,7 +83,15 @@ export class Filter {
           return c
         }, [])
       } else if (entry.type === FilterDatabaseEntryType.RegExp) {
-        this.regex[entry.name] = new RegExp(entry.regex, 'g')
+        this.regex[entry.name] = new RegExp(entry.regex, 'gi')
+      } else if (entry.type === FilterDatabaseEntryType.Chars) {
+        Object.keys(entry.chars).forEach((key) => {
+          if (['-', '?'].includes(key)) return
+
+          entry.chars[key].forEach((piece) => {
+            this.converter[piece] = key
+          })
+        })
       }
     }
   }
@@ -86,15 +113,27 @@ export class Filter {
     return arr
   }
 
+  convert(text: string): string {
+    return text
+      .replace(this.regex.combining, '')
+      .replace(/./g, (t) => {
+        if (t.match(this.regex.replaceNothing)) return t
+        if (t.match(this.regex.replaceSpaces)) return t
+
+        return this.converter[t] || t
+      })
+      .toLowerCase()
+  }
+
   surround(text: string, ranges: Range[], sur: string): string {
     text = text.replace(removeRegex, '').replace(/<a?:(\w+):(\d+)>/g, '$1') // emojis
 
     let links: string[] = []
     let splitText: string | string[] = text
-      .replace(filter.bothRegex, (text) => {
+      .replace(this.regex.both, (text) => {
         return `\x1D${links.push(text) - 1}`
       })
-      .split(filter.replaceSpots.spaces)
+      .split(this.regex.replaceSpaces)
       .join(' ')
 
     while (splitText.startsWith(' ') || splitText.startsWith('\n')) {
@@ -125,11 +164,11 @@ export class Filter {
     links = []
 
     let newText = text
-      .replace(filter.bothRegex, (text) => {
+      .replace(this.regex.both, (text) => {
         links.push(text)
         return '\x1D'.repeat(text.length)
       })
-      .replace(filter.replaceSpots.spaces, (spot, ind) => {
+      .replace(this.regex.replaceSpaces, (spot, ind) => {
         if (starterPlaces.includes(ind)) spot += '\x1F'
         if (endPlaces.includes(ind)) spot = '\x1F' + spot
 
@@ -158,14 +197,14 @@ export class Filter {
       .replace(removeRegex, '')
       .replace(/<#?@?!?&?(\d+)>/g, '!') // mentions
       .replace(/<a?:(\w+):(\d+)>/g, '$1') // emojis
-      .replace(filter.emailRegex, (...email: string[]) => {
+      .replace(this.regex.email, (...email: string[]) => {
         return `${email[1]}${email[2]}${email[6]}`.replace(
-          filter.replaceSpots.spaces,
+          this.regex.replaceSpaces,
           ''
         )
       })
-      .replace(filter.linkRegex, (...link: string[]) => {
-        return `${link[2]}`.replace(filter.replaceSpots.spaces, '')
+      .replace(this.regex.link, (...link: string[]) => {
+        return `${link[2]}`.replace(this.regex.replaceSpaces, '')
       })
       .replace(/(\w)\1{2,}/g, '$1$1') // multiple characters only come up once
 
@@ -173,15 +212,15 @@ export class Filter {
       content = content.slice(1)
     }
 
-    content = filter.converter(content) as string
+    content = this.convert(content) as string
 
     let res: ResolvedPiece[] = Array(
-      content.split(filter.replaceSpots.spaces).length + 1
+      content.split(this.regex.replaceSpaces).length + 1
     )
       .fill(null)
       .map(() => ({ i: [], t: '' })) // array of default objects
 
-    content = content.split(filter.replaceSpots.spaces)
+    content = content.split(this.regex.replaceSpaces)
 
     function addSpot(
       text: string,
@@ -221,8 +260,8 @@ export class Filter {
     for (let i = 0; i < content.length; i++) {
       // base index pushing to array
       const split = content[i]
-        .replace(filter.replaceSpots.nothing, '')
-        .split(filter.replaceSpots.spaces)
+        .replace(this.regex.replaceNothing, '')
+        .split(this.regex.replaceSpaces)
 
       for (let spI = 0; spI < split.length; spI++) {
         nextPushes.push({ i: [i, i], t: split[spI], n: true })
@@ -236,7 +275,7 @@ export class Filter {
     for (let i = 0; i < res.length; i++) {
       // combine < 3 character bits together
       const s = res[i]
-      if (filter.firstShortWords.includes(s.t)) continue
+      if (firstShortWords.includes(s.t)) continue
 
       if (s.t && s.t.length < 3 && res[i + 1]) {
         if (s.n) continue
@@ -250,7 +289,7 @@ export class Filter {
     for (let i = res.length; i > -1; i--) {
       // combine < 3 character bits together but going backwards
       const s = res[i]
-      if (!s || filter.shortWords.includes(s.t)) continue
+      if (!s || shortWords.includes(s.t)) continue
 
       if (s.t && s.t.length < 3 && res[i - 1]) {
         if (s.n ?? res[i - 1].n) continue
@@ -264,7 +303,7 @@ export class Filter {
     for (let i = 0; i < res.length; i++) {
       // combine pieces that ends and start with the same character
       const s = res[i]
-      if (!s || filter.firstShortWords.some((x) => s.t.endsWith(x))) continue
+      if (!s || firstShortWords.some((x) => s.t.endsWith(x))) continue
 
       if (s.t && res[i + 1] && s.t[s.t.length - 1] === res[i + 1].t[0]) {
         if (s.n) continue
