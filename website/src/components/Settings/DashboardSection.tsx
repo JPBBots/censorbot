@@ -11,12 +11,13 @@ import {
   Icon,
   InputGroup,
   InputLeftAddon,
-  Button
+  Button,
+  Center
 } from '@chakra-ui/react'
 import { Aside, sections, SectionName } from './Aside'
 import { LoginButton } from '../button/LoginButton'
 import { useLoginState, useUser } from 'hooks/useAuth'
-import { useGuild } from 'hooks/useGuilds'
+import { useGuild, useGuilds } from 'hooks/useGuilds'
 import { LoginState } from 'store/reducers/auth.reducer'
 
 import { FaBars, FaSearch } from 'react-icons/fa'
@@ -24,6 +25,9 @@ import { sectionSettings, Setting } from './Setting'
 import { searcher } from './settings'
 import { Loading } from '~/styling/Loading'
 import { wLT } from '@/hooks/useScreenSize'
+import { NeedsInvite } from '~/NeedsInvite'
+
+import NextLink from 'next/link'
 
 interface DashboardSectionProps extends PropsWithChildren<{}> {
   description?: string
@@ -33,7 +37,8 @@ interface DashboardSectionProps extends PropsWithChildren<{}> {
 
 export function DashboardSection(props: DashboardSectionProps) {
   useUser(true)
-  const [currentGuild] = useGuild()
+  const [currentGuild, , , needsInvite, inOfflineShard, guildId] = useGuild()
+  const [guilds] = useGuilds()
   const [loginState] = useLoginState()
   const mobiled = wLT(980)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -49,20 +54,47 @@ export function DashboardSection(props: DashboardSectionProps) {
 
   const currentSection = sections.find((x) => x.name === props.section)
 
-  if (loginState === LoginState.LoggedOut) {
+  if (inOfflineShard) {
     return (
-      <div style={{ textAlign: 'center' }}>
-        <h1>Login to access dashboard</h1>
-        <LoginButton />
-      </div>
+      <Center>
+        <VStack>
+          <Text textStyle="heading.xl">
+            Censor Bot is experiencing some issues
+          </Text>
+          <Text textStyle="heading.lg">Check back in a bit</Text>
+          <NextLink href="/dashboard" passHref>
+            <Button>Back</Button>
+          </NextLink>
+        </VStack>
+      </Center>
     )
   }
+
+  if (loginState === LoginState.LoggedOut) {
+    return (
+      <Center>
+        <Text textStyle="heading.xl">Login to access dashboard</Text>
+        <LoginButton />
+      </Center>
+    )
+  }
+
+  const selectedGuild = guilds?.find((x) => x.id === guildId)
+  if (needsInvite && selectedGuild) {
+    return <NeedsInvite guild={selectedGuild} />
+  }
+
   if (
     loginState === LoginState.Loading ||
     loginState === LoginState.LoggingIn ||
-    !currentGuild
+    !currentGuild ||
+    currentGuild.guild.id !== guildId
   ) {
-    return <Loading />
+    return (
+      <Center>
+        <Loading />
+      </Center>
+    )
   }
 
   const menuButton = mobiled ? (
@@ -90,7 +122,6 @@ export function DashboardSection(props: DashboardSectionProps) {
       overflowY="hidden"
       overflowX="hidden"
     >
-      {/* {(!mobiled || menuOpen) && ( */}
       <Aside
         selected={currentSection?.name}
         premium={props.section === 'Premium'}
@@ -102,7 +133,6 @@ export function DashboardSection(props: DashboardSectionProps) {
           setSearchTerm('')
         }}
       />
-      {/* )} */}
       {(!mobiled || (mobiled && !menuOpen)) && (
         <Flex flexGrow={1} maxH="100%" h="100%" overflowY="scroll">
           <VStack padding="8px 20px" w="full" h="inherit">

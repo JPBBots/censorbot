@@ -41,7 +41,7 @@ export const useGuilds = () => {
 
             dispatch(setGuilds(res))
           })
-          .catch(() => { })
+          .catch(() => {})
           .finally(() => {
             requesting = false
           })

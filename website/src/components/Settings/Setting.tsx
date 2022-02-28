@@ -446,7 +446,17 @@ export function Setting(setting: ISetting) {
           guild.guild.permissions,
           setting.requiredPermission
         ) && (
-          <Alert status="warning">
+          <Alert
+            status="warning"
+            cursor="pointer"
+            onClick={() =>
+              window.open(
+                'https://support.discord.com/hc/en-us/articles/206029707',
+                '_blank'
+              )
+            }
+            borderRadius="md"
+          >
             <AlertIcon />
             <Text>
               The bot is missing the{' '}

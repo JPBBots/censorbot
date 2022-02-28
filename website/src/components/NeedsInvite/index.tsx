@@ -7,16 +7,46 @@ import { setGuilds } from '@/store/reducers/guilds.reducer'
 import { Utils } from '@/utils/Utils'
 
 import Link from 'next/link'
-import { MiddleWrap } from '~/MiddleWrap'
 import { uDW } from '@/hooks/useScreenSize'
 
 import { useGuild, useGuilds } from '@/hooks/useGuilds'
 
-import { VStack, Box, Icon, Avatar, Button, Text } from '@chakra-ui/react'
+import {
+  VStack,
+  Box,
+  Icon,
+  Avatar,
+  Button,
+  Text,
+  HStack
+} from '@chakra-ui/react'
+import { useServerCount } from '@/hooks/useMeta'
+import { animate } from 'framer-motion'
+import { useRef, useEffect } from 'react'
 
 export function NeedsInvite({ guild }: { guild: ShortGuild }) {
   const [, , , , , id, updateGuild] = useGuild()
   const [guilds] = useGuilds()
+
+  const [serverCount] = useServerCount()
+
+  const countRef = useRef<HTMLParagraphElement>(null)
+
+  useEffect(() => {
+    if (countRef) {
+      const controls = animate(60000, serverCount, {
+        duration: 1,
+        onUpdate(value: number) {
+          if (countRef.current)
+            countRef.current.innerText = Number(
+              value.toFixed(0)
+            ).toLocaleString()
+        }
+      })
+
+      return () => controls.stop()
+    }
+  }, [serverCount, countRef])
 
   const inviteBot = (admin: boolean) => {
     void Utils.openWindow(
@@ -44,11 +74,6 @@ export function NeedsInvite({ guild }: { guild: ShortGuild }) {
     })
   }
 
-  const align = uDW({
-    tablet: 'flex-start',
-    mobile: 'center'
-  })
-
   return (
     <VStack p="16px">
       <Box alignSelf="flex-start">
@@ -57,54 +82,66 @@ export function NeedsInvite({ guild }: { guild: ShortGuild }) {
         </Link>
       </Box>
       <VStack>
-        <MiddleWrap py="10px" spacing="8px" alignSelf={align}>
+        <Text textAlign="center" textStyle="heading.xl" color="brand.100">
+          Censor Bot is waiting...
+        </Text>
+        <HStack bg="lighter.5" p="16px" spacing="16px" borderRadius="full">
           <Avatar
-            rounded="md"
-            bg="lighter.5"
-            fontSize="20px"
-            fontWeight="500"
-            alt={guild.name}
             name={guild.name}
-            boxSize="48px"
+            alt={guild.name}
+            w="60px"
+            h="60px"
+            bg="darker.5"
+            fontSize="20px"
             src={
               guild.icon
                 ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
                 : undefined
             }
-            color="lighter.100"
-            sx={{
-              img: {
-                rounded: 'md'
-              }
-            }}
           />
-          <Text textStyle="heading.xl">{guild.name}</Text>
-        </MiddleWrap>
-
-        <VStack align={align}>
-          <Text textStyle="heading.sm" textAlign="center">
-            Censor Bot is not in your server yet
+          <Text textStyle="heading.sm">{guild.name}</Text>
+        </HStack>
+        <VStack spacing="20px">
+          <Text textAlign="center" textStyle="heading.sm">
+            You haven't invited Censor Bot to your server yet!
           </Text>
-
-          <Button
-            variant="primary"
-            w="150px"
-            onClick={() => {
-              inviteBot(true)
-            }}
-          >
-            Invite
-          </Button>
-          <Text
-            textStyle="label.sm"
-            textDecor="underline"
-            cursor="pointer"
-            onClick={() => {
-              inviteBot(false)
-            }}
-          >
-            Only necessary permissions
-          </Text>
+          <VStack spacing="3px">
+            <Button variant="primary" onClick={() => inviteBot(true)}>
+              Invite Censor Bot
+            </Button>
+            <Text
+              fontSize="13px"
+              cursor="pointer"
+              textDecor="underline"
+              onClick={() => inviteBot(false)}
+            >
+              Only necessary permissions
+            </Text>
+          </VStack>
+          <VStack>
+            <Text textStyle="label.md" fontSize="inherit">
+              Serving{' '}
+              <Text
+                textStyle="label.md"
+                color="brand.100"
+                fontSize="inherit"
+                as="span"
+                ref={countRef}
+              >
+                60,000
+              </Text>{' '}
+              communities on Discord
+            </Text>
+            <Text
+              textStyle="label.md"
+              textAlign="center"
+              color="lighter.40"
+              fontSize="inherit"
+              p={uDW({ tablet: '0px', mobile: '16px' })}
+            >
+              The largest and most customizable anti-swear and filtering bot
+            </Text>
+          </VStack>
         </VStack>
       </VStack>
     </VStack>
