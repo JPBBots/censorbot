@@ -2,6 +2,7 @@ import { CensorMethods, ExceptionType } from '@jpbbots/cb-typings'
 import { BaseFilterHandler } from './Base'
 import { Event } from '@jpbberry/typed-emitter'
 import { DiscordEventMap } from 'jadl'
+import { isBitOn } from '../utils/bit'
 
 export class ReactionsFilterHandler extends BaseFilterHandler {
   @Event('MESSAGE_REACTION_ADD')
@@ -27,8 +28,8 @@ export class ReactionsFilterHandler extends BaseFilterHandler {
     const db = await this.worker.db.config(reaction.guild_id)
 
     if (
-      (db.censor & CensorMethods.Reactions) === 0 ||
-      this.worker.isExcepted(ExceptionType.Everything, db, {
+      !isBitOn(db.censor, CensorMethods.Reactions) ||
+      this.worker.isExcepted(ExceptionType.Everything, db.exceptions, {
         roles: reaction.member.roles,
         channel: channel.id
       })
@@ -66,11 +67,11 @@ export class ReactionsFilterHandler extends BaseFilterHandler {
     )
 
     if (
-      !this.worker.isExcepted(ExceptionType.Punishment, db, {
+      !this.worker.isExcepted(ExceptionType.Punishment, db.exceptions, {
         roles: reaction.member.roles,
         channel: reaction.channel_id
       }) &&
-      (db.punishments.allow & res.type) !== 0
+      isBitOn(db.punishments.allow, res.type)
     ) {
       void this.worker.punishments
         .punish(

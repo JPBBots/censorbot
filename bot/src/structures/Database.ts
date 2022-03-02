@@ -8,7 +8,8 @@ import {
   User,
   WebhookReplace,
   CustomBotOptions,
-  FilterType
+  FilterType,
+  Plugin
 } from '@jpbbots/cb-typings'
 import { Snowflake } from 'discord-api-types'
 
@@ -94,7 +95,7 @@ export class Database extends Db {
     return db
   }
 
-  currentVersion = 11
+  currentVersion = 12
 
   private async updater(
     db: GuildDB & {
@@ -102,8 +103,20 @@ export class Database extends Db {
       filters: any
       phrases: any
       words: any
-      font: any
+      fonts: any
       uncensor: any
+      toxicity: boolean
+      images: boolean
+      ocr: boolean
+      antiHoist: boolean
+      phishing: boolean
+      invites: boolean
+      nsfw: boolean
+      multi: boolean
+      channels: Snowflake[]
+      roles: Snowflake[]
+      msg
+      webhook
     }
   ): Promise<GuildDB> {
     let needsUpdate = true
@@ -123,6 +136,44 @@ export class Database extends Db {
 
           removeProps.push('filters', 'phrases', 'words', 'uncensor')
           db.v = 11
+        }
+        break
+      case 11:
+        {
+          db.plugins = 0
+          if (db.toxicity) db.plugins |= Plugin.Toxicity
+          if (db.images) db.plugins |= Plugin.AntiNSFWImages
+          if (db.ocr) db.plugins |= Plugin.OCR
+          if (db.antiHoist) db.plugins |= Plugin.AntiHoist
+          if (db.phishing) db.plugins |= Plugin.Phishing
+          if (db.invites) db.plugins |= Plugin.Invites
+          if (db.multi) db.plugins |= Plugin.MultiLine
+
+          removeProps.push(
+            'toxicity',
+            'images',
+            'ocr',
+            'antiHoist',
+            'phishing',
+            'invites',
+            'multi'
+          )
+
+          db.response = db.msg
+          db.resend = db.webhook
+          removeProps.push('webhook', 'msg')
+
+          const advancedExceptions = db.exceptions as unknown as any[]
+
+          db.exceptions = {
+            nsfw: db.nsfw,
+            channels: db.channels,
+            roles: db.roles,
+            advanced: advancedExceptions
+          }
+          removeProps.push('nsfw', 'channels', 'roles')
+
+          db.v = 12
         }
         break
       default:
@@ -162,7 +213,11 @@ export class Database extends Db {
       filters: any
       phrases: any
       words: any
+      exceptions: any
+      phishing?: any
       uncensor: any
+      channels: any
+      roles: any
     } & {
       v?: number
     }
@@ -276,9 +331,12 @@ export class Database extends Db {
 
           censor: db.censor & ~CensorMethods.Avatars,
 
-          channels: db.channels.slice(0, 5),
-          roles: db.roles.slice(0, 5),
-          exceptions: db.exceptions.slice(0, 5),
+          exceptions: {
+            ...db.exceptions,
+            channels: db.exceptions.channels.slice(0, 5),
+            roles: db.exceptions.roles.slice(0, 5),
+            advanced: db.exceptions.advanced.slice(0, 5)
+          },
 
           webhook: {
             enabled: false,
@@ -291,19 +349,21 @@ export class Database extends Db {
             levels: db.punishments.levels.slice(0, 5)
           },
 
-          msg: {
-            content: db.msg.content
-              ? db.msg.content.slice(0, 200)
-              : db.msg.content,
+          response: {
+            content: db.response.content
+              ? db.response.content.slice(0, 200)
+              : db.response.content,
             deleteAfter:
-              db.msg.deleteAfter > 120e3 ? 120e3 : db.msg.deleteAfter,
+              db.response.deleteAfter > 120e3 ? 120e3 : db.response.deleteAfter,
             dm: false
           },
 
-          multi: false,
-          toxicity: false,
-          images: false,
-          ocr: false
+          plugins:
+            db.plugins &
+            ~Plugin.AntiNSFWImages &
+            ~Plugin.MultiLine &
+            ~Plugin.OCR &
+            ~Plugin.Toxicity
         }
       }
     )

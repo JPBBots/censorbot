@@ -91,17 +91,17 @@ export class ActionBucket {
       .popup(
         channel,
         user,
-        db.msg.content === null
+        db.response.content === null
           ? this.worker.config.defaultMessage
-          : (db.msg.content as string),
-        db.msg.dm
+          : (db.response.content as string),
+        db.response.dm
       )
       .then(async (msg) => {
-        if (!db.msg.deleteAfter || db.msg.dm) {
+        if (!db.response.deleteAfter || db.response.dm) {
           await wait(5000)
           return this.popups.delete(id)
         }
-        await wait(db.msg.deleteAfter)
+        await wait(db.response.deleteAfter)
         this.worker.requests.deleteMessage(channel, msg.id).catch(console.log)
         this.popups.delete(id)
       })

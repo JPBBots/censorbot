@@ -4,14 +4,16 @@ import {
   CensorMethods,
   PunishmentType,
   WebhookReplace,
-  Exception,
+  AdvancedException,
   ExceptionType,
   PunishmentLevel,
   BASE_FILTERS,
   FilterType,
-  FilterSettings
+  FilterSettings,
+  Plugin
 } from '@jpbbots/cb-typings'
 import { enumCombiner } from '../utils/enumCombiner'
+import { isBitOn } from '../utils/bit'
 
 const enumArray = (enumObj: any) =>
   Object.values(enumObj).filter((x) => typeof x === 'number')
@@ -22,13 +24,13 @@ const bitWise = (
   enumObj: any,
   premiumBits?: number[]
 ): CustomValidator<number> => {
-  const full = enumCombiner(enumObj)
   return (value, helpers) => {
+    const full = enumCombiner(enumObj)
     if (value < 0 || value > full) {
       return helpers.error('not.bitwise')
     }
 
-    if (premiumBits?.some((x) => (value & x) !== 0)) {
+    if (premiumBits?.some((x) => isBitOn(value, x))) {
       return helpers.error('not.premium')
     }
 
@@ -59,20 +61,9 @@ const premiumValidate = (
     ]
   })
 
-const premiumMax = <T extends 'string' | 'array' | 'number'>(
-  type: T,
-  nonPremium: number,
-  premium: number
-): ReturnType<typeof Joi[T]> =>
-  premiumValidate(
-    Joi[type]().max(nonPremium),
-    Joi[type]().max(premium),
-    Joi[type]()
-  ) as any
-
 const premiumBoolean = premiumValidate(Joi.valid(false), Joi.bool())
 
-export const exceptionSchema = Joi.object<Exception>({
+export const advancedExceptionSchema = Joi.object<AdvancedException>({
   channel: nullableSnowflake,
   role: nullableSnowflake,
   type: Joi.valid(...enumArray(ExceptionType)).required()
@@ -95,34 +86,61 @@ export const punishmentLevelSchema = Joi.object<PunishmentLevel>({
     })
 })
 
+export const premiumObject = <D extends any>(obj: {
+  [key in keyof D]: Joi.SchemaLike | [Joi.SchemaLike, Joi.SchemaLike]
+}) => {
+  const pObject: any = {}
+  const dObject: any = {}
+
+  for (const key in obj) {
+    const value = obj[key]
+
+    if (Array.isArray(value)) {
+      dObject[key] = value[0]
+      pObject[key] = value[1]
+    } else {
+      dObject[key] = value
+    }
+  }
+
+  return premiumValidate(Joi.object(), Joi.object(pObject), Joi.object(dObject))
+}
+
 export const settingSchema = Joi.object<GuildDB & { premium: boolean }>({
   premium: Joi.bool().required(),
 
   id: SnowflakeString,
 
-  filter: premiumValidate(
-    Joi.object(),
-    Joi.object<FilterSettings>({
-      server: Joi.array().max(1500),
-      uncensor: Joi.array().max(1500),
-      words: Joi.array().max(1500),
-      phrases: Joi.array().max(1500)
-    }),
-    Joi.object<FilterSettings>({
-      base: Joi.array()
-        .items(...BASE_FILTERS)
-        .unique(),
-      server: Joi.array().items(Joi.string().max(20)).max(150),
-      uncensor: Joi.array().items(Joi.string().max(20)).max(150),
-      words: Joi.array().items(Joi.string().max(20)).max(150),
-      phrases: Joi.array().items(Joi.string().max(20)).max(150)
-    })
-  ),
-
-  channels: premiumMax('array', 5, 999).items(SnowflakeString),
-  roles: premiumMax('array', 5, 999).items(SnowflakeString),
-
-  exceptions: premiumMax('array', 5, 100).items(exceptionSchema),
+  filter: premiumObject<FilterSettings>({
+    base: Joi.array()
+      .items(...BASE_FILTERS)
+      .unique(),
+    server: [
+      Joi.array().items(Joi.string().max(20)).max(150),
+      Joi.array().max(150)
+    ],
+    uncensor: [
+      Joi.array().items(Joi.string().max(20)).max(150),
+      Joi.array().max(150)
+    ],
+    words: [
+      Joi.array().items(Joi.string().max(20)).max(150),
+      Joi.array().max(150)
+    ],
+    phrases: [
+      Joi.array().items(Joi.string().max(20)).max(150),
+      Joi.array().max(150)
+    ]
+  }),
+  exceptions: premiumObject<GuildDB['exceptions']>({
+    nsfw: Joi.bool(),
+    channels: [Joi.array().items(SnowflakeString).max(5), Joi.array().max(999)],
+    roles: [Joi.array().items(SnowflakeString).max(5), Joi.array().max(999)],
+    advanced: [
+      Joi.array().items(advancedExceptionSchema).max(5),
+      Joi.array().max(999)
+    ]
+  }),
 
   censor: premiumValidate(
     Joi.number().custom(bitWise(CensorMethods, [CensorMethods.Avatars])),
@@ -135,22 +153,14 @@ export const settingSchema = Joi.object<GuildDB & { premium: boolean }>({
 
   log: nullableSnowflake,
 
-  antiHoist: Joi.bool(),
-
-  msg: premiumValidate(
-    Joi.object(),
-    Joi.object({
-      content: Joi.string().max(1000),
-      deleteAfter: Joi.number().max(600e3)
-    }),
-    Joi.object<GuildDB['msg']>({
-      content: Joi.string().max(200).allow(null, false),
-
-      deleteAfter: Joi.number().max(120e3).allow(false),
-
-      dm: premiumBoolean
-    })
-  ),
+  response: premiumObject<GuildDB['response']>({
+    content: [Joi.string().allow(null, false).max(200), Joi.string().max(1000)],
+    deleteAfter: [
+      Joi.number().allow(false).max(120e3),
+      Joi.number().max(600e3)
+    ],
+    dm: premiumBoolean
+  }),
 
   punishments: premiumValidate(
     Joi.object(),
@@ -167,32 +177,33 @@ export const settingSchema = Joi.object<GuildDB & { premium: boolean }>({
     })
   ),
 
-  webhook: premiumValidate(
-    Joi.object<GuildDB['webhook']>({
+  resend: premiumValidate(
+    Joi.object<GuildDB['resend']>({
       enabled: false,
       separate: true,
       replace: WebhookReplace.Spoilers
     }),
-    Joi.object<GuildDB['webhook']>({
+    Joi.object<GuildDB['resend']>({
       enabled: Joi.bool(),
       separate: Joi.bool(),
       replace: Joi.number().valid(...enumArray(WebhookReplace))
     })
   ),
 
-  multi: premiumValidate(Joi.valid(false), Joi.bool()),
+  plugins: premiumValidate(
+    Joi.number().custom(
+      bitWise(Plugin, [
+        Plugin.AntiNSFWImages,
+        Plugin.MultiLine,
+        Plugin.OCR,
+        Plugin.Toxicity
+      ])
+    ),
+    Joi.number().custom(bitWise(Plugin))
+  ),
+
   prefix: Joi.string().allow(null),
-
-  nsfw: Joi.bool(),
-
-  invites: Joi.bool(),
-
-  dm: premiumBoolean,
-
-  toxicity: premiumBoolean,
-  images: premiumBoolean,
-  ocr: premiumBoolean,
-  phishing: Joi.bool()
+  dm: premiumBoolean
 }).messages({
   'not.bitwise': 'Not a valid BitWise value!',
   'not.premium': 'This is premium only!'

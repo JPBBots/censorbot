@@ -2,7 +2,8 @@ import {
   FilterResultInfo,
   CensorMethods,
   ExceptionType,
-  GuildDB
+  GuildDB,
+  Plugin
 } from '@jpbbots/cb-typings'
 
 import { Event } from '@jpbberry/typed-emitter'
@@ -13,6 +14,7 @@ import {
 } from 'discord-api-types'
 import { BaseFilterHandler } from './Base'
 import { DiscordEventMap } from 'jadl'
+import { isBitOn } from '../utils/bit'
 
 const deHoist = String.fromCharCode(856)
 
@@ -74,10 +76,10 @@ export class NamesFilterHandler extends BaseFilterHandler {
       .catch(() => {})
 
     if (
-      !this.worker.isExcepted(ExceptionType.Punishment, db, {
+      !this.worker.isExcepted(ExceptionType.Punishment, db.exceptions, {
         roles: member.roles
       }) &&
-      (db.punishments.allow & response.type) !== 0
+      isBitOn(db.punishments.allow, response.type)
     ) {
       void this.worker.punishments
         .punish(member.guild_id, member.user.id, member.roles)
@@ -99,7 +101,7 @@ export class NamesFilterHandler extends BaseFilterHandler {
     let name = member.nick ?? member.user.username
 
     if (
-      db.antiHoist &&
+      isBitOn(db.plugins, Plugin.AntiHoist) &&
       NamesFilterHandler.isHoisting(name) &&
       this.worker.hasPerms(member.guild_id, 'manageNicknames') &&
       this.worker.isManageable(
@@ -108,7 +110,7 @@ export class NamesFilterHandler extends BaseFilterHandler {
         member.roles,
         true
       ) &&
-      !this.worker.isExcepted(ExceptionType.AntiHoist, db, {
+      !this.worker.isExcepted(ExceptionType.AntiHoist, db.exceptions, {
         roles: member.roles
       })
     ) {
@@ -120,7 +122,7 @@ export class NamesFilterHandler extends BaseFilterHandler {
 
     if (
       (db.censor & CensorMethods.Names) === 0 ||
-      this.worker.isExcepted(ExceptionType.Everything, db, {
+      this.worker.isExcepted(ExceptionType.Everything, db.exceptions, {
         roles: member.roles
       })
     )

@@ -65,7 +65,17 @@ export enum ExceptionType {
   AntiHoist
 }
 
-export interface Exception {
+export enum Plugin {
+  AntiHoist = 1 << 0,
+  Invites = 1 << 1,
+  Phishing = 1 << 2,
+  Toxicity = 1 << 3,
+  OCR = 1 << 4,
+  AntiNSFWImages = 1 << 5,
+  MultiLine = 1 << 6
+}
+
+export interface AdvancedException {
   role: Snowflake | null
   channel: Snowflake | null
   type: ExceptionType
@@ -91,10 +101,14 @@ export interface GuildDB {
   nickReplace: string
   removeNick: boolean
 
-  channels: Snowflake[]
-  roles: Snowflake[]
+  plugins: number
 
-  exceptions: Exception[]
+  exceptions: {
+    nsfw: boolean
+    channels: Snowflake[]
+    roles: Snowflake[]
+    advanced: AdvancedException[]
+  }
   /**
    * Log channel ID
    */
@@ -104,13 +118,9 @@ export interface GuildDB {
    */
   filter: FilterSettings
   /**
-   * Whether to antihoist users
-   */
-  antiHoist: boolean
-  /**
    * Popup message options
    */
-  msg: {
+  response: {
     /**
      * Message to send
      */
@@ -134,23 +144,15 @@ export interface GuildDB {
     log: Snowflake | null
   }
   /**
-   * Webhook options
+   * Resend options
    */
-  webhook: {
+  resend: {
     enabled: boolean
     separate: boolean
     replace: WebhookReplace
   }
-  multi: boolean
   prefix: string | null
-  nsfw: boolean
-  invites: boolean
   dm: boolean
-
-  toxicity: boolean
-  images: boolean
-  ocr: boolean
-  phishing: boolean
 
   v: number
 

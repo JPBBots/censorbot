@@ -11,7 +11,7 @@
     "phrases": [],
     "words": []
   },
-  "msg": {
+  "response": {
     "content": null,
     "deleteAfter": 3000,
     "dm": false
@@ -22,27 +22,23 @@
     "allow": 63,
     "log": null
   },
-  "webhook": {
+  "resend": {
     "enabled": false,
     "replace": 0,
     "separate": true,
     "ignored": []
   },
-  "channels": [],
-  "roles": [],
-  "exceptions": [],
-  "nsfw": true,
-  "multi": false,
+  "exceptions": {
+    "nsfw": true,
+    "channels": [],
+    "roles": [],
+    "advanced": []
+  },
+  "plugins": 4,
   "prefix": "+",
-  "invites": false,
-  "toxicity": false,
-  "images": false,
-  "ocr": false,
   "dm": false,
-  "antiHoist": false,
-  "phishing": false,
 
-  "v": 10,
+  "v": 12,
 
   "notInDb": true
 }

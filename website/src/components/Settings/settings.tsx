@@ -9,7 +9,8 @@ import {
   GuildData,
   WebhookReplace,
   FilterType,
-  filterTypeNames
+  filterTypeNames,
+  Plugin
 } from '@jpbbots/cb-typings'
 
 import type { SectionName } from './Aside'
@@ -36,9 +37,10 @@ export const settings: ISetting[] = [
     section: 'Extras',
     options: [
       {
-        name: 'multi',
+        name: 'plugins',
         label: 'Recognize text over multiple messages',
-        type: OptionType.Boolean,
+        bit: Plugin.MultiLine,
+        type: OptionType.BitBool,
         premium: true
       }
     ]
@@ -49,9 +51,10 @@ export const settings: ISetting[] = [
     section: 'Extras',
     options: [
       {
-        name: 'invites',
+        name: 'plugins',
         label: 'Remove any Discord server invites',
-        type: OptionType.Boolean
+        bit: Plugin.Invites,
+        type: OptionType.BitBool
       }
     ]
   },
@@ -61,20 +64,10 @@ export const settings: ISetting[] = [
     section: 'Extras',
     options: [
       {
-        name: 'phishing',
+        name: 'plugins',
         label: 'Search every message for scam/phishing links and delete them',
-        type: OptionType.Boolean
-      }
-    ]
-  },
-  {
-    title: 'Ignore NSFW Channels',
-    section: 'Extras',
-    options: [
-      {
-        name: 'nsfw',
-        label: 'Ignore messages in channels marked as NSFW',
-        type: OptionType.Boolean
+        bit: Plugin.Phishing,
+        type: OptionType.BitBool
       }
     ]
   },
@@ -84,10 +77,11 @@ export const settings: ISetting[] = [
     section: 'Extras',
     options: [
       {
-        name: 'antiHoist',
+        name: 'plugins',
         label:
           'Prevent users from hoisting with special characters to get on top of the member list',
-        type: OptionType.Boolean
+        bit: Plugin.AntiHoist,
+        type: OptionType.BitBool
       }
     ]
   },
@@ -98,9 +92,10 @@ export const settings: ISetting[] = [
     section: 'AI',
     options: [
       {
-        name: 'toxicity',
+        name: 'plugins',
         label: 'Filter out toxic messages with AI',
-        type: OptionType.Boolean,
+        bit: Plugin.Toxicity,
+        type: OptionType.BitBool,
         premium: true
       }
     ]
@@ -111,10 +106,11 @@ export const settings: ISetting[] = [
     section: 'AI',
     options: [
       {
-        name: 'images',
+        name: 'plugins',
         label:
           'Improve Discord’s built-in image moderation with a more agressive AI',
-        type: OptionType.Boolean,
+        bit: Plugin.AntiNSFWImages,
+        type: OptionType.BitBool,
         premium: true
       }
     ]
@@ -125,9 +121,10 @@ export const settings: ISetting[] = [
     section: 'AI',
     options: [
       {
-        name: 'ocr',
+        name: 'plugins',
         label: 'Scan and filter images with text',
-        type: OptionType.Boolean,
+        bit: Plugin.OCR,
+        type: OptionType.BitBool,
         premium: true
       }
     ]
@@ -139,7 +136,7 @@ export const settings: ISetting[] = [
     description: 'List of channels to ignore',
     options: [
       {
-        name: 'channels',
+        name: 'exceptions.channels',
         type: OptionType.Tags,
         placeholder: 'Add channels',
         channel: true,
@@ -160,7 +157,7 @@ export const settings: ISetting[] = [
     description: 'List of roles to ignore',
     options: [
       {
-        name: 'roles',
+        name: 'exceptions.roles',
         type: OptionType.Tags,
         placeholder: 'Add roles',
         role: true,
@@ -183,8 +180,19 @@ export const settings: ISetting[] = [
       'List of exceptions that bypass the default nature of the bot based on specific circumstances',
     options: [
       {
-        name: 'exceptions',
+        name: 'exceptions.advanced',
         type: OptionType.Exception
+      }
+    ]
+  },
+  {
+    title: 'Ignore NSFW Channels',
+    section: 'Exceptions',
+    options: [
+      {
+        name: 'exceptions.nsfw',
+        label: 'Ignore messages in channels marked as NSFW',
+        type: OptionType.Boolean
       }
     ]
   },
@@ -503,7 +511,7 @@ export const settings: ISetting[] = [
     requiredPermission: 'webhooks',
     options: [
       {
-        name: 'webhook.enabled',
+        name: 'resend.enabled',
         label: 'Enable resending deleted messages',
         type: OptionType.Boolean,
         premium: true
@@ -516,13 +524,13 @@ export const settings: ISetting[] = [
     description: 'Single out individual curses and replace them',
     premium: true,
     disable: {
-      property: 'webhook.separate',
+      property: 'resend.separate',
       disableValue: false,
       enableValue: true
     },
     options: [
       {
-        name: 'webhook.replace',
+        name: 'resend.replace',
         type: OptionType.Select,
         number: true,
         options: () => [
@@ -540,13 +548,13 @@ export const settings: ISetting[] = [
     description: 'What the message will say',
     section: 'Response',
     disable: {
-      property: 'msg.content',
+      property: 'response.content',
       disableValue: false,
       enableValue: "You're not allowed to say that!"
     },
     options: [
       {
-        name: 'msg.content',
+        name: 'response.content',
         type: OptionType.Input,
         noneDisable: true,
         textarea: true
@@ -560,7 +568,7 @@ export const settings: ISetting[] = [
     section: 'Response',
     options: [
       {
-        name: 'msg.deleteAfter',
+        name: 'response.deleteAfter',
         type: OptionType.Time,
         times: [3e3, 10e3, 60e3, 120e3],
         nullIs: 'Never',
@@ -576,7 +584,7 @@ export const settings: ISetting[] = [
     section: 'Response',
     options: [
       {
-        name: 'msg.dm',
+        name: 'response.dm',
         label: 'Send response to triggering user’s Direct Messages',
         type: OptionType.Boolean,
         premium: true

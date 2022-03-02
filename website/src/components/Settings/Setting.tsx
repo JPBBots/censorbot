@@ -23,7 +23,7 @@ import {
 } from '@chakra-ui/react'
 import Pieces from 'utils/Pieces'
 import {
-  Exception,
+  AdvancedException,
   ExceptionType,
   GuildData,
   PunishmentLevel,
@@ -267,7 +267,7 @@ export function SettingOption({
   }
 
   if (option.type === OptionType.Exception) {
-    const exceptions = value as Exception[]
+    const exceptions = value as AdvancedException[]
 
     const premiumLocked = !guild.premium
       ? exceptions.length >= 5

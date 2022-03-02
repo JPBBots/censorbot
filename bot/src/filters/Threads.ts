@@ -1,6 +1,7 @@
 import { Event } from '@jpbberry/typed-emitter'
 import { CensorMethods, ExceptionType } from '@jpbbots/cb-typings'
 import { DiscordEventMap } from 'jadl'
+import { isBitOn } from '../utils/bit'
 import { BaseFilterHandler } from './Base'
 
 export class ThreadsFilterHandler extends BaseFilterHandler {
@@ -14,8 +15,8 @@ export class ThreadsFilterHandler extends BaseFilterHandler {
     const db = await this.worker.db.config(thread.guild_id)
 
     if (
-      (db.censor & CensorMethods.Threads) === 0 ||
-      this.worker.isExcepted(ExceptionType.Everything, db, {
+      !isBitOn(db.censor, CensorMethods.Threads) ||
+      this.worker.isExcepted(ExceptionType.Everything, db.exceptions, {
         channel: thread.parent_id!
       })
     )

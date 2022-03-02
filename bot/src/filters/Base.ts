@@ -9,8 +9,16 @@ export class BaseFilterHandler extends EventAdder<WorkerManager> {
 
   test(content: string, db: GuildDB, data: ExceptedData) {
     return this.worker.filter.test(content, db.filter, {
-      server: this.worker.isExcepted(ExceptionType.ServerFilter, db, data),
-      prebuilt: this.worker.isExcepted(ExceptionType.PreBuiltFilter, db, data)
+      server: this.worker.isExcepted(
+        ExceptionType.ServerFilter,
+        db.exceptions,
+        data
+      ),
+      prebuilt: this.worker.isExcepted(
+        ExceptionType.PreBuiltFilter,
+        db.exceptions,
+        data
+      )
     })
   }
 }

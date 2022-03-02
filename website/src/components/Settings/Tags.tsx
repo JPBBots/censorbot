@@ -57,10 +57,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
   const remove = (val: string) => {
     let removing: string
     if (whitelist) {
-      const inWhitelist = whitelist.find((x) => x.id === val)?.id
-      if (!inWhitelist) return
-
-      removing = inWhitelist
+      removing = whitelist.find((x) => x.id === val)?.id ?? val
     } else {
       removing = val
     }

@@ -3,7 +3,6 @@
   "nickReplace": "Inappropriate Name",
   "removeNick": true,
   "log": null,
-  "role": [],
   "filter": {
     "base": [],
     "server": [],
@@ -11,11 +10,8 @@
     "phrases": [],
     "words": []
   },
-  "channels": [],
-  "roles": [],
-  "exceptions": [],
-  "msg": {
-    "content": false,
+  "response": {
+    "content": null,
     "deleteAfter": 3000,
     "dm": false
   },
@@ -25,20 +21,20 @@
     "allow": 0,
     "log": null
   },
-  "webhook": {
+  "resend": {
     "enabled": false,
     "replace": 0,
-    "separate": true
+    "separate": true,
+    "ignored": []
   },
-  "categories": [],
-  "nsfw": true,
-  "multi": false,
+  "exceptions": {
+    "nsfw": true,
+    "channels": [],
+    "roles": [],
+    "advanced": []
+  },
+  "plugins": 0,
   "prefix": null,
-  "invites": false,
-  "toxicity": false,
-  "images": false,
-  "ocr": false,
   "dm": false,
-  "antiHoist": false,
-  "v": 10
+  "v": 12
 }

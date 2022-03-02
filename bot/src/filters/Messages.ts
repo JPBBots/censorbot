@@ -4,7 +4,8 @@ import {
   CensorMethods,
   ExceptionType,
   GuildDB,
-  WebhookReplace
+  WebhookReplace,
+  Plugin
 } from '@jpbbots/cb-typings'
 
 import {
@@ -23,6 +24,7 @@ import { BaseFilterHandler } from './Base'
 import { DiscordEventMap } from 'jadl'
 import { SnowflakeUtil } from '../utils/Snowflake'
 import { FileBuilder } from '@jadl/cmd'
+import { isBitOn } from '../utils/bit'
 
 interface MultiLine {
   author: Snowflake
@@ -150,7 +152,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
         message.type as MessageType
       ) ||
       channel.type !== ChannelType.GuildText ||
-      this.worker.isExcepted(ExceptionType.Everything, db, {
+      this.worker.isExcepted(ExceptionType.Everything, db.exceptions, {
         roles: message.member.roles,
         channel: message.channel_id
       })
@@ -159,7 +161,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
 
     const contentData = new MessageFilterContext(message as any)
 
-    if (db.multi) {
+    if (isBitOn(db.plugins, Plugin.MultiLine)) {
       if (!multiline) {
         multiline = {
           author: message.author.id,
@@ -184,8 +186,8 @@ export class MessagesFilterHandler extends BaseFilterHandler {
     }
 
     if (
-      db.invites &&
-      !this.worker.isExcepted(ExceptionType.Invites, db, {
+      isBitOn(db.plugins, Plugin.Invites) &&
+      !this.worker.isExcepted(ExceptionType.Invites, db.exceptions, {
         channel: message.channel_id,
         roles: message.member.roles
       })
@@ -204,7 +206,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
         return await this.handleDeletion(contentData, db)
     }
 
-    if (db.phishing) {
+    if (isBitOn(db.plugins, Plugin.Phishing)) {
       if (
         contentData.content &&
         (await this.worker.phishing.resolve(contentData.content))
@@ -219,9 +221,8 @@ export class MessagesFilterHandler extends BaseFilterHandler {
     }
 
     // TODO: Add ExceptionType.NSFW
-    if (db.nsfw && channel.nsfw) return
 
-    if (db.toxicity && contentData.content) {
+    if (isBitOn(db.plugins, Plugin.Toxicity) && contentData.content) {
       const prediction = await this.worker.toxicity.test(contentData.content)
       if (prediction.bad) {
         contentData.setResponse({
@@ -235,7 +236,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
     }
 
     // NSFW
-    if (db.images) {
+    if (isBitOn(db.plugins, Plugin.AntiNSFWImages)) {
       for (const url of contentData.contentData.images) {
         const res = await this.worker.images.test(url)
         if (res.bad) {
@@ -255,7 +256,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
         return await this.handleDeletion(contentData, db)
     }
 
-    if (db.ocr) {
+    if (isBitOn(db.plugins, Plugin.OCR)) {
       for (const url of contentData.contentData.images) {
         const scanned = await this.worker.ocr.resolve(url)
         if (scanned) {
@@ -276,8 +277,9 @@ export class MessagesFilterHandler extends BaseFilterHandler {
       }
     }
 
-    if ((db.censor & CensorMethods.Messages) === 0) return
-    if (contentData.content && (db.censor & CensorMethods.Messages) !== 0) {
+    if (!isBitOn(db.censor, CensorMethods.Messages)) return
+
+    if (contentData.content && isBitOn(db.censor, CensorMethods.Messages)) {
       const response = this.test(contentData.content, db, {
         roles: message.member.roles,
         channel: message.channel_id
@@ -350,8 +352,8 @@ export class MessagesFilterHandler extends BaseFilterHandler {
     )
 
     if (
-      db.msg.content !== false &&
-      !this.worker.isExcepted(ExceptionType.Response, db, {
+      db.response.content !== false &&
+      !this.worker.isExcepted(ExceptionType.Response, db.exceptions, {
         roles: message.member.roles,
         channel: message.channel_id
       })
@@ -359,8 +361,8 @@ export class MessagesFilterHandler extends BaseFilterHandler {
       this.worker.actions.popup(message.channel_id, message.author.id, db)
 
     if (
-      db.webhook.enabled &&
-      !this.worker.isExcepted(ExceptionType.Resend, db, {
+      db.resend.enabled &&
+      !this.worker.isExcepted(ExceptionType.Resend, db.exceptions, {
         roles: message.member.roles,
         channel: message.channel_id
       }) &&
@@ -382,14 +384,12 @@ export class MessagesFilterHandler extends BaseFilterHandler {
               )
             : contentData.content
 
-        if (db.webhook.replace !== WebhookReplace.Spoilers)
+        if (db.resend.replace !== WebhookReplace.Spoilers)
           content = content?.split(/\|\|/g).reduce(
             (a, b) => [
               // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
               a[0] +
-                (a[1] === 1
-                  ? replaces[db.webhook.replace].repeat(b.length)
-                  : b),
+                (a[1] === 1 ? replaces[db.resend.replace].repeat(b.length) : b),
               (a[1] as number) * -1
             ],
             ['', -1]
@@ -424,11 +424,11 @@ export class MessagesFilterHandler extends BaseFilterHandler {
     }
 
     if (
-      !this.worker.isExcepted(ExceptionType.Punishment, db, {
+      !this.worker.isExcepted(ExceptionType.Punishment, db.exceptions, {
         roles: message.member.roles,
         channel: message.channel_id
       }) &&
-      (db.punishments.allow & contentData.response!.type) !== 0
+      isBitOn(db.punishments.allow, contentData.response!.type)
     ) {
       void this.worker.punishments
         .punish(message.guild_id, message.author.id, message.member.roles)

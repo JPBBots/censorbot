@@ -243,17 +243,16 @@ export class WorkerManager extends Worker<{}> {
 
   isExcepted(
     type: ExceptionType,
-    {
-      exceptions,
-      channels,
-      roles
-    }: Pick<GuildDB, 'exceptions' | 'channels' | 'roles'>,
+    { nsfw, advanced, channels, roles }: GuildDB['exceptions'],
     data: ExceptedData
   ): boolean {
     if (data.channel && channels.includes(data.channel)) return true
     if (data.roles && roles.some((x) => data.roles?.includes(x))) return true
 
-    return exceptions.some((x) => {
+    if (nsfw && data.channel && this.channels.get(data.channel)?.nsfw)
+      return true
+
+    return advanced.some((x) => {
       if (x.type === ExceptionType.Everything || x.type === type) {
         if (x.role && data.roles) {
           if (!data.roles?.includes(x.role)) return false

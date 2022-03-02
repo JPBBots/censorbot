@@ -3,6 +3,7 @@ import { DiscordEventMap } from 'jadl'
 import { BaseFilterHandler } from './Base'
 
 import { CensorMethods, ExceptionType, FilterType } from '@jpbbots/cb-typings'
+import { isBitOn } from '../utils/bit'
 
 export class AvatarsFilterHandler extends BaseFilterHandler {
   @Event('GUILD_MEMBER_ADD')
@@ -18,8 +19,8 @@ export class AvatarsFilterHandler extends BaseFilterHandler {
     const db = await this.worker.db.config(member.guild_id)
 
     if (
-      (db.censor & CensorMethods.Avatars) === 0 ||
-      this.worker.isExcepted(ExceptionType.Everything, db, {
+      isBitOn(db.censor, CensorMethods.Avatars) ||
+      this.worker.isExcepted(ExceptionType.Everything, db.exceptions, {
         roles: member.roles
       })
     )
