@@ -8,7 +8,8 @@ import {
   ExceptionType,
   PunishmentLevel,
   BASE_FILTERS,
-  FilterType
+  FilterType,
+  FilterSettings
 } from '@jpbbots/cb-typings'
 import { enumCombiner } from '../utils/enumCombiner'
 
@@ -99,7 +100,24 @@ export const settingSchema = Joi.object<GuildDB & { premium: boolean }>({
 
   id: SnowflakeString,
 
-  filters: Joi.array().items(...BASE_FILTERS),
+  filter: premiumValidate(
+    Joi.object(),
+    Joi.object<FilterSettings>({
+      server: Joi.array().max(1500),
+      uncensor: Joi.array().max(1500),
+      words: Joi.array().max(1500),
+      phrases: Joi.array().max(1500)
+    }),
+    Joi.object<FilterSettings>({
+      base: Joi.array()
+        .items(...BASE_FILTERS)
+        .unique(),
+      server: Joi.array().items(Joi.string().max(20)).max(150),
+      uncensor: Joi.array().items(Joi.string().max(20)).max(150),
+      words: Joi.array().items(Joi.string().max(20)).max(150),
+      phrases: Joi.array().items(Joi.string().max(20)).max(150)
+    })
+  ),
 
   channels: premiumMax('array', 5, 999).items(SnowflakeString),
   roles: premiumMax('array', 5, 999).items(SnowflakeString),
@@ -116,14 +134,6 @@ export const settingSchema = Joi.object<GuildDB & { premium: boolean }>({
   removeNick: Joi.bool(),
 
   log: nullableSnowflake,
-
-  filter: premiumMax('array', 150, 1500).items(Joi.string().max(20)),
-
-  uncensor: premiumMax('array', 150, 1500).items(Joi.string().max(20)),
-
-  words: premiumMax('array', 150, 1500).items(Joi.string().max(20)),
-
-  phrases: premiumMax('array', 150, 1000).items(Joi.string().max(50)),
 
   antiHoist: Joi.bool(),
 

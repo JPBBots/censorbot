@@ -214,6 +214,8 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
   }
 
   async updateGuild(guildId: Snowflake): Promise<void> {
+    if (!this.worker.guilds.has(guildId)) return
+
     this.worker.comms.tell('GUILD_UPDATED', guildId)
   }
 
@@ -247,6 +249,13 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
   @Event('GUILD_UPDATE')
   onGuildUpdate(guild: DiscordEventMap['GUILD_UPDATE']): void {
     void this.updateGuild(guild.id)
+  }
+
+  @Event('GUILD_DELETE')
+  onGuildDelete(guild: DiscordEventMap['GUILD_DELETE']): void {
+    if (this.worker.isCustom(guild.id) || guild.unavailable) return
+
+    this.worker.comms.tell('GUILD_DELETED', guild.id)
   }
 
   commands = [

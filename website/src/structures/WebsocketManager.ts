@@ -1,4 +1,4 @@
-import { MetaObject, WebSocketEventMap } from '@jpbbots/cb-typings'
+import { MetaObject, ShortGuild, WebSocketEventMap } from '@jpbbots/cb-typings'
 import { Logger } from './Logger'
 
 import headlessHandlers from './headlessHandler'
@@ -137,6 +137,31 @@ export class WebsocketManager extends ExtendedEmitter {
   @Event('UPDATE_GUILD')
   onGuildUpdate(data: EventMap['UPDATE_GUILD']) {
     store.dispatch(setCurrentGuild(data))
+  }
+
+  @Event('DELETE_GUILD')
+  onGuildDelete(guildId: EventMap['DELETE_GUILD']) {
+    const currentGuild = store.getState().guilds.currentGuild
+
+    if (!currentGuild || currentGuild.guild.id !== guildId) return
+
+    store.dispatch(setCurrentGuild(undefined))
+    store.dispatch(setNeedsInvite(true))
+
+    const guilds = store.getState().guilds.guilds
+
+    const newGuilds: ShortGuild[] = Object.assign([], guilds)
+    const g: ShortGuild = Object.assign(
+      {},
+      newGuilds.find((x) => x.id === guildId)
+    )
+    if (g) {
+      g.joined = false
+
+      store.dispatch(
+        setGuilds(newGuilds.filter((x) => x.id !== guildId).concat([g]))
+      )
+    }
   }
 
   @Event('UNCACHE')

@@ -10,7 +10,7 @@ import { NavActions } from './NavActions'
 import NextLink from 'next/link'
 
 import { Api } from '@/structures/Api'
-import { wMT } from '@/hooks/useScreenSize'
+import { wMT } from '@jpbbots/theme'
 
 export function NavBar() {
   const [user, login, logout] = useUser(false)

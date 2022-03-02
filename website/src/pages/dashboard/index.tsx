@@ -8,15 +8,21 @@ import { LoginButton } from '~/button/LoginButton'
 
 import { GuildPreview } from '@jpbbots/censorbot-components'
 import { Input } from '@chakra-ui/input'
-import { InputGroup, InputLeftAddon, Icon, Wrap } from '@chakra-ui/react'
+import {
+  InputGroup,
+  InputLeftAddon,
+  Icon,
+  Wrap,
+  Spinner
+} from '@chakra-ui/react'
 import { FaSearch } from 'react-icons/fa'
 
 import NextLink from 'next/link'
 
 import FuzzySearch from 'fuzzy-search'
 import { ShortGuild } from '@jpbbots/cb-typings'
-import { Loading } from '~/styling/Loading'
-import { uDW, wMT } from '@/hooks/useScreenSize'
+import { wMT } from '@jpbbots/theme'
+import { NextSeo } from 'next-seo'
 
 export function GuildList({
   searchTerm,
@@ -30,7 +36,7 @@ export function GuildList({
   return (
     <Wrap
       alignSelf="flex-start"
-      justify={uDW({ tablet: 'flex-start', mobile: 'center' })}
+      justify={{ tablet: 'flex-start', mobile: 'center' }}
       w="full"
       gridGap="15px"
     >
@@ -38,7 +44,12 @@ export function GuildList({
         ?.search(searchTerm)
         .filter(filter ?? (() => true))
         .map((guild) => (
-          <NextLink key={guild.id} href={`/dashboard/${guild.id}`} passHref>
+          <NextLink
+            key={guild.id}
+            href={`/dashboard/${guild.id}`}
+            passHref
+            prefetch
+          >
             <GuildPreview
               guild={{
                 name: guild.name,
@@ -75,21 +86,28 @@ export default function DashboardHome() {
     ? [...new Set(guilds.map((x) => x.group).filter((x) => x))]
     : undefined
 
-  const groupTextStyle = uDW({ tablet: 'heading.lg', mobile: 'heading.sm' })
-
   return (
     <VStack p="20px">
+      <NextSeo
+        title="Censor Bot Dashboard"
+        description="Customize Censor Bot to your liking"
+        openGraph={{
+          title: 'Censor Bot Dashboard',
+          description:
+            'Customize & invite Censor Bot! Make it perfect for your community.'
+        }}
+      />
       <VStack w="full">
         {(loginState === LoginState.Loading ||
           loginState === LoginState.LoggingIn) && (
           <Text textStyle="heading.md">Logging in...</Text>
         )}
-        {loginState === LoginState.LoggedIn && !guilds && <Loading />}
+        {loginState === LoginState.LoggedIn && !guilds && <Spinner />}
         {loginState === LoginState.LoggedOut && <LoginButton />}
         {loginState === LoginState.LoggedIn && guilds && (
           <>
             <HStack w="full" justify="space-between">
-              <Text textStyle={groupTextStyle}>
+              <Text textStyle={{ tablet: 'heading.lg', mobile: 'heading.sm' }}>
                 Select a server to get started
               </Text>
               {showSearch && (
@@ -119,7 +137,10 @@ export default function DashboardHome() {
           />
           {groups?.map((x) => (
             <>
-              <Text align="left" textStyle={groupTextStyle}>
+              <Text
+                align="left"
+                textStyle={{ tablet: 'heading.lg', mobile: 'heading.sm' }}
+              >
                 {x}
               </Text>
               <Divider color="lighter.5" />
@@ -129,7 +150,10 @@ export default function DashboardHome() {
               />
             </>
           ))}
-          <Text align="left" textStyle={groupTextStyle}>
+          <Text
+            align="left"
+            textStyle={{ tablet: 'heading.lg', mobile: 'heading.sm' }}
+          >
             Servers without Censor Bot
           </Text>
           <Divider color="lighter.5" />

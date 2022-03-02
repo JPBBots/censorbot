@@ -1,14 +1,16 @@
 {
-  "filters": ["en", "es", "off"],
   "censor": 7,
   "nickReplace": "Inappropriate Name",
   "removeNick": true,
   "log": null,
   "role": [],
-  "filter": [],
-  "uncensor": [],
-  "phrases": [],
-  "words": [],
+  "filter": {
+    "base": ["en", "es", "off"],
+    "server": [],
+    "uncensor": [],
+    "phrases": [],
+    "words": []
+  },
   "msg": {
     "content": null,
     "deleteAfter": 3000,
@@ -38,6 +40,9 @@
   "ocr": false,
   "dm": false,
   "antiHoist": false,
+  "phishing": false,
+
+  "v": 10,
 
   "notInDb": true
 }

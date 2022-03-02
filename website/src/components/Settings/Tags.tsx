@@ -13,7 +13,7 @@ import { FaPlus } from 'react-icons/fa'
 import { Tag } from '@jpbbots/censorbot-components'
 
 import { useRef, useState } from 'react'
-import { uDW, wLT } from '@/hooks/useScreenSize'
+import { wLT } from '@jpbbots/theme'
 
 export interface ITag {
   id?: string
@@ -132,7 +132,7 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
               </HStack>
             </MenuButton>
             <MenuList
-              maxH={uDW({ mobile: '200px', tablet: '400px' })}
+              maxH={{ mobile: '200px', tablet: '400px' }}
               overflowY="scroll"
               p="2px"
             >

@@ -14,6 +14,7 @@ import { ThreadService } from './thread.service'
 export class GuildsService extends EventEmitter<{
   GUILD_SETTINGS_UPDATE: { id: Snowflake; db: GuildDB }
   GUILD_UPDATED: GuildData
+  GUILD_DELETED: Snowflake
 }> {
   constructor(
     private readonly thread: ThreadService,
@@ -25,6 +26,19 @@ export class GuildsService extends EventEmitter<{
 
     thread.on('GUILD_UPDATED', async (guildId) => {
       void this.updateGuild(guildId)
+    })
+    thread.on('GUILD_DELETED', (guildId) => {
+      this.caching.guilds.delete(guildId)
+
+      this.caching.userGuilds.forEach((x) => {
+        x.forEach((guild) => {
+          if (guild.id === guildId) {
+            guild.joined = false
+          }
+        })
+      })
+
+      void this.emit('GUILD_DELETED', guildId)
     })
   }
 
@@ -94,9 +108,13 @@ export class GuildsService extends EventEmitter<{
 
     db.id = id
 
-    db.filter = (db.filter || guild.db.filter)
-      .map((x) => this.filter.resolve(x)[0]?.t)
-      .filter((x) => x)
+    if (db.filter) {
+      if (db.filter.server) {
+        db.filter.server = db.filter.server
+          .map((x) => this.filter.resolve(x)[0]?.t)
+          .filter((x) => x)
+      }
+    }
 
     await this.db.updateOne(
       {

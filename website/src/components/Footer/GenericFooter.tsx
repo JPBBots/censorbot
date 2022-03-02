@@ -4,8 +4,7 @@ import { HStack, VStack, Text, Link, Flex } from '@chakra-ui/layout'
 import NextLink from 'next/link'
 
 import { motion } from 'framer-motion'
-import { MiddleWrap } from '~/MiddleWrap'
-import { wLT } from '@/hooks/useScreenSize'
+import { wLT, MiddleWrap } from '@jpbbots/theme'
 
 export interface FooterOptions {
   name: string
@@ -58,8 +57,13 @@ export const GenericFooter = (props: FooterOptions) => {
           </Text>
         </motion.span>{' '}
         by{' '}
-        <NextLink href="/staff" passHref>
-          <Link href="#" onClick={() => {}} textDecor="underline">
+        <NextLink href="https://jpbbots.org" passHref>
+          <Link
+            href="#"
+            onClick={() => {}}
+            target="_blank"
+            textDecor="underline"
+          >
             JPBBots
           </Link>
         </NextLink>

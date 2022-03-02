@@ -76,11 +76,11 @@ export class TicketManager {
       throw new NonFatalError(`User is banned for "${ban.reason}"`)
 
     const res = this.worker.filter.test(word, {
-      filter: [],
+      base: [...BASE_FILTERS],
+      server: [],
       uncensor: [],
       phrases: [],
-      words: [],
-      filters: [...BASE_FILTERS]
+      words: []
     })
     if (!res)
       throw new NonFatalError('Phrase is not censored by the base filter.')

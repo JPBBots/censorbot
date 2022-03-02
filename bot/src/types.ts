@@ -43,6 +43,10 @@ declare module 'jadl/dist/clustering/ThreadComms' {
       send: Snowflake
       receive: null
     }
+    GUILD_DELETED: {
+      send: Snowflake
+      receive: null
+    }
     GUILD_GET: {
       send: Snowflake
       receive: ExtendedGuild

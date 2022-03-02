@@ -1,14 +1,16 @@
 {
-  "filters": [],
   "censor": 0,
   "nickReplace": "Inappropriate Name",
   "removeNick": true,
   "log": null,
   "role": [],
-  "filter": [],
-  "uncensor": [],
-  "phrases": [],
-  "words": [],
+  "filter": {
+    "base": [],
+    "server": [],
+    "uncensor": [],
+    "phrases": [],
+    "words": []
+  },
   "channels": [],
   "roles": [],
   "exceptions": [],
@@ -37,5 +39,6 @@
   "images": false,
   "ocr": false,
   "dm": false,
-  "antiHoist": false
+  "antiHoist": false,
+  "v": 10
 }

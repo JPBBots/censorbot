@@ -9,14 +9,31 @@ import { Lower, Upper } from '~/LandingSectionSvg'
 import { PremiumIcon } from '~/PremiumIcon'
 
 import NextLink from 'next/link'
-import { MiddleWrap } from '~/MiddleWrap'
 
-import { uDW, wLT, wMT, TABLET_WIDTH } from '@/hooks/useScreenSize'
+import { wLT, wMT, TABLET_WIDTH, MiddleWrap } from '@jpbbots/theme'
 import { animate } from 'framer-motion'
 import { useServerCount } from '@/hooks/useMeta'
 import { Root } from '~/Root'
 
 const DESCRIPTION_FONT_SIZE = '24px'
+
+const imageWidth = {
+  desktop: '509px',
+  tablet: '729px',
+  mobile: '315.63px'
+}
+
+const imageHeight = {
+  desktop: '281px',
+  tablet: '403px',
+  mobile: '175.14px'
+}
+
+const headingFontSize = {
+  desktop: '72px',
+  tablet: '60px',
+  mobile: '36px'
+}
 
 export default function Landing() {
   const [serverCount] = useServerCount()
@@ -39,24 +56,6 @@ export default function Landing() {
     }
   }, [serverCount, countRef])
 
-  const imageHeight = uDW({
-    desktop: 281,
-    tablet: 403,
-    mobile: 175.14
-  })
-
-  const imageWidth = uDW({
-    desktop: 509,
-    tablet: 729,
-    mobile: 315.63
-  })
-
-  const headingFontSize = uDW({
-    desktop: '72px',
-    tablet: '60px',
-    mobile: '36px'
-  })
-
   const alignCenter = wLT(TABLET_WIDTH)
 
   return (
@@ -65,11 +64,11 @@ export default function Landing() {
         <VStack spacing="16px">
           <Text
             textStyle="heading.xl"
-            fontSize={uDW({
+            fontSize={{
               desktop: '96px',
               tablet: '72px',
               mobile: '36px'
-            })}
+            }}
             textAlign="center"
             color="brand.100"
           >
@@ -77,11 +76,11 @@ export default function Landing() {
           </Text>
           <MiddleWrap
             spacing="15px"
-            fontSize={uDW({
+            fontSize={{
               desktop: '36px',
               tablet: '28px',
               mobile: '18px'
-            })}
+            }}
           >
             <Text textStyle="label.md" fontSize="inherit">
               No setup
@@ -97,22 +96,24 @@ export default function Landing() {
 
         <HStack>
           <NextLink href="/dashboard" passHref>
-            <Button variant="primary" onClick={() => {}}>
+            <Button w="230px" variant="brand" onClick={() => {}}>
               Invite Censor Bot
             </Button>
           </NextLink>
 
           <NextLink href="/dashboard" passHref>
-            <Button onClick={() => {}}>Dashboard</Button>
+            <Button w="200px" onClick={() => {}}>
+              Dashboard
+            </Button>
           </NextLink>
         </HStack>
 
         <VStack
           spacing={1}
-          fontSize={uDW({
+          fontSize={{
             tablet: '24px',
             mobile: '18px'
-          })}
+          }}
         >
           <Text textStyle="label.md" fontSize="inherit">
             Serving{' '}
@@ -132,13 +133,13 @@ export default function Landing() {
             textAlign="center"
             color="lighter.40"
             fontSize="inherit"
-            p={uDW({ tablet: '0px', mobile: '16px' })}
+            p={{ tablet: '0px', mobile: '16px' }}
           >
             The largest and most customizable anti-swear and filtering bot
           </Text>
         </VStack>
 
-        <MiddleWrap spacing="25px" m={uDW({ tablet: '2px', mobile: '0px' })}>
+        <MiddleWrap spacing="25px" m={{ tablet: '2px', mobile: '0px' }}>
           {wMT(TABLET_WIDTH) && (
             <Image
               src={DiscordChat.src}
@@ -162,11 +163,11 @@ export default function Landing() {
         <Upper />
         <Box w="full" bg="brand.100">
           <MiddleWrap
-            p={uDW({
+            p={{
               desktop: '0px 20px',
               tablet: '50px 20px',
               mobile: '32px 64px'
-            })}
+            }}
             spacing="100px"
           >
             <VStack
@@ -187,11 +188,7 @@ export default function Landing() {
                 or manage custom punishments!
               </Text>
               <NextLink href="/dashboard" passHref>
-                <Button
-                  bg="darker.80"
-                  _hover={{ bg: 'darker.100' }}
-                  onClick={() => {}}
-                >
+                <Button w="200px" variant="dark">
                   Dashboard
                 </Button>
               </NextLink>
@@ -236,7 +233,7 @@ export default function Landing() {
               Bot's curated staff team, keeping them up to date and accurate at
               all times.
             </Text>
-            <Button>Read more</Button>
+            <Button w="200px">Read more</Button>
           </VStack>
         </MiddleWrap>
       </VStack>
@@ -259,7 +256,7 @@ export default function Landing() {
             <Text
               textStyle="label.md"
               fontSize={DESCRIPTION_FONT_SIZE}
-              maxW={707}
+              maxW="707px"
             >
               Can't get enough customization? Customize more with{' '}
               <PremiumIcon />{' '}
@@ -280,7 +277,7 @@ export default function Landing() {
             h={imageHeight}
             width={imageWidth}
             boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
-            borderRadius={20}
+            borderRadius="20px"
             flexGrow={0}
           />
         </MiddleWrap>
@@ -305,7 +302,7 @@ export default function Landing() {
         </VStack>
         <MiddleWrap spacing="5px">
           <NextLink href="/dashboard" passHref>
-            <Button variant="primary" onClick={() => {}}>
+            <Button w="230px" variant="brand" onClick={() => {}}>
               Get Started
             </Button>
           </NextLink>

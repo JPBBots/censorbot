@@ -1,0 +1,5 @@
+cd ../bot
+NPM_TOKEN=$GH_TOKEN npm i @jpbbots/cb-typings@latest
+
+cd ../website
+NPM_TOKEN=$GH_TOKEN npm i @jpbbots/cb-typings@latest

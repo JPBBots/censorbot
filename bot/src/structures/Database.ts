@@ -78,18 +78,97 @@ export class Database extends Db {
     if (cached != null) return cached
 
     let db =
-      ((await this.collection('guild_data').findOne({ id })) as GuildDB) ||
-      Object.assign({ id }, DefaultConfig)
-    db = await this._checkForUpdates(db as any)
+      (await this.collection('guild_data').findOne({ id })) ??
+      (Object.assign(
+        { id },
+        DefaultConfig
+      ) as DatabaseCollections['guild_data'])
+
+    // temp migration
+    if (!db.v || db.v < 10) db = await this._checkForUpdates(db as any)
+
+    if (db.v !== this.currentVersion) db = await this.updater(db as any)
 
     this.configCache.set(id, db)
 
     return db
   }
 
-  private async _checkForUpdates(
-    db: Partial<GuildDB> & Record<any, any> & { censor: any; punishment: any }
+  currentVersion = 11
+
+  private async updater(
+    db: GuildDB & {
+      filter: any
+      filters: any
+      phrases: any
+      words: any
+      font: any
+      uncensor: any
+    }
   ): Promise<GuildDB> {
+    let needsUpdate = true
+    const removeProps: Array<keyof typeof db> = ['fonts']
+
+    switch (db.v) {
+      case 10:
+        {
+          const currentFilter = db.filter
+          db.filter = {
+            base: db.filters,
+            server: currentFilter,
+            phrases: db.phrases,
+            words: db.words,
+            uncensor: db.words
+          }
+
+          removeProps.push('filters', 'phrases', 'words', 'uncensor')
+          db.v = 11
+        }
+        break
+      default:
+        needsUpdate = false
+    }
+
+    if (db.v !== this.currentVersion) db = (await this.updater(db)) as any
+
+    if (needsUpdate) {
+      removeProps.forEach((d) => delete db[d])
+
+      db.v = this.currentVersion
+
+      await this.collection('guild_data').updateOne(
+        { id: db.id },
+        {
+          $set: db,
+          $unset: removeProps.reduce((a, b) => {
+            a[b] = ''
+
+            return a
+          }, {})
+        }
+      )
+    }
+
+    return db
+  }
+
+  private async _checkForUpdates(
+    db: Partial<GuildDB> & {
+      censor: any
+      punishment: any
+      matchExact: any
+      role: any
+      filter: any
+      filters: any
+      phrases: any
+      words: any
+      uncensor: any
+    } & {
+      v?: number
+    }
+  ): Promise<GuildDB> {
+    const removeProps: Array<keyof typeof db> = []
+
     if (typeof db.censor === 'object') {
       let bit = 0
 
@@ -100,21 +179,13 @@ export class Database extends Db {
       db.censor = bit
     }
 
-    if (db.matchExact) {
-      if (!db.phrases) db.phrases = [...db.filter!]
-      db.filter = []
+    if ('matchExact' in db) {
+      if (db.matchExact) {
+        if (!db.phrases) db.phrases = [...db.filter!]
+        db.filter = []
+      }
 
-      delete db.matchExact
-
-      await this.db?.collection('guild_data').updateOne(
-        { id: db.id },
-        {
-          $unset: {
-            matchExact: ''
-          },
-          $set: db
-        }
-      )
+      removeProps.push('matchExact')
     }
 
     if (!db.phrases) db.phrases = []
@@ -136,19 +207,8 @@ export class Database extends Db {
         allow: enumCombiner(FilterType),
         log: null
       }
-      delete db.punishment
 
-      await this.collection('guild_data').updateOne(
-        {
-          id: db.id
-        },
-        {
-          $unset: {
-            punishment: ''
-          },
-          $set: db
-        }
-      )
+      removeProps.push('punishment')
     }
 
     if (!db.channels) db.channels = []
@@ -157,17 +217,26 @@ export class Database extends Db {
     if (db.role) {
       db.roles = db.role
 
-      delete db.role
-
-      await this.collection('guild_data').updateOne(
-        { id: db.id },
-        {
-          $set: db
-        }
-      )
+      removeProps.push('role')
     }
 
-    return db as GuildDB
+    db.v = 10
+
+    removeProps.forEach((d) => delete db[d])
+
+    await this.collection('guild_data').updateOne(
+      { id: db.id },
+      {
+        $set: db,
+        $unset: removeProps.reduce((a, b) => {
+          a[b] = ''
+
+          return a
+        }, {})
+      }
+    )
+
+    return await this.updater(db as any)
   }
 
   async guildPremium(id: Snowflake): Promise<boolean> {
@@ -197,10 +266,13 @@ export class Database extends Db {
       {
         $set: {
           dm: false,
-          filter: db.filter.slice(0, 150),
-          uncensor: db.uncensor.slice(0, 150),
-          phrases: db.phrases.slice(0, 150),
-          words: db.words.slice(0, 150),
+          filter: {
+            ...db.filter,
+            server: db.filter.server.slice(0, 150),
+            uncensor: db.filter.uncensor.slice(0, 150),
+            phrases: db.filter.uncensor.slice(0, 150),
+            words: db.filter.words.slice(0, 150)
+          },
 
           censor: db.censor & ~CensorMethods.Avatars,
 

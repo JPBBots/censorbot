@@ -3,9 +3,9 @@ import { Api } from '@/structures/Api'
 import { Ticket } from '@jpbbots/cb-typings'
 import Router from 'next/router'
 import { useEffect, useState } from 'react'
-import { MiddleWrap } from '~/MiddleWrap'
-import { Loading } from '~/styling/Loading'
+import { MiddleWrap } from '@jpbbots/theme'
 import { TicketInteraction } from '~/Tickets'
+import { Spinner } from '@chakra-ui/react'
 
 export default function Tickets() {
   const [user] = useUser(true)
@@ -21,7 +21,7 @@ export default function Tickets() {
     })
   }, [user])
 
-  if (!tickets) return <Loading />
+  if (!tickets) return <Spinner />
 
   return (
     <MiddleWrap spacing="10px" p="20px">

@@ -112,6 +112,10 @@ export interface WebSocketEventMap {
     receive: GuildData
     send: null
   }
+  DELETE_GUILD: {
+    receive: Snowflake
+    send: null
+  }
   ERROR: {
     receive: {
       error: string

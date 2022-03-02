@@ -25,7 +25,7 @@ export class ScanCommand {
         (x) =>
           !x.author.bot &&
           Date.now() - SnowflakeUtil.getTimestamp(x.id).getTime() < 1.21e9 &&
-          worker.filter.test(x.content, db)
+          worker.filter.test(x.content, db.filter)
       )
       .map((x) => x.id)
 

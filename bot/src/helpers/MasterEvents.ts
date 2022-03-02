@@ -76,6 +76,11 @@ export class MasterEvents extends EventAdder<any> {
       .then((guildInfo) => resolve(guildInfo))
   }
 
+  @Event('GUILD_DELETED')
+  guildDeleted(_cluster, guild: Snowflake) {
+    void this.master.api.tell('GUILD_DELETED', guild)
+  }
+
   @Event('SEND_WEBHOOK')
   sendWebhook(
     _cluster,

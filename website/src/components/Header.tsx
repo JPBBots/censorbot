@@ -13,7 +13,7 @@ export function Header() {
 
       <meta property="og:image" content={BRANDING.logo} />
       <meta name="theme-color" content="#ea5455" />
-      <meta property="og:title" content={BRANDING.name} />
+      {/* <meta property="og:title" content={BRANDING.name} />
       <meta
         property="og:description"
         content="Easy to use advanced content filtering for your Discord server(s)!"
@@ -21,7 +21,7 @@ export function Header() {
       <meta
         name="description"
         content="Advanced Anti-Swear Bot that comes with a pre-built filters, no work needed! anti swear bot"
-      />
+      /> */}
     </Head>
   )
 }

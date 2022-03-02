@@ -1,7 +1,4 @@
-import {
-  NextColorModeScript,
-  NextFontHead
-} from '@jpbbots/censorbot-components'
+import { NextColorModeScript, NextFontHead } from '@jpbbots/theme'
 
 import NextDocument, { Html, Head, Main, NextScript } from 'next/document'
 

@@ -1,13 +1,12 @@
 import { ShortGuild } from '@jpbbots/cb-typings'
 
-import { FaArrowLeft } from 'react-icons/fa'
+import { FaAngleLeft } from 'react-icons/fa'
 
 import { store } from '@/store'
 import { setGuilds } from '@/store/reducers/guilds.reducer'
 import { Utils } from '@/utils/Utils'
 
 import Link from 'next/link'
-import { uDW } from '@/hooks/useScreenSize'
 
 import { useGuild, useGuilds } from '@/hooks/useGuilds'
 
@@ -78,7 +77,10 @@ export function NeedsInvite({ guild }: { guild: ShortGuild }) {
     <VStack p="16px">
       <Box alignSelf="flex-start">
         <Link href="/dashboard">
-          <Icon as={FaArrowLeft} cursor="pointer" fontSize="50px" />
+          <Button>
+            <Icon as={FaAngleLeft} fontSize="25px" mr="5px" />
+            Go Back
+          </Button>
         </Link>
       </Box>
       <VStack>
@@ -106,7 +108,7 @@ export function NeedsInvite({ guild }: { guild: ShortGuild }) {
             You haven't invited Censor Bot to your server yet!
           </Text>
           <VStack spacing="3px">
-            <Button variant="primary" onClick={() => inviteBot(true)}>
+            <Button variant="brand" w="200px" onClick={() => inviteBot(true)}>
               Invite Censor Bot
             </Button>
             <Text
@@ -137,7 +139,7 @@ export function NeedsInvite({ guild }: { guild: ShortGuild }) {
               textAlign="center"
               color="lighter.40"
               fontSize="inherit"
-              p={uDW({ tablet: '0px', mobile: '16px' })}
+              p={{ tablet: '0px', mobile: '16px' }}
             >
               The largest and most customizable anti-swear and filtering bot
             </Text>

@@ -62,6 +62,9 @@ export class UserGateway implements OnGatewayConnection {
     guilds.on('GUILD_UPDATED', (guild) => {
       this.server.to(guild.guild.id).emit('UPDATE_GUILD', guild)
     })
+    guilds.on('GUILD_DELETED', (guildId) => {
+      this.server.to(guildId).emit('DELETE_GUILD', guildId)
+    })
 
     users.on('USER_UPDATE', (user) => {
       this.server.to(user.id).emit('UPDATE_USER', {

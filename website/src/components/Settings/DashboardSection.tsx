@@ -12,7 +12,8 @@ import {
   InputGroup,
   InputLeftAddon,
   Button,
-  Center
+  Center,
+  Spinner
 } from '@chakra-ui/react'
 import { Aside, sections, SectionName } from './Aside'
 import { LoginButton } from '../button/LoginButton'
@@ -20,11 +21,10 @@ import { useLoginState, useUser } from 'hooks/useAuth'
 import { useGuild, useGuilds } from 'hooks/useGuilds'
 import { LoginState } from 'store/reducers/auth.reducer'
 
-import { FaBars, FaSearch } from 'react-icons/fa'
+import { FaBars, FaSearch, FaAngleLeft } from 'react-icons/fa'
 import { sectionSettings, Setting } from './Setting'
 import { searcher } from './settings'
-import { Loading } from '~/styling/Loading'
-import { wLT } from '@/hooks/useScreenSize'
+import { wLT } from '@jpbbots/theme'
 import { NeedsInvite } from '~/NeedsInvite'
 
 import NextLink from 'next/link'
@@ -56,17 +56,27 @@ export function DashboardSection(props: DashboardSectionProps) {
 
   if (inOfflineShard) {
     return (
-      <Center>
-        <VStack>
-          <Text textStyle="heading.xl">
-            Censor Bot is experiencing some issues
-          </Text>
-          <Text textStyle="heading.lg">Check back in a bit</Text>
-          <NextLink href="/dashboard" passHref>
-            <Button>Back</Button>
+      <VStack p="16px">
+        <Box alignSelf="flex-start">
+          <NextLink href="/dashboard">
+            <Button>
+              <Icon as={FaAngleLeft} fontSize="25px" mr="5px" />
+              Go Back
+            </Button>
           </NextLink>
-        </VStack>
-      </Center>
+        </Box>
+        <Center>
+          <VStack>
+            <Text textStyle="heading.xl" color="brand.100">
+              Censor Bot is experiencing some issues
+            </Text>
+            <Text textStyle="heading.lg">Check back in a bit</Text>
+            <NextLink href="/status" passHref>
+              <Button variant="brand">Check status</Button>
+            </NextLink>
+          </VStack>
+        </Center>
+      </VStack>
     )
   }
 
@@ -92,7 +102,7 @@ export function DashboardSection(props: DashboardSectionProps) {
   ) {
     return (
       <Center>
-        <Loading />
+        <Spinner />
       </Center>
     )
   }

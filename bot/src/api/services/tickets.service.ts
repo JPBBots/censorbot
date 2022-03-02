@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common'
 import { Filter, FilterDatabaseEntryType } from '../../structures/Filter'
 import { DatabaseService } from './database.service'
 
-import { ShortID, Ticket, TicketTest } from '@jpbbots/cb-typings'
+import {
+  FilterSettings,
+  ShortID,
+  Ticket,
+  TicketTest
+} from '@jpbbots/cb-typings'
 import { ThreadService } from './thread.service'
 import { DiscordService } from './discord.service'
 import { Embed } from '@jadl/embed'
@@ -17,9 +22,9 @@ export class TicketsService {
     private readonly discord: DiscordService
   ) {}
 
-  fakeDatabase: Parameters<Filter['test']>[1] = {
-    filter: [],
-    filters: ['en', 'es', 'off', 'de', 'ru'],
+  fakeDatabase: FilterSettings = {
+    base: ['en', 'es', 'off', 'de', 'ru'],
+    server: [],
     phrases: [],
     uncensor: [],
     words: []

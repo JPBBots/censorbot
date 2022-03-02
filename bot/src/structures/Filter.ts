@@ -7,7 +7,7 @@ import {
   FilterResultInfo,
   FilterType,
   Range,
-  GuildDB
+  FilterSettings
 } from '@jpbbots/cb-typings'
 delete require.cache[require.resolve('../data/filter')]
 
@@ -320,7 +320,7 @@ export class Filter {
 
   test(
     text: string,
-    db: Pick<GuildDB, 'phrases' | 'filter' | 'filters' | 'uncensor' | 'words'>,
+    settings: FilterSettings,
     exceptions?: { server: boolean; prebuilt: boolean }
   ):
     | (FilterResultInfo & {
@@ -343,10 +343,12 @@ export class Filter {
       [key in baseFilters | 'server']?: JPBExp[]
     } = {}
     if (!exceptions?.server) {
-      scanFor.server = db.filter.map((x) => new JPBExp(x))
+      scanFor.server = settings.server.map((x) => new JPBExp(x))
 
-      if (db.phrases) {
-        const phrases = db.phrases.filter((x) => text.toLowerCase().includes(x))
+      if (settings.phrases) {
+        const phrases = settings.phrases.filter((x) =>
+          text.toLowerCase().includes(x)
+        )
         if (phrases.length > 0) {
           censor = true
           res.type = FilterType.ServerFilter
@@ -360,10 +362,10 @@ export class Filter {
         }
       }
 
-      if (db.words) {
+      if (settings.words) {
         const split = text.split(' ')
 
-        db.words.forEach((word, index) => {
+        settings.words.forEach((word, index) => {
           if (split.includes(word)) {
             censor = true
 
@@ -377,7 +379,7 @@ export class Filter {
 
     if (!exceptions?.prebuilt) {
       for (const filt in this.filters) {
-        if (db.filters.includes(filt as baseFilters))
+        if (settings.base.includes(filt as baseFilters))
           scanFor[filt] = this.filters[filt]
       }
     }
@@ -395,7 +397,7 @@ export class Filter {
         return
       for (const key in scanFor) {
         for (const part of scanFor[key]) {
-          if (!part.test(piece.t, db.uncensor)) continue
+          if (!part.test(piece.t, settings.uncensor)) continue
 
           if (key === 'server') res.type = FilterType.ServerFilter
 

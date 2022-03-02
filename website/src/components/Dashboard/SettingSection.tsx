@@ -1,7 +1,7 @@
 import { Fragment, ReactNode } from 'react'
 import { Divider, Text, VStack, HStack } from '@chakra-ui/react'
 import type { PropsWithChildren } from 'react'
-import { Tooltip } from '~/styling/Tooltip'
+import { Help } from '@jpbbots/theme'
 
 export interface SettingSectionProps extends PropsWithChildren<unknown> {
   icon?: ReactNode
@@ -45,8 +45,7 @@ export const SettingSection = ({
           <Divider color="lighter.5" />
           {description && (
             <Text textStyle="default" color="lighter.40">
-              {description}
-              {tooltip && <Tooltip>{tooltip}</Tooltip>}
+              {description} {tooltip && <Help>{tooltip}</Help>}
             </Text>
           )}
         </Fragment>

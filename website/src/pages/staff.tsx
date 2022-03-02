@@ -5,10 +5,10 @@ import {
   Avatar,
   Divider,
   Flex,
-  Tooltip
+  Tooltip,
+  Spinner
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { Loading } from '~/styling/Loading'
 
 import { Root } from '~/Root'
 
@@ -140,7 +140,7 @@ export default function Staff() {
             </VStack>
           ))
         ) : (
-          <Loading />
+          <Spinner />
         )}
       </VStack>
     </Root>

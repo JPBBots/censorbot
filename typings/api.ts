@@ -71,15 +71,19 @@ export interface Exception {
   type: ExceptionType
 }
 
+export interface FilterSettings {
+  base: baseFilters[]
+  server: string[]
+  phrases: string[]
+  words: string[]
+  uncensor: string[]
+}
+
 export interface GuildDB {
   /**
    * ID of guild
    */
   id?: Snowflake
-  /**
-   * Filters being used
-   */
-  filters: baseFilters[]
   /**
    * Censor options
    */
@@ -96,21 +100,9 @@ export interface GuildDB {
    */
   log: Snowflake | null
   /**
-   * List of words to filter
+   * Filter settings
    */
-  filter: string[]
-  /**
-   * List of words to uncensor
-   */
-  uncensor: string[]
-  /**
-   * List of phrases to filter
-   */
-  phrases: string[]
-  /**
-   * Exact words to filter
-   */
-  words: string[]
+  filter: FilterSettings
   /**
    * Whether to antihoist users
    */
@@ -159,6 +151,8 @@ export interface GuildDB {
   images: boolean
   ocr: boolean
   phishing: boolean
+
+  v: number
 
   /**
    * Whether or not the entry is in the database or not

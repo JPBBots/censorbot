@@ -1,11 +1,21 @@
 import { Button } from '@chakra-ui/button'
 import { Text, VStack, Link } from '@chakra-ui/layout'
 import { Wrap } from '@chakra-ui/react'
+import { NextSeo } from 'next-seo'
 import { BuyPremium } from '~/BuyPremium'
 
 export default function Premium() {
   return (
     <VStack padding="10" align="center">
+      <NextSeo
+        title="Censor Bot Premium"
+        description="Can't get enough? Get even more features, at an amazingly affordable price!"
+        openGraph={{
+          title: 'Censor Bot Premium',
+          description:
+            "Can't get enough? Get even more features, at an amazingly affordable price!"
+        }}
+      />
       <BuyPremium />
       <Wrap
         p={4}

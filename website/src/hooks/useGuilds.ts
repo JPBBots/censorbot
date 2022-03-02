@@ -69,6 +69,10 @@ export const useGuild = () => {
 
   useEffect(() => {
     setId(Api.guildId)
+
+    return () => {
+      dispatch(setNeedsInvite(false))
+    }
   }, [router.query])
 
   const checkForGuild = async () => {

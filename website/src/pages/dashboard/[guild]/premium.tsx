@@ -9,10 +9,9 @@ import { Switch } from '@chakra-ui/switch'
 import { Api } from '@/structures/Api'
 import { useDispatch } from 'react-redux'
 
-import { Tooltip } from '~/styling/Tooltip'
-
 import { setUser } from '@/store/reducers/auth.reducer'
 import { BuyPremium } from '~/BuyPremium'
+import { Help } from '@jpbbots/theme'
 
 export default function GuildPremium() {
   const [guild] = useGuild()
@@ -53,11 +52,11 @@ export default function GuildPremium() {
                 }}
                 isChecked={guild.premium}
               />
-              <Tooltip>
+              <Help>
                 {`This will use 1 of your premium servers. You have
                 ${user.premium.count - user.premium.guilds.length} premium
                 servers remaining`}
-              </Tooltip>
+              </Help>
             </HStack>
           )}
       </VStack>

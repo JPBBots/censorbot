@@ -273,12 +273,13 @@ export const settings: ISetting[] = [
   {
     title: 'Pre-made filters',
     requiredPermission: 'manageMessages',
-    description:
-      'Pick pre-made filters that apply for your needs, created and maintained by the makers of Censor Bot',
+    description: 'Pick pre-made filters that apply for your needs',
+    tooltip:
+      'Created and maintained by the makers of Censor Bot, super accurate and hard to bypass',
     section: 'General',
     options: [
       {
-        name: 'filters',
+        name: 'filter.base',
         type: OptionType.Tags,
         whitelist: [
           { id: 'en', value: 'English' },
@@ -300,7 +301,7 @@ export const settings: ISetting[] = [
     section: 'General',
     options: [
       {
-        name: 'filter',
+        name: 'filter.server',
         type: OptionType.Tags,
         maxMessage: 'You need premium to add more words',
         maxLength: 20,
@@ -319,7 +320,7 @@ export const settings: ISetting[] = [
     section: 'General',
     options: [
       {
-        name: 'phrases',
+        name: 'filter.phrases',
         type: OptionType.Tags,
         maxLength: 50,
         allowSpaces: true,
@@ -339,7 +340,7 @@ export const settings: ISetting[] = [
     section: 'General',
     options: [
       {
-        name: 'words',
+        name: 'filter.words',
         type: OptionType.Tags,
         maxLength: 20,
         maxMessage: 'You need premium to add more words',
@@ -352,10 +353,12 @@ export const settings: ISetting[] = [
   {
     title: 'Uncensor List',
     description: 'Words to ignore when they’re matched against a filter',
+    tooltip:
+      "An uncensor word has to match the entry it's uncensoring and the word you want to uncensor",
     section: 'General',
     options: [
       {
-        name: 'uncensor',
+        name: 'filter.uncensor',
         type: OptionType.Tags,
         maxLength: 20,
         maxMessage: 'You need premium to add more words',
