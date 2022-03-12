@@ -34,7 +34,6 @@ export const SelectorTag = ({
   channel,
   onClick
 }: SelectorTagProps) => {
-  console.log(tag)
   return (
     <Tag
       w="full"

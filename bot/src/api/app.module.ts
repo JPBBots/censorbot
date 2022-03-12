@@ -7,8 +7,6 @@ import { DiscordAuthController } from './controllers/auth/discord.controller'
 
 import { UserGateway } from './gateway/user.gateway'
 
-import { GatewayAuthGuard } from './guards/authorized.guard'
-
 import { OAuthService } from './services/oauth.service'
 import { DiscordService } from './services/discord.service'
 import { UsersService } from './services/users.service'
@@ -26,7 +24,6 @@ import { StatusService } from './services/status.service'
 import { TicketsService } from './services/tickets.service'
 
 @Module({
-  imports: [GatewayAuthGuard],
   controllers: [
     BaseController,
     DiscordAuthController,

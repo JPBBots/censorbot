@@ -286,8 +286,6 @@ export function SettingOption({
                 const excepts = [...exceptions]
                 excepts[ind] = exc
 
-                console.log(excepts)
-
                 setValue(excepts)
               }}
               onDelete={() => {

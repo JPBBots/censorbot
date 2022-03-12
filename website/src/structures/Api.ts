@@ -1,4 +1,4 @@
-import { GuildData, User } from '@jpbbots/cb-typings'
+import { GuildData } from '@jpbbots/cb-typings'
 import { Utils } from 'utils/Utils'
 import { Logger } from './Logger'
 import { WebsocketManager } from './WebsocketManager'
@@ -11,10 +11,9 @@ import { store } from '@/store'
 import { setUser } from '@/store/reducers/auth.reducer'
 import { chargebee } from '@/pages/_app'
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class Api {
   static logger = Logger
-
-  private readonly waitingUser: Array<(user: User | undefined) => void> = []
 
   static ws = new WebsocketManager()
 
@@ -65,20 +64,11 @@ export class Api {
       void Router.push('/')
   }
 
-  static async getUser(tryingLogin = false) {
+  static async getUser() {
     if (!this.token) return undefined
     this.log('Retrieving user')
 
-    const user = await this.ws
-      .request(
-        'AUTHORIZE',
-        {
-          token: this.token,
-          customer: false
-        },
-        tryingLogin
-      )
-      .catch(() => this.logout(false))
+    const user = await this.ws.request('GET_USER')
 
     if (user) {
       store.dispatch(setUser(user))
@@ -87,9 +77,9 @@ export class Api {
     return user
   }
 
-  static async getGuilds(tryingLogin = false) {
+  static async getGuilds() {
     this.log('Retrieving guilds')
-    const guilds = await this.ws.request('GET_GUILDS', undefined, tryingLogin)
+    const guilds = await this.ws.request('GET_GUILDS')
 
     if (!guilds) return
 
@@ -170,6 +160,6 @@ export class Api {
 }
 
 if ('window' in global) {
-  ; (global as any).api = Api
-    ; (global as any).store = store
+  ;(global as any).api = Api
+  ;(global as any).store = store
 }

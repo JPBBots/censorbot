@@ -67,8 +67,7 @@ export class WebsocketManager extends ExtendedEmitter {
 
   public async request<K extends keyof WebSocketEventMap>(
     event: K,
-    data?: WebSocketEventMap[K]['receive'],
-    tryingLogin = false
+    data?: WebSocketEventMap[K]['receive']
   ): Promise<WebSocketEventMap[K]['send']> {
     return await new Promise((resolve, reject) => {
       if (stats.headless) {
@@ -79,27 +78,7 @@ export class WebsocketManager extends ExtendedEmitter {
       this.ws.emit(event, data, (dat: any) => {
         if (dat?.error) {
           this.log('Got error ' + String(dat.error))
-          if (dat.error === 'Unauthorized' && Api.token && !tryingLogin) {
-            Api.getUser(true)
-              .then(async () => {
-                return await Api.getGuilds(true).then(async () => {
-                  return await this.request(event, data).then((x) => resolve(x))
-                })
-              })
-              .catch(() => {
-                Api.logout(false)
-                void Api.login().then((user) => {
-                  if (user)
-                    void Api.getGuilds(true).then(async () => {
-                      return await this.request(event, data)
-                        .then((x) => resolve(x))
-                        .catch((err) => reject(err))
-                    })
-                })
-              })
-          } else {
-            reject(new Error(dat.error))
-          }
+          reject(new Error(dat.error))
         } else resolve(dat)
       })
     })
@@ -107,6 +86,13 @@ export class WebsocketManager extends ExtendedEmitter {
 
   public tell(event: string, data?: any) {
     this.ws.emit(event, data)
+  }
+
+  @Event('AUTHORIZE')
+  authorize(respond: (val: EventMap['AUTHORIZE']) => void) {
+    if (Api.token) return respond({ token: Api.token })
+
+    console.log('needs login')
   }
 
   @Event('RELOAD')

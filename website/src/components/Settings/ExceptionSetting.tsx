@@ -57,7 +57,6 @@ export function ExceptionSetting({
   first
 }: ExceptionSettingProps) {
   const change = (data: DeepPartial<Exception>) => {
-    console.log(data)
     onChange?.({
       ...exception,
       ...data

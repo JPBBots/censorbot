@@ -66,8 +66,6 @@ export const useUser = (needsUser: boolean) => {
 
       dispatch(setLoginState(LoginState.LoggingIn))
 
-      console.log('abc', Api.token, !email)
-
       return await (Api.token && !email
         ? Api.getUser()
         : Api.login(needsUser, email)

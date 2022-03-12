@@ -84,8 +84,6 @@ export function TicketInteraction({
         <Button
           onContextMenu={(ev) => {
             ev.preventDefault()
-
-            console.log('a')
           }}
           onClick={async () => {
             const deny = await Api.ws.request('DENY_TICKET', { id: ticket.id })

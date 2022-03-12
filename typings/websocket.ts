@@ -69,10 +69,11 @@ export interface WebSocketEventMap {
     send: null
   }
   AUTHORIZE: {
-    receive: {
-      token: string
-      customer: boolean
-    }
+    send: null
+    receive: { token: string }
+  }
+  GET_USER: {
+    receive: null
     send: User
   }
   GET_GUILDS: {

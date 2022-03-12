@@ -9,11 +9,9 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 
-import { SelfData, Self } from '../decorators/self.decorator'
-
 import { Snowflake, State } from 'jadl'
 
-import { WebSocketEventMap } from '@jpbbots/cb-typings'
+import { ShortGuild, User, WebSocketEventMap } from '@jpbbots/cb-typings'
 import { UsersService } from '../services/users.service'
 import { CacheService } from '../services/cache.service'
 import { OAuthService } from '../services/oauth.service'
@@ -25,13 +23,41 @@ import Pieces from '../../utils/Pieces'
 import { ThreadService } from '../services/thread.service'
 import { StatusService } from '../services/status.service'
 import { TicketsService } from '../services/tickets.service'
+import { UseInterceptors } from '@nestjs/common'
+import {
+  UserInterceptor,
+  Self,
+  SelfData,
+  SelfDat,
+  AdminInterceptor,
+  Guilds,
+  GuildsInterceptor
+} from './utils'
+import { JoiValidationPipe } from './joi.pipe'
+import Joi, { ValidationError } from 'joi'
 
 type EventMap = {
   [key in keyof WebSocketEventMap]: WebSocketEventMap[key]['receive']
 }
-export type SocketConnection = Socket<{
-  [key in keyof EventMap]: (val: EventMap[key]) => void
-}> & { data: SelfData }
+export type SocketConnection = Socket<
+  {
+    [key in keyof EventMap]: (val: EventMap[key]) => void
+  },
+  {
+    [key in keyof EventMap]:
+      | ((val: EventMap[key]) => void)
+      | ((cb: (val: EventMap[key]) => void) => void)
+  }
+> & { data: SelfData }
+
+const sfRegex = /^[0-9]{5,50}$/
+const SnowflakeString = Joi.string()
+  .regex(sfRegex)
+  .error((errs) => {
+    return new ValidationError('Not a Snowflake', errs[0], errs[0])
+  })
+
+const JVP = (j: Joi.Schema) => new JoiValidationPipe(j)
 
 @WebSocketGateway({ path: '/ws', pingInterval: 45e3 })
 export class UserGateway implements OnGatewayConnection {
@@ -79,16 +105,10 @@ export class UserGateway implements OnGatewayConnection {
     })
   }
 
-  getSelf(data: SelfData) {
-    if (!data.userId) return undefined
+  hasAccess(user: User, id: Snowflake) {
+    if (!user?.id) return false
 
-    return this.caching.users.get(data.userId)
-  }
-
-  hasAccess(data: SelfData, id: Snowflake) {
-    if (!data.userId) return false
-
-    const cache = this.caching.userGuilds.get(data.userId)
+    const cache = this.caching.userGuilds.get(user.id)
 
     if (!cache) return false
 
@@ -118,34 +138,20 @@ export class UserGateway implements OnGatewayConnection {
   }
 
   @SubscribeMessage('RELOAD_SELF')
-  reloadSelf(@Self() self: SelfData) {
-    if (self.userId) void this.users.causeUpdate(self.userId)
+  @UseInterceptors(UserInterceptor)
+  reloadSelf(@Self() user: User) {
+    if (user.id) void this.users.causeUpdate(user.id)
   }
 
   @SubscribeMessage('LOGOUT')
-  async logout(
-    @Self() self: SelfData,
-    @ConnectedSocket() sock: SocketConnection
-  ) {
-    if (self.userId) await sock.leave(self.userId)
-    self.userId = undefined
+  async logout(@ConnectedSocket() sock: SocketConnection) {
+    if (sock.data.userId) await sock.leave(sock.data.userId)
+    sock.data.userId = undefined
   }
 
-  @SubscribeMessage('AUTHORIZE')
-  async authorize(
-    @Self() self: SelfData,
-    @ConnectedSocket() sock: SocketConnection,
-    @MessageBody() data: EventMap['AUTHORIZE']
-  ) {
-    if (!data.token) return { error: 'Invalid Token' }
-
-    const user = await this.users.login(data.token).catch((err: Error) => err)
-
-    if (user instanceof Error) return { error: user.message }
-
-    self.userId = user.id
-    await sock.join(user.id)
-
+  @SubscribeMessage('GET_USER')
+  @UseInterceptors(UserInterceptor)
+  async getUser(@Self() user: User) {
     return {
       ...user,
       _id: undefined,
@@ -154,39 +160,23 @@ export class UserGateway implements OnGatewayConnection {
   }
 
   @SubscribeMessage('GET_GUILDS')
-  async getGuilds(@Self() self: SelfData) {
-    const user = this.getSelf(self)
-    if (!user?.bearer) throw new Error('Unauthorized')
-
-    let guilds = this.caching.userGuilds.get(user.id)
-    if (guilds) return guilds
-    try {
-      guilds = await this.oauth.getGuilds(user?.bearer)
-    } catch (err) {
-      return { error: 'Unauthorized' }
-    }
-
-    void this.thread.sendCommand(
-      'IN_GUILDS',
-      guilds.map((x) => x.id)
-    )
-
-    this.caching.userGuilds.set(user.id, guilds)
-
+  @UseInterceptors(UserInterceptor, GuildsInterceptor)
+  async getGuilds(@Guilds() guilds: ShortGuild[]) {
     return guilds
   }
 
   @SubscribeMessage('SUBSCRIBE')
+  @UseInterceptors(UserInterceptor, GuildsInterceptor)
   async subscribe(
-    @Self() self: SelfData,
-    @MessageBody() data: EventMap['SUBSCRIBE'],
+    @Self() user: User,
+    @SelfDat() selfData: SelfData,
+    @MessageBody(JVP(SnowflakeString.required()))
+    data: EventMap['SUBSCRIBE'],
     @ConnectedSocket() sock: SocketConnection
   ) {
-    if (!data) return
+    if (!this.hasAccess(user, data)) return { error: 'Unauthorized' }
 
-    if (!this.hasAccess(self, data)) return { error: 'Unauthorized' }
-
-    if (self.subscribedGuild) await sock.leave(self.subscribedGuild)
+    if (selfData.subscribedGuild) await sock.leave(selfData.subscribedGuild)
 
     await sock.join(data)
 
@@ -200,28 +190,29 @@ export class UserGateway implements OnGatewayConnection {
       .catch((err) => ({ error: err.message }))
     if ('error' in guild) return guild
 
-    self.subscribedGuild = guild.guild.id
+    selfData.subscribedGuild = guild.guild.id
 
     return guild
   }
 
   @SubscribeMessage('UNSUBSCRIBE')
+  @UseInterceptors(UserInterceptor)
   async unsubscribe(
-    @Self() self: SelfData,
-    @MessageBody() data: EventMap['UNSUBSCRIBE'],
+    @MessageBody(JVP(SnowflakeString.required())) data: EventMap['UNSUBSCRIBE'],
     @ConnectedSocket() sock: SocketConnection
   ) {
     await sock.leave(data)
   }
 
   @SubscribeMessage('CHANGE_SETTING')
+  @UseInterceptors(UserInterceptor, GuildsInterceptor)
   async changeSetting(
-    @Self() self: SelfData,
+    @Self() user: User,
     @MessageBody() data: EventMap['CHANGE_SETTING']
   ) {
     if (!data || !data.data || !data.id) return
 
-    if (!this.hasAccess(self, data.id)) return { error: 'Unauthorized' }
+    if (!this.hasAccess(user, data.id)) return { error: 'Unauthorized' }
 
     const err = await this.guilds.set(data.id, Pieces.normalize(data.data))
     if ('error' in (err || {})) return err
@@ -230,13 +221,19 @@ export class UserGateway implements OnGatewayConnection {
   }
 
   @SubscribeMessage('SET_PREMIUM')
+  @UseInterceptors(UserInterceptor, GuildsInterceptor)
   async setPremium(
-    @Self() self: SelfData,
-    @MessageBody() data: EventMap['SET_PREMIUM']
+    @Self() user: User,
+    @MessageBody(
+      JVP(
+        Joi.object({
+          guilds: Joi.array().items(SnowflakeString.required()).required()
+        }).required()
+      )
+    )
+    data: EventMap['SET_PREMIUM']
   ) {
-    const user = this.getSelf(self)
-
-    if (!user || !user.premium || !data?.guilds) return
+    if (!user.premium) return
 
     if (data.guilds.length > user.premium.count) {
       return {
@@ -282,9 +279,8 @@ export class UserGateway implements OnGatewayConnection {
   }
 
   @SubscribeMessage('CREATE_PORTAL_SESSION')
-  async createPortalSession(@Self() self: SelfData) {
-    const user = this.getSelf(self)
-    if (!user) return { error: 'Login' }
+  @UseInterceptors(UserInterceptor)
+  async createPortalSession(@Self() user: User) {
     if (!user.email) return { error: 'Needs email' }
 
     const customer = await this.chargebee.db.findOne({ id: user.id })
@@ -305,12 +301,18 @@ export class UserGateway implements OnGatewayConnection {
   }
 
   @SubscribeMessage('CREATE_HOSTED_PAGE')
+  @UseInterceptors(UserInterceptor)
   async createHostedPage(
-    @Self() self: SelfData,
-    @MessageBody() data: EventMap['CREATE_HOSTED_PAGE']
+    @Self() user: User,
+    @MessageBody(
+      JVP(
+        Joi.object({
+          plan: Joi.string()
+        }).required()
+      )
+    )
+    data: EventMap['CREATE_HOSTED_PAGE']
   ) {
-    const user = this.getSelf(self)
-    if (!user) return { error: 'Login' }
     if (!user.email) return { error: 'Needs email' }
 
     const hostedPage = await this.chargebee.chargebee.hosted_page
@@ -334,35 +336,20 @@ export class UserGateway implements OnGatewayConnection {
   // TODO: TICKETS
 
   @SubscribeMessage('GET_TICKETS')
-  async getTickets(@Self() self: SelfData) {
-    const user = this.getSelf(self)
-
-    if (!user?.admin) return { error: 'Not admin' }
-
+  @UseInterceptors(UserInterceptor, AdminInterceptor)
+  async getTickets() {
     return await this.tickets.getTickets()
   }
 
   @SubscribeMessage('TEST_TICKET')
-  async testTicket(
-    @Self() self: SelfData,
-    @MessageBody() ticket: EventMap['TEST_TICKET']
-  ) {
-    const user = this.getSelf(self)
-
-    if (!user?.admin) return { error: 'Not admin' }
-
+  @UseInterceptors(UserInterceptor, AdminInterceptor)
+  async testTicket(@MessageBody() ticket: EventMap['TEST_TICKET']) {
     return await this.tickets.testTicket(ticket.id, ticket.bypasses)
   }
 
   @SubscribeMessage('ACCEPT_TICKET')
-  async acceptTicket(
-    @Self() self: SelfData,
-    @MessageBody() ticket: EventMap['ACCEPT_TICKET']
-  ) {
-    const user = this.getSelf(self)
-
-    if (!user?.admin) return { error: 'Not admin' }
-
+  @UseInterceptors(UserInterceptor, AdminInterceptor)
+  async acceptTicket(@MessageBody() ticket: EventMap['ACCEPT_TICKET']) {
     const filter = await this.tickets.createNewFilter()
     this.tickets.addBypasses(filter, ticket.bypasses)
 
@@ -374,16 +361,18 @@ export class UserGateway implements OnGatewayConnection {
   }
 
   @SubscribeMessage('DENY_TICKET')
-  async denyTicket(
-    @Self() self: SelfData,
-    @MessageBody() ticket: EventMap['DENY_TICKET']
-  ) {
-    const user = this.getSelf(self)
-
-    if (!user?.admin) return { error: 'Not admin' }
-
+  @UseInterceptors(UserInterceptor, AdminInterceptor)
+  async denyTicket(@MessageBody() ticket: EventMap['DENY_TICKET']) {
     await this.tickets.deny(ticket.id)
 
     return { success: true }
+  }
+
+  @SubscribeMessage('TEST')
+  @UseInterceptors(UserInterceptor, AdminInterceptor)
+  async test(@Self() s: User) {
+    console.log('actual self', s)
+
+    return 'b'
   }
 }

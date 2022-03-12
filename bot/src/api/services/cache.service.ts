@@ -6,6 +6,12 @@ import { Config } from '../../config'
 
 @Injectable()
 export class CacheService {
+  constructor() {
+    if (Config.staging) {
+      global.cache = this
+    }
+  }
+
   users: Cache<Snowflake, User> = new Cache(Config.dashboardOptions.wipeTimeout)
 
   meta: Cache<'serverCount', number> = new Cache(
@@ -19,4 +25,11 @@ export class CacheService {
   guilds: Cache<Snowflake, GuildData> = new Cache(
     Config.dashboardOptions.wipeTimeout
   )
+
+  clear() {
+    this.users.clear()
+    this.meta.clear()
+    this.userGuilds.clear()
+    this.guilds.clear()
+  }
 }

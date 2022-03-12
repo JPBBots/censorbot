@@ -7,6 +7,8 @@ import { CacheService } from './cache.service'
 import { ChargeBeeService } from './chargebee.service'
 import { DatabaseService } from './database.service'
 import { InterfaceService } from './interface.service'
+import { ThreadService } from './thread.service'
+import { OAuthService } from './oauth.service'
 
 @Injectable()
 export class UsersService extends EventEmitter<{
@@ -16,7 +18,9 @@ export class UsersService extends EventEmitter<{
     private readonly database: DatabaseService,
     private readonly int: InterfaceService,
     private readonly caching: CacheService,
-    private readonly chargebee: ChargeBeeService
+    private readonly chargebee: ChargeBeeService,
+    private readonly thread: ThreadService,
+    private readonly oauth: OAuthService
   ) {
     super()
   }
@@ -83,5 +87,16 @@ export class UsersService extends EventEmitter<{
     user.premium = premium
 
     return user
+  }
+
+  async getGuilds(user: User) {
+    let guilds = this.caching.userGuilds.get(user.id)
+    if (guilds) return guilds
+
+    guilds = await this.oauth.getGuilds(user.bearer!)
+
+    this.caching.userGuilds.set(user.id, guilds)
+
+    return guilds
   }
 }
