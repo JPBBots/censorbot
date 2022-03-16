@@ -29,7 +29,7 @@ export const useGuilds = () => {
   const dispatch = useDispatch()
   const { guilds } = useGuildsState()
   const [loginState] = useLoginState()
-  const [user] = useUser(true)
+  const { user } = useUser(true)
 
   useEffect(() => {
     if (!guilds && !requesting && user) {
@@ -53,13 +53,14 @@ export const useGuilds = () => {
 }
 
 let selectedGuild: Snowflake | undefined
+let requestingGuild: Snowflake | undefined
 
 export const useGuild = () => {
   const [headless] = useHeadless()
   const router = useRouter()
 
   const dispatch = useDispatch()
-  const [user] = useUser(true)
+  const { user } = useUser(true)
   const { currentGuild, volatileDb, needsInvite, offlineInShard } =
     useGuildsState()
   const [loginState] = useLoginState()
@@ -81,6 +82,7 @@ export const useGuild = () => {
       dispatch(setCurrentGuild(headlessData.currentGuild as any))
     }
     if (
+      requestingGuild !== id &&
       id &&
       guilds &&
       user &&
@@ -90,6 +92,8 @@ export const useGuild = () => {
       if (selectedGuild) void Api.unsubscribe(selectedGuild)
 
       dispatch(setCurrentGuild(undefined))
+
+      requestingGuild = id
 
       return await Api.getGuild(id).then((guild) => {
         if (!guild) return (selectedGuild = undefined)
@@ -112,7 +116,7 @@ export const useGuild = () => {
       })
     }
   }
-  useEffect(() => void checkForGuild(), [loginState, guilds, id, user])
+  useEffect(() => void checkForGuild(), [id, user, guilds, loginState])
 
   useEffect(() => {
     if (currentGuild) {
@@ -121,10 +125,10 @@ export const useGuild = () => {
     }
   }, [currentGuild])
 
-  return [
+  return {
     currentGuild,
     volatileDb,
-    (key: string, value: any) => {
+    setGuildDb: (key: string, value: any) => {
       if (!currentGuild) return
 
       let obj: Record<any, any> = {}
@@ -141,8 +145,8 @@ export const useGuild = () => {
     needsInvite,
     offlineInShard,
     id,
-    async () => await checkForGuild()
-  ] as const
+    updateGuild: async () => await checkForGuild()
+  } as const
 }
 
 // export const useGuilds = () => {

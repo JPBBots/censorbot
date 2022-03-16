@@ -11,7 +11,7 @@ import { chargebee } from 'pages/_app'
 import NextLink from 'next/link'
 
 export function BuyPremium() {
-  const [user, login] = useUser(false)
+  const { user, login } = useUser(false)
 
   const [processing, setProcessing] = useState(false)
 

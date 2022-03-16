@@ -70,7 +70,11 @@ export interface WebSocketEventMap {
   }
   AUTHORIZE: {
     send: null
-    receive: { token: string }
+    receive: { token?: string; cancel?: boolean }
+  }
+  FAILED_AUTHORIZATION: {
+    send: null
+    receive: null
   }
   GET_USER: {
     receive: null

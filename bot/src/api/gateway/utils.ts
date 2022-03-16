@@ -76,17 +76,27 @@ export class UserInterceptor implements NestInterceptor {
       const timeout = setTimeout(() => {
         cleanup()
 
-        reject(new Error('Unauthorized'))
-      }, 15e3)
+        sock.emit('FAILED_AUTHORIZATION', null)
 
-      sock.emit('AUTHORIZE', async (data?: { token: string }) => {
-        if (!data?.token) return reject(new Error('Unauthorized'))
+        reject(new Error('Unauthorized'))
+      }, 300000)
+
+      sock.emit('AUTHORIZE', async (data) => {
+        if (!data?.token || data?.cancel) {
+          cleanup()
+
+          return reject(new Error('Unauthorized'))
+        }
 
         const user = await this.users
           .login(data.token)
           .catch((err: Error) => err)
 
-        if (user instanceof Error) return reject(new Error(user.message))
+        if (user instanceof Error) {
+          cleanup()
+
+          return reject(new Error(user.message))
+        }
 
         sock.data.userId = user.id
         await sock.join(user.id)

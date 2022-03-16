@@ -127,7 +127,7 @@ export function Aside({
   mobiled,
   ...props
 }: AsideOptions) {
-  const [guild] = useGuild()
+  const { currentGuild: guild } = useGuild()
   const { height } = useWindowSize()
 
   return (

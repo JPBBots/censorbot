@@ -227,7 +227,9 @@ export class UserGateway implements OnGatewayConnection {
     @MessageBody(
       JVP(
         Joi.object({
-          guilds: Joi.array().items(SnowflakeString.required()).required()
+          guilds: Joi.array()
+            .items(SnowflakeString.required().optional())
+            .required()
         }).required()
       )
     )

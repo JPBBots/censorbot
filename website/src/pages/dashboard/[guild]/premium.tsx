@@ -14,8 +14,8 @@ import { BuyPremium } from '~/BuyPremium'
 import { Help } from '@jpbbots/theme'
 
 export default function GuildPremium() {
-  const [guild] = useGuild()
-  const [user] = useUser(true)
+  const { currentGuild: guild } = useGuild()
+  const { user } = useUser(true)
   const dispatch = useDispatch()
 
   return (

@@ -8,7 +8,7 @@ import { TicketInteraction } from '~/Tickets'
 import { Spinner } from '@chakra-ui/react'
 
 export default function Tickets() {
-  const [user] = useUser(true)
+  const { user } = useUser(true)
   const [tickets, setTickets] = useState<Ticket[]>()
 
   useEffect(() => {

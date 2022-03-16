@@ -13,7 +13,7 @@ import { Api } from '@/structures/Api'
 import { wMT } from '@jpbbots/theme'
 
 export function NavBar() {
-  const [user, login, logout] = useUser(false)
+  const { user, login, logout } = useUser(false)
   const showText = wMT(675)
   const showNavItems = wMT(475)
   const router = useRouter()

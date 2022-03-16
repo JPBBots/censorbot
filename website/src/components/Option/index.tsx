@@ -5,7 +5,7 @@ import Router from 'next/router'
 import { Logger } from 'structures/Logger'
 
 export function Option({ onChange, name, ...props }: OptionProps) {
-  const [currentGuild] = useGuild()
+  const { currentGuild } = useGuild()
 
   return (
     <CCOption

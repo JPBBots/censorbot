@@ -1,4 +1,8 @@
-import { GuildData, Exception, ExceptionType } from '@jpbbots/cb-typings'
+import {
+  GuildData,
+  AdvancedException,
+  ExceptionType
+} from '@jpbbots/cb-typings'
 import { DeepPartial, HStack, Text, Icon, Select } from '@chakra-ui/react'
 import { InlineOptionGroup } from '@jpbbots/censorbot-components'
 import React from 'react'
@@ -7,9 +11,9 @@ import { FaTrash } from 'react-icons/fa'
 
 export interface ExceptionSettingProps {
   guild: GuildData
-  exception: Exception
+  exception: AdvancedException
   first?: boolean
-  onChange?: (data: Exception) => void
+  onChange?: (data: AdvancedException) => void
   onDelete?: () => void
 }
 
@@ -56,7 +60,7 @@ export function ExceptionSetting({
   onDelete,
   first
 }: ExceptionSettingProps) {
-  const change = (data: DeepPartial<Exception>) => {
+  const change = (data: DeepPartial<AdvancedException>) => {
     onChange?.({
       ...exception,
       ...data

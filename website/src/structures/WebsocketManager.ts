@@ -19,6 +19,7 @@ import { io } from 'socket.io-client'
 import { Api } from './Api'
 import { setLoading } from '@/store/reducers/loading.reducer'
 import { setServerCount } from '@/store/reducers/meta.reducer'
+import { WindowOpener } from '@/utils/WindowOpener'
 
 type EventMap = {
   [key in keyof WebSocketEventMap]: WebSocketEventMap[key]['receive']
@@ -44,18 +45,6 @@ export class WebsocketManager extends ExtendedEmitter {
     this.log('Connected to socket')
 
     store.dispatch(setLoading(false))
-
-    void Api.getUser().then((user) => {
-      if (user && Api.guildId)
-        void Api.getGuild(Api.guildId)
-          .then((guild) => {
-            if (!guild || 'notInGuild' in guild || 'offlineInShard' in guild)
-              return
-
-            store.dispatch(setCurrentGuild(guild))
-          })
-          .catch()
-    })
   }
 
   @Event('disconnect')
@@ -88,11 +77,25 @@ export class WebsocketManager extends ExtendedEmitter {
     this.ws.emit(event, data)
   }
 
+  authWindow?: WindowOpener
+
   @Event('AUTHORIZE')
-  authorize(respond: (val: EventMap['AUTHORIZE']) => void) {
+  async authorize(respond: (val: EventMap['AUTHORIZE']) => void) {
     if (Api.token) return respond({ token: Api.token })
 
-    console.log('needs login')
+    this.authWindow = Api.login().cancel(() => {
+      respond({ cancel: true })
+      this.authWindow?.close()
+    })
+
+    await this.authWindow.wait()
+    if (Api.token) return respond({ token: Api.token })
+    else if (this.authWindow.closedByUser) return respond({ cancel: true })
+  }
+
+  @Event('FAILED_AUTHORIZATION')
+  async failedAuthorization() {
+    this.authWindow?.close()
   }
 
   @Event('RELOAD')

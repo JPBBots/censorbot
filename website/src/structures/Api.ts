@@ -8,8 +8,8 @@ import { Snowflake } from 'discord-api-types'
 import { updateObject } from 'utils/updateObject'
 import Pieces from 'utils/Pieces'
 import { store } from '@/store'
-import { setUser } from '@/store/reducers/auth.reducer'
 import { chargebee } from '@/pages/_app'
+import { LoginState, setLoginState } from '@/store/reducers/auth.reducer'
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class Api {
@@ -33,18 +33,24 @@ export class Api {
     return Utils.getCookie('token')
   }
 
-  static async login(required: boolean = false, email?: boolean) {
-    const user = await Utils.openWindow(
+  static login(required: boolean = false, email?: boolean) {
+    const window = Utils.openWindow(
       `/api/auth/discord${email ? `?email=true` : ''}`,
       'Login'
-    ).then(async () => await this.getUser())
+    ).cancel(() => {
+      store.dispatch(setLoginState(LoginState.LoggedOut))
+    })
 
-    if (!user) {
-      Logger.error('Failed to authorize')
-      if (required) void Router.push('/')
-    }
+    void window.wait().then(() => {
+      if (!Api.token) {
+        Logger.error('Failed to authorize')
+        store.dispatch(setLoginState(LoginState.LoggedOut))
 
-    return user
+        if (window.closedByUser) void Router.push('/')
+      }
+    })
+
+    return window
   }
 
   static async createPortal() {
@@ -65,14 +71,8 @@ export class Api {
   }
 
   static async getUser() {
-    if (!this.token) return undefined
     this.log('Retrieving user')
-
     const user = await this.ws.request('GET_USER')
-
-    if (user) {
-      store.dispatch(setUser(user))
-    }
 
     return user
   }

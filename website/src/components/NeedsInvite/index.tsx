@@ -24,7 +24,7 @@ import { animate } from 'framer-motion'
 import { useRef, useEffect } from 'react'
 
 export function NeedsInvite({ guild }: { guild: ShortGuild }) {
-  const [, , , , , id, updateGuild] = useGuild()
+  const { id, updateGuild } = useGuild()
   const [guilds] = useGuilds()
 
   const [serverCount] = useServerCount()
@@ -48,10 +48,12 @@ export function NeedsInvite({ guild }: { guild: ShortGuild }) {
   }, [serverCount, countRef])
 
   const inviteBot = (admin: boolean) => {
-    void Utils.openWindow(
+    const window = Utils.openWindow(
       `/invite?id=${id}&admin=${admin}`,
       'Invite the bot'
-    ).then(() => {
+    )
+
+    void window.wait().then(() => {
       void updateGuild().then((hasGuild) => {
         if (hasGuild) {
           const newGuilds: ShortGuild[] = Object.assign([], guilds)

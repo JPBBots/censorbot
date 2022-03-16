@@ -37,7 +37,7 @@ interface DashboardSectionProps extends PropsWithChildren<{}> {
 
 export function DashboardSection(props: DashboardSectionProps) {
   useUser(true)
-  const [currentGuild, , , needsInvite, inOfflineShard, guildId] = useGuild()
+  const { currentGuild, needsInvite, offlineInShard, id: guildId } = useGuild()
   const [guilds] = useGuilds()
   const [loginState] = useLoginState()
   const mobiled = wLT(980)
@@ -54,7 +54,7 @@ export function DashboardSection(props: DashboardSectionProps) {
 
   const currentSection = sections.find((x) => x.name === props.section)
 
-  if (inOfflineShard) {
+  if (offlineInShard) {
     return (
       <VStack p="16px">
         <Box alignSelf="flex-start">
@@ -83,8 +83,10 @@ export function DashboardSection(props: DashboardSectionProps) {
   if (loginState === LoginState.LoggedOut) {
     return (
       <Center>
-        <Text textStyle="heading.xl">Login to access dashboard</Text>
-        <LoginButton />
+        <VStack>
+          <Text textStyle="heading.xl">Login to access dashboard</Text>
+          <LoginButton />
+        </VStack>
       </Center>
     )
   }

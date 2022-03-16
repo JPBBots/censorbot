@@ -421,7 +421,7 @@ export function SettingOption({
 }
 
 export function Setting(setting: ISetting) {
-  const [guild, volatileDb, setValue] = useGuild()
+  const { currentGuild: guild, volatileDb, setGuildDb: setValue } = useGuild()
 
   if (!guild) return null
 

@@ -11,6 +11,7 @@ export function Header() {
       />
       <title>Censor Bot</title>
 
+      <meta name="darkreader" content="dark" />
       <meta property="og:image" content={BRANDING.logo} />
       <meta name="theme-color" content="#ea5455" />
       {/* <meta property="og:title" content={BRANDING.name} />
