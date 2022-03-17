@@ -55,12 +55,6 @@ export const Config = {
     webhook: process.env.CHARGEBEE_WEBHOOK as string
   },
 
-  premiumAmounts: {
-    premium: 3,
-    'super-premium': 6,
-    'own-instance': 6
-  },
-
   oauth: {
     mySecret: process.env.OAUTH_MYSECRET as string,
     secret: process.env.OAUTH_TOKEN as string
@@ -136,7 +130,8 @@ export const Config = {
   webhooks: {
     tickets: generateWebhook('tickets'),
     ticketLog: generateWebhook('ticketLog'),
-    errors: generateWebhook('errors')
+    errors: generateWebhook('errors'),
+    premium: generateWebhook('premium')
   },
 
   actionRetention: 3,

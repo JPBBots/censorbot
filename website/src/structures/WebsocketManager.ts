@@ -44,6 +44,7 @@ export class WebsocketManager extends ExtendedEmitter {
   onConnect() {
     this.log('Connected to socket')
 
+    if (Api.guildId) void Api.getGuild(Api.guildId)
     store.dispatch(setLoading(false))
   }
 

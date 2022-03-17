@@ -75,31 +75,6 @@ export const useUser = (needsUser: boolean) => {
         .finally(() => {
           requesting = false
         })
-
-      // return await (Api.token && !email
-      //   ? Api.getUser()
-      //   : Api.login(needsUser, email)
-      // )
-      //   .then((user) => {
-      //     if (!user) throw new Error()
-
-      //     Swal.close({ isDismissed: true, isConfirmed: false, isDenied: false })
-
-      //     dispatch(setUser(user))
-      //     dispatch(setLoginState(LoginState.LoggedIn))
-
-      //     return user
-      //   })
-      //   .catch(() => {
-      //     if (needsUser) return goUser()
-
-      //     dispatch(setLoginState(LoginState.LoggedOut))
-
-      //     return undefined
-      //   })
-      //   .finally(() => {
-      //     requesting = false
-      //   })
     }
   }
 
@@ -107,6 +82,19 @@ export const useUser = (needsUser: boolean) => {
     user,
     login: () => {
       void goUser(true)
+    },
+    getEmail: async () => {
+      if (user?.email) return user.email
+
+      const win = Api.login(true)
+
+      await win.wait()
+
+      const newUser = await goUser(true)
+
+      if (newUser?.email) return newUser.email
+
+      throw new Error('Could not retrieve email')
     },
     logout: () => {
       Api.logout()

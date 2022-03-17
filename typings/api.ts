@@ -15,6 +15,7 @@ export type TimedPunishments =
 
 export enum PremiumTypes {
   Premium = 'premium',
+  YearlyPremium = 'premium-yearly',
   SuperPremium = 'super-premium',
   OwnInstance = 'own-instance'
 }

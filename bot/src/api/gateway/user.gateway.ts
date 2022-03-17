@@ -137,12 +137,6 @@ export class UserGateway implements OnGatewayConnection {
     })
   }
 
-  @SubscribeMessage('RELOAD_SELF')
-  @UseInterceptors(UserInterceptor)
-  reloadSelf(@Self() user: User) {
-    if (user.id) void this.users.causeUpdate(user.id)
-  }
-
   @SubscribeMessage('LOGOUT')
   async logout(@ConnectedSocket() sock: SocketConnection) {
     if (sock.data.userId) await sock.leave(sock.data.userId)
@@ -243,9 +237,6 @@ export class UserGateway implements OnGatewayConnection {
       }
     }
 
-    if (!data.guilds.every((x) => x.match(/^[0-9]{5,}$/)))
-      return { error: 'Strange guild ID' }
-
     await this.db.collection('premium_users').updateOne(
       { id: user.id },
       {
@@ -283,23 +274,21 @@ export class UserGateway implements OnGatewayConnection {
   @SubscribeMessage('CREATE_PORTAL_SESSION')
   @UseInterceptors(UserInterceptor)
   async createPortalSession(@Self() user: User) {
-    if (!user.email) return { error: 'Needs email' }
+    try {
+      const portalPage = await this.chargebee.chargebee.portal_session
+        .create({
+          customer: {
+            id: await this.chargebee.getCustomerId(user.id)
+          }
+        })
+        .request()
 
-    const customer = await this.chargebee.db.findOne({ id: user.id })
-    if (!customer) return { error: 'Invalid Customer' }
-
-    const portalPage = await this.chargebee.chargebee.portal_session
-      .create({
-        customer: {
-          id: customer.customer
-        }
-      })
-      .request((error) => {
-        console.error(error)
-        if (error) throw new Error(error)
-      })
-
-    return portalPage.portal_session
+      return portalPage.portal_session
+    } catch (_err) {
+      return {
+        error: 'Invalid Customer for Portal'
+      }
+    }
   }
 
   @SubscribeMessage('CREATE_HOSTED_PAGE')
@@ -315,8 +304,6 @@ export class UserGateway implements OnGatewayConnection {
     )
     data: EventMap['CREATE_HOSTED_PAGE']
   ) {
-    if (!user.email) return { error: 'Needs email' }
-
     const hostedPage = await this.chargebee.chargebee.hosted_page
       .checkout_new({
         subscription: {
@@ -325,11 +312,11 @@ export class UserGateway implements OnGatewayConnection {
         customer: {
           first_name: 'Discord',
           last_name: `${user.tag}`,
-          email: user.email
+          id: await this.chargebee.getCustomerId(user.id)
         }
       })
       .request((error) => {
-        if (error) throw new Error(error)
+        if (error) console.log(error)
       })
 
     return hostedPage.hosted_page

@@ -7,12 +7,14 @@ import {
   Query,
   Res
 } from '@nestjs/common'
+import { Snowflake } from 'discord-api-types'
 import { Response } from 'express'
 import { Config } from '../../config'
 import { ChargeBeeService } from '../services/chargebee.service'
 import { DatabaseService } from '../services/database.service'
 import { GuildsService } from '../services/guilds.service'
 import { InterfaceService } from '../services/interface.service'
+import { ThreadService } from '../services/thread.service'
 import { UsersService } from '../services/users.service'
 
 interface WebhookEvent {
@@ -33,7 +35,8 @@ export class ChargeBeeController {
     private readonly users: UsersService,
     private readonly int: InterfaceService,
     private readonly db: DatabaseService,
-    private readonly guilds: GuildsService
+    private readonly guilds: GuildsService,
+    private readonly thread: ThreadService
   ) {}
 
   negativeEvents = [
@@ -65,32 +68,17 @@ export class ChargeBeeController {
       if (!body) return
 
       if (this.positiveEvents.includes(body.event_type)) {
-        const existingUser = await this.chargebee.db.findOne({
+        const deprecatedUser = await this.chargebee.db.findOne({
           customer: body.content.customer.id
         })
-        if (existingUser) return
 
-        const email = body.content.customer.email
+        let userId: Snowflake
 
-        const user = await this.users.db.findOne({ email })
-        if (!user) return
-
-        console.log(
-          `Linking user ${user.id} to customer ${body.content.customer.id} under email ${email}`
-        )
-
-        await this.chargebee.db.updateOne(
-          { id: user.id },
-          {
-            $set: {
-              id: user.id,
-              customer: body.content.customer.id
-            }
-          },
-          {
-            upsert: true
-          }
-        )
+        if (deprecatedUser) {
+          userId = deprecatedUser.id
+        } else {
+          userId = body.content.customer.id
+        }
 
         void this.int.api._request(
           'POST',
@@ -98,40 +86,72 @@ export class ChargeBeeController {
           {
             Authorization: process.env.JPBBOT_PREMIUM_UPDATES
           },
-          { id: user.id }
+          { id: userId }
         )
 
-        void this.users.causeUpdate(user.id)
+        const amount = await this.chargebee.getAmount(userId, true)
+
+        void this.thread
+          .webhook('premium')
+          .color('Green')
+          .title(`Customer ${body.event_type}`)
+          .description(`<@${userId}>`)
+          .field('Deprecated', `${!!deprecatedUser}`, true)
+          .field(
+            'Subscription',
+            `
+              Customer = ${amount.customer}
+              Plan = ${amount.subscription}
+              Servers = ${amount.amount}
+            `,
+            true
+          )
+          .send()
+
+        void this.users.causeUpdate(userId)
       }
 
       if (this.negativeEvents.includes(body.event_type)) {
-        const user = await this.chargebee.db.findOne({
+        const deprecatedCustomer = await this.chargebee.db.findOne({
           customer: body.content.customer.id
         })
-        if (!user) return
 
-        if (body.content.customer.deleted)
+        if (body.content.customer.deleted && deprecatedCustomer)
           await this.chargebee.db.deleteOne({
             customer: body.content.customer.id
           })
 
-        this.chargebee.cache.delete(user.id)
-        const newAmount = await this.chargebee.getAmount(user.id)
+        const userId = deprecatedCustomer?.id ?? body.content.customer.id
+
+        const newAmount = await this.chargebee.getAmount(userId, true)
 
         const existingPremium = await this.db
           .collection('premium_users')
-          .findOne({ id: user.id })
+          .findOne({ id: userId })
+
+        const embed = this.thread
+          .webhook('premium')
+          .color('Red')
+          .title(`Customer ${body.event_type}`)
+          .description(`<@${userId}>`)
+          .field(`Customer Deleted`, `${body.content.customer.deleted}`, true)
+          .field('Deprecated', `${!!deprecatedCustomer}`, true)
 
         if (newAmount.amount < 1) {
-          console.log(`Customer ${body.content.customer.id} deleted`)
           if (existingPremium) {
+            await this.db.collection('premium_users').deleteOne({ id: userId })
+
+            embed.field(
+              'Guilds removed',
+              `${existingPremium.guilds.length}`,
+              true
+            )
+
             for (const guild of existingPremium.guilds) {
               await this.db.removeGuildPremium(guild)
 
               void this.guilds.updateGuild(guild)
             }
-
-            await this.db.collection('premium_users').deleteOne({ id: user.id })
           }
 
           void this.int.api._request(
@@ -141,13 +161,33 @@ export class ChargeBeeController {
               Authorization: process.env.JPBBOT_PREMIUM_UPDATES
             },
             {
-              id: user.id
+              id: userId
             }
           )
-        } else {
-          if (!existingPremium) return
 
+          if (deprecatedCustomer) {
+            // remove deprecated customers completely
+            void this.chargebee.chargebee.customer
+              .delete(body.content.customer.id)
+              .request()
+          }
+        } else if (existingPremium) {
           const newGuilds = existingPremium.guilds.slice(0, newAmount.amount)
+
+          embed.field(
+            'Guilds removed',
+            `${existingPremium.guilds.length - newGuilds.length}`,
+            true
+          )
+
+          await this.db.collection('premium_users').updateOne(
+            { id: userId },
+            {
+              $set: {
+                guilds: newGuilds
+              }
+            }
+          )
           for (const guild of existingPremium.guilds) {
             if (!newGuilds.includes(guild)) {
               await this.db.removeGuildPremium(guild)
@@ -155,17 +195,9 @@ export class ChargeBeeController {
               void this.guilds.updateGuild(guild)
             }
           }
-
-          await this.db.collection('premium_users').updateOne(
-            { id: user.id },
-            {
-              $set: {
-                guilds: newGuilds
-              }
-            }
-          )
         }
-        void this.users.causeUpdate(user.id)
+        void this.users.causeUpdate(userId)
+        void embed.send()
       }
     })()
   }

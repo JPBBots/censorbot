@@ -33,7 +33,7 @@ export class Api {
     return Utils.getCookie('token')
   }
 
-  static login(required: boolean = false, email?: boolean) {
+  static login(email?: boolean) {
     const window = Utils.openWindow(
       `/api/auth/discord${email ? `?email=true` : ''}`,
       'Login'

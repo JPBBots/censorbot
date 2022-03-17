@@ -14,6 +14,7 @@ import { Config } from '../../config'
 
 import { DatabaseService } from './database.service'
 import { InterfaceService } from './interface.service'
+import { PremiumTypes } from '@jpbbots/cb-typings'
 
 const chargebee = chargebeeC as Chargebee.ChargeBee
 
@@ -31,12 +32,18 @@ interface CustomerSchema {
 export interface AmountObject {
   amount: number
   customer: boolean
+  subscription?: PremiumTypes
 }
 
 const NONE: AmountObject = {
   amount: 0,
   customer: false
 }
+
+type CustomerData =
+  | { customer: false }
+  | { customer: true; amount: 0 }
+  | { customer: true; amount: number; subscription: PremiumTypes }
 
 @Injectable()
 export class ChargeBeeService {
@@ -46,6 +53,10 @@ export class ChargeBeeService {
     Config.dashboardOptions.wipeTimeout
   )
 
+  amounts: {
+    [key: string]: number
+  } = {}
+
   constructor(
     private readonly database: DatabaseService,
     private readonly int: InterfaceService
@@ -54,26 +65,43 @@ export class ChargeBeeService {
       site: `censorbot${Config.staging ? '-test' : ''}`,
       api_key: Config.chargebee.key
     })
+
+    void this.chargebee.plan.list().request(
+      (
+        err,
+        data: {
+          list: Array<{
+            plan: { id: PremiumTypes; meta_data: { servers: number } }
+          }>
+        }
+      ) => {
+        if (err) return console.error('Unable to request Chargebee plans')
+
+        data.list.forEach(({ plan }) => {
+          this.amounts[plan.id] = plan.meta_data.servers
+        })
+      }
+    )
   }
 
   get db(): Collection<CustomerSchema> {
     return this.database.collection('customers')
   }
 
-  async getCustomerSub(customer: string): Promise<Subscription> {
+  async getCustomerSub(customerId: string): Promise<CustomerData> {
     return await new Promise((resolve, reject) => {
       void this.chargebee.subscription
-        .subscriptions_for_customer(customer)
+        .subscriptions_for_customer(customerId)
         .request(
           (err, data: { list: Array<{ subscription: Subscription }> }) => {
             if (err) {
               if (err.error_code === 'resource_not_found') {
-                return reject(new Error("Couldn't find subscription"))
+                return resolve({ customer: false })
               }
               return reject(new Error(err.message))
             }
 
-            let sub
+            let sub: Subscription | undefined
 
             if (data.list.length > 0) {
               sub = data.list.filter(
@@ -81,41 +109,47 @@ export class ChargeBeeService {
               )?.[0]?.subscription
             }
 
-            if (!sub) reject(new Error("Couldn't find subscription"))
+            if (!sub) return resolve({ customer: true, amount: 0 })
 
-            resolve(sub)
+            resolve({
+              customer: true,
+              amount: this.amounts[sub.plan_id],
+              subscription: sub.plan_id as PremiumTypes
+            })
           }
         )
     })
   }
 
-  async getAmount(id: Snowflake): Promise<AmountObject> {
-    const cached = this.cache.get(id)
-    if (cached) return cached
+  private async _getAmount(id: Snowflake): Promise<AmountObject> {
+    const customerId = await this.getCustomerId(id)
+    const customer = await this.getCustomerSub(customerId)
 
-    const user = await this.db.findOne({ id })
-    const res = await (async (): Promise<AmountObject> => {
-      if (!user || !user.customer) {
-        const prem = await this.int.api.getPremium(id)
-        if (prem) {
-          return {
-            amount: prem,
-            customer: false
-          }
-        } else return NONE
+    if (customer.customer) return customer
+
+    const prem = await this.int.api.getPremium(id)
+    if (prem) {
+      return {
+        amount: prem,
+        customer: false
       }
-      try {
-        const sub = await this.getCustomerSub(user.customer)
-        if (!sub) return NONE
-        return {
-          amount: Config.premiumAmounts[sub.plan_id] || 0,
-          customer: true
-        }
-      } catch (err) {
-        return NONE
-      }
-    })()
+    } else return NONE
+  }
+
+  async getAmount(id: Snowflake, recache = false): Promise<AmountObject> {
+    const cached = this.cache.get(id)
+    if (cached && !recache) return cached
+
+    const res = await this._getAmount(id)
     this.cache.set(id, res)
+
     return res
+  }
+
+  async getCustomerId(id: Snowflake) {
+    const user = await this.db.findOne({ id })
+    if (user) return user.customer
+
+    return id
   }
 }

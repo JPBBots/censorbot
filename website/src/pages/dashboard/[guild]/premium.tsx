@@ -10,8 +10,9 @@ import { Api } from '@/structures/Api'
 import { useDispatch } from 'react-redux'
 
 import { setUser } from '@/store/reducers/auth.reducer'
-import { BuyPremium } from '~/BuyPremium'
 import { Help } from '@jpbbots/theme'
+
+import Premium from 'pages/premium'
 
 export default function GuildPremium() {
   const { currentGuild: guild } = useGuild()
@@ -70,7 +71,7 @@ export default function GuildPremium() {
             .map((x) => <Setting key={x.title ?? x.options[0].name} {...x} />)
         : !user?.premium?.count && (
             <HStack>
-              <BuyPremium />
+              <Premium hideFooter />
             </HStack>
           )}
     </DashboardSection>

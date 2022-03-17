@@ -7,7 +7,6 @@ import { CacheService } from './cache.service'
 import { ChargeBeeService } from './chargebee.service'
 import { DatabaseService } from './database.service'
 import { InterfaceService } from './interface.service'
-import { ThreadService } from './thread.service'
 import { OAuthService } from './oauth.service'
 
 @Injectable()
@@ -19,7 +18,6 @@ export class UsersService extends EventEmitter<{
     private readonly int: InterfaceService,
     private readonly caching: CacheService,
     private readonly chargebee: ChargeBeeService,
-    private readonly thread: ThreadService,
     private readonly oauth: OAuthService
   ) {
     super()
@@ -32,10 +30,6 @@ export class UsersService extends EventEmitter<{
   async causeUpdate(id: Snowflake) {
     const cachedUser = this.caching.users.get(id)
     if (!cachedUser) return
-
-    this.chargebee.cache.delete(id)
-
-    console.log(`Updating ${id}`)
 
     const newUser = await this.extendUser(cachedUser)
 
@@ -63,11 +57,10 @@ export class UsersService extends EventEmitter<{
     const premium: UserPremium = {
       count: 0,
       guilds: [],
-      customer: false
+      customer: prem.customer
     }
     if (prem.amount > 0) {
       premium.count = prem.amount
-      premium.customer = prem.customer
 
       let premiumUser = await this.database
         .collection('premium_users')
