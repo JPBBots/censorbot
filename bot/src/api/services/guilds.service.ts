@@ -66,9 +66,12 @@ export class GuildsService extends EventEmitter<{
       .filter((x) => x.some((b) => b.id === guild.id))
       .forEach((g) => (g.find((x) => x.id === guild.id)!.joined = true))
 
+    const premiumInfo = await this.database.guildPremium(guild.id)
+
     return {
       guild,
-      premium: await this.database.guildPremium(guild.id),
+      premium: premiumInfo.premium,
+      trial: premiumInfo.trial,
       db: await this.database.config(guild.id)
     }
   }

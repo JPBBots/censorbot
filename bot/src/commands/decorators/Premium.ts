@@ -7,9 +7,9 @@ export const Premium = Decorators.createCommandDecorator((_, cmd) => {
   cmd.canRun.push(async (int, handler) => {
     if (!int.guild_id) return false
 
-    const isPremium = await (handler.worker as WorkerManager).db.guildPremium(
-      int.guild_id
-    )
+    const isPremium = (
+      await (handler.worker as WorkerManager).db.guildPremium(int.guild_id)
+    ).premium
 
     if (!isPremium)
       throw new CommandError(

@@ -32,6 +32,7 @@ const slice = createSlice({
       state.volatileDb = action.payload?.db
     },
     setNeedsInvite: (state, action: PayloadAction<boolean>) => {
+      console.log(`Set needsInvite to ${action.payload}`)
       state.needsInvite = action.payload
     },
     setOfflineInShard: (state, action: PayloadAction<boolean>) => {

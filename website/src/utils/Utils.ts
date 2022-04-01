@@ -12,8 +12,8 @@ export class Utils {
     })
   }
 
-  static openWindow(url: string, text?: string) {
-    return new WindowOpener(url)
+  static openWindow<RD>(url: string, text?: string) {
+    return new WindowOpener<RD>(url)
       .fail(async () => {
         return await Swal.fire({
           text: text ?? 'Open',

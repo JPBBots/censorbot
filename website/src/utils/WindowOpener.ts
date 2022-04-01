@@ -1,11 +1,11 @@
-export class WindowOpener {
+export class WindowOpener<RD> {
   public window?: Window
   public closedByUser: boolean = true
 
   onFail?: () => Promise<boolean>
   onCancel: Array<() => void> = []
-  private waitPromise?: Promise<void>
-  private onPromiseDone?: () => void
+  private waitPromise?: Promise<RD>
+  private onPromiseDone?: (data: RD) => void
   private interval?: NodeJS.Timer
 
   constructor(
@@ -36,6 +36,9 @@ export class WindowOpener {
   }
 
   open() {
+    if (this.window) {
+      this.clear()
+    }
     let win = window.open(this.url, 'window', this.params)
 
     if (!win) {
@@ -72,6 +75,14 @@ export class WindowOpener {
 
   clear() {
     if (this.interval) clearInterval(this.interval)
+    if (this.window) {
+      if (!this.window.closed) this.window.close()
+
+      this.window = undefined
+    }
+    this.waitPromise = undefined
+    this.closedByUser = true
+    this.onPromiseDone = undefined
 
     return this
   }
@@ -81,8 +92,12 @@ export class WindowOpener {
 
     this.interval = setInterval(() => {
       if (window.closed) {
-        this.onPromiseDone?.()
-        this.clear()
+        let returnData
+        try {
+          returnData = (window as any).returnData
+        } catch (err) {}
+
+        this.onPromiseDone?.(returnData)
       }
     })
   }

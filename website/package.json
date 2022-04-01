@@ -14,7 +14,7 @@
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
     "@jpbberry/typed-emitter": "^1.2.1",
-    "@jpbbots/cb-typings": "^1.0.17",
+    "@jpbbots/cb-typings": "^1.0.18",
     "@jpbbots/censorbot-components": "^3.3.1",
     "@jpbbots/theme": "^3.5.0",
     "@reduxjs/toolkit": "^1.6.1",

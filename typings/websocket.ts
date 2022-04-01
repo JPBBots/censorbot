@@ -109,6 +109,10 @@ export interface WebSocketEventMap {
     }
     send: true
   }
+  ENABLE_TRIAL: {
+    receive: Snowflake
+    send: true
+  }
   UPDATE_USER: {
     receive: User
     send: null

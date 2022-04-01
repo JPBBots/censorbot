@@ -131,7 +131,10 @@ export class WebsocketManager extends ExtendedEmitter {
 
   @Event('DELETE_GUILD')
   onGuildDelete(guildId: EventMap['DELETE_GUILD']) {
+    console.log('Retrieved delete guild ' + guildId)
     const currentGuild = store.getState().guilds.currentGuild
+
+    console.log({ currentGuild })
 
     if (!currentGuild || currentGuild.guild.id !== guildId) return
 
@@ -145,6 +148,8 @@ export class WebsocketManager extends ExtendedEmitter {
       {},
       newGuilds.find((x) => x.id === guildId)
     )
+
+    console.log({ g })
     if (g) {
       g.joined = false
 

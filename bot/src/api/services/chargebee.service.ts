@@ -15,6 +15,7 @@ import { Config } from '../../config'
 import { DatabaseService } from './database.service'
 import { InterfaceService } from './interface.service'
 import { PremiumTypes } from '@jpbbots/cb-typings'
+import { GuildsService } from './guilds.service'
 
 const chargebee = chargebeeC as Chargebee.ChargeBee
 
@@ -57,9 +58,12 @@ export class ChargeBeeService {
     [key: string]: number
   } = {}
 
+  _expiredTrialsInterval: NodeJS.Timer
+
   constructor(
     private readonly database: DatabaseService,
-    private readonly int: InterfaceService
+    private readonly int: InterfaceService,
+    private readonly guilds: GuildsService
   ) {
     this.chargebee.configure({
       site: `censorbot${Config.staging ? '-test' : ''}`,
@@ -82,6 +86,10 @@ export class ChargeBeeService {
         })
       }
     )
+
+    this._expiredTrialsInterval = setInterval(() => {
+      void this._checkForExpiredTrials()
+    }, 1800000) // 30 minutes
   }
 
   get db(): Collection<CustomerSchema> {
@@ -128,7 +136,7 @@ export class ChargeBeeService {
     if (customer.customer) return customer
 
     const prem = await this.int.api.getPremium(id)
-    if (prem) {
+    if (prem && process.env.DISABLE_ROLE_CUSTOMER !== 'true') {
       return {
         amount: prem,
         customer: false
@@ -151,5 +159,22 @@ export class ChargeBeeService {
     if (user) return user.customer
 
     return id
+  }
+
+  private async _checkForExpiredTrials() {
+    const expiredTrials = await this.database
+      .collection('trials')
+      .find({ disabled: false, until: { $lt: Date.now() } })
+      .toArray()
+
+    for (const trial of expiredTrials) {
+      await this.database.removeGuildPremium(trial.guild)
+
+      await this.database
+        .collection('trials')
+        .updateOne({ guild: trial.guild }, { $set: { disabled: true } })
+
+      void this.guilds.updateGuild(trial.guild)
+    }
   }
 }

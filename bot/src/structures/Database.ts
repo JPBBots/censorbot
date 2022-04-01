@@ -36,6 +36,12 @@ export interface DatabaseCollections {
     id: Snowflake
     guilds: Snowflake[]
   }
+  trials: {
+    guild: Snowflake
+    until: number
+    disabled: boolean
+    user: Snowflake | null // null for JPBBitch
+  }
   punish: PunishmentSchema
   tickets: Ticket
   ticketban: TicketBanSchema
@@ -294,17 +300,25 @@ export class Database extends Db {
     return await this.updater(db as any)
   }
 
-  async guildPremium(id: Snowflake): Promise<boolean> {
+  async guildPremium(
+    guildId: Snowflake
+  ): Promise<{ premium: boolean; trial: boolean }> {
     const response = await this.collection('premium_users')
       .find({
         guilds: {
-          $elemMatch: { $eq: id }
+          $elemMatch: { $eq: guildId }
         }
       })
       .toArray()
       .then((x) => x.length)
 
-    return response > 0
+    if (response > 0) return { premium: true, trial: false }
+
+    const trial = await this.collection('trials').findOne({
+      guild: guildId
+    })
+
+    return { premium: trial ? trial.until > Date.now() : false, trial: !!trial }
   }
 
   dumpGuild(id: Snowflake) {

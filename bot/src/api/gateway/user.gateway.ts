@@ -271,6 +271,39 @@ export class UserGateway implements OnGatewayConnection {
     return true
   }
 
+  @SubscribeMessage('ENABLE_TRIAL')
+  @UseInterceptors(UserInterceptor, GuildsInterceptor)
+  async enableTrial(
+    @Self() user: User,
+    @MessageBody(JVP(SnowflakeString.required()))
+    guildId: EventMap['ENABLE_TRIAL']
+  ) {
+    if (!this.hasAccess(user, guildId)) return { error: 'Unauthorized' }
+    if (user.premium?.count) return { error: 'User already has premium' }
+
+    const activeTrial = await this.db
+      .collection('trials')
+      .findOne({ user: user.id, until: { $gt: Date.now() } })
+
+    if (activeTrial) return { error: 'User already has a trial active' }
+
+    const guildPremium = await this.db.guildPremium(guildId)
+
+    if (guildPremium.premium) return { error: 'Guild already has premium' }
+    if (guildPremium.trial) return { error: 'Guild has already used its trial' }
+
+    await this.db.collection('trials').insertOne({
+      guild: guildId,
+      user: user.id,
+      disabled: false,
+      until: Date.now() + 259200000 // 72 hours
+    })
+
+    await this.guilds.updateGuild(guildId)
+
+    return true
+  }
+
   @SubscribeMessage('CREATE_PORTAL_SESSION')
   @UseInterceptors(UserInterceptor)
   async createPortalSession(@Self() user: User) {

@@ -273,6 +273,10 @@ export interface GuildData {
    */
   premium: boolean
   /**
+   * Whether or not the guild has used their trial before (will always be false if the server has bought premium)
+   */
+  trial: boolean
+  /**
    * Database data
    */
   db: GuildDB

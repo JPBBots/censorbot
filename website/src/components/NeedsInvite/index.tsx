@@ -55,6 +55,7 @@ export function NeedsInvite({ guild }: { guild: ShortGuild }) {
 
     void window.wait().then(() => {
       void updateGuild().then((hasGuild) => {
+        console.log({ hasGuild })
         if (hasGuild) {
           const newGuilds: ShortGuild[] = Object.assign([], guilds)
           const g: ShortGuild = Object.assign(

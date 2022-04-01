@@ -77,6 +77,15 @@ export const useGuild = () => {
   }, [router.query])
 
   const checkForGuild = async () => {
+    console.log({
+      selectedGuild,
+      currentGuild,
+      requestingGuild,
+      id,
+      guilds,
+      user,
+      loginState
+    })
     if (selectedGuild === id && currentGuild) return
     if (headless) {
       dispatch(setCurrentGuild(headlessData.currentGuild as any))
@@ -95,25 +104,29 @@ export const useGuild = () => {
 
       requestingGuild = id
 
-      return await Api.getGuild(id).then((guild) => {
-        if (!guild) return (selectedGuild = undefined)
+      return await Api.getGuild(id)
+        .then((guild) => {
+          if (!guild) return (selectedGuild = undefined)
 
-        selectedGuild = id
+          selectedGuild = id
 
-        if ('notInGuild' in guild) {
-          dispatch(setNeedsInvite(true))
+          if ('notInGuild' in guild) {
+            dispatch(setNeedsInvite(true))
 
-          return null
-        } else if ('offlineInShard' in guild) {
-          dispatch(setOfflineInShard(true))
+            return null
+          } else if ('offlineInShard' in guild) {
+            dispatch(setOfflineInShard(true))
 
-          return null
-        } else {
-          dispatch(setCurrentGuild(guild))
+            return null
+          } else {
+            dispatch(setCurrentGuild(guild))
 
-          return guild
-        }
-      })
+            return guild
+          }
+        })
+        .finally(() => {
+          requestingGuild = undefined
+        })
     }
   }
   useEffect(() => void checkForGuild(), [id, user, guilds, loginState])
