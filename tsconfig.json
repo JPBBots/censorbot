@@ -1,8 +1,23 @@
 {
+  "include": ["src/**/*", "src/bot/.run/*.ts"],
+  "exclude": ["src/website"],
   "compilerOptions": {
-    "baseUrl": "./",
+    "target": "ES2020",
+    "outDir": "./dist",
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "baseUrl": "./src",
     "paths": {
-      "@typings/*": ["typings/*"]
+      "typings": [
+        "./typings"
+      ]
     }
   }
 }

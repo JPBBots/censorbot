@@ -4,8 +4,8 @@ website/src/config.json
 website/site.html
 .idea
 
-typings/*.js
-typings/*.d.ts
+src/typings/*.js
+src/typings/*.d.ts
 
 package-lock.json
 

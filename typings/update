@@ -1,5 +1,0 @@
-cd ../bot
-NPM_TOKEN=$TYPINGS_TOKEN npm i @jpbbots/cb-typings@latest
-
-cd ../website
-NPM_TOKEN=$TYPINGS_TOKEN npm i @jpbbots/cb-typings@latest
