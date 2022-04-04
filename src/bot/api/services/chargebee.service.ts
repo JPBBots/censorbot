@@ -16,6 +16,8 @@ import { DatabaseService } from './database.service'
 import { InterfaceService } from './interface.service'
 import { PremiumTypes } from 'typings'
 import { GuildsService } from './guilds.service'
+import { UsersService } from './users.service'
+import { EventEmitter } from '@jpbberry/typed-emitter'
 
 const chargebee = chargebeeC as Chargebee.ChargeBee
 
@@ -47,7 +49,7 @@ type CustomerData =
   | { customer: true; amount: number; subscription: PremiumTypes }
 
 @Injectable()
-export class ChargeBeeService {
+export class ChargeBeeService extends EventEmitter<{ USER_UPDATE: string }> {
   chargebee: Chargebee.ChargeBee = chargebee
 
   cache: Cache<Snowflake, AmountObject> = new Cache(
@@ -65,6 +67,8 @@ export class ChargeBeeService {
     private readonly int: InterfaceService,
     private readonly guilds: GuildsService
   ) {
+    super()
+
     this.chargebee.configure({
       site: `censorbot${Config.staging ? '-test' : ''}`,
       api_key: Config.chargebee.key
@@ -175,6 +179,7 @@ export class ChargeBeeService {
         .updateOne({ guild: trial.guild }, { $set: { disabled: true } })
 
       void this.guilds.updateGuild(trial.guild)
+      if (trial.user) this.emit('USER_UPDATE', trial.user)
     }
   }
 }

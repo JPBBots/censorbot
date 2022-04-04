@@ -302,7 +302,7 @@ export class Database extends Db {
 
   async guildPremium(
     guildId: Snowflake
-  ): Promise<{ premium: boolean; trial: boolean }> {
+  ): Promise<{ premium: boolean; trial: number | null }> {
     const response = await this.collection('premium_users')
       .find({
         guilds: {
@@ -312,13 +312,16 @@ export class Database extends Db {
       .toArray()
       .then((x) => x.length)
 
-    if (response > 0) return { premium: true, trial: false }
+    if (response > 0) return { premium: true, trial: null }
 
     const trial = await this.collection('trials').findOne({
       guild: guildId
     })
 
-    return { premium: trial ? trial.until > Date.now() : false, trial: !!trial }
+    return {
+      premium: trial ? trial.until > Date.now() : false,
+      trial: trial ? trial.until : null
+    }
   }
 
   dumpGuild(id: Snowflake) {

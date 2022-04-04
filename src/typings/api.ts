@@ -203,7 +203,7 @@ export interface User {
   /**
    * Premium data
    */
-  premium?: UserPremium
+  premium?: UserPremium & { trial: boolean }
   /**
    * Whether or not user is admin
    */
@@ -278,9 +278,9 @@ export interface GuildData {
    */
   premium: boolean
   /**
-   * Whether or not the guild has used their trial before (will always be false if the server has bought premium)
+   * The time in which the trial will expire (always null if the guild is premium)
    */
-  trial: boolean
+  trial: number | null
   /**
    * Database data
    */

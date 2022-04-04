@@ -8,5 +8,8 @@ module.exports = {
     return [
       { source: '/servers/:path*', destination: '/dashboard/:path*' }
     ]
+  },
+  experimental: {
+    externalDir: true
   }
 }

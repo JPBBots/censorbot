@@ -21,6 +21,8 @@ export class UsersService extends EventEmitter<{
     private readonly oauth: OAuthService
   ) {
     super()
+
+    this.chargebee.on('USER_UPDATE', (id) => this.causeUpdate(id))
   }
 
   get db() {
@@ -77,7 +79,12 @@ export class UsersService extends EventEmitter<{
       premium.guilds = premiumUser.guilds
     }
 
-    user.premium = premium
+    user.premium = {
+      ...premium,
+      trial: !!(await this.database
+        .collection('trials')
+        .findOne({ user: user.id, disabled: false }))
+    }
 
     return user
   }

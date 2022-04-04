@@ -31,6 +31,10 @@ import { MiddleWrap, wMT } from '@jpbbots/theme'
 import { GradientPremiumIcon } from '~/PremiumIcon'
 import { NextSeo } from 'next-seo'
 
+import humanize from 'humanize-duration'
+import { useMeta } from '@/hooks/useMeta'
+import { useRouter } from 'next/router'
+
 const gradientButton: CSSObject = {
   _before: {
     content: '""',
@@ -60,8 +64,21 @@ const infoTextProps: TextProps = {
   textAlign: 'center'
 }
 
-export default function Premium({ hideFooter }: { hideFooter?: boolean }) {
+export interface PremiumProps {
+  hideFooter?: boolean
+  onTrial?: () => void
+  trialText?: string
+}
+
+export default function Premium({
+  hideFooter,
+  onTrial,
+  trialText
+}: PremiumProps) {
   const { user, getEmail } = useUser(false)
+  const { trialLength } = useMeta()
+
+  const router = useRouter()
 
   const [processing, setProcessing] = useState(false)
 
@@ -135,16 +152,36 @@ export default function Premium({ hideFooter }: { hideFooter?: boolean }) {
         iconSrc={TrialIcon.src}
         name="Trial"
         price="Free"
-        timeDenote="for 24 hours"
+        timeDenote={`for ${humanize(trialLength, { largest: 1 })}`}
         premiumServers="No Payment Required"
       >
         <Text {...infoTextProps}>
           Try out the full Premium Censor Bot experience without payment on a
           server of your choice.
         </Text>
-        <Button w="full" marginBlockStart="auto !important">
-          Try It Out
-        </Button>
+        {trialText ? (
+          <Text
+            fontSize="inherit"
+            textAlign="center"
+            marginBlockStart="auto !important"
+            w="full"
+          >
+            {trialText}
+          </Text>
+        ) : (
+          <Button
+            w="full"
+            marginBlockStart="auto !important"
+            onClick={() => {
+              if (onTrial) onTrial()
+              else {
+                router.push('/dashboard')
+              }
+            }}
+          >
+            Try It Out
+          </Button>
+        )}
       </PremiumCard>
     )
   }

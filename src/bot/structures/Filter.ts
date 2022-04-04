@@ -9,7 +9,6 @@ import {
   Range,
   FilterSettings
 } from 'typings'
-delete require.cache[require.resolve('../data/filter')]
 
 function inRange(x: number, min: number, max: number): boolean {
   return (x - min) * (x - max) <= 0
