@@ -7,11 +7,14 @@ import {
   Flex,
   FlexProps,
   Stack,
+  VStack,
+  HStack,
   StackProps,
   Image,
-  ImageProps
+  ImageProps,
+  Text,
+  TextProps
 } from '@chakra-ui/react'
-import { HStack, VStack } from '@chakra-ui/layout'
 
 export const MotionBox = motion<
   Omit<BoxProps, keyof MotionProps> & MotionProps
@@ -34,3 +37,6 @@ export const MotionButton = motion<
 export const MotionImage = motion<
   Omit<ImageProps, keyof MotionProps> & MotionProps
 >(Image as any)
+export const MotionText = motion<
+  Omit<TextProps, keyof MotionProps> & MotionProps
+>(Text as any)

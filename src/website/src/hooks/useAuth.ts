@@ -31,7 +31,6 @@ export const useHeadless = () => {
   useEffect(() => {
     if (headless) {
       dispatch(setLoginState(LoginState.LoggedIn))
-      dispatch(setUser(headlessData.user))
       dispatch(setGuilds(headlessData.guilds))
     }
   }, [headless])

@@ -11,6 +11,7 @@ import NextLink from 'next/link'
 
 import { Api } from '@/structures/Api'
 import { wMT } from '@jpbbots/theme'
+import { Utils } from '@/utils/Utils'
 
 export function NavBar() {
   const { user, login, logout } = useUser(false)
@@ -62,11 +63,7 @@ export function NavBar() {
           user={
             user
               ? {
-                  avatarUrl: user.avatar
-                    ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
-                    : `https://cdn.discordapp.com/embed/avatars/${
-                        Number(user.tag.split('#')[1]) % 5
-                      }.png`
+                  avatarUrl: Utils.getUserAvatar(user)
                 }
               : undefined
           }

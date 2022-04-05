@@ -13,7 +13,7 @@ export class ThreadService extends Thread {
         id: webhook.id,
         token: webhook.token,
         data: formatMessage(embed).data as any
-      })
+      }).catch(() => null as any)
     })
   }
 }

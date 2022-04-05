@@ -3,7 +3,7 @@ import { Button, Image, Text, VStack, Box } from '@chakra-ui/react'
 
 import DashboardExample from 'images/dashboardexample.png'
 import PhoneDashboard from 'images/phonedashboard.png'
-import DiscordChat from 'images/discordchat.png'
+import DiscordChatExample from 'images/discordchat.png'
 
 import { Lower, Upper } from '~/LandingSectionSvg'
 import { PremiumIcon } from '~/PremiumIcon'
@@ -14,6 +14,7 @@ import { wLT, wMT, TABLET_WIDTH, MiddleWrap } from '@jpbbots/theme'
 import { animate } from 'framer-motion'
 import { Root } from '~/Root'
 import { useMeta } from '@/hooks/useMeta'
+import { DiscordChat } from '~/DiscordChat'
 
 const DESCRIPTION_FONT_SIZE = '24px'
 
@@ -101,13 +102,13 @@ export default function Landing() {
 
           <MiddleWrap spacing="10px 32px">
             <NextLink href="/dashboard" passHref>
-              <Button w="230px" variant="brand" onClick={() => { }}>
+              <Button w="230px" variant="brand" onClick={() => {}}>
                 Invite Censor Bot
               </Button>
             </NextLink>
 
             <NextLink href="/dashboard" passHref>
-              <Button w="200px" onClick={() => { }}>
+              <Button w="200px" onClick={() => {}}>
                 Dashboard
               </Button>
             </NextLink>
@@ -147,7 +148,7 @@ export default function Landing() {
           <MiddleWrap spacing="25px" m={{ tablet: '2px', mobile: '0px' }}>
             {wMT(TABLET_WIDTH) && (
               <Image
-                src={DiscordChat.src}
+                src={DiscordChatExample.src}
                 h={imageHeight}
                 w={imageWidth}
                 boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
@@ -211,13 +212,10 @@ export default function Landing() {
 
         <VStack py={100} w="full" spacing={0}>
           <MiddleWrap wrap="wrap-reverse" spacing="20px">
-            <Image
-              src={DashboardExample.src}
+            <DiscordChat
+              w={imageWidth}
               h={imageHeight}
-              width={imageWidth}
               boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
-              borderRadius={20}
-              flexGrow={0}
             />
             <VStack
               textAlign={alignCenter ? 'center' : 'left'}
@@ -238,7 +236,7 @@ export default function Landing() {
                 Censor Bot's curated staff team, keeping them up to date and
                 accurate at all times.
               </Text>
-              <Button w="200px">Read more</Button>
+              {/* <Button w="200px">Read more</Button> */}
             </VStack>
           </MiddleWrap>
         </VStack>
@@ -272,7 +270,7 @@ export default function Landing() {
                 filtering and more!
               </Text>
               <NextLink href="/premium" passHref>
-                <Button color="brand.100" onClick={() => { }}>
+                <Button color="brand.100" onClick={() => {}}>
                   Get Premium
                 </Button>
               </NextLink>
@@ -307,7 +305,7 @@ export default function Landing() {
           </VStack>
           <MiddleWrap spacing="5px">
             <NextLink href="/dashboard" passHref>
-              <Button w="230px" variant="brand" onClick={() => { }}>
+              <Button w="230px" variant="brand" onClick={() => {}}>
                 Get Started
               </Button>
             </NextLink>

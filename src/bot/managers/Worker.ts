@@ -235,11 +235,13 @@ export class WorkerManager extends Worker<{}> {
   webhook(wh: keyof typeof Config.webhooks): Embed {
     const webhook = this.config.webhooks[wh]
     return new Embed(async (embed) => {
-      return await this.comms.sendCommand('SEND_WEBHOOK', {
-        id: webhook.id,
-        token: webhook.token,
-        data: formatMessage(embed).data as any
-      })
+      return await this.comms
+        .sendCommand('SEND_WEBHOOK', {
+          id: webhook.id,
+          token: webhook.token,
+          data: formatMessage(embed).data as any
+        })
+        .catch(() => null as any)
     })
   }
 
@@ -253,8 +255,7 @@ export class WorkerManager extends Worker<{}> {
 
     const channel = data.channel ? this.channels.get(data.channel) : undefined
 
-    if (nsfw && channel && 'nsfw' in channel && channel.nsfw)
-      return true
+    if (nsfw && channel && 'nsfw' in channel && channel.nsfw) return true
 
     return advanced.some((x) => {
       if (x.type === ExceptionType.Everything || x.type === type) {

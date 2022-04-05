@@ -1,3 +1,4 @@
+import { User } from 'typings'
 import Swal from 'sweetalert2'
 
 import { WindowOpener } from './WindowOpener'
@@ -42,5 +43,13 @@ export class Utils {
         return c.substring(name.length, c.length)
       }
     }
+  }
+
+  static getUserAvatar(user: User) {
+    return user.avatar
+      ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+      : `https://cdn.discordapp.com/embed/avatars/${
+          Number(user.tag.split('#')[1]) % 5
+        }.png`
   }
 }

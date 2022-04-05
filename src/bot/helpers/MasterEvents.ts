@@ -92,9 +92,7 @@ export class MasterEvents extends EventAdder<any> {
       .then((x) => {
         resolve(x)
       })
-      .catch((err) => {
-        resolve({ error: err.message })
-      })
+      .catch((err) => {})
   }
 
   @Event('IN_GUILDS')
