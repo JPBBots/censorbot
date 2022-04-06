@@ -214,7 +214,10 @@ export default function Landing() {
           <MiddleWrap wrap="wrap-reverse" spacing="20px">
             <DiscordChat
               w={imageWidth}
-              h={imageHeight}
+              h={{
+                ...imageHeight,
+                tablet: '200px'
+              }}
               boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
             />
             <VStack
