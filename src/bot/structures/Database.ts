@@ -179,6 +179,10 @@ export class Database extends Db {
           }
           removeProps.push('nsfw', 'channels', 'roles')
 
+          if (db.censor) {
+            db.plugins |= Plugin.Attachments
+          }
+
           db.v = 12
         }
         break

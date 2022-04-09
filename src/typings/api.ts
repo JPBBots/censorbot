@@ -78,7 +78,8 @@ export enum Plugin {
   Toxicity = 1 << 3,
   OCR = 1 << 4,
   AntiNSFWImages = 1 << 5,
-  MultiLine = 1 << 6
+  MultiLine = 1 << 6,
+  Attachments = 1 << 7
 }
 
 export interface AdvancedException {

@@ -85,6 +85,19 @@ export const settings: ISetting[] = [
       }
     ]
   },
+  {
+    title: 'Attachment Censoring',
+    requiredPermission: 'manageMessages',
+    section: 'Extras',
+    options: [
+      {
+        name: 'plugins',
+        label: 'Scan rendered attachments and file names for curses',
+        bit: Plugin.Attachments,
+        type: OptionType.BitBool
+      }
+    ]
+  },
 
   {
     title: 'Toxicity Filter',

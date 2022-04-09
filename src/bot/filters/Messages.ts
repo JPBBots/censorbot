@@ -26,6 +26,9 @@ import { SnowflakeUtil } from '../utils/Snowflake'
 import { FileBuilder } from '@jadl/cmd'
 import { isBitOn } from '../utils/bit'
 
+import { request } from 'undici'
+import { APIAttachment, APIEmbedThumbnail } from 'discord-api-types/v10'
+
 interface MultiLine {
   author: Snowflake
   messages: {
@@ -36,7 +39,7 @@ interface MultiLine {
 interface ContentData {
   id: Snowflake
   content?: string
-  images: string[]
+  attachments: AttachmentData[]
 }
 
 const replaces = {
@@ -44,25 +47,51 @@ const replaces = {
   [WebhookReplace.Stars]: '*'
 }
 
+interface AttachmentData extends APIAttachment {
+  ocr?: OcrLine[]
+  remove?: boolean
+  image: boolean
+}
+
 class ContentData implements ContentData {
   content?: string
   id: string
-  images: string[] = []
+  attachments: AttachmentData[] = []
 
   constructor(message: DiscordEventMap['MESSAGE_CREATE' | 'MESSAGE_UPDATE']) {
     this.id = message.id
 
     this.setContent(message.content)
-      .addImages(message.attachments?.map((x) => x.proxy_url))
-      .addImages(
+      .addAttachments(
+        message.attachments?.map((x) => ({
+          ...x,
+          image: !!x.content_type?.match('image') || false
+        }))
+      )
+      .addAttachments(
         message.embeds
-          ?.map((x) => x.thumbnail?.proxy_url)
-          .filter((x) => x) as string[]
+          ?.map((x) => x.thumbnail)
+          .filter((x) => x)
+          .map(this.parseEmbedThumbnail.bind(this))
       )
   }
 
-  addImages(images?: string[]) {
-    if (images) this.images.push(...images)
+  private parseEmbedThumbnail(
+    thumbnail: APIEmbedThumbnail,
+    index: number
+  ): AttachmentData {
+    return {
+      ...thumbnail,
+      proxy_url: thumbnail.proxy_url ?? thumbnail.url,
+      filename: `embedThumbnail${index}.png`,
+      id: `embed.thumbnail.${index}`,
+      image: true,
+      size: 100
+    }
+  }
+
+  addAttachments(images?: AttachmentData[]) {
+    if (images) this.attachments.push(...images)
 
     return this
   }
@@ -74,16 +103,10 @@ class ContentData implements ContentData {
   }
 }
 
-interface OcrInfo {
-  url: string
-  lines: OcrLine[]
-}
-
 export class MessageFilterContext {
   content?: string
 
   contentData: ContentData
-  ocr: OcrInfo[] = []
   response?: FilterResultInfo
 
   constructor(
@@ -102,12 +125,6 @@ export class MessageFilterContext {
 
   setContent(content?: string) {
     if (content) this.content = content
-
-    return this
-  }
-
-  addOcrInfo(ocrInfo: OcrInfo) {
-    this.ocr.push(ocrInfo)
 
     return this
   }
@@ -237,17 +254,23 @@ export class MessagesFilterHandler extends BaseFilterHandler {
 
     // NSFW
     if (isBitOn(db.plugins, Plugin.AntiNSFWImages)) {
-      for (const url of contentData.contentData.images) {
-        const res = await this.worker.images.test(url)
+      for (const attachment of contentData.contentData.attachments.filter(
+        (x) => x.image
+      )) {
+        const res = await this.worker.images.test(attachment.proxy_url)
         if (res.bad) {
           contentData
             .setContent(
-              `${message.content ?? 'No message content'} + [image](${url})`
+              `${message.content ?? 'No message content'} + [image](${
+                attachment.proxy_url
+              })`
             )
             .setResponse({
               type: FilterType.Images,
               percentage: res.percent
             })
+
+          attachment.remove = true
         }
         continue
       }
@@ -256,11 +279,52 @@ export class MessagesFilterHandler extends BaseFilterHandler {
         return await this.handleDeletion(contentData, db)
     }
 
+    if (isBitOn(db.plugins, Plugin.Attachments) && message.attachments) {
+      for (const attachment of contentData.contentData.attachments) {
+        const response = this.test(attachment.filename, db, {
+          roles: message.member.roles,
+          channel: message.channel_id
+        })
+
+        if (response) {
+          contentData
+            .setResponse(response)
+            .setContent(contentData.content + ' ' + attachment.filename)
+
+          attachment.remove = true
+
+          continue
+        }
+
+        if (
+          attachment.content_type?.match(/charset=(.+)/)?.[1]?.toLowerCase() ===
+          'utf-8'
+        ) {
+          const { body } = await request(attachment.url)
+          const text = await body.text()
+
+          const response = this.test(text, db, {
+            roles: message.member.roles,
+            channel: message.channel_id
+          })
+
+          if (response) {
+            contentData
+              .setResponse(response)
+              .setContent(contentData.content + ' ' + text)
+            attachment.remove = true
+          }
+        }
+      }
+    }
+
     if (isBitOn(db.plugins, Plugin.OCR)) {
-      for (const url of contentData.contentData.images) {
-        const scanned = await this.worker.ocr.resolve(url)
+      for (const attachment of contentData.contentData.attachments.filter(
+        (x) => x.image
+      )) {
+        const scanned = await this.worker.ocr.resolve(attachment.proxy_url)
         if (scanned) {
-          const current: OcrInfo = { url, lines: [] }
+          const lines: OcrLine[] = []
           for (const scan of scanned.ParsedResults?.[0]?.TextOverlay?.Lines ??
             []) {
             const test = this.test(scan.LineText, db, {
@@ -268,11 +332,11 @@ export class MessagesFilterHandler extends BaseFilterHandler {
               channel: message.channel_id
             })
             if (test) {
-              current.lines.push(scan)
+              lines.push(scan)
               contentData.setResponse({ ...test })
             }
           }
-          contentData.addOcrInfo(current)
+          attachment.ocr = lines
         }
       }
     }
@@ -395,18 +459,22 @@ export class MessagesFilterHandler extends BaseFilterHandler {
             ['', -1]
           )[0]
 
-        const messageToSend = contentData.ocr.length
-          ? new FileBuilder().extra({ content })
-          : {
-              content
-            }
+        const messageToSend = new FileBuilder().extra({ content })
 
-        if (messageToSend instanceof FileBuilder) {
-          for (const ocr of contentData.ocr) {
+        for (const file of contentData.contentData.attachments) {
+          if (file.ocr) {
             messageToSend.add(
-              'resend.png',
-              await this.worker.ocr.cover(ocr.url, ocr.lines)
+              file.filename,
+              await this.worker.ocr.cover(file.proxy_url, file.ocr)
             )
+          } else if (!file.remove) {
+            const buffer = await request(file.proxy_url)
+              .then((x) => x.body?.arrayBuffer())
+              .then((x) => Buffer.from(x))
+              .catch(() => null)
+            if (!buffer) continue
+
+            messageToSend.add(file.filename, buffer)
           }
         }
 
