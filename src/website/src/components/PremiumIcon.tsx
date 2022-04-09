@@ -37,8 +37,8 @@ export function GradientPremiumIcon() {
           y2="195.122"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F97171" />
-          <stop offset="1" stop-color="#D63F3F" />
+          <stop stopColor="#F97171" />
+          <stop offset="1" stopColor="#D63F3F" />
         </linearGradient>
       </defs>
     </svg>

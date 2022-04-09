@@ -14,6 +14,7 @@ import TrialIcon from 'images/premium/trial.png'
 
 import {
   brandGrad,
+  FeatureTable,
   leftGradient,
   PremiumCard,
   rightGradient,
@@ -226,7 +227,7 @@ export default function Premium({
             "Can't get enough? Get even more features, at an amazingly affordable price!"
         }}
       />
-      <Box display={{ tablet: 'unset', mobile: 'none' }} pb="48px" pt="20px">
+      {/* <Box display={{ tablet: 'unset', mobile: 'none' }} pb="48px" pt="20px">
         <GradientPremiumIcon />
       </Box>
       <Text
@@ -238,7 +239,7 @@ export default function Premium({
         textAlign="center"
       >
         Censor Bot Premium
-      </Text>
+      </Text> */}
       <Flex
         gridGap="10px 32px"
         flexGrow={1}
@@ -250,7 +251,7 @@ export default function Premium({
         {cards.yearly}
         {cards.trial}
       </Flex>
-      <VStack pt="128px">
+      <VStack pt="128px" w={{ desktop: '70%', mobile: '99%' }}>
         <Text
           textStyle="heading.xl"
           bgGradient={textGrad}
@@ -260,6 +261,7 @@ export default function Premium({
         >
           Premium Comparison
         </Text>
+        <FeatureTable />
       </VStack>
       <VStack pt="128px">
         <Text
@@ -320,7 +322,11 @@ export default function Premium({
             premiumServers={1}
           >
             <Text {...infoTextProps}>for boosting our server</Text>
-            <Button w="full" marginBlockStart="auto !important">
+            <Button
+              w="full"
+              onClick={() => window.open('/support', '_blank')}
+              marginBlockStart="auto !important"
+            >
               Boost
             </Button>
           </PremiumCard>

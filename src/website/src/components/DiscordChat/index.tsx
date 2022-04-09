@@ -28,9 +28,10 @@ export function DiscordMessage({
   return (
     <MotionHStack
       w="full"
-      h="full"
+      h="fit-content"
       spacing="13px"
-      align="flex-start"
+      alignItems="flex-start"
+      alignSelf="flex-end"
       textAlign="left"
       transition={{
         duration: 0.2
@@ -79,7 +80,9 @@ interface TypingSettings extends DiscordMessageProps {
 }
 
 export function DiscordChat(props: StackProps) {
-  const [chats, setChats] = useState<DiscordMessageProps[]>([])
+  const [chats, setChats] = useState<DiscordMessageProps[]>([
+    { content: 'hello world' }
+  ])
   const [typing, setTyping] = useState<TypingSettings>()
   const { user } = useUser(false)
 
@@ -130,7 +133,7 @@ export function DiscordChat(props: StackProps) {
   }
 
   useEffect(() => {
-    run()
+    // run()
   }, [])
 
   return (
@@ -143,7 +146,14 @@ export function DiscordChat(props: StackProps) {
       transition={{}}
       animate="animate"
     >
-      <VStack w="full" justify="flex-end" align="left" mt="auto" mb="10px">
+      <VStack
+        w="full"
+        h="full"
+        justify="flex-end"
+        align="left"
+        mt="auto"
+        mb="10px"
+      >
         {chats.map((x) => (
           <DiscordMessage key={x.content} {...x} />
         ))}
