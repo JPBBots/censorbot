@@ -23,7 +23,7 @@ import { Event } from '@jpbberry/typed-emitter'
 import { BaseFilterHandler } from './Base'
 import { DiscordEventMap } from 'jadl'
 import { SnowflakeUtil } from '../utils/Snowflake'
-import { FileBuilder } from '@jadl/cmd'
+import { FileBuilder, MessageTypes } from '@jadl/cmd'
 import { isBitOn } from '../utils/bit'
 
 import { request } from 'undici'
@@ -138,6 +138,7 @@ export class MessageFilterContext {
 
 export class MessagesFilterHandler extends BaseFilterHandler {
   multiLineStore: Cache<Snowflake, MultiLine> = new Cache(3.6e6)
+  channelTypes = [ChannelType.GuildText, ChannelType.GuildVoice]
 
   @Event('MESSAGE_CREATE')
   @Event('MESSAGE_UPDATE')
@@ -168,7 +169,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
       ![MessageType.Default, MessageType.Reply].includes(
         message.type as MessageType
       ) ||
-      channel.type !== ChannelType.GuildText ||
+      !this.channelTypes.includes(channel.type) ||
       this.worker.isExcepted(ExceptionType.Everything, db.exceptions, {
         roles: message.member.roles,
         channel: message.channel_id
@@ -459,7 +460,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
             ['', -1]
           )[0]
 
-        const messageToSend = new FileBuilder().extra({ content })
+        let messageToSend: MessageTypes = new FileBuilder().extra({ content })
 
         for (const file of contentData.contentData.attachments) {
           if (file.ocr) {
@@ -476,6 +477,10 @@ export class MessagesFilterHandler extends BaseFilterHandler {
 
             messageToSend.add(file.filename, buffer)
           }
+        }
+
+        if (!messageToSend.data.files.length) {
+          messageToSend = messageToSend.data.extra || { content }
         }
 
         void this.worker.actions.sendAs(

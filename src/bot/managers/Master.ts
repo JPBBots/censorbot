@@ -38,6 +38,7 @@ export class MasterManager extends Master {
         channels: [
           ChannelType.GuildText,
           ChannelType.GuildNews,
+          ChannelType.GuildVoice,
           ChannelType.GuildCategory
         ]
       },
@@ -64,7 +65,8 @@ export class MasterManager extends Master {
         GatewayIntentBits.GuildMessages |
         GatewayIntentBits.Guilds |
         GatewayIntentBits.GuildMessageReactions |
-        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMembers |
+        GatewayIntentBits.GuildBans,
 
       log: (msg: string, cluster: Cluster) => {
         if (cluster?.id === 'API' && msg.startsWith('Started')) msg = 'Started'

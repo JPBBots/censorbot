@@ -2,7 +2,7 @@ import { Box, HStack, VStack, Text, StackProps } from '@chakra-ui/layout'
 import { Image } from '@chakra-ui/react'
 import { hex } from 'chroma-js'
 import Typist from 'react-typist'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { MotionHStack, MotionText, MotionVStack } from '~/motion'
 import BRANDING from '@/BRANDING'
 import { Utils } from '@/utils/Utils'
@@ -74,67 +74,102 @@ export function DiscordMessage({
   )
 }
 
+export function CensorBotEmbed() {
+  return (
+    <Box
+      w="fit-content"
+      borderColor="transparent"
+      borderRadius="4px"
+      borderLeft="5px solid"
+      borderLeftColor="brand.100"
+    >
+      <Box
+        w="fit-content"
+        borderRadius="4px"
+        borderLeftRadius="0px"
+        color="#dcddde"
+        fontFamily={font}
+        fontStyle="normal"
+        fontSize="14px"
+        fontWeight={400}
+        p="12px 16px 12px 12px"
+        bg="#2f3136"
+      >
+        You're not allowed to say that...
+      </Box>
+    </Box>
+  )
+}
+
 interface TypingSettings extends DiscordMessageProps {
   waitAfter?: number
+  waitSend?: number
   onDone?: () => void
 }
 
-export function DiscordChat(props: StackProps) {
+interface DiscordChatOrchestraCtx {
+  setTyping: Dispatch<SetStateAction<TypingSettings | undefined>>
+  setChats: Dispatch<SetStateAction<DiscordMessageProps[]>>
+  loop: () => void
+  data: any
+}
+
+type DiscordChatOrchestra = (ctx: DiscordChatOrchestraCtx) => void
+
+export interface DiscordChatProps extends StackProps {
+  orchestra: DiscordChatOrchestra
+}
+
+export function DiscordChat({ orchestra, ...props }: DiscordChatProps) {
   const [chats, setChats] = useState<DiscordMessageProps[]>([
     { content: 'hello world' }
   ])
   const [typing, setTyping] = useState<TypingSettings>()
   const { user } = useUser(false)
 
-  const run = (ind: number = 0) => {
-    const messages = ['fuck', 'f u c k', 'f!u!c!k', 'sh!t', '$h1t']
-    if (!messages[ind]) ind = 0
+  const doneTyping = async () => {
+    if (!typing) return
 
-    setTyping({
-      content: messages[ind],
-      waitAfter: 400,
-      onDone: () => {
-        setChats([
-          {
-            content: (
-              <Box
-                w="fit-content"
-                borderColor="transparent"
-                borderRadius="4px"
-                borderLeft="5px solid"
-                borderLeftColor="brand.100"
-              >
-                <Box
-                  w="fit-content"
-                  borderRadius="4px"
-                  borderLeftRadius="0px"
-                  color="#dcddde"
-                  fontFamily={font}
-                  fontStyle="normal"
-                  fontSize="14px"
-                  fontWeight={400}
-                  p="12px 16px 12px 12px"
-                  bg="#2f3136"
-                >
-                  You're not allowed to say that...
-                </Box>
-              </Box>
-            ),
-            avatarUrl: BRANDING.logo,
-            username: 'Censor Bot'
-          }
-        ])
-        setTimeout(() => {
-          setChats([])
-          setTimeout(() => run(ind + 1), 400)
-        }, 2e3)
+    setChats([
+      ...chats,
+      {
+        content: typing.content,
+        avatarUrl:
+          typing.avatarUrl ?? (user ? Utils.getUserAvatar(user) : undefined),
+        username: typing.username ?? user?.tag?.split('#')[0]
       }
-    })
+    ])
+    setTyping(undefined)
+    if (typing.onDone) {
+      if (typing.waitAfter) await Utils.wait(typing.waitAfter)
+
+      typing.onDone()
+    }
+  }
+
+  const run = (context: DiscordChatOrchestraCtx) => {
+    orchestra(context)
   }
 
   useEffect(() => {
-    // run()
+    const context: DiscordChatOrchestraCtx = {
+      setTyping,
+      setChats,
+      loop: () => {
+        run(context)
+      },
+      data: undefined
+    }
+    run(context)
   }, [])
+
+  useEffect(() => {
+    if (typing && typeof typing?.content !== 'string') {
+      setTimeout(() => {
+        doneTyping()
+      }, typing.waitSend!)
+    }
+  }, [typing])
 
   return (
     <MotionVStack
@@ -171,7 +206,7 @@ export function DiscordChat(props: StackProps) {
           h="22px"
           bg={attachmentButton.hex()}
           borderRadius="full"
-          onClick={() => run()}
+          alignSelf="flex-end"
         />
         <MotionText
           fontSize="16px"
@@ -184,28 +219,11 @@ export function DiscordChat(props: StackProps) {
           fontWeight={400}
         >
           {typing ? (
-            <Typist
-              onTypingDone={async () => {
-                setChats([
-                  ...chats,
-                  {
-                    content: typing.content,
-                    avatarUrl:
-                      typing.avatarUrl ??
-                      (user ? Utils.getUserAvatar(user) : undefined),
-                    username: typing.username ?? user?.tag?.split('#')[0]
-                  }
-                ])
-                setTyping(undefined)
-                if (typing.onDone) {
-                  if (typing.waitAfter) await Utils.wait(typing.waitAfter)
-
-                  typing.onDone()
-                }
-              }}
-            >
-              {typing.content}
-            </Typist>
+            typeof typing.content === 'string' ? (
+              <Typist onTypingDone={doneTyping}>{typing.content}</Typist>
+            ) : (
+              typing.content
+            )
           ) : (
             'Message #general'
           )}

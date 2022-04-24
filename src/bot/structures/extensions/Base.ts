@@ -3,10 +3,12 @@ import { Cache } from '@jpbberry/cache'
 import { Config } from '../../config'
 import { WorkerManager } from '../../managers/Worker'
 
-export interface Test {
-  bad: boolean
-  percent: `${number}%`
-}
+export type Test =
+  | {
+      bad: true
+      percent: `${number}%`
+    }
+  | { bad: false; percent?: `${number}%` }
 
 export class BaseExtension {
   public working = true

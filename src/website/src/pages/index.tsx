@@ -14,7 +14,9 @@ import { wLT, wMT, TABLET_WIDTH, MiddleWrap } from '@jpbbots/theme'
 import { animate } from 'framer-motion'
 import { Root } from '~/Root'
 import { useMeta } from '@/hooks/useMeta'
-import { DiscordChat } from '~/DiscordChat'
+import { CensorBotEmbed, DiscordChat } from '~/DiscordChat'
+import Typist from 'react-typist'
+import BRANDING from '@/BRANDING'
 
 const DESCRIPTION_FONT_SIZE = '24px'
 
@@ -81,7 +83,11 @@ export default function Landing() {
               Get started immediately
             </Text>
             <MiddleWrap
-              spacing="15px"
+              spacing={{
+                desktop: '50px',
+                tablet: '30px',
+                mobile: '15px'
+              }}
               fontSize={{
                 desktop: '36px',
                 tablet: '28px',
@@ -188,6 +194,7 @@ export default function Landing() {
                   textStyle="label.md"
                   fontSize={DESCRIPTION_FONT_SIZE}
                   maxW={707}
+                  color="lighter.60"
                 >
                   Easily customize Censor Bot to your needs, you can start with
                   pre-made filters or make your own. Easily add filter
@@ -219,6 +226,29 @@ export default function Landing() {
                 tablet: '200px'
               }}
               boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
+              orchestra={(ctx) => {
+                const messages = ['fuck', 'f u c k', 'f!u!c!k', 'sh!t', '$h1t']
+                if (!messages[ctx.data]) ctx.data = 0
+
+                ctx.setTyping({
+                  content: messages[ctx.data],
+                  waitAfter: 400,
+                  onDone: () => {
+                    ctx.setChats([
+                      {
+                        content: <CensorBotEmbed />,
+                        avatarUrl: BRANDING.logo,
+                        username: 'Censor Bot'
+                      }
+                    ])
+                    setTimeout(() => {
+                      ctx.setChats([])
+                      ctx.data = ctx.data + 1
+                      setTimeout(() => ctx.loop(), 400)
+                    }, 2e3)
+                  }
+                })
+              }}
             />
             <VStack
               textAlign={alignCenter ? 'center' : 'left'}
@@ -233,6 +263,7 @@ export default function Landing() {
                 textStyle="label.md"
                 fontSize={DESCRIPTION_FONT_SIZE}
                 maxW={707}
+                color="lighter.60"
               >
                 Censor Bot is a simple, yet powerful anti-swear bot for your
                 Discord server. It comes with pre-built filters managed by
@@ -263,6 +294,7 @@ export default function Landing() {
                 textStyle="label.md"
                 fontSize={DESCRIPTION_FONT_SIZE}
                 maxW="707px"
+                color="lighter.60"
               >
                 Can't get enough customization? Customize more with{' '}
                 <PremiumIcon />{' '}

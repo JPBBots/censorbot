@@ -23,10 +23,17 @@ interface DeleteBucket {
   timeout?: NodeJS.Timeout
 }
 
+interface ResendCache {
+  id: Snowflake
+  channelId: Snowflake
+}
+
 export class ActionBucket {
   messages: Collection<Snowflake, DeleteBucket> = new Collection()
   popups: Collection<string, true> = new Collection()
   webhooks: Cache<Snowflake, APIWebhook> = new Cache(30e3)
+  resends: Collection<Snowflake, Cache<Snowflake, Array<ResendCache>>> =
+    new Collection()
 
   constructor(public worker: WorkerManager) {}
 
@@ -156,10 +163,32 @@ export class ActionBucket {
         content: messageInfo.content?.slice(0, 2048)
       }
 
-    await this.worker.requests.sendWebhookMessage(
+    const responseMessage = await this.worker.requests.sendWebhookMessage(
       webhook.id,
       webhook.token as string,
       messageInfo
     )
+
+    let guild = this.resends.get(guildId)
+    if (!guild) {
+      guild = new Cache(1.8e6)
+
+      this.resends.set(guildId, guild)
+    }
+
+    let user = guild.get(member.user.id)
+    if (!user) {
+      user = []
+      guild.set(member.user.id, user, () => {
+        if (guild!.size < 1) this.resends.delete(guildId)
+
+        return {}
+      })
+    }
+
+    user.push({
+      id: responseMessage.id,
+      channelId
+    })
   }
 }

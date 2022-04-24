@@ -156,10 +156,14 @@ export const settings: ISetting[] = [
         maxTags: 5,
         premiumMaxTags: Infinity,
         fn: ({ guild }) => ({
-          whitelist: guild.channels.map((x) => ({
-            id: x.id,
-            value: x.name
-          }))
+          whitelist: guild.channels
+            .filter((x) =>
+              [ChannelType.GuildText, ChannelType.GuildVoice].includes(x.type)
+            )
+            .map((x) => ({
+              id: x.id,
+              value: x.name
+            }))
         })
       }
     ]

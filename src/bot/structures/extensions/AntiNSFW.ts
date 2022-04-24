@@ -1,36 +1,48 @@
 import { BaseExtension, Test } from './Base'
 
-import deepai from 'deepai'
-import { WorkerManager } from '../../managers/Worker'
+import fetch from 'node-fetch'
+import FormData from 'form-data'
+
+interface UnscanPartialResponse {
+  success: boolean
+  nsfw: boolean
+  scores: {
+    safe: number
+    nsfw: number
+  }
+}
 
 export class AntiNSFW extends BaseExtension {
-  constructor(worker: WorkerManager) {
-    super(worker)
-
-    deepai.setApiKey(worker.config.ai.antiNsfwKey)
+  async fetchImage(url: string) {
+    return fetch(url)
+      .then((x) => x.buffer())
+      .catch(() => undefined)
   }
 
   public async test(text: string): Promise<Test> {
+    console.log(text)
     const tested = this.cache.get(text)
     if (tested) return tested
 
-    const fetched = await deepai
-      .callStandardApi('nsfw-detector', {
-        image: text
-      })
-      .catch(() => false)
+    const image = await this.fetchImage(text)
+    if (!image) return { bad: false }
 
-    this.working = !!fetched
+    const formData = new FormData()
+    formData.append('file', image)
 
-    if (!fetched) {
-      return { bad: false, percent: '0%' }
-    }
+    const req = (await fetch('https://api.unscan.co/nsfw', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }).then((x) => x.json())) as UnscanPartialResponse
 
-    const num: number = fetched.output.nsfw_score
+    console.debug(req)
+
+    if (!req.success) return { bad: false }
 
     const test: Test = {
-      bad: num >= this.ai.predictionMin,
-      percent: `${Number((num * 100).toFixed(0))}%` as `${number}%`
+      bad: req.nsfw,
+      percent: `${req.scores.nsfw}%`
     }
 
     this.cache.set(text, test)

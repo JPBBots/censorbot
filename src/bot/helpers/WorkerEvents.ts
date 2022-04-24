@@ -8,6 +8,7 @@ import { PunishmentLevel, PunishmentType } from 'typings'
 import { TimeoutSchema } from '../structures/punishments/Timeouts'
 import { EventAdder } from '../utils/EventAdder'
 import { APIThreadChannel } from 'discord-api-types/v9'
+import { PurgeResendsCommand } from 'bot/commands/utility/PurgeResendsCommand'
 
 export class WorkerEvents extends EventAdder<WorkerManager> {
   unavailables: Set<Snowflake> = new Set()
@@ -18,7 +19,7 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
     this.worker.comms.on('START', () => {
       this.worker.cacheManager.on('GUILD_CREATE', (guild) => {
         if (guild.threads) {
-          (guild.threads as APIThreadChannel[]).forEach((thread) => {
+          ;(guild.threads as APIThreadChannel[]).forEach((thread) => {
             if (!thread.guild_id || !thread.parent_id) return
 
             this.worker.threads.set(`${thread.guild_id}-${thread.id}`, {
@@ -119,7 +120,7 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
 
   @Event('THREAD_LIST_SYNC')
   threadListSync(threads: DiscordEventMap['THREAD_LIST_SYNC']): void {
-    (threads.threads as APIThreadChannel[]).forEach((thread) => {
+    ;(threads.threads as APIThreadChannel[]).forEach((thread) => {
       if (!thread.parent_id) return
 
       this.worker.threads.set(`${threads.guild_id}-${thread.id}`, {
@@ -300,8 +301,25 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
         return
 
       void this.worker.requests.sendMessage(msg.channel_id, {
-        embeds: [(this.worker.interface.commands.slashCommandEmbed as unknown as Embed<any>).render()]
+        embeds: [
+          (
+            this.worker.interface.commands
+              .slashCommandEmbed as unknown as Embed<any>
+          ).render()
+        ]
       })
     }
+  }
+
+  @Event('GUILD_BAN_ADD')
+  async userBanned({
+    user: { id: userId },
+    guild_id: guildId
+  }: DiscordEventMap['GUILD_BAN_ADD']) {
+    void PurgeResendsCommand.deleteUserResends(
+      this.worker,
+      guildId,
+      userId
+    ).catch(() => {})
   }
 }

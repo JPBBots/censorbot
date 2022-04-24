@@ -49,6 +49,7 @@ import { TicketCommand } from '../commands/TicketCommand'
 import { EvalCommand } from '../commands/admin/EvalCommand'
 import { ScanCommand } from '../commands/utility/ScanCommand'
 import { WarningsCommand } from '../commands/utility/WarningsCommand'
+import { PurgeResendsCommand } from 'bot/commands/utility/PurgeResendsCommand'
 
 interface CachedThread {
   id: Snowflake
@@ -95,7 +96,8 @@ export class WorkerManager extends Worker<{}> {
       TicketCommand,
       EvalCommand,
       ScanCommand,
-      WarningsCommand
+      WarningsCommand,
+      PurgeResendsCommand
     ],
     {
       interactionGuild: this.config.staging ? '569907007465848842' : undefined
