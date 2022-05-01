@@ -12,19 +12,29 @@ const discordBg = hex('#36393f')
 const chatInputBg = hex('#40444B')
 const attachmentButton = hex('#B9BBBE')
 
-const font = 'Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif'
+const font = 'Whitney,"Helvetica Neue",Helvetica,Arial,sans-serif'
 
 interface DiscordMessageProps {
   content: any
+  badge?: string
   avatarUrl?: string
   username?: string
 }
 
 export function DiscordMessage({
   content,
-  avatarUrl = 'https://cdn.discordapp.com/embed/avatars/1.png',
-  username = 'User'
+  badge,
+  ...opts
 }: DiscordMessageProps) {
+  const { user } = useUser(false)
+
+  const avatarUrl =
+    opts.avatarUrl ||
+    (user && Utils.getUserAvatar(user)) ||
+    'https://cdn.discordapp.com/embed/avatars/1.png'
+
+  const username = opts.username || (user && user.tag.split('#')[0]) || 'User'
+
   return (
     <MotionHStack
       w="full"
@@ -52,15 +62,28 @@ export function DiscordMessage({
         alignItems="flex-start"
         w="full"
       >
-        <Text
-          fontSize="1rem"
-          fontWeight={500}
-          lineHeight="1.375rem"
-          fontFamily={font}
-          color="white"
-        >
-          {username}
-        </Text>
+        <HStack>
+          <Text
+            fontSize="1rem"
+            fontWeight={500}
+            lineHeight="1.375rem"
+            fontFamily={font}
+            color="white"
+          >
+            {username}
+          </Text>
+          {badge && (
+            <Text
+              bg="#5865F2"
+              px="2"
+              textStyle="label.sm"
+              fontSize="12px"
+              borderRadius="lg"
+            >
+              {badge}
+            </Text>
+          )}
+        </HStack>
         <Text
           fontSize="1rem"
           lineHeight="1.375rem"
@@ -108,8 +131,9 @@ interface TypingSettings extends DiscordMessageProps {
 }
 
 interface DiscordChatOrchestraCtx {
-  setTyping: Dispatch<SetStateAction<TypingSettings | undefined>>
+  setTyping: (data: Omit<TypingSettings, 'onDone'>) => Promise<void>
   setChats: Dispatch<SetStateAction<DiscordMessageProps[]>>
+  clearChats: () => void
   loop: () => void
   data: any
 }
@@ -121,11 +145,8 @@ export interface DiscordChatProps extends StackProps {
 }
 
 export function DiscordChat({ orchestra, ...props }: DiscordChatProps) {
-  const [chats, setChats] = useState<DiscordMessageProps[]>([
-    { content: 'hello world' }
-  ])
+  const [chats, setChats] = useState<DiscordMessageProps[]>([])
   const [typing, setTyping] = useState<TypingSettings>()
-  const { user } = useUser(false)
 
   const doneTyping = async () => {
     if (!typing) return
@@ -134,9 +155,9 @@ export function DiscordChat({ orchestra, ...props }: DiscordChatProps) {
       ...chats,
       {
         content: typing.content,
-        avatarUrl:
-          typing.avatarUrl ?? (user ? Utils.getUserAvatar(user) : undefined),
-        username: typing.username ?? user?.tag?.split('#')[0]
+        avatarUrl: typing.avatarUrl,
+        username: typing.username,
+        badge: typing.badge
       }
     ])
     setTyping(undefined)
@@ -152,15 +173,34 @@ export function DiscordChat({ orchestra, ...props }: DiscordChatProps) {
   }
 
   useEffect(() => {
+    let done = false
     const context: DiscordChatOrchestraCtx = {
-      setTyping,
+      setTyping: (data) => {
+        return new Promise((resolve) => {
+          const promiseData = {
+            ...data,
+            onDone: () => resolve()
+          }
+
+          setTyping(promiseData)
+        })
+      },
       setChats,
+      clearChats: () => {
+        setChats([])
+      },
       loop: () => {
+        if (done) return
+
         run(context)
       },
       data: undefined
     }
     run(context)
+
+    return () => {
+      done = true
+    }
   }, [])
 
   useEffect(() => {

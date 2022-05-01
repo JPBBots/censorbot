@@ -15,8 +15,10 @@ import { animate } from 'framer-motion'
 import { Root } from '~/Root'
 import { useMeta } from '@/hooks/useMeta'
 import { CensorBotEmbed, DiscordChat } from '~/DiscordChat'
-import Typist from 'react-typist'
 import BRANDING from '@/BRANDING'
+import { Utils } from '@/utils/Utils'
+
+import BlurryImage from 'images/blurry.jpg'
 
 const DESCRIPTION_FONT_SIZE = '24px'
 
@@ -226,28 +228,29 @@ export default function Landing() {
                 tablet: '200px'
               }}
               boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
-              orchestra={(ctx) => {
+              orchestra={async (ctx) => {
                 const messages = ['fuck', 'f u c k', 'f!u!c!k', 'sh!t', '$h1t']
                 if (!messages[ctx.data]) ctx.data = 0
 
-                ctx.setTyping({
+                await ctx.setTyping({
                   content: messages[ctx.data],
-                  waitAfter: 400,
-                  onDone: () => {
-                    ctx.setChats([
-                      {
-                        content: <CensorBotEmbed />,
-                        avatarUrl: BRANDING.logo,
-                        username: 'Censor Bot'
-                      }
-                    ])
-                    setTimeout(() => {
-                      ctx.setChats([])
-                      ctx.data = ctx.data + 1
-                      setTimeout(() => ctx.loop(), 400)
-                    }, 2e3)
-                  }
+                  waitAfter: 400
                 })
+
+                ctx.setChats([
+                  {
+                    content: <CensorBotEmbed />,
+                    avatarUrl: BRANDING.logo,
+                    username: 'Censor Bot'
+                  }
+                ])
+
+                await Utils.wait(2e3)
+                ctx.clearChats()
+                ctx.data = ctx.data + 1
+
+                await Utils.wait(400)
+                ctx.loop()
               }}
             />
             <VStack
@@ -310,13 +313,72 @@ export default function Landing() {
                 </Button>
               </NextLink>
             </VStack>
-            <Image
-              src={DashboardExample.src}
-              h={imageHeight}
-              width={imageWidth}
+
+            <DiscordChat
+              w={imageWidth}
+              h={{
+                ...imageHeight,
+                tablet: '200px'
+              }}
               boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
-              borderRadius="20px"
-              flexGrow={0}
+              orchestra={async (ctx) => {
+                await ctx.setTyping({
+                  content: 'Fuck you!',
+                  waitAfter: 400
+                })
+
+                ctx.setChats([
+                  {
+                    content: <CensorBotEmbed />,
+                    avatarUrl: BRANDING.logo,
+                    username: 'Censor Bot'
+                  },
+                  {
+                    content: '#### you!',
+                    badge: 'Resent'
+                  }
+                ])
+
+                await Utils.wait(2e3)
+                ctx.clearChats()
+
+                await Utils.wait(500)
+                await ctx.setTyping({
+                  content: <Image w="120px" h="120px" src={BlurryImage.src} />,
+                  waitSend: 700,
+                  waitAfter: 400
+                })
+
+                ctx.setChats([
+                  {
+                    content: <CensorBotEmbed />,
+                    avatarUrl: BRANDING.logo,
+                    username: 'Censor Bot'
+                  }
+                ])
+
+                await Utils.wait(2e3)
+                ctx.clearChats()
+
+                await Utils.wait(500)
+
+                await ctx.setTyping({ content: 'fu', waitAfter: 200 })
+                await ctx.setTyping({ content: 'ck', waitAfter: 400 })
+
+                ctx.setChats([
+                  {
+                    content: <CensorBotEmbed />,
+                    avatarUrl: BRANDING.logo,
+                    username: 'Censor Bot'
+                  }
+                ])
+
+                await Utils.wait(2e3)
+                ctx.clearChats()
+
+                await Utils.wait(500)
+                ctx.loop()
+              }}
             />
           </MiddleWrap>
         </VStack>
