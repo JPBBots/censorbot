@@ -48,7 +48,10 @@ export function NavBar() {
             showNavItems
               ? [
                   {
-                    label: 'Support'
+                    label: 'Support',
+                    onClick: () => {
+                      void window.open('/support', '_blank')
+                    }
                   },
                   {
                     label: 'Dashboard',
@@ -84,7 +87,7 @@ export function NavBar() {
                 <MenuItem onClick={() => {}}>Dashboard</MenuItem>
               </NextLink>
 
-              <NextLink href="/" passHref>
+              <NextLink href="/support" passHref>
                 <MenuItem onClick={() => {}}>Support</MenuItem>
               </NextLink>
             </>

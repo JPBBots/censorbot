@@ -12,60 +12,25 @@ export default function Test() {
       h="300px"
       orchestra={async (ctx) => {
         await ctx.setTyping({
-          content: 'Fuck you!',
-          waitAfter: 400
+          content: 'https://discord.gg/CRAbk4w',
+          waitAfter: 400,
+          messageStyle: {
+            color: '#0645ad',
+            fontSize: '14px',
+            textDecorationColor: 'rgb(6, 69, 173)',
+            textDecor: 'underline'
+          }
         })
 
-        ctx.setChats([
-          {
-            content: <CensorBotEmbed />,
-            avatarUrl: BRANDING.logo,
-            username: 'Censor Bot'
-          },
-          {
-            content: '#### you!',
-            badge: 'Resent'
-          }
-        ])
+        await ctx.censorBotDelete()
 
-        await Utils.wait(2e3)
-        ctx.clearChats()
-
-        await Utils.wait(500)
         await ctx.setTyping({
-          content: <Image w="120px" h="120px" src={BlurryImage.src} />,
-          waitSend: 700,
+          content: 'https://phishing.discord.com !!! free nitro!',
           waitAfter: 400
         })
 
-        ctx.setChats([
-          {
-            content: <CensorBotEmbed />,
-            avatarUrl: BRANDING.logo,
-            username: 'Censor Bot'
-          }
-        ])
+        await ctx.censorBotDelete()
 
-        await Utils.wait(2e3)
-        ctx.clearChats()
-
-        await Utils.wait(500)
-
-        await ctx.setTyping({ content: 'fu', waitAfter: 200 })
-        await ctx.setTyping({ content: 'ck', waitAfter: 400 })
-
-        ctx.setChats([
-          {
-            content: <CensorBotEmbed />,
-            avatarUrl: BRANDING.logo,
-            username: 'Censor Bot'
-          }
-        ])
-
-        await Utils.wait(2e3)
-        ctx.clearChats()
-
-        await Utils.wait(500)
         ctx.loop()
       }}
     />

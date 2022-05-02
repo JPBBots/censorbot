@@ -258,7 +258,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
       for (const attachment of contentData.contentData.attachments.filter(
         (x) => x.image
       )) {
-        const res = await this.worker.images.test(attachment.proxy_url)
+        const res = await this.worker.images.test(attachment.url)
         if (res.bad) {
           contentData
             .setContent(

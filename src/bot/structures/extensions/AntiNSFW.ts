@@ -20,7 +20,6 @@ export class AntiNSFW extends BaseExtension {
   }
 
   public async test(text: string): Promise<Test> {
-    console.log(text)
     const tested = this.cache.get(text)
     if (tested) return tested
 
@@ -28,15 +27,13 @@ export class AntiNSFW extends BaseExtension {
     if (!image) return { bad: false }
 
     const formData = new FormData()
-    formData.append('file', image)
+    formData.append('file', image, 'image.png')
 
     const req = (await fetch('https://api.unscan.co/nsfw', {
       method: 'POST',
       body: formData,
-      headers: { 'Content-Type': 'multipart/form-data' }
+      headers: { ...formData.getHeaders() }
     }).then((x) => x.json())) as UnscanPartialResponse
-
-    console.debug(req)
 
     if (!req.success) return { bad: false }
 

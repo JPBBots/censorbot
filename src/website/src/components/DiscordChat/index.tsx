@@ -1,4 +1,11 @@
-import { Box, HStack, VStack, Text, StackProps } from '@chakra-ui/layout'
+import {
+  Box,
+  HStack,
+  VStack,
+  Text,
+  StackProps,
+  TextProps
+} from '@chakra-ui/layout'
 import { Image } from '@chakra-ui/react'
 import { hex } from 'chroma-js'
 import Typist from 'react-typist'
@@ -16,6 +23,7 @@ const font = 'Whitney,"Helvetica Neue",Helvetica,Arial,sans-serif'
 
 interface DiscordMessageProps {
   content: any
+  messageStyle?: TextProps
   badge?: string
   avatarUrl?: string
   username?: string
@@ -89,6 +97,7 @@ export function DiscordMessage({
           lineHeight="1.375rem"
           color="#dcddde"
           fontWeight={400}
+          {...opts.messageStyle}
         >
           {content}
         </Text>
@@ -134,6 +143,7 @@ interface DiscordChatOrchestraCtx {
   setTyping: (data: Omit<TypingSettings, 'onDone'>) => Promise<void>
   setChats: Dispatch<SetStateAction<DiscordMessageProps[]>>
   clearChats: () => void
+  censorBotDelete: () => Promise<void>
   loop: () => void
   data: any
 }
@@ -157,7 +167,8 @@ export function DiscordChat({ orchestra, ...props }: DiscordChatProps) {
         content: typing.content,
         avatarUrl: typing.avatarUrl,
         username: typing.username,
-        badge: typing.badge
+        badge: typing.badge,
+        messageStyle: typing.messageStyle
       }
     ])
     setTyping(undefined)
@@ -188,6 +199,20 @@ export function DiscordChat({ orchestra, ...props }: DiscordChatProps) {
       setChats,
       clearChats: () => {
         setChats([])
+      },
+      censorBotDelete: async () => {
+        context.setChats([
+          {
+            content: <CensorBotEmbed />,
+            avatarUrl: BRANDING.logo,
+            username: 'Censor Bot'
+          }
+        ])
+
+        await Utils.wait(2e3)
+        context.clearChats()
+
+        await Utils.wait(500)
       },
       loop: () => {
         if (done) return

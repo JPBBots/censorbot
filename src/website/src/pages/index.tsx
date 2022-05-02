@@ -5,20 +5,25 @@ import DashboardExample from 'images/dashboardexample.png'
 import PhoneDashboard from 'images/phonedashboard.png'
 import DiscordChatExample from 'images/discordchat.png'
 
+import BlurryImage from 'images/blurry.jpg'
+
 import { Lower, Upper } from '~/LandingSectionSvg'
 import { PremiumIcon } from '~/PremiumIcon'
 
 import NextLink from 'next/link'
 
 import { wLT, wMT, TABLET_WIDTH, MiddleWrap } from '@jpbbots/theme'
+
 import { animate } from 'framer-motion'
+
 import { Root } from '~/Root'
 import { useMeta } from '@/hooks/useMeta'
-import { CensorBotEmbed, DiscordChat } from '~/DiscordChat'
-import BRANDING from '@/BRANDING'
-import { Utils } from '@/utils/Utils'
 
-import BlurryImage from 'images/blurry.jpg'
+import { CensorBotEmbed, DiscordChat } from '~/DiscordChat'
+
+import BRANDING from '@/BRANDING'
+
+import { Utils } from '@/utils/Utils'
 
 const DESCRIPTION_FONT_SIZE = '24px'
 
@@ -237,19 +242,9 @@ export default function Landing() {
                   waitAfter: 400
                 })
 
-                ctx.setChats([
-                  {
-                    content: <CensorBotEmbed />,
-                    avatarUrl: BRANDING.logo,
-                    username: 'Censor Bot'
-                  }
-                ])
-
-                await Utils.wait(2e3)
-                ctx.clearChats()
+                await ctx.censorBotDelete()
                 ctx.data = ctx.data + 1
 
-                await Utils.wait(400)
                 ctx.loop()
               }}
             />
@@ -343,40 +338,20 @@ export default function Landing() {
                 ctx.clearChats()
 
                 await Utils.wait(500)
+
                 await ctx.setTyping({
                   content: <Image w="120px" h="120px" src={BlurryImage.src} />,
                   waitSend: 700,
                   waitAfter: 400
                 })
 
-                ctx.setChats([
-                  {
-                    content: <CensorBotEmbed />,
-                    avatarUrl: BRANDING.logo,
-                    username: 'Censor Bot'
-                  }
-                ])
-
-                await Utils.wait(2e3)
-                ctx.clearChats()
-
-                await Utils.wait(500)
+                await ctx.censorBotDelete()
 
                 await ctx.setTyping({ content: 'fu', waitAfter: 200 })
                 await ctx.setTyping({ content: 'ck', waitAfter: 400 })
 
-                ctx.setChats([
-                  {
-                    content: <CensorBotEmbed />,
-                    avatarUrl: BRANDING.logo,
-                    username: 'Censor Bot'
-                  }
-                ])
+                await ctx.censorBotDelete()
 
-                await Utils.wait(2e3)
-                ctx.clearChats()
-
-                await Utils.wait(500)
                 ctx.loop()
               }}
             />
