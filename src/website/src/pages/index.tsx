@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Button, Image, Text, VStack, Box } from '@chakra-ui/react'
+import { Button, Image, Text, VStack, Box, Divider } from '@chakra-ui/react'
 
 import DashboardExample from 'images/dashboardexample.png'
 import PhoneDashboard from 'images/phonedashboard.png'
@@ -225,7 +225,7 @@ export default function Landing() {
         </VStack>
 
         <VStack py={100} w="full" spacing={0}>
-          <MiddleWrap wrap="wrap-reverse" spacing="20px">
+          <MiddleWrap reverse spacing="20px">
             <DiscordChat
               w={imageWidth}
               h={{
@@ -263,10 +263,11 @@ export default function Landing() {
                 maxW={707}
                 color="lighter.60"
               >
-                Censor Bot is a simple, yet powerful anti-swear bot for your
-                Discord server. It comes with pre-built filters managed by
-                Censor Bot's curated staff team, keeping them up to date and
-                accurate at all times.
+                Censor Bot is a powerful anti-swear bot for your Discord server.
+                It comes with pre-built filters managed by Censor Bot's curated
+                staff team, keeping them up to date and accurate at all times.
+                Censor Bot comes with advanced recognition making it very
+                difficult to bypass
               </Text>
               {/* <Button w="200px">Read more</Button> */}
             </VStack>
@@ -276,44 +277,82 @@ export default function Landing() {
         <VStack py={100} w="full" spacing={0} bg="darker.10">
           <MiddleWrap spacing="20px">
             <VStack
-              textAlign={alignCenter ? 'center' : 'right'}
-              alignItems={alignCenter ? 'center' : 'flex-end'}
-              justifyContent="flex-end"
+              textAlign={alignCenter ? 'center' : 'left'}
+              alignItems={alignCenter ? 'center' : 'flex-start'}
+              justifyContent="flex-start"
               px="64px"
             >
-              <Text
-                textStyle="heading.xl"
-                fontSize={headingFontSize}
-                color="brand.100"
-              >
-                Premium Features
+              <Text textStyle="heading.xl" fontSize={headingFontSize}>
+                Simple but{' '}
+                <Text
+                  as="span"
+                  fontSize="inherit"
+                  fontWeight="inherit"
+                  color="brand.100"
+                >
+                  powerful
+                </Text>
               </Text>
               <Text
                 textStyle="label.md"
                 fontSize={DESCRIPTION_FONT_SIZE}
-                maxW="707px"
+                maxW={707}
                 color="lighter.60"
               >
-                Can't get enough customization? Customize more with{' '}
-                <PremiumIcon />{' '}
-                <Text color="brand.100" as="span" fontSize="inherit">
-                  Censor Bot Premium
-                </Text>
-                . Gain access to increased filter limits, AI features, image
-                filtering and more!
+                Censor Bot can do much more than just swears and messages.
+                Remove invites, phishing links, innapropriate nicknames,
+                hoisters and more. We have all the features to make advanced
+                moderation easier
               </Text>
-              <NextLink href="/premium" passHref>
-                <Button color="brand.100" onClick={() => {}}>
-                  Get Premium
+
+              <NextLink href="/dashboard" passHref>
+                <Button onClick={() => {}} w="200px">
+                  Get going!
                 </Button>
               </NextLink>
             </VStack>
-
             <DiscordChat
               w={imageWidth}
               h={{
                 ...imageHeight,
                 tablet: '200px'
+              }}
+              boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
+              orchestra={async (ctx) => {
+                await ctx.setTyping({
+                  content: 'https://discord.gg/CRAbk4w',
+                  waitAfter: 400,
+                  messageStyle: {
+                    color: '#0645ad',
+                    fontSize: '14px',
+                    textDecorationColor: 'rgb(6, 69, 173)',
+                    textDecor: 'underline'
+                  }
+                })
+
+                await ctx.censorBotDelete()
+
+                await ctx.setTyping({
+                  content: 'https://phishing.discord.com !!! free nitro!',
+                  waitAfter: 400
+                })
+
+                await ctx.censorBotDelete()
+
+                ctx.loop()
+              }}
+            />
+          </MiddleWrap>
+        </VStack>
+
+        <VStack py={100} w="full" spacing={0}>
+          <MiddleWrap reverse spacing="20px">
+            <DiscordChat
+              w={imageWidth}
+              h={{
+                ...imageHeight,
+                tablet: '300px',
+                mobile: '250px'
               }}
               boxShadow="0px 4px 59px 7px rgba(0, 0, 0, 0.25)"
               orchestra={async (ctx) => {
@@ -355,8 +394,44 @@ export default function Landing() {
                 ctx.loop()
               }}
             />
+
+            <VStack
+              textAlign={alignCenter ? 'center' : 'right'}
+              alignItems={alignCenter ? 'center' : 'flex-end'}
+              justifyContent="flex-end"
+              px="64px"
+            >
+              <Text
+                textStyle="heading.xl"
+                fontSize={headingFontSize}
+                color="brand.100"
+              >
+                Premium Features
+              </Text>
+              <Text
+                textStyle="label.md"
+                fontSize={DESCRIPTION_FONT_SIZE}
+                maxW="707px"
+                color="lighter.60"
+              >
+                Can't get enough customization? Customize more with{' '}
+                <PremiumIcon />{' '}
+                <Text color="brand.100" as="span" fontSize="inherit">
+                  Censor Bot Premium
+                </Text>
+                . Gain access to increased filter limits, AI features, image
+                filtering and more!
+              </Text>
+              <NextLink href="/premium" passHref>
+                <Button color="brand.100" onClick={() => {}}>
+                  Get Premium
+                </Button>
+              </NextLink>
+            </VStack>
           </MiddleWrap>
         </VStack>
+
+        <Divider />
 
         <VStack py={50} spacing={5}>
           <VStack textAlign="center" alignContent="center">
