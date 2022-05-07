@@ -234,20 +234,47 @@ export function SettingOption({
 
   if (option.type === OptionType.BitBool) {
     return (
-      <Option
-        onChange={({ target }) => {
-          if (target.checked) {
-            setValue(value | option.bit)
-          } else {
-            setValue(value & ~option.bit)
-          }
-        }}
-        {...props}
-        name={`${option.name}.${option.bit}`}
-        isChecked={(value & option.bit) !== 0}
-        isPremium={option.premium}
-        label={option.label}
-      />
+      <VStack w="full">
+        {option.requiredPermission &&
+          (value & option.bit) !== 0 &&
+          !PermissionUtils.has(
+            guild.guild.permissions,
+            option.requiredPermission
+          ) && (
+            <Alert
+              status="warning"
+              cursor="pointer"
+              onClick={() =>
+                window.open(
+                  'https://support.discord.com/hc/en-us/articles/206029707',
+                  '_blank'
+                )
+              }
+              borderRadius="md"
+            >
+              <AlertIcon />
+              <Text>
+                The bot is missing the{' '}
+                {humanReadablePermissions[option.requiredPermission]}{' '}
+                permissions, which is required for this setting.
+              </Text>
+            </Alert>
+          )}
+        <Option
+          onChange={({ target }) => {
+            if (target.checked) {
+              setValue(value | option.bit)
+            } else {
+              setValue(value & ~option.bit)
+            }
+          }}
+          {...props}
+          name={`${option.name}.${option.bit}`}
+          isChecked={(value & option.bit) !== 0}
+          isPremium={option.premium}
+          label={option.label}
+        />
+      </VStack>
     )
   }
 

@@ -395,29 +395,32 @@ export const settings: ISetting[] = [
   },
   {
     title: 'Censor Methods',
-    requiredPermission: 'manageMessages',
     section: 'General',
     options: [
       {
         name: 'censor',
+        requiredPermission: 'manageMessages',
         label: 'Filter sent and edited messages',
         type: OptionType.BitBool,
         bit: CensorMethods.Messages
       },
       {
         name: 'censor',
+        requiredPermission: 'manageNicknames',
         label: 'Filter usernames and nicknames',
         type: OptionType.BitBool,
         bit: CensorMethods.Names
       },
       {
         name: 'censor',
+        requiredPermission: 'manageMessages',
         label: 'Filter reactions on messages',
         type: OptionType.BitBool,
         bit: CensorMethods.Reactions
       },
       {
         name: 'censor',
+        requiredPermission: 'manageThreads',
         label: 'Filter thread names',
         type: OptionType.BitBool,
         bit: CensorMethods.Threads
@@ -427,6 +430,7 @@ export const settings: ISetting[] = [
         label: 'Kick users with inappropriate profile pictures',
         type: OptionType.BitBool,
         bit: CensorMethods.Avatars,
+        requiredPermission: 'kick',
         premium: true
       }
     ]
@@ -651,7 +655,12 @@ export type IOption =
     >
   | DataOption<
       OptionType.BitBool,
-      { bit: number; label: string; premium?: boolean }
+      {
+        bit: number
+        label: string
+        premium?: boolean
+        requiredPermission?: keyof typeof PermissionUtils['bits']
+      }
     >
   | DataOption<
       OptionType.Select,
