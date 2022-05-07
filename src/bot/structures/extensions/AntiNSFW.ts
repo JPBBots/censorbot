@@ -33,9 +33,15 @@ export class AntiNSFW extends BaseExtension {
       method: 'POST',
       body: formData,
       headers: { ...formData.getHeaders() }
-    }).then((x) => x.json())) as UnscanPartialResponse
+    })
+      .then((x) => x.json())
+      .catch(() => ({}))) as UnscanPartialResponse
 
-    if (!req.success) return { bad: false }
+    if (!req.success) {
+      this.working = false
+
+      return { bad: false }
+    }
 
     const test: Test = {
       bad: req.nsfw,
