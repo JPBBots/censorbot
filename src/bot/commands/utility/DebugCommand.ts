@@ -1,7 +1,7 @@
 import { Command, Guild, Run, Worker, Me, Thinks } from '@jadl/cmd'
 import { Embed } from '@jadl/embed'
 import { APIGuild, APIGuildMember } from 'discord-api-types/v9'
-import { PermissionUtils } from 'jadl'
+import { humanReadablePermissions, PermissionUtils } from 'jadl'
 import { WorkerManager } from '../../managers/Worker'
 
 const CHECK = ':white_check_mark:'
@@ -45,9 +45,9 @@ export class DebugCommand {
             (perm) =>
               `${
                 PermissionUtils.has(permissions, perm.permission) ? CHECK : EX
-              }  ${perm.vital ? ':exclamation:' : ''} __${perm.name}__: ${
-                perm.why
-              }`
+              }  ${perm.vital ? ':exclamation:' : ''} __${
+                humanReadablePermissions[perm.permission]
+              }__: ${perm.why}`
           )
           .join('\n')} \n\n:exclamation: means the permission is vital`
       )

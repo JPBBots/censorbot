@@ -1,5 +1,10 @@
 import { Event } from '@jpbberry/typed-emitter'
-import { DiscordEventMap, Shard, Snowflake } from 'jadl'
+import {
+  DiscordEventMap,
+  humanReadablePermissions,
+  Shard,
+  Snowflake
+} from 'jadl'
 import { Embed } from '@jadl/embed'
 import Wait from '../utils/Wait'
 
@@ -85,7 +90,7 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
         embed.field(
           'Missing a few permissions!',
           `Some vital permissions are missing:\n${perms
-            .map((x) => `\`${x.name}\``)
+            .map((x) => `\`${humanReadablePermissions[x.permission]}\``)
             .join(
               ', '
             )}\nType +permissions to see why we need them and recheck them.`
