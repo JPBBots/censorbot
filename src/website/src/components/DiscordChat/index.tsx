@@ -15,9 +15,15 @@ import BRANDING from '@/BRANDING'
 import { Utils } from '@/utils/Utils'
 import { useUser } from '@/hooks/useAuth'
 
-const discordBg = hex('#36393f')
-const chatInputBg = hex('#40444B')
-const attachmentButton = hex('#B9BBBE')
+// const discordBg = hex('#36393f')
+const discordBg = hex('#000000').alpha(0.2)
+// const chatInputBg = hex('#40444B')
+const chatInputBg = hex('#000000').alpha(0.2)
+// const attachmentButton = hex('#B9BBBE')
+const attachmentButton = hex('#ffffff').alpha(0.5)
+
+// const fontColor = 'dcddde'
+const fontColor = 'lighter.80'
 
 const font = 'Whitney,"Helvetica Neue",Helvetica,Arial,sans-serif'
 
@@ -55,7 +61,7 @@ export function DiscordMessage({
         duration: 0.2
       }}
       animate={{
-        y: [50, 0]
+        y: [20, 0]
       }}
     >
       <Image
@@ -76,7 +82,7 @@ export function DiscordMessage({
             fontWeight={500}
             lineHeight="1.375rem"
             fontFamily={font}
-            color="white"
+            color={fontColor}
           >
             {username}
           </Text>
@@ -95,7 +101,7 @@ export function DiscordMessage({
         <Text
           fontSize="1rem"
           lineHeight="1.375rem"
-          color="#dcddde"
+          color={fontColor}
           fontWeight={400}
           {...opts.messageStyle}
         >
@@ -119,13 +125,13 @@ export function CensorBotEmbed() {
         w="fit-content"
         borderRadius="4px"
         borderLeftRadius="0px"
-        color="#dcddde"
+        color={fontColor}
         fontFamily={font}
         fontStyle="normal"
         fontSize="14px"
         fontWeight={400}
         p="12px 16px 12px 12px"
-        bg="#2f3136"
+        bg="darker.20"
       >
         You're not allowed to say that...
       </Box>
@@ -279,7 +285,7 @@ export function DiscordChat({ orchestra, ...props }: DiscordChatProps) {
           fontFamily={font}
           fontStyle="normal"
           userSelect="none"
-          color="#dcddde"
+          color={fontColor}
           lineHeight="22px"
           fontWeight={400}
         >
