@@ -28,7 +28,10 @@ export class AvatarsFilterHandler extends BaseFilterHandler {
 
     const avatarUrl = this.worker.api.cdn.avatar(
       member.user.id,
-      member.user.avatar
+      member.user.avatar,
+      {
+        extension: 'png'
+      }
     )
 
     const res = await this.worker.images.test(avatarUrl)

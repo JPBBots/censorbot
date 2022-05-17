@@ -26,7 +26,11 @@ export class Timeouts {
     void this.checkTimeouts()
   }, 15e4)
 
-  constructor(public manager: PunishmentManager) {}
+  constructor(public manager: PunishmentManager) {
+    manager.worker.db.on('started', () => {
+      void this.checkTimeouts()
+    })
+  }
 
   get db(): Collection<TimeoutSchema> {
     return this.manager.worker.db.collection('timeouts')

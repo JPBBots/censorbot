@@ -4,8 +4,8 @@ import {
   CommandError,
   EphemeralEmbed,
   Options,
+  Permissions,
   Run,
-  UserPerms,
   Worker
 } from '@jadl/cmd'
 import { Embed } from '@jadl/embed'
@@ -16,9 +16,9 @@ import { WorkerManager } from '../../managers/Worker'
   'snipe',
   'Snipe the latest deleted message by Censor Bot from a channel'
 )
+@Permissions('manageMessages')
 export class SnipeCommand {
   @Run()
-  @UserPerms('manageMessages')
   run(
     @Options.Channel(
       'channel',

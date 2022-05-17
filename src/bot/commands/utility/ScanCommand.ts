@@ -1,4 +1,4 @@
-import { Channel, Command, Run, Thinks, Worker, UserPerms } from '@jadl/cmd'
+import { Channel, Command, Run, Thinks, Worker, Permissions } from '@jadl/cmd'
 import { Embed } from '@jadl/embed'
 import { APIChannel } from 'discord-api-types/v9'
 import { GuildDB } from 'typings'
@@ -8,10 +8,10 @@ import { Db } from '../decorators/Db'
 import { Premium } from '../decorators/Premium'
 
 @Command('scan', 'Scans the last 100 messages and deletes any with curses')
+@Permissions('manageMessages')
 export class ScanCommand {
   @Run()
   @Thinks()
-  @UserPerms('manageMessages')
   @Premium()
   async run(
     @Channel() channel: APIChannel,

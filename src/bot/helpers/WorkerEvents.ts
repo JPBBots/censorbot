@@ -138,8 +138,6 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
 
   @Event('READY')
   handleReady(): void {
-    void this.worker.punishments.timeouts.checkTimeouts()
-
     if (this.worker.config.custom.allowedGuilds) {
       this.worker.guilds.forEach((guild) => {
         if (!this.worker.config.custom.allowedGuilds?.includes(guild.id)) {

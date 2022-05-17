@@ -3,9 +3,9 @@ import {
   Run,
   Thinks,
   Worker,
-  UserPerms,
   Guild,
-  Options
+  Options,
+  Permissions
 } from '@jadl/cmd'
 import { Embed } from '@jadl/embed'
 import {
@@ -18,10 +18,10 @@ import { WorkerManager } from '../../managers/Worker'
 import { Premium } from '../decorators/Premium'
 
 @Command('purgeresends', 'Purge the resends for a specific user')
+@Permissions('manageMessages')
 export class PurgeResendsCommand {
   @Run()
   @Thinks()
-  @UserPerms('manageMessages')
   @Premium()
   async run(
     @Worker() worker: WorkerManager,

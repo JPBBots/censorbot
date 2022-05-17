@@ -17,7 +17,7 @@ const DESCRIPTION_MAX_LENGTH = 2048
 export class Responses {
   color = 0xea5455
 
-  constructor(public worker: WorkerManager) {}
+  constructor(public worker: WorkerManager) { }
 
   embed(channel: Snowflake): Embed {
     return new Embed(async (embed) => {
@@ -96,8 +96,7 @@ export class Responses {
           .title('Removed Reaction')
           .field(
             'Info',
-            `User <@${
-              data.user_id
+            `User <@${data.user_id
             }> on [this message](${`https://discord.com/channels/${data.guild_id}/${data.channel_id}/${data.message_id}`})`,
             true
           )
