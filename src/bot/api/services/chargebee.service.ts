@@ -16,21 +16,10 @@ import { DatabaseService } from './database.service'
 import { InterfaceService } from './interface.service'
 import { PremiumTypes } from 'typings'
 import { GuildsService } from './guilds.service'
-import { UsersService } from './users.service'
 import { EventEmitter } from '@jpbberry/typed-emitter'
+import { CustomerSchema } from 'bot/types'
 
 const chargebee = chargebeeC as Chargebee.ChargeBee
-
-interface CustomerSchema {
-  /**
-   * Discord User ID
-   */
-  id: Snowflake
-  /**
-   * Customer ChargeBee ID
-   */
-  customer: string
-}
 
 export interface AmountObject {
   amount: number
@@ -135,6 +124,8 @@ export class ChargeBeeService extends EventEmitter<{ USER_UPDATE: string }> {
 
   private async _getAmount(id: Snowflake): Promise<AmountObject> {
     const customerId = await this.getCustomerId(id)
+    if (!customerId) return NONE
+
     const customer = await this.getCustomerSub(customerId)
 
     if (customer.customer) return customer
@@ -160,9 +151,9 @@ export class ChargeBeeService extends EventEmitter<{ USER_UPDATE: string }> {
 
   async getCustomerId(id: Snowflake) {
     const user = await this.db.findOne({ id })
-    if (user) return user.customer
+    if (user?.customer) return user.customer
 
-    return id
+    return user?.id
   }
 
   private async _checkForExpiredTrials() {

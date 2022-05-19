@@ -67,6 +67,11 @@ export class ChargeBeeController {
     void (async () => {
       if (!body) return
 
+      if (body.event_type === 'customer_created') {
+        const customer = body.content.customer
+        return await this.chargebee.db.updateOne({ id: customer.id }, { $set: { id: customer.id } }, { upsert: true})
+      }
+
       if (this.positiveEvents.includes(body.event_type)) {
         const deprecatedUser = await this.chargebee.db.findOne({
           customer: body.content.customer.id
@@ -116,12 +121,13 @@ export class ChargeBeeController {
           customer: body.content.customer.id
         })
 
-        if (body.content.customer.deleted && deprecatedCustomer)
-          await this.chargebee.db.deleteOne({
-            customer: body.content.customer.id
-          })
-
         const userId = deprecatedCustomer?.id ?? body.content.customer.id
+
+        if (body.content.customer.deleted) {
+          await this.chargebee.db.deleteOne({
+            id: userId
+          })
+        }
 
         const newAmount = await this.chargebee.getAmount(userId, true)
 

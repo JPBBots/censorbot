@@ -14,7 +14,7 @@ export interface CustomerSchema {
   /**
    * Customer ChargeBee ID
    */
-  customer: string
+  customer?: string
 }
 
 declare module 'jadl/dist/clustering/ThreadComms' {

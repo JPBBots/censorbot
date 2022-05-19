@@ -14,13 +14,11 @@ import { Snowflake, State } from 'jadl'
 import { ShortGuild, User, WebSocketEventMap } from 'typings'
 import { UsersService } from '../services/users.service'
 import { CacheService } from '../services/cache.service'
-import { OAuthService } from '../services/oauth.service'
 import { GuildsService } from '../services/guilds.service'
 import { DatabaseService } from '../services/database.service'
 import { ChargeBeeService } from '../services/chargebee.service'
 
 import Pieces from '../../utils/Pieces'
-import { ThreadService } from '../services/thread.service'
 import { StatusService } from '../services/status.service'
 import { TicketsService } from '../services/tickets.service'
 import { UseInterceptors } from '@nestjs/common'
@@ -294,12 +292,13 @@ export class UserGateway implements OnGatewayConnection {
   @SubscribeMessage('CREATE_PORTAL_SESSION')
   @UseInterceptors(UserInterceptor)
   async createPortalSession(@Self() user: User) {
+    const id = await this.chargebee.getCustomerId(user.id)
+    if (!id) return { error: 'Invalid Customer for Portal' }
+
     try {
       const portalPage = await this.chargebee.chargebee.portal_session
         .create({
-          customer: {
-            id: await this.chargebee.getCustomerId(user.id)
-          }
+          customer: { id }
         })
         .request()
 
@@ -324,16 +323,23 @@ export class UserGateway implements OnGatewayConnection {
     )
     data: EventMap['CREATE_HOSTED_PAGE']
   ) {
+    const customerId = await this.chargebee.getCustomerId(user.id)
+
     const hostedPage = await this.chargebee.chargebee.hosted_page
       .checkout_new({
         subscription: {
           plan_id: data.plan
         },
-        customer: {
-          first_name: 'Discord',
-          last_name: `${user.tag}`,
-          id: await this.chargebee.getCustomerId(user.id)
-        }
+        customer: customerId
+          ? {
+            id: customerId
+          }
+          : {
+            first_name: 'Discord',
+            last_name: `${user.tag}`,
+            id: await this.chargebee.getCustomerId(user.id) ?? user.id,
+            email: user.email ?? undefined
+          }
       })
       .request((error) => {
         if (error) console.log(error)

@@ -120,6 +120,7 @@
     "swr": "^1.2.2",
     "topgg-autoposter": "^1.1.10",
     "typings": "^1.0.18",
+    "undici": "^5.2.0",
     "validate": "^5.2.0",
     "ws": "^7.5.7"
   },
