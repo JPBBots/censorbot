@@ -268,7 +268,7 @@ export class UserGateway implements OnGatewayConnection {
 
     const activeTrial = await this.db
       .collection('trials')
-      .findOne({ user: user.id, until: { $gt: Date.now() } })
+      .findOne({ user: user.id, disabled: false })
 
     if (activeTrial) return { error: 'User already has a trial active' }
 
@@ -285,6 +285,32 @@ export class UserGateway implements OnGatewayConnection {
     })
 
     await this.guilds.updateGuild(guildId)
+
+    return true
+  }
+
+  @SubscribeMessage('CANCEL_TRIAL')
+  @UseInterceptors(UserInterceptor, GuildsInterceptor)
+  async cancelTrial(
+    @Self() user: User,
+    @MessageBody(JVP(SnowflakeString.required()))
+    guildId: EventMap['CANCEL_TRIAL']
+  ) {
+    if (!this.hasAccess(user, guildId)) return { error: 'Unauthorized' }
+
+    const trial = await this.db.collection('trials').findOne({ guild: guildId })
+
+    if (!trial) return { error: 'Guild does not have a trial' }
+    if (trial.disabled) return { error: 'Guilds trial is already over' }
+
+    await this.db
+      .collection('trials')
+      .updateOne({ guild: guildId }, { $set: { disabled: true } })
+
+    await this.db.removeGuildPremium(guildId)
+
+    void this.guilds.updateGuild(trial.guild)
+    if (trial.user) void this.users.causeUpdate(trial.user)
 
     return true
   }
@@ -332,14 +358,14 @@ export class UserGateway implements OnGatewayConnection {
         },
         customer: customerId
           ? {
-            id: customerId
-          }
+              id: customerId
+            }
           : {
-            first_name: 'Discord',
-            last_name: `${user.tag}`,
-            id: await this.chargebee.getCustomerId(user.id) ?? user.id,
-            email: user.email ?? undefined
-          }
+              first_name: 'Discord',
+              last_name: `${user.tag}`,
+              id: (await this.chargebee.getCustomerId(user.id)) ?? user.id,
+              email: user.email ?? undefined
+            }
       })
       .request((error) => {
         if (error) console.log(error)

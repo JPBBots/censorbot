@@ -34,6 +34,9 @@ export default function GuildPremium() {
   const dispatch = useDispatch()
 
   const trialDisclosure = useDisclosure()
+
+  const cancelTrialDisclosure = useDisclosure()
+
   const cancelRef = useRef<HTMLButtonElement>(null)
 
   return (
@@ -45,9 +48,12 @@ export default function GuildPremium() {
           <PremiumIcon notColored={!guild?.premium} />
         </Text>
         {guild?.trial && guild.premium && (
-          <Text size="heading.xl">
-            Trial expires in <Countdown date={guild.trial} />
-          </Text>
+          <VStack align="flex-start">
+            <Text size="heading.xl">
+              Trial expires in <Countdown date={guild.trial} />
+            </Text>
+            <Button onClick={cancelTrialDisclosure.onOpen}>Cancel Trial</Button>
+          </VStack>
         )}
         {guild &&
           // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -140,6 +146,40 @@ export default function GuildPremium() {
                 ml={3}
               >
                 Enable Trial
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
+      <AlertDialog
+        isOpen={cancelTrialDisclosure.isOpen}
+        onClose={cancelTrialDisclosure.onClose}
+        leastDestructiveRef={cancelRef}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader>Cancel Premium Trial?</AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure you want to cancel? If you cancel, you will not be
+              able to restart the trial.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={cancelTrialDisclosure.onClose}>
+                Nevermind
+              </Button>
+              <Button
+                variant="brand"
+                onClick={() => {
+                  void Api.ws.request('CANCEL_TRIAL', guild?.guild.id!)
+                  cancelTrialDisclosure.onClose()
+                }}
+                color="white"
+                ml={3}
+              >
+                Cancel Trial
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

@@ -323,7 +323,7 @@ export class Database extends Db {
     })
 
     return {
-      premium: trial ? trial.until > Date.now() : false,
+      premium: trial ? trial.until > Date.now() && !trial.disabled : false,
       trial: trial ? trial.until : null
     }
   }
