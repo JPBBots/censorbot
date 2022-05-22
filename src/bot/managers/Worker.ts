@@ -113,15 +113,17 @@ export class WorkerManager extends Worker<{}> {
   public threadsFilterHandler = new ThreadsFilterHandler(this)
   public avatarsFilterHandler = new AvatarsFilterHandler(this)
 
-  constructor() {
+  constructor(custom = false) {
     super()
 
-    this.interface.setupWorker(this)
+    if (!custom) {
+      this.interface.setupWorker(this)
 
-    this.setStatus(
-      this.config.custom.status?.[0] ?? 'watching',
-      this.config.custom.status?.[1] ?? 'For Bad Words'
-    )
+      this.setStatus(
+        this.config.custom.status?.[0] ?? 'watching',
+        this.config.custom.status?.[1] ?? 'For Bad Words'
+      )
+    }
 
     console.log = (...msg: string[]) => this.comms.log(msg.join(' '))
 

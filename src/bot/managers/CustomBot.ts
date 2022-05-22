@@ -22,6 +22,8 @@ export class CustomBot extends WorkerManager {
         allowedGuilds: bot.guilds,
         status: bot.customStatus
       }
+
+      this.setStatus(bot.customStatus[0], bot.customStatus[1])
     })
   }
 

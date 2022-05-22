@@ -13,3 +13,5 @@ process.on(
     worker.logError(err as Error)
   }
 )
+
+global.worker = worker
