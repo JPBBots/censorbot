@@ -11,7 +11,7 @@ import { MasterEvents } from '../helpers/MasterEvents'
 import { Cache } from '@jpbberry/cache'
 import { ShortID, CustomBotOptions } from 'typings'
 
-import AutoPoster from 'topgg-autoposter'
+// import AutoPoster from 'topgg-autoposter'
 
 import { Interface } from '@jpbbots/interface'
 import { Requests } from '../helpers/Requests'

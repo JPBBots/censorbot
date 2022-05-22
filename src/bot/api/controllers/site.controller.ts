@@ -1,12 +1,19 @@
-import { Controller, Get, HttpStatus, Query, Redirect, Req, Res } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Query,
+  Redirect,
+  Req,
+  Res
+} from '@nestjs/common'
 import { Request, Response } from 'express'
-
 
 import path from 'path'
 
 import Next from 'next'
 import { ApiResponse } from '@nestjs/swagger'
-import { Config } from 'bot/config'
+import { Config } from '../../config'
 import { OAuth2Scopes } from 'discord-api-types/v10'
 import { Snowflake, PermissionUtils } from 'jadl'
 
@@ -18,10 +25,14 @@ import { CacheService } from '../services/cache.service'
 @Controller()
 export class SiteController {
   server: ReturnType<typeof Next>
-  constructor(private readonly database: DatabaseService, private readonly thread: ThreadService, private readonly caching: CacheService) {
+  constructor(
+    private readonly database: DatabaseService,
+    private readonly thread: ThreadService,
+    private readonly caching: CacheService
+  ) {
     this.server = Next({
       quiet: true,
-      dev: true,
+      dev: Config.staging,
       dir: path.resolve(__dirname, '../../../../src', './website')
     })
 
@@ -66,24 +77,24 @@ export class SiteController {
 
   @Get('/privacy')
   @Redirect(Config.links.privacyPolicy)
-  privacyPolicy () {
+  privacyPolicy() {
     return true
   }
 
   @Get('/terms')
   @Redirect(Config.links.terms)
-  terms () {
+  terms() {
     return true
   }
 
   @Get('/support')
   @Redirect(Config.links.support)
-  support () {
+  support() {
     return true
   }
 
   @Get('/api/props')
-  async getProps (): Promise<ServerSideProps> {
+  async getProps(): Promise<ServerSideProps> {
     let serverCount = this.caching.meta.get('serverCount')
 
     if (!serverCount) {
@@ -103,7 +114,6 @@ export class SiteController {
 
   @Get('*')
   async get(@Req() req: Request, @Res() res: Response) {
-
     void this.server.getRequestHandler()(req, res)
   }
 }
