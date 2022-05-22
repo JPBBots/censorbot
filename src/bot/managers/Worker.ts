@@ -94,7 +94,7 @@ export class WorkerManager extends Worker<{}> {
       SnipeCommand,
       DebugCommand,
       TicketCommand,
-      EvalCommand,
+      // EvalCommand,
       ScanCommand,
       WarningsCommand,
       PurgeResendsCommand

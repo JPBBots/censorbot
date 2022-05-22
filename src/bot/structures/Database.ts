@@ -101,7 +101,7 @@ export class Database extends Db {
     return db
   }
 
-  currentVersion = 12
+  currentVersion = 13
 
   private async updater(
     db: GuildDB & {
@@ -184,6 +184,12 @@ export class Database extends Db {
           }
 
           db.v = 12
+        }
+        break
+      case 12:
+        {
+          if (typeof db.exceptions.roles === 'string') db.exceptions.roles = [db.exceptions.roles]
+          db.v = 13
         }
         break
       default:
@@ -281,6 +287,8 @@ export class Database extends Db {
 
     if (db.role) {
       db.roles = db.role
+
+      if (!Array.isArray(db.roles)) db.roles[db.roles]
 
       removeProps.push('role')
     }

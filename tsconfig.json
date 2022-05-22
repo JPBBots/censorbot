@@ -11,6 +11,7 @@
     "resolveJsonModule": true,
     "strictNullChecks": true,
     "sourceMap": true,
+    "declaration": true,
     "allowJs": true,
     "esModuleInterop": true,
     "baseUrl": "./src",

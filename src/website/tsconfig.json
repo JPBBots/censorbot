@@ -28,9 +28,6 @@
       ],
       "@/*": [
         "./*"
-      ],
-      "typings": [
-        "../../typings"
       ]
     },
     "incremental": true
