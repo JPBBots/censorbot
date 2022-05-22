@@ -2,9 +2,10 @@ website/build
 website/src/web.json
 website/src/config.json
 website/site.html
+.idea
 
-typings/*.js
-typings/*.d.ts
+src/typings/*.js
+src/typings/*.d.ts
 
 package-lock.json
 
@@ -57,6 +58,7 @@ build/Release
 
 # Dependency directories
 node_modules/
+website/node_modules/
 jspm_packages/
 
 # TypeScript cache

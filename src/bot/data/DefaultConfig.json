@@ -1,0 +1,44 @@
+{
+  "censor": 7,
+  "nickReplace": "Inappropriate Name",
+  "removeNick": true,
+  "log": null,
+  "role": [],
+  "filter": {
+    "base": ["en", "es", "off"],
+    "server": [],
+    "uncensor": [],
+    "phrases": [],
+    "words": []
+  },
+  "response": {
+    "content": null,
+    "deleteAfter": 3000,
+    "dm": false
+  },
+  "punishments": {
+    "expires": null,
+    "levels": [],
+    "allow": 63,
+    "log": null
+  },
+  "resend": {
+    "enabled": false,
+    "replace": 0,
+    "separate": true,
+    "ignored": []
+  },
+  "exceptions": {
+    "nsfw": true,
+    "channels": [],
+    "roles": [],
+    "advanced": []
+  },
+  "plugins": 4,
+  "prefix": "+",
+  "dm": false,
+
+  "v": 12,
+
+  "notInDb": true
+}

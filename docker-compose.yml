@@ -1,0 +1,58 @@
+version: "3.3"
+services:
+  bot:
+    container_name: CensorBot_bot
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+      args:
+        - NPM_TOKEN=${GH_TOKEN}
+    
+    volumes:
+      - ./bot/src:/app/bot/src
+
+    env_file:
+      - .env
+
+    networks:
+      - mongo
+      - influx
+      - censorbot
+
+    entrypoint: ["npm", "start"]
+    restart: unless-stopped
+  
+  website:
+    container_name: CensorBot_web
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+      args:
+        - NPM_TOKEN=${GH_TOKEN}
+
+    networks:
+      - censorbot
+
+    volumes:
+      - ./website/src:/app/website/src
+
+    entrypoint: ["npm", "run", "dev"]
+    restart: unless-stopped
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+
+    networks:
+      - censorbot
+
+    ports:
+      - 2136:2136
+
+networks:
+  mongo:
+    name: mongodb
+  influx:
+    name: influxdb
+  censorbot:

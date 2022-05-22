@@ -1,0 +1,86 @@
+:root {
+  --brand: #ea5455;
+  --main: #161e2e;
+  --secondary: #252f3f;
+  --interaction: #65696f;
+
+  color: white;
+}
+
+body {
+  margin: 0px;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--main);
+  max-width: 100vw; height: 100%; min-height: 1000px
+}
+
+// #root {
+//   background-color: var(--main);
+//   min-height: 92vh;
+//   width: -webkit-fill-available;
+// }
+
+.chakra-form-control {
+  width: 100%
+}
+
+#__next {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-x: hidden;
+}
+
+#swal2-title, .swal2-html-container {
+  color: white !important;
+}
+.swal2-modal {
+  background-color: var(--secondary) !important;
+}
+.swal2-popup.swal2-toast {
+  background: var(--secondary) !important;
+  box-shadow: 0 0 0.625em var(--secondary) !important;
+}
+
+/* custom scrollbar */
+::-webkit-scrollbar{
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-thumb{
+  background: #B3AFB3 !important;
+  border-radius: 6px;
+
+  :hover{
+    background: #B3AFB3;
+  }
+}
+::-webkit-scrollbar-track{
+  background: transparent;
+  border-radius: 0px;
+  box-shadow: inset 0px 0px 0px 0px #F0F0F0;
+}
+
+grammarly-extension {
+  display: none; // LLLLL
+}
+
+.chakra-portal {
+  z-index: 999 !important;
+  > div > div {
+    max-width: 50vw !important;
+  }
+}
+
+.Typist .Cursor {
+  display: inline-block; }
+  .Typist .Cursor--blinking {
+    opacity: 1;
+    animation: blink 1s linear infinite; }
+
+@keyframes blink {
+  0% {
+    opacity: 1; }
+  50% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
