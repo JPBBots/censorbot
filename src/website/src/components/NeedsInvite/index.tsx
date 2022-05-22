@@ -1,4 +1,4 @@
-import { ShortGuild } from 'typings'
+import { ShortGuild } from '@censorbot/typings'
 
 import { FaAngleLeft } from 'react-icons/fa'
 

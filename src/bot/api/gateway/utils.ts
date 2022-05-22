@@ -1,4 +1,4 @@
-import { ShortGuild, User } from 'typings'
+import { ShortGuild, User } from '@censorbot/typings'
 import {
   CallHandler,
   createParamDecorator,

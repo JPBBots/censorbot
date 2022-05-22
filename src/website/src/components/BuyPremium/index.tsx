@@ -5,7 +5,7 @@ import { Flex, Text, VStack } from '@chakra-ui/layout'
 import { Spinner } from '@chakra-ui/react'
 import { PremiumCard } from '@jpbbots/censorbot-components'
 import { useEffect, useState } from 'react'
-import { PremiumTypes } from 'typings'
+import { PremiumTypes } from '@censorbot/typings'
 import { chargebee } from 'pages/_app'
 
 import NextLink from 'next/link'

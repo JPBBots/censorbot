@@ -1,4 +1,4 @@
-import { GuildData } from 'typings'
+import { GuildData } from '@censorbot/typings'
 import { Utils } from 'utils/Utils'
 import { Logger } from './Logger'
 import { WebsocketManager } from './WebsocketManager'

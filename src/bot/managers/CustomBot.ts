@@ -1,4 +1,4 @@
-import { CustomBotOptions } from 'typings'
+import { CustomBotOptions } from '@censorbot/typings'
 import { WorkerManager } from './Worker'
 
 export class CustomBot extends WorkerManager {

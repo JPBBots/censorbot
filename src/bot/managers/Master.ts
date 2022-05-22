@@ -9,7 +9,7 @@ import { Database } from '../structures/Database'
 import { MasterEvents } from '../helpers/MasterEvents'
 
 import { Cache } from '@jpbberry/cache'
-import { ShortID, CustomBotOptions } from 'typings'
+import { ShortID, CustomBotOptions } from '@censorbot/typings'
 
 // import AutoPoster from 'topgg-autoposter'
 

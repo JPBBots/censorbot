@@ -1,7 +1,7 @@
 import { Collection } from 'mongodb'
 import { WorkerManager } from '../managers/Worker'
 
-import { Ticket, BASE_FILTERS } from 'typings'
+import { Ticket, BASE_FILTERS } from '@censorbot/typings'
 import { APIUser, Snowflake } from 'discord-api-types/v9'
 
 import GenerateID from '../utils/GenerateID'

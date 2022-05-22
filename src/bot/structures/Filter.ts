@@ -8,7 +8,7 @@ import {
   FilterType,
   Range,
   FilterSettings
-} from 'typings'
+} from '@censorbot/typings'
 
 function inRange(x: number, min: number, max: number): boolean {
   return (x - min) * (x - max) <= 0

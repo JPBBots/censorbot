@@ -11,7 +11,7 @@ import { Server, Socket } from 'socket.io'
 
 import { Snowflake, State } from 'jadl'
 
-import { ShortGuild, User, WebSocketEventMap } from 'typings'
+import { ShortGuild, User, WebSocketEventMap } from '@censorbot/typings'
 import { UsersService } from '../services/users.service'
 import { CacheService } from '../services/cache.service'
 import { GuildsService } from '../services/guilds.service'

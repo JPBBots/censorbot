@@ -35,7 +35,7 @@ import { Cache } from '@jpbberry/cache'
 import util from 'util'
 import fetch from 'node-fetch'
 
-import { ExceptionType, GuildDB, CustomBotOptions } from 'typings'
+import { ExceptionType, GuildDB, CustomBotOptions } from '@censorbot/typings'
 import { WorkerEvents } from '../helpers/WorkerEvents'
 import { AntiPhish } from '../structures/extensions/AntiPhish'
 import { Requests } from '../helpers/Requests'

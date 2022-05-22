@@ -1,7 +1,14 @@
-import { Command, Guild, Worker, SubCommand, Options, Permissions } from '@jadl/cmd'
+import {
+  Command,
+  Guild,
+  Worker,
+  SubCommand,
+  Options,
+  Permissions
+} from '@jadl/cmd'
 import { Embed } from '@jadl/embed'
 import { APIGuild, APIGuildMember } from 'discord-api-types/v9'
-import { GuildDB } from 'typings'
+import { GuildDB } from '@censorbot/typings'
 import { WorkerManager } from '../../managers/Worker'
 import { Db } from '../decorators/Db'
 
@@ -102,7 +109,8 @@ export class WarningsCommand {
     const embed = new Embed()
       .color(worker.responses.color)
       .title(
-        `${member.nick ?? member.user.username} has ${warnings?.length ?? 0
+        `${member.nick ?? member.user.username} has ${
+          warnings?.length ?? 0
         } warnings`
       )
 

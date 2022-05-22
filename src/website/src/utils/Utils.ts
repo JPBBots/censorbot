@@ -1,4 +1,4 @@
-import { User } from 'typings'
+import { User } from '@censorbot/typings'
 import Swal from 'sweetalert2'
 
 import { WindowOpener } from './WindowOpener'

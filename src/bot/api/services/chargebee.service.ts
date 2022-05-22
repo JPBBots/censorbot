@@ -14,7 +14,7 @@ import { Config } from '../../config'
 
 import { DatabaseService } from './database.service'
 import { InterfaceService } from './interface.service'
-import { PremiumTypes } from 'typings'
+import { PremiumTypes } from '@censorbot/typings'
 import { GuildsService } from './guilds.service'
 import { EventEmitter } from '@jpbberry/typed-emitter'
 import { CustomerSchema } from 'bot/types'
@@ -124,11 +124,12 @@ export class ChargeBeeService extends EventEmitter<{ USER_UPDATE: string }> {
 
   private async _getAmount(id: Snowflake): Promise<AmountObject> {
     const customerId = await this.getCustomerId(id)
-    if (!customerId) return NONE
 
-    const customer = await this.getCustomerSub(customerId)
+    if (customerId) {
+      const customer = await this.getCustomerSub(customerId)
 
-    if (customer.customer) return customer
+      if (customer.customer) return customer
+    }
 
     const prem = await this.int.api.getPremium(id)
     if (prem && process.env.DISABLE_ROLE_CUSTOMER !== 'true') {

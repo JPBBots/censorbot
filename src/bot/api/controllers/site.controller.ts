@@ -18,7 +18,7 @@ import { OAuth2Scopes } from 'discord-api-types/v10'
 import { Snowflake, PermissionUtils } from 'jadl'
 
 import { DatabaseService } from '../services/database.service'
-import { ServerSideProps } from 'typings'
+import { ServerSideProps } from '@censorbot/typings'
 import { ThreadService } from '../services/thread.service'
 import { CacheService } from '../services/cache.service'
 

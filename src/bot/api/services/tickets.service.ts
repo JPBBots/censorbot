@@ -2,12 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { Filter, FilterDatabaseEntryType } from '../../structures/Filter'
 import { DatabaseService } from './database.service'
 
-import {
-  FilterSettings,
-  ShortID,
-  Ticket,
-  TicketTest
-} from 'typings'
+import { FilterSettings, ShortID, Ticket, TicketTest } from '@censorbot/typings'
 import { ThreadService } from './thread.service'
 import { DiscordService } from './discord.service'
 import { Embed } from '@jadl/embed'

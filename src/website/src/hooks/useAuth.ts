@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrentGuild, setGuilds } from 'store/reducers/guilds.reducer'
 import { Api } from 'structures/Api'
-import { User } from 'typings'
+import { User } from '@censorbot/typings'
 import { RootState } from '../store'
 
 import {

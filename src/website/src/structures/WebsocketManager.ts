@@ -1,4 +1,4 @@
-import { MetaObject, ShortGuild, WebSocketEventMap } from 'typings'
+import { MetaObject, ShortGuild, WebSocketEventMap } from '@censorbot/typings'
 import { Logger } from './Logger'
 
 import headlessHandlers from './headlessHandler'

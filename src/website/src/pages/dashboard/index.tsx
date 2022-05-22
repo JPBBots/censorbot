@@ -20,7 +20,7 @@ import { FaSearch } from 'react-icons/fa'
 import NextLink from 'next/link'
 
 import FuzzySearch from 'fuzzy-search'
-import { ShortGuild } from 'typings'
+import { ShortGuild } from '@censorbot/typings'
 import { wMT } from '@jpbbots/theme'
 import { NextSeo } from 'next-seo'
 

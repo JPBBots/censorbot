@@ -9,7 +9,7 @@ import { Embed } from '@jadl/embed'
 import Wait from '../utils/Wait'
 
 import { WorkerManager } from '../managers/Worker'
-import { PunishmentLevel, PunishmentType } from 'typings'
+import { PunishmentLevel, PunishmentType } from '@censorbot/typings'
 import { TimeoutSchema } from '../structures/punishments/Timeouts'
 import { EventAdder } from '../utils/EventAdder'
 import { APIThreadChannel } from 'discord-api-types/v9'

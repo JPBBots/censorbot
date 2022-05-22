@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import Crypto from 'crypto'
 import { Config } from '../../config'
-import { ShortGuild, User } from 'typings'
+import { ShortGuild, User } from '@censorbot/typings'
 import { APIUser, RESTPostOAuth2AccessTokenResult } from 'discord-api-types/v9'
 import { DiscordService } from './discord.service'
 import { PermissionUtils } from 'jadl'
@@ -65,7 +65,9 @@ export class OAuthService {
         client_secret: Config.oauth.secret,
         code,
         grant_type: 'authorization_code',
-        redirect_uri: `${https ? 'https' : 'http'}://${host}/api/auth/discord/callback`
+        redirect_uri: `${
+          https ? 'https' : 'http'
+        }://${host}/api/auth/discord/callback`
       })
       .catch((err) => {
         console.log(err)

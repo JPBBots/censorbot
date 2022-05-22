@@ -1,5 +1,5 @@
 import { Event } from '@jpbberry/typed-emitter'
-import { CensorMethods, ExceptionType } from 'typings'
+import { CensorMethods, ExceptionType } from '@censorbot/typings'
 import { DiscordEventMap } from 'jadl'
 import { isBitOn } from '../utils/bit'
 import { BaseFilterHandler } from './Base'

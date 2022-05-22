@@ -4,7 +4,11 @@
   "description": "Censor Bot is an advanced Anti-Swear Bot that comes with pre-built filters, no work needed! Censor curses, invites and more.",
   "main": "./dist/bot/.run/master.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node .",
+    "movetypings": "rimraf ./node_modules/@censorbot/typings && copyfiles ./dist/typings/* ./node_modules/@censorbot/typings --flat",
+    "postinstall": "npm run build && npm run movetypings"
   },
   "repository": {
     "type": "git",
@@ -38,6 +42,7 @@
     "@zeit/next-typescript": "^1.1.1",
     "babel-jest": "^27.5.1",
     "chargebee-typescript": "^2.7.1",
+    "copyfiles": "^2.4.1",
     "discord-api-types": "^0.33.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
@@ -49,6 +54,7 @@
     "eslint-plugin-react": "^7.29.4",
     "jest": "^27.5.1",
     "prettier": "^2.6.1",
+    "rimraf": "^3.0.2",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3"
   },
@@ -124,7 +130,6 @@
     "ws": "^7.5.7"
   },
   "_moduleAliases": {
-    "typings": "dist/typings",
     "bot": "dist/bot"
   }
 }

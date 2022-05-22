@@ -1,6 +1,6 @@
 import { DeepPartial } from '@chakra-ui/react'
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
-import { GuildData, GuildDB, ShortGuild } from 'typings'
+import { GuildData, GuildDB, ShortGuild } from '@censorbot/typings'
 import { updateObject } from 'utils/updateObject'
 
 export interface GuildsContextType {

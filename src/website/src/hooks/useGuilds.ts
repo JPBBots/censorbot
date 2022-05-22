@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Pieces from 'utils/Pieces'
 import { DeepPartial } from '@chakra-ui/react'
-import { GuildDB } from 'typings'
+import { GuildDB } from '@censorbot/typings'
 import headlessData from '@/structures/headlessData.json'
 
 export const useGuildsState = (): RootState['guilds'] =>

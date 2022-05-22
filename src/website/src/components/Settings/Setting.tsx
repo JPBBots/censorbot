@@ -28,7 +28,7 @@ import {
   GuildData,
   PunishmentLevel,
   PunishmentType
-} from 'typings'
+} from '@censorbot/typings'
 import { SectionName } from './Aside'
 
 import TextareaResizer from 'react-textarea-autosize'

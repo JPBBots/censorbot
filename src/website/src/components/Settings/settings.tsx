@@ -11,7 +11,7 @@ import {
   FilterType,
   filterTypeNames,
   Plugin
-} from 'typings'
+} from '@censorbot/typings'
 
 import type { SectionName } from './Aside'
 

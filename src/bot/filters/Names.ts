@@ -4,7 +4,7 @@ import {
   ExceptionType,
   GuildDB,
   Plugin
-} from 'typings'
+} from '@censorbot/typings'
 
 import { Event } from '@jpbberry/typed-emitter'
 

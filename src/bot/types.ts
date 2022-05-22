@@ -1,6 +1,6 @@
 import { MessageTypes } from '@jadl/cmd'
 import { APIMessage, Snowflake } from 'discord-api-types/v9'
-import { ExtendedGuild, ShortID } from 'typings'
+import { ExtendedGuild, ShortID } from '@censorbot/typings'
 
 export const Reloaders = ['COMMANDS', 'FILTER', 'CACHE', 'FILTERS'] as const
 

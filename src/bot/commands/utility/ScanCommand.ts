@@ -1,7 +1,7 @@
 import { Channel, Command, Run, Thinks, Worker, Permissions } from '@jadl/cmd'
 import { Embed } from '@jadl/embed'
 import { APIChannel } from 'discord-api-types/v9'
-import { GuildDB } from 'typings'
+import { GuildDB } from '@censorbot/typings'
 import { WorkerManager } from '../../managers/Worker'
 import { SnowflakeUtil } from '../../utils/Snowflake'
 import { Db } from '../decorators/Db'

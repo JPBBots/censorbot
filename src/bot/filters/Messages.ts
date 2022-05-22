@@ -6,7 +6,7 @@ import {
   GuildDB,
   WebhookReplace,
   Plugin
-} from 'typings'
+} from '@censorbot/typings'
 
 import {
   Snowflake,

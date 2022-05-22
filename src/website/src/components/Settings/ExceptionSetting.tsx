@@ -1,8 +1,4 @@
-import {
-  GuildData,
-  AdvancedException,
-  ExceptionType
-} from 'typings'
+import { GuildData, AdvancedException, ExceptionType } from '@censorbot/typings'
 import { DeepPartial, HStack, Text, Icon, Select } from '@chakra-ui/react'
 import { InlineOptionGroup } from '@jpbbots/censorbot-components'
 import React from 'react'

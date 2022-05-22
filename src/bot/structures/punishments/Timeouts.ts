@@ -1,6 +1,6 @@
 import { Snowflake } from 'discord-api-types/v9'
 import { Collection } from 'mongodb'
-import { PunishmentType, TimedPunishments } from 'typings'
+import { PunishmentType, TimedPunishments } from '@censorbot/typings'
 import { PunishmentManager } from './PunishmentManager'
 
 import DJSCollection from '@discordjs/collection'

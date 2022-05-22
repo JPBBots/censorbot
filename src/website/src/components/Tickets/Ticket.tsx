@@ -1,6 +1,6 @@
 import { Api } from '@/structures/Api'
 import { VStack, Text, Button, HStack, Input } from '@chakra-ui/react'
-import { Ticket } from 'typings'
+import { Ticket } from '@censorbot/typings'
 import { useState } from 'react'
 
 export interface TicketInteractionOptions extends Ticket {

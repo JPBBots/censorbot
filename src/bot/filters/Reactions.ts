@@ -1,4 +1,4 @@
-import { CensorMethods, ExceptionType } from 'typings'
+import { CensorMethods, ExceptionType } from '@censorbot/typings'
 import { BaseFilterHandler } from './Base'
 import { Event } from '@jpbberry/typed-emitter'
 import { DiscordEventMap } from 'jadl'

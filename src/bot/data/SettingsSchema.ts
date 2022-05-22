@@ -11,7 +11,7 @@ import {
   FilterType,
   FilterSettings,
   Plugin
-} from 'typings'
+} from '@censorbot/typings'
 import { enumCombiner } from '../utils/enumCombiner'
 import { isBitOn } from '../utils/bit'
 

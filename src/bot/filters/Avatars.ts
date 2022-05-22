@@ -2,7 +2,7 @@ import { Event } from '@jpbberry/typed-emitter'
 import { DiscordEventMap } from 'jadl'
 import { BaseFilterHandler } from './Base'
 
-import { CensorMethods, ExceptionType, FilterType } from 'typings'
+import { CensorMethods, ExceptionType, FilterType } from '@censorbot/typings'
 import { isBitOn } from '../utils/bit'
 
 export class AvatarsFilterHandler extends BaseFilterHandler {

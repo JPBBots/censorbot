@@ -1,6 +1,6 @@
 import { useUser } from '@/hooks/useAuth'
 import { Api } from '@/structures/Api'
-import { Ticket } from 'typings'
+import { Ticket } from '@censorbot/typings'
 import Router from 'next/router'
 import { useEffect, useState } from 'react'
 import { MiddleWrap } from '@jpbbots/theme'

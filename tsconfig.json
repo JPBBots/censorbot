@@ -14,11 +14,6 @@
     "declaration": true,
     "allowJs": true,
     "esModuleInterop": true,
-    "baseUrl": "./src",
-    "paths": {
-      "typings": [
-        "./typings"
-      ]
-    }
+    "baseUrl": "./src"
   }
 }

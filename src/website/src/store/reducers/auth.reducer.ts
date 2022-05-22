@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Snowflake } from 'discord-api-types/v9'
-import { User } from 'typings'
+import { User } from '@censorbot/typings'
 
 export enum LoginState {
   Loading = 0,

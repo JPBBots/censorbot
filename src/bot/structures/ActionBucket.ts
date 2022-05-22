@@ -10,7 +10,7 @@ import {
   Snowflake
 } from 'discord-api-types/v9'
 
-import { GuildDB } from 'typings'
+import { GuildDB } from '@censorbot/typings'
 
 import { WorkerManager } from '../managers/Worker'
 

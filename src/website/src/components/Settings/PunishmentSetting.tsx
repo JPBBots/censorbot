@@ -14,7 +14,7 @@ import {
   Button,
   HStack
 } from '@chakra-ui/react'
-import { GuildData, PunishmentLevel, PunishmentType } from 'typings'
+import { GuildData, PunishmentLevel, PunishmentType } from '@censorbot/typings'
 import { TimeSelector } from '~/functional/TimeSelector'
 
 import { FaTrash } from 'react-icons/fa'

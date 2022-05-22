@@ -9,7 +9,7 @@ import {
   FilterResultInfo,
   FilterType,
   filterTypeNames
-} from 'typings'
+} from '@censorbot/typings'
 
 const LENGTH_MESSAGE = '- messsage too long'
 const DESCRIPTION_MAX_LENGTH = 2048
@@ -17,7 +17,7 @@ const DESCRIPTION_MAX_LENGTH = 2048
 export class Responses {
   color = 0xea5455
 
-  constructor(public worker: WorkerManager) { }
+  constructor(public worker: WorkerManager) {}
 
   embed(channel: Snowflake): Embed {
     return new Embed(async (embed) => {
@@ -61,7 +61,12 @@ export class Responses {
       return false
 
     const log = this.worker.channels.get(logId)
-    if (!log || !('guild_id' in log) || log.guild_id !== guildId || log.type !== ChannelType.GuildText)
+    if (
+      !log ||
+      !('guild_id' in log) ||
+      log.guild_id !== guildId ||
+      log.type !== ChannelType.GuildText
+    )
       return false
 
     return true
@@ -96,7 +101,8 @@ export class Responses {
           .title('Removed Reaction')
           .field(
             'Info',
-            `User <@${data.user_id
+            `User <@${
+              data.user_id
             }> on [this message](${`https://discord.com/channels/${data.guild_id}/${data.channel_id}/${data.message_id}`})`,
             true
           )

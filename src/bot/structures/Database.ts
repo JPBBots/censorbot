@@ -10,7 +10,7 @@ import {
   CustomBotOptions,
   FilterType,
   Plugin
-} from 'typings'
+} from '@censorbot/typings'
 import { Snowflake } from 'discord-api-types/v9'
 
 import DefaultConfig from '../data/DefaultConfig.json'
@@ -188,7 +188,8 @@ export class Database extends Db {
         break
       case 12:
         {
-          if (typeof db.exceptions.roles === 'string') db.exceptions.roles = [db.exceptions.roles]
+          if (typeof db.exceptions.roles === 'string')
+            db.exceptions.roles = [db.exceptions.roles]
           db.v = 13
         }
         break
