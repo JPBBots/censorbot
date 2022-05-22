@@ -1,6 +1,6 @@
 {
   "name": "censorbot",
-  "version": "12.0.0",
+  "version": "13.0.0",
   "description": "Censor Bot is an advanced Anti-Swear Bot that comes with pre-built filters, no work needed! Censor curses, invites and more.",
   "main": "./dist/bot/.run/master.js",
   "scripts": {

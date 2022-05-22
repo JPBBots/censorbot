@@ -24,7 +24,7 @@ import BRANDING from '@/BRANDING'
 export const chargebee =
   'window' in global
     ? // @ts-expect-error
-    (Chargebee?.init({ site: 'censorbot-test' }) as ChargebeeWeb) ?? null
+      (Chargebee?.init({ site: 'censorbot' }) as ChargebeeWeb) ?? null
     : null
 
 /**
