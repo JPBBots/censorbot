@@ -89,7 +89,7 @@ export class MasterManager extends Master {
     if (!this.config.staging) {
       int.setupMaster(this, 'censorbot')
 
-      AutoPoster(Config.dbl, this)
+      // AutoPoster(Config.dbl, this)
     }
 
     this.api = this.spawnProcess(
