@@ -6,9 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
+    "build-typings": "tsc -p ./typings.tsconfig.json",
     "start": "node .",
     "movetypings": "rimraf ./node_modules/@censorbot/typings && copyfiles ./dist/typings/* ./node_modules/@censorbot/typings --flat",
-    "postinstall": "npm run build && npm run movetypings"
+    "postinstall": "npm run build-typings && npm run movetypings"
   },
   "repository": {
     "type": "git",
