@@ -85,7 +85,7 @@ export function PunishmentSetting({
                   const newTime =
                     punishmentType === PunishmentType.Timeout ? 60e3 : null
 
-                  setValue({
+                  const newObject: Partial<PunishmentLevel> = {
                     type: punishmentType,
                     time:
                       'time' in punishment &&
@@ -96,7 +96,12 @@ export function PunishmentSetting({
                           ? MONTH_TIME
                           : punishment.time
                         : newTime
-                  })
+                  }
+
+                  if (newObject.type === PunishmentType.GiveRole && !newObject.role)
+                    newObject.role = guild.guild.roles[0].id
+
+                  setValue(newObject)
                 }}
               >
                 {punishmentLevels[type]}
