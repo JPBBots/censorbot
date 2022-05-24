@@ -332,6 +332,7 @@ export const settings: ISetting[] = [
         maxLength: 20,
         maxTags: 150,
         premiumMaxTags: 1500,
+        allowCopy: true,
         placeholder: 'Add words'
       }
     ]
@@ -352,6 +353,7 @@ export const settings: ISetting[] = [
         maxMessage: 'You need premium to add more words',
         maxTags: 150,
         premiumMaxTags: 1500,
+        allowCopy: true,
         placeholder: 'Add phrases'
       }
     ]
@@ -371,6 +373,7 @@ export const settings: ISetting[] = [
         maxMessage: 'You need premium to add more words',
         maxTags: 150,
         premiumMaxTags: 1500,
+        allowCopy: true,
         placeholder: 'Add words'
       }
     ]
@@ -389,6 +392,7 @@ export const settings: ISetting[] = [
         maxMessage: 'You need premium to add more words',
         maxTags: 150,
         premiumMaxTags: 1500,
+        allowCopy: true,
         placeholder: 'Add words'
       }
     ]
