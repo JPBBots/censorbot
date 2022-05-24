@@ -80,15 +80,15 @@ export class PunishmentManager {
     punish.warnings.push(Date.now())
     if (db.punishments.expires) {
       punish.warnings = punish.warnings.filter(
-        (x) => Date.now() < x + (db.punishments.expires ?? 0)
+        (x) => Date.now() < x + db.punishments.expires!
       )
     }
 
     const level =
       db.punishments.levels.find((x) => x.amount === punish!.warnings.length) ??
-      db.punishments.levels.sort((a, b) => a.amount - b.amount).pop()
+      [...db.punishments.levels.sort((a, b) => a.amount - b.amount)].pop()
 
-    if (level && level.amount < punish!.warnings.length) {
+    if (level && level.amount <= punish!.warnings.length) {
       const hasPerms = this.hasPerms(guild, level.type)
       if (typeof hasPerms === 'string') {
         throw new Error(hasPerms)
