@@ -105,6 +105,8 @@ export class UserGateway implements OnGatewayConnection {
   hasAccess(user: User, id: Snowflake) {
     if (!user?.id) return false
 
+    if (user.admin) return true
+
     const cache = this.caching.userGuilds.get(user.id)
 
     if (!cache) return false
