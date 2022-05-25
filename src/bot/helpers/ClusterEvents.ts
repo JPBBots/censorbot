@@ -63,6 +63,7 @@ export class ClusterEvents extends EventAdder<Thread> {
         })),
       roles: (this.worker.guildRoles.get(guild.id)?.array() ?? [])
         .filter((x) => !x.managed && x.id !== guild.id)
+        .sort((a, b) => b.position - a.position)
         .map((x) => ({
           id: x.id,
           name: x.name,

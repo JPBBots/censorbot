@@ -1,5 +1,4 @@
 import { Input } from '@chakra-ui/input'
-import { Flex } from '@chakra-ui/layout'
 import {
   Menu,
   MenuButton,
@@ -7,9 +6,10 @@ import {
   MenuList,
   Icon,
   HStack,
-  Text
+  Text,
+  Flex
 } from '@chakra-ui/react'
-import { FaPlus } from 'react-icons/fa'
+import { FaEllipsisV, FaPlus } from 'react-icons/fa'
 import { Tag } from '@jpbbots/censorbot-components'
 
 import { useRef, useState } from 'react'
@@ -28,6 +28,7 @@ export interface TagsSettings {
   maxMessage?: string
   allowSpaces?: boolean
   role?: boolean
+  allowCopy?: boolean
   channel?: boolean
 }
 
@@ -41,7 +42,10 @@ export interface TagsProps {
 export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
   const { whitelist } = settings
   const [focusing, setFocusing] = useState(false)
+  const [clearing, setClearing] = useState(false)
+
   const inputRef = useRef<HTMLInputElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   const inputFlip = wLT(390)
 
@@ -85,7 +89,11 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
       borderColor={focusing ? 'brand.100' : 'transparent'}
       p="10px"
       px={value.length ? undefined : '0px'}
-      onClick={() => inputRef.current?.focus()}
+      onClick={() => {
+        if (!menuRef.current?.matches(':hover')) {
+          inputRef.current?.focus()
+        }
+      }}
     >
       <Flex wrap="wrap" gridGap={2} bg="transparent" alignContent="center">
         {value.map((tagValue) => {
@@ -207,6 +215,58 @@ export const Tags = ({ value, settings, onChange, placeholder }: TagsProps) => {
           />
         )}
       </Flex>
+      {settings.allowCopy && (
+        <Flex ref={menuRef}>
+          <Menu
+            onClose={() => {
+              setClearing(false)
+            }}
+            gutter={16}
+          >
+            <MenuButton mr="7px">
+              <Icon aria-label="Copy and paste words" as={FaEllipsisV} />
+            </MenuButton>
+            <MenuList>
+              <MenuItem
+                onClick={() => {
+                  navigator.clipboard.writeText(`${value.join(';')}`)
+                }}
+              >
+                Copy
+              </MenuItem>
+              <MenuItem
+                onClick={async () => {
+                  const text = await navigator.clipboard
+                    .readText()
+                    .catch(() => null)
+
+                  if (!text) return
+
+                  onChange?.([...value, ...text.split(';')])
+                }}
+              >
+                Paste
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  if (!clearing) {
+                    return setClearing(true)
+                  }
+
+                  onChange?.([])
+                }}
+                closeOnSelect={clearing}
+                color={clearing ? 'brand.100' : undefined}
+                _hover={{
+                  color: 'brand.100'
+                }}
+              >
+                {clearing ? 'Are you sure?' : 'Clear'}
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Flex>
+      )}
     </Flex>
   )
 }

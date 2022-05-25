@@ -39,6 +39,10 @@ export const Config = {
 
   staging,
 
+  adminGuild: staging
+    ? '569907007465848842'
+    : '399688888739692552',
+
   channels: staging
     ? {
         tickets: '841417190635732992'

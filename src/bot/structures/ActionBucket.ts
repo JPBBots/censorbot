@@ -160,7 +160,12 @@ export class ActionBucket {
     if (typeof messageInfo === 'object' && 'content' in messageInfo)
       messageInfo = {
         ...extra,
-        content: messageInfo.content?.slice(0, 2048)
+        content:
+          messageInfo.content?.slice(0, 1998) +
+          ((messageInfo.content?.length || 0) > 1998 &&
+          messageInfo.content?.endsWith('||')
+            ? '||'
+            : '')
       }
 
     const responseMessage = await this.worker.requests.sendWebhookMessage(

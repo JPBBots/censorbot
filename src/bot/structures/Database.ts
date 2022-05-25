@@ -101,7 +101,7 @@ export class Database extends Db {
     return db
   }
 
-  currentVersion = 13
+  currentVersion = 14
 
   private async updater(
     db: GuildDB & {
@@ -191,6 +191,23 @@ export class Database extends Db {
           if (typeof db.exceptions.roles === 'string')
             db.exceptions.roles = [db.exceptions.roles]
           db.v = 13
+        }
+        break
+      case 13:
+        {
+          db.punishments.levels.forEach((level: any, i) => {
+            if ('expires' in level) {
+              if (!db.punishments.expires) {
+                db.punishments.expires = level.expires
+              }
+
+              delete level['expires']
+
+              db.punishments.levels[i] = level
+            }
+          })
+
+          db.v = 14
         }
         break
       default:
