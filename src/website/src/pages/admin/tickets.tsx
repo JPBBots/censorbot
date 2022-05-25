@@ -27,6 +27,7 @@ export default function Tickets() {
     <MiddleWrap spacing="10px" p="20px">
       {tickets.map((ticket) => (
         <TicketInteraction
+          key={ticket.id}
           onDone={() => {
             setTickets(tickets.filter((x) => x.id !== ticket.id))
           }}
