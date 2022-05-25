@@ -12,7 +12,6 @@
     "strictNullChecks": true,
     "sourceMap": true,
     "allowJs": true,
-    "esModuleInterop": true,
-    "baseUrl": "./src"
+    "esModuleInterop": true
   }
 }

@@ -17,7 +17,7 @@ import { InterfaceService } from './interface.service'
 import { PremiumTypes } from '@censorbot/typings'
 import { GuildsService } from './guilds.service'
 import { EventEmitter } from '@jpbberry/typed-emitter'
-import { CustomerSchema } from 'bot/types'
+import { CustomerSchema } from '../../types'
 
 const chargebee = chargebeeC as Chargebee.ChargeBee
 

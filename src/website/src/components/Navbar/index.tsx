@@ -95,6 +95,11 @@ export function NavBar() {
           <MenuItem onClick={() => void router.push('/premium')}>
             Premium
           </MenuItem>
+          {user?.admin && (
+            <MenuItem onClick={() => void router.push('/admin')}>
+              Admin
+            </MenuItem>
+          )}
           <MenuItem
             onClick={() => {
               logout()

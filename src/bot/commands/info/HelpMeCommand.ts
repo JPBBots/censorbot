@@ -9,8 +9,7 @@ import {
   SubCommand,
   Worker
 } from '@jadl/cmd'
-import { Config } from 'bot/config'
-import { WorkerManager } from 'bot/managers/Worker'
+import { WorkerManager } from '../../managers/Worker'
 import { APIGuild } from 'discord-api-types/v9'
 import { Admin } from '../decorators/Admin'
 import { AdminGuild } from '../decorators/AdminGuild'
@@ -23,8 +22,9 @@ export class HelpMeCommand {
     @Worker() worker: WorkerManager
   ) {
     if (guild.id === '399688888739692552') {
-      return new EphemeralEmbed()
-        .description('Run /helpme in your server, not here!')
+      return new EphemeralEmbed().description(
+        'Run /helpme in your server, not here!'
+      )
     }
 
     const code = await worker.comms.sendCommand('CREATE_HELPME', {

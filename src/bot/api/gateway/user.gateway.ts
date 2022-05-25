@@ -11,16 +11,24 @@ import { Server, Socket } from 'socket.io'
 
 import { Snowflake, State } from 'jadl'
 
-import { ShortGuild, User, WebSocketEventMap } from '@censorbot/typings'
+import {
+  ShortGuild,
+  User,
+  WebSocketEventMap,
+  AdminAction,
+  AdminActionObject
+} from '@censorbot/typings'
+
 import { UsersService } from '../services/users.service'
 import { CacheService } from '../services/cache.service'
 import { GuildsService } from '../services/guilds.service'
 import { DatabaseService } from '../services/database.service'
 import { ChargeBeeService } from '../services/chargebee.service'
-
-import Pieces from '../../utils/Pieces'
+import { ThreadService } from '../services/thread.service'
 import { StatusService } from '../services/status.service'
 import { TicketsService } from '../services/tickets.service'
+
+import Pieces from '../../utils/Pieces'
 import { UseInterceptors } from '@nestjs/common'
 import {
   UserInterceptor,
@@ -31,9 +39,10 @@ import {
   Guilds,
   GuildsInterceptor
 } from './utils'
+
 import { JoiValidationPipe } from './joi.pipe'
 import Joi, { ValidationError } from 'joi'
-import { Config } from 'bot/config'
+import { Config } from '../../config'
 
 type EventMap = {
   [key in keyof WebSocketEventMap]: WebSocketEventMap[key]['receive']
@@ -73,6 +82,7 @@ export class UserGateway implements OnGatewayConnection {
     private readonly caching: CacheService,
     private readonly guilds: GuildsService,
     private readonly chargebee: ChargeBeeService,
+    private readonly thread: ThreadService,
     private readonly status: StatusService,
     private readonly tickets: TicketsService
   ) {
@@ -409,6 +419,28 @@ export class UserGateway implements OnGatewayConnection {
     await this.tickets.deny(ticket.id)
 
     return { success: true }
+  }
+
+  @SubscribeMessage('ADMIN_ACTION')
+  @UseInterceptors(UserInterceptor, AdminInterceptor)
+  async adminAction(@MessageBody() action: AdminActionObject) {
+    switch (action.type) {
+      case AdminAction.Restart:
+        this.thread.masterEval(
+          `master.processes.get("${action.process}").restart()`
+        )
+        break
+      case AdminAction.InvalidateCache:
+        switch (action.cache) {
+          case 'api':
+            this.caching.clear()
+            break
+          case 'db':
+            // TODO
+            break
+        }
+        break
+    }
   }
 
   @SubscribeMessage('TEST')

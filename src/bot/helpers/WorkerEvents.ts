@@ -13,7 +13,7 @@ import { PunishmentLevel, PunishmentType } from '@censorbot/typings'
 import { TimeoutSchema } from '../structures/punishments/Timeouts'
 import { EventAdder } from '../utils/EventAdder'
 import { APIThreadChannel } from 'discord-api-types/v9'
-import { PurgeResendsCommand } from 'bot/commands/utility/PurgeResendsCommand'
+import { PurgeResendsCommand } from '../commands/utility/PurgeResendsCommand'
 
 export class WorkerEvents extends EventAdder<WorkerManager> {
   unavailables: Set<Snowflake> = new Set()

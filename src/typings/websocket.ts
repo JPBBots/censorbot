@@ -9,6 +9,7 @@ import {
 } from './api'
 
 import { Snowflake } from 'discord-api-types/v9'
+import { AdminActionObject } from './admin'
 
 export interface Payload {
   e: string
@@ -126,6 +127,10 @@ export interface WebSocketEventMap {
   }
   DELETE_GUILD: {
     receive: Snowflake
+    send: null
+  }
+  ADMIN_ACTION: {
+    receive: AdminActionObject
     send: null
   }
   ERROR: {

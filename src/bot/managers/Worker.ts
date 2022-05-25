@@ -49,8 +49,11 @@ import { TicketCommand } from '../commands/TicketCommand'
 import { EvalCommand } from '../commands/admin/EvalCommand'
 import { ScanCommand } from '../commands/utility/ScanCommand'
 import { WarningsCommand } from '../commands/utility/WarningsCommand'
-import { PurgeResendsCommand } from 'bot/commands/utility/PurgeResendsCommand'
-import { AdminHelpMeCommand, HelpMeCommand } from 'bot/commands/info/HelpMeCommand'
+import { PurgeResendsCommand } from '../commands/utility/PurgeResendsCommand'
+import {
+  AdminHelpMeCommand,
+  HelpMeCommand
+} from '../commands/info/HelpMeCommand'
 
 interface CachedThread {
   id: Snowflake
