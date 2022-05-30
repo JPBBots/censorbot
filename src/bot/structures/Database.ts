@@ -25,7 +25,8 @@ import { TimeoutSchema } from './punishments/Timeouts'
 import { TicketBanSchema } from './TicketManager'
 import { ThreadComms } from 'jadl/dist/clustering/ThreadComms'
 import { enumCombiner } from '../utils/enumCombiner'
-import { FilterDatabaseEntry } from './Filter'
+import { Filter, FilterDatabaseEntry } from './Filter'
+import { PunishmentLevel } from '../../typings'
 
 export * from '../data/SettingsSchema'
 
@@ -65,7 +66,7 @@ export class Database extends Db {
       super.collection<DatabaseCollections[C]>(name)
   }
 
-  constructor(private readonly comms?: ThreadComms) {
+  constructor(private readonly comms?: ThreadComms, public filter?: Filter) {
     super(
       process.env.DB_URL ?? 'mongodb',
       Config.db.username,
@@ -101,7 +102,7 @@ export class Database extends Db {
     return db
   }
 
-  currentVersion = 14
+  currentVersion = 15
 
   private async updater(
     db: GuildDB & {
@@ -208,6 +209,29 @@ export class Database extends Db {
           })
 
           db.v = 14
+        }
+        break
+      case 14:
+        {
+          db.filter.server = [...new Set(
+            db.filter.server
+              .map((x) => this.filter!.resolve(x)[0]?.t)
+              .filter((x) => x)
+          )]
+
+          db.punishments.levels.forEach((level: any, i) => {
+            type UnionKeys<T> = T extends T ? keyof T : never
+            const lvl: { [key in UnionKeys<PunishmentLevel>]: any } = {
+              amount: level.amount,
+              role: level.role,
+              time: level.time,
+              type: level.type
+            }
+
+            db.punishments.levels[i] = lvl as PunishmentLevel
+          })
+
+          db.v = 15
         }
         break
       default:

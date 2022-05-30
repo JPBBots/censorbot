@@ -6,8 +6,8 @@ import { FilterService } from './filter.service'
 
 @Injectable()
 export class DatabaseService extends Database {
-  constructor(comms: ThreadService, private readonly filter: FilterService) {
-    super(comms)
+  constructor(comms: ThreadService, public filter: FilterService) {
+    super(comms, filter)
 
     comms.on('UPDATE_CUSTOM_BOTS', async () => await this.updateCustomBots())
     comms.on('UPDATE_FILTER', async () => await this.updateFilters())
