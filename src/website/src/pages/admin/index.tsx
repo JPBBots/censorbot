@@ -1,19 +1,42 @@
 import { AdminAction, AdminActionObject } from '@censorbot/typings'
 import { useUser } from '@/hooks/useAuth'
 import { Api } from '@/structures/Api'
-import { Spinner, VStack, Text, Button, Input, HStack } from '@chakra-ui/react'
+import {
+  Spinner,
+  VStack,
+  Text,
+  Button,
+  Input,
+  HStack,
+  Textarea
+} from '@chakra-ui/react'
 import { MiddleWrap } from '@jpbbots/theme'
 import Router from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useInput, useSelect } from '@/hooks/useInput'
+
+import TextareaResizer from 'react-textarea-autosize'
+
+const errors = (cb: () => void): boolean => {
+  try {
+    cb()
+  } catch (err) {
+    return true
+  }
+  return false
+}
 
 export default function Admin() {
   const { user } = useUser(true)
+
+  const [guildSettings, setGuildSettings] = useState<string>('')
 
   const { Input: ClusterInput, value: clusterValue } = useInput<number>()
   const { Select: EC2Selector, value: selectedEC2 } = useSelect<
     'NA-1H' | 'NA-2H' | 'EU-1' | 'SA-1'
   >()
+
+  const { Input: GuildIDInput, value: guildId } = useInput()
 
   useEffect(() => {
     if (!user) return
@@ -99,6 +122,45 @@ export default function Admin() {
             Database
           </Button>
         </MiddleWrap>
+      </VStack>
+      <VStack borderRadius="md" p="32px" bg="darker.10" w="500px" minH="300px">
+        <Text textStyle="heading.xl">Database</Text>
+        <HStack>
+          <GuildIDInput size="sm" />
+          <Button
+            onClick={() => {
+              Api.getGuild(guildId!).then((g) => {
+                if (!g || !('guild' in g)) return
+
+                setGuildSettings(JSON.stringify(g.db, null, 4))
+              })
+            }}
+          >
+            Get
+          </Button>
+        </HStack>
+        <VStack w="full">
+          <Textarea
+            whiteSpace="pre-line"
+            onChange={({ target }) => setGuildSettings(target.value)}
+            as={TextareaResizer}
+            w="full"
+            value={guildSettings}
+          />
+        </VStack>
+        {guildSettings !== '' && errors(() => JSON.parse(guildSettings)) ? (
+          <Text>Error in JSON</Text>
+        ) : (
+          <Button onClick={() => {
+            const json = JSON.parse(guildSettings)
+
+            delete json._id
+            delete json.notInDb
+            delete json.v
+
+            Api.ws.request('CHANGE_SETTING', { id: guildId!, data: json })
+          }}>Save</Button>
+        )}
       </VStack>
     </MiddleWrap>
   )
