@@ -116,6 +116,8 @@ export class GuildsService extends EventEmitter<{
         db.filter.server = db.filter.server
           .map((x) => this.filter.resolve(x)[0]?.t)
           .filter((x) => x)
+
+        db.filter.server = [...new Set(db.filter.server)]
       }
     }
 
