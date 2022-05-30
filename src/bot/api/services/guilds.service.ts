@@ -119,6 +119,14 @@ export class GuildsService extends EventEmitter<{
 
         db.filter.server = [...new Set(db.filter.server)]
       }
+
+      if (db.filter.uncensor) {
+        db.filter.uncensor = db.filter.uncensor
+          .map((x) => this.filter.resolve(x)[0]?.t)
+          .filter((x) => x)
+
+        db.filter.uncensor = [...new Set(db.filter.uncensor)]
+      }
     }
 
     await this.db.updateOne(

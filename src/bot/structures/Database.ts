@@ -102,7 +102,7 @@ export class Database extends Db {
     return db
   }
 
-  currentVersion = 15
+  currentVersion = 16
 
   private async updater(
     db: GuildDB & {
@@ -232,6 +232,17 @@ export class Database extends Db {
           })
 
           db.v = 15
+        }
+        break
+      case 15:
+        {
+          db.filter.uncensor = [...new Set(
+            db.filter.uncensor
+              .map((x) => this.filter!.resolve(x)[0]?.t)
+              .filter((x) => x)
+          )]
+
+          db.v = 16
         }
         break
       default:
