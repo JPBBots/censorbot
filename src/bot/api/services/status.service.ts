@@ -35,7 +35,7 @@ export class StatusService extends EventEmitter<{
 
   async getStatus() {
     if (!this.cachedStats) {
-      const stats = await this.thread.getStats()
+      const stats = await this.thread.getStats().catch(() => [])
 
       this.cachedStats = stats
       setTimeout(() => {

@@ -15,7 +15,7 @@ import Next from 'next'
 import { ApiResponse } from '@nestjs/swagger'
 import { Config } from '../../config'
 import { OAuth2Scopes } from 'discord-api-types/v10'
-import { Snowflake, PermissionUtils } from 'jadl'
+import { Snowflake, PermissionUtils, ClusterStats } from 'jadl'
 
 import { DatabaseService } from '../services/database.service'
 import { ServerSideProps } from '@censorbot/typings'
@@ -98,7 +98,7 @@ export class SiteController {
     let serverCount = this.caching.meta.get('serverCount')
 
     if (!serverCount) {
-      serverCount = (await this.thread.getStats()).reduce(
+      serverCount = (await this.thread.getStats().catch(() => [] as ClusterStats[])).reduce(
         (z, x) => z + x.shards.reduce((a, b) => a + b.guilds, 0),
         0
       )
