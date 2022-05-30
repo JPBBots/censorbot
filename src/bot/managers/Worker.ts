@@ -69,7 +69,7 @@ export interface ExceptedData {
 export class WorkerManager extends Worker<{}> {
   config = Config
   filter = new Filter()
-  db = new Database(this.comms)
+  db = new Database(this.comms, this.filter)
 
   actions = new ActionBucket(this)
   responses = new Responses(this)
