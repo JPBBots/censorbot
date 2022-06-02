@@ -217,14 +217,25 @@ export class PunishmentManager {
     role: Snowflake,
     manual: boolean
   ): Promise<void> {
-    await this.requests.removeRole(guild, user, role)
+    let issue: string | null = null
+
+    if (!manual) {
+      if (this.worker.guildRoles.get(guild)?.has(role)) {
+        await this.requests.removeRole(guild, user, role).catch((err) => {
+          issue = err.message
+        })
+      } else {
+        issue = 'Role no longer exists'
+      }
+    }
 
     await this.timeouts.remove(guild, user)
 
     await this.log(guild, true)
       .title(`Role Removed from User`)
       .description(
-        `<@${user}>\n\nRole ${manual ? 'manually' : 'automatically'} removed`
+        `<@${user}>\n\nRole ${manual ? 'manually' : 'automatically'} removed` +
+          (issue ? '\n\nHowever it failed because ' + issue : '')
       )
       .send()
   }
