@@ -18,7 +18,7 @@ import { Requests } from '../helpers/Requests'
 
 import { CustomBotManager } from '../helpers/CustomBotManager'
 
-const int = new Interface()
+const int = new Interface(!Config.staging)
 
 export class MasterManager extends Master {
   config = Config
