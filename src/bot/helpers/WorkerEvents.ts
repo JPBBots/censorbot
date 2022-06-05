@@ -66,9 +66,14 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
     const links = this.worker.config.links
     if (guild.system_channel_id) {
       if (
-        !this.worker.hasPerms(guild.id, 'sendMessages', guild.system_channel_id)
+        !this.worker.hasPerms(
+          guild.id,
+          ['sendMessages', 'viewChannel'],
+          guild.system_channel_id
+        )
       )
         return
+
       if (!this.worker.hasPerms(guild.id, 'embed', guild.system_channel_id))
         return void this.worker.requests.sendMessage(
           guild.system_channel_id,
