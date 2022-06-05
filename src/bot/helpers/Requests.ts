@@ -219,7 +219,7 @@ export class Requests {
     token?: string
   ): Promise<types.RESTDeleteAPIWebhookWithTokenResult> {
     return this.api.delete(
-      `/webhooks/${webhookId}/${token ? `/${token}` : ''}`
+      `/webhooks/${webhookId}${token ? `/${token}` : ''}`
     ) as any
   }
 
@@ -239,6 +239,12 @@ export class Requests {
           : { 'Content-Type': 'application/json' },
       passThroughBody: true
     }) as any
+  }
+
+  getWebhooks(
+    channelId: Snowflake
+  ): Promise<types.RESTGetAPIChannelWebhooksResult> {
+    return this.api.get(Routes.channelWebhooks(channelId)) as any
   }
 
   getUserGuilds(

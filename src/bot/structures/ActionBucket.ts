@@ -7,7 +7,8 @@ import {
   APIGuildMember,
   APIWebhook,
   APIUser,
-  Snowflake
+  Snowflake,
+  WebhookType
 } from 'discord-api-types/v9'
 
 import { GuildDB } from '@censorbot/typings'
@@ -15,6 +16,7 @@ import { GuildDB } from '@censorbot/typings'
 import { WorkerManager } from '../managers/Worker'
 
 import wait from '../utils/Wait'
+import { DiscordAPIError } from '@discordjs/rest'
 
 interface DeleteBucket {
   msgs: Snowflake[]
@@ -115,6 +117,8 @@ export class ActionBucket {
       .catch(() => {})
   }
 
+  WEBHOOK_NAME = 'Censor Bot Resend Webhook'
+
   public async sendAs(
     channelId: Snowflake,
     guildId: Snowflake,
@@ -124,9 +128,34 @@ export class ActionBucket {
   ): Promise<void> {
     let webhook = this.webhooks.get(channelId)
     if (!webhook) {
-      webhook = await this.worker.requests.createWebhook(channelId, {
-        name: 'Censor Bot Resend Webhook'
-      })
+      webhook = await this.worker.requests
+        .createWebhook(channelId, {
+          name: this.WEBHOOK_NAME
+        })
+        .catch(async (err: DiscordAPIError) => {
+          // 30007 = Maximum number of webhooks reached (10)
+          if (err.code === 30007) {
+            const webhooks = await this.worker.requests.getWebhooks(channelId)
+            const cbWebhooks = webhooks.filter(
+              (x) =>
+                x.type === WebhookType.Incoming && x.name === this.WEBHOOK_NAME
+            )
+
+            const newWebhook = cbWebhooks.pop()
+
+            if (!newWebhook) return undefined
+
+            await Promise.all(
+              cbWebhooks.map((wh) =>
+                this.worker.requests.deleteWebhook(wh.id, wh.token!)
+              )
+            )
+
+            return newWebhook
+          } else return undefined
+        })
+
+      if (!webhook) return
 
       this.webhooks.set(channelId, webhook, () => {
         if (!webhook) {
