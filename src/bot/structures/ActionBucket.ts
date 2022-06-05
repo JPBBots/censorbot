@@ -126,6 +126,8 @@ export class ActionBucket {
     name: string,
     messageInfo: MessageTypes
   ): Promise<void> {
+    if (!this.worker.hasPerms(guildId, 'webhooks', channelId)) return
+
     let webhook = this.webhooks.get(channelId)
     if (!webhook) {
       webhook = await this.worker.requests
