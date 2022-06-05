@@ -214,7 +214,8 @@ export class WorkerManager extends Worker<{}> {
     guildId: Snowflake,
     user: Snowflake,
     userRoleIds: Snowflake[],
-    ownerMatters = true
+    ownerMatters = true,
+    adminMatters = false
   ): boolean {
     const guild = this.guilds.get(guildId)
     if (!guild) return false
@@ -223,6 +224,20 @@ export class WorkerManager extends Worker<{}> {
 
     const roles = this.guildRoles.get(guildId)
     if (!roles) return false
+
+    if (adminMatters) {
+      if (
+        PermissionUtils.has(
+          PermissionUtils.combine({
+            member: { roles: userRoleIds, user: { id: user } } as any,
+            guild,
+            roleList: roles
+          }),
+          'administrator'
+        )
+      )
+        return false
+    }
 
     const highestRole = roles
       .filter((x) => userRoleIds.includes(x.id))

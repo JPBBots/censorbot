@@ -6,6 +6,7 @@ import { WorkerManager } from '../../managers/Worker'
 import { NonFatalError } from '../../utils/NonFatalError'
 
 import { Timeouts } from './Timeouts'
+import { PermissionUtils } from 'jadl'
 
 export interface PunishmentSchema {
   guild: Snowflake
@@ -146,7 +147,7 @@ export class PunishmentManager {
     punishment: PunishmentLevel & { type: PunishmentType.Timeout },
     roles: Snowflake[]
   ) {
-    const manageable = this.worker.isManageable(guild, user, roles)
+    const manageable = this.worker.isManageable(guild, user, roles, true, true)
     if (manageable) {
       await this.requests.timeoutMember(
         guild,
