@@ -79,7 +79,7 @@ export class ReactionsFilterHandler extends BaseFilterHandler {
           reaction.member.user.id,
           reaction.member.roles
         )
-        .catch()
+        .catch(() => {})
     }
   }
 }

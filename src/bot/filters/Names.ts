@@ -83,7 +83,7 @@ export class NamesFilterHandler extends BaseFilterHandler {
     ) {
       void this.worker.punishments
         .punish(member.guild_id, member.user.id, member.roles)
-        .catch()
+        .catch(() => {})
     }
   }
 

@@ -175,7 +175,7 @@ export class WebsocketManager extends ExtendedEmitter {
                 store.dispatch(setCurrentGuild(guild))
               }
             })
-            .catch()
+            .catch(() => {})
         }
       })
       .catch(() => {})
