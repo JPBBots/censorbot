@@ -19,7 +19,7 @@ export class AvatarsFilterHandler extends BaseFilterHandler {
     const db = await this.worker.db.config(member.guild_id)
 
     if (
-      isBitOn(db.censor, CensorMethods.Avatars) ||
+      !isBitOn(db.censor, CensorMethods.Avatars) ||
       this.worker.isExcepted(ExceptionType.Everything, db.exceptions, {
         roles: member.roles
       })
