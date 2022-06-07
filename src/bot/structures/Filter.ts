@@ -317,6 +317,50 @@ export class Filter {
     return res
   }
 
+  private _createPhraseRange(
+    string: string,
+    startIndex: number,
+    phraseLength: number
+  ) {
+    const range: Range = [0, 0]
+
+    const split = string.split(' ')
+    let search = 0
+    for (let i = 0; i < split.length; i++) {
+      search += split[i].length + Number(!!i)
+
+      if (search >= startIndex) {
+        range[0] = i
+
+        break
+      }
+    }
+
+    search = startIndex
+
+    for (let i = range[0]; i < split.length; i++) {
+      search += split[i].length + 1
+
+      if (search >= startIndex + phraseLength) {
+        range[1] = i
+
+        break
+      }
+    }
+
+    return range
+  }
+
+  private _inRangeResult(ranges: Range[], range: Range) {
+    return ranges?.some(
+      (x) =>
+        x[0] !== undefined &&
+        x[1] !== undefined &&
+        (inRange(x[0], range[0] as number, range[1] as number) ||
+          inRange(x[1], range[0] as number, range[1] as number))
+    )
+  }
+
   test(
     text: string,
     settings: FilterSettings,
@@ -345,27 +389,29 @@ export class Filter {
       scanFor.server = settings.server.map((x) => new JPBExp(x))
 
       if (settings.phrases) {
-        const phrases = settings.phrases.filter((x) =>
-          text.toLowerCase().includes(x)
-        )
+        const phrases = settings.phrases
+          .map((x) => [text.toLowerCase().indexOf(x), x] as const)
+          .filter((x) => x[0] !== -1)
+
         if (phrases.length > 0) {
           censor = true
           res.type = FilterType.ServerFilter
-          res.places.push(...phrases)
-          res.ranges.push([])
-          return {
-            type: FilterType.ServerFilter,
-            ranges: [],
-            places: phrases
-          }
+          res.places.push(...phrases.map((x) => x[1]))
+          res.ranges.push(
+            ...phrases.map((x) =>
+              this._createPhraseRange(text, x[0], x[1].length)
+            )
+          )
         }
       }
 
       if (settings.words) {
         const split = text.split(' ')
 
-        settings.words.forEach((word, index) => {
-          if (split.includes(word)) {
+        split.forEach((word, index) => {
+          if (this._inRangeResult(res.ranges, [index, index])) return
+
+          if (settings.words.includes(word.toLowerCase())) {
             censor = true
 
             res.type = FilterType.ServerFilter
@@ -384,16 +430,8 @@ export class Filter {
     }
 
     content.forEach((piece) => {
-      if (
-        res.ranges?.some(
-          (x) =>
-            x[0] !== undefined &&
-            x[1] !== undefined &&
-            inRange(x[0], piece.i[0] as number, piece.i[1] as number) &&
-            inRange(x[1], piece.i[0] as number, piece.i[1] as number)
-        )
-      )
-        return
+      if (this._inRangeResult(res.ranges, piece.i)) return
+
       for (const key in scanFor) {
         for (const part of scanFor[key]) {
           if (!part.test(piece.t, settings.uncensor)) continue
