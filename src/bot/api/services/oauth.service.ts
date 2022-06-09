@@ -3,19 +3,26 @@ import { Injectable } from '@nestjs/common'
 import Crypto from 'crypto'
 import { Config } from '../../config'
 import { ShortGuild, User } from '@censorbot/typings'
-import { APIUser, RESTPostOAuth2AccessTokenResult } from 'discord-api-types/v9'
+import {
+  APIUser,
+  RESTPostOAuth2AccessTokenResult,
+  Snowflake
+} from 'discord-api-types/v9'
 import { DiscordService } from './discord.service'
 import { PermissionUtils } from 'jadl'
 import { DatabaseService } from './database.service'
 import { ThreadService } from './thread.service'
+import { EventEmitter } from '@jpbberry/typed-emitter'
 
 @Injectable()
-export class OAuthService {
+export class OAuthService extends EventEmitter<{ USER_UPDATE: Snowflake }> {
   constructor(
     private readonly database: DatabaseService,
     private readonly rest: DiscordService,
     private readonly thread: ThreadService
-  ) {}
+  ) {
+    super()
+  }
 
   get db() {
     return this.database.collection('users')
@@ -50,6 +57,8 @@ export class OAuthService {
     }
 
     await this.db.updateOne({ id: db.id }, { $set: db }, { upsert: true })
+
+    this.emit('USER_UPDATE', user.id)
 
     return token
   }

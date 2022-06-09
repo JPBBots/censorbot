@@ -23,6 +23,7 @@ export class UsersService extends EventEmitter<{
     super()
 
     this.chargebee.on('USER_UPDATE', (id) => this.causeUpdate(id))
+    this.oauth.on('USER_UPDATE', (id) => this.causeUpdate(id))
   }
 
   get db() {
@@ -30,8 +31,18 @@ export class UsersService extends EventEmitter<{
   }
 
   async causeUpdate(id: Snowflake) {
-    const cachedUser = this.caching.users.get(id)
-    if (!cachedUser) return
+    let cachedUser = this.caching.users.get(id)
+
+    const dbUser = await this.db.findOne({ id })
+    if (!dbUser) return
+
+    if (!cachedUser) cachedUser = dbUser
+    else {
+      cachedUser.email = dbUser.email
+      cachedUser.tag = dbUser.tag
+      cachedUser.bearer = dbUser.bearer
+      cachedUser.avatar = dbUser.avatar
+    }
 
     const newUser = await this.extendUser(cachedUser)
 

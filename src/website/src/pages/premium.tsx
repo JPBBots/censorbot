@@ -25,7 +25,7 @@ import { CSSObject } from '@emotion/react'
 import { useUser } from '@/hooks/useAuth'
 import { Api } from '@/structures/Api'
 import { PremiumTypes } from '@censorbot/typings'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { chargebee } from './_app'
 import NextLink from 'next/link'
 import { MiddleWrap, wMT } from '@jpbbots/theme'
@@ -70,12 +70,14 @@ export interface PremiumProps {
   trialText?: string
 }
 
+let selectedPlan: PremiumTypes | undefined
+
 export default function Premium({
   hideFooter,
   onTrial,
   trialText
 }: PremiumProps) {
-  const { user, getEmail } = useUser(false)
+  const { user, getEmail, emailWaiting } = useUser(false)
   const { trialLength } = useMeta()
 
   const router = useRouter()
@@ -85,27 +87,32 @@ export default function Premium({
   const openCheckout = async (id: PremiumTypes) => {
     if (!chargebee) return
 
-    const email = await getEmail().catch(() => {})
-    if (!user || !email) return
+    selectedPlan = id
 
-    if (user.premium?.customer && user.premium.count)
-      return void Api.createPortal()
-
-    chargebee.openCheckout({
-      hostedPage: async () => {
-        return await Api.ws
-          .request('CREATE_HOSTED_PAGE', { plan: id })
-          .catch((err) => {
-            console.log('err', err)
-
-            return {}
-          })
-      },
-      success: () => {
-        setProcessing(true)
-      }
-    })
+    getEmail().catch(() => {})
   }
+
+  useEffect(() => {
+    if (typeof emailWaiting === 'string' && user) {
+      if (user.premium?.customer && user.premium.count)
+        return void Api.createPortal()
+
+      chargebee!.openCheckout({
+        hostedPage: async () => {
+          return await Api.ws
+            .request('CREATE_HOSTED_PAGE', { plan: selectedPlan! })
+            .catch((err) => {
+              console.log('err', err)
+
+              return {}
+            })
+        },
+        success: () => {
+          setProcessing(true)
+        }
+      })
+    }
+  }, [emailWaiting])
 
   const cards = {
     monthly: (

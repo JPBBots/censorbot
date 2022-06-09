@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrentGuild, setGuilds } from 'store/reducers/guilds.reducer'
 import { Api } from 'structures/Api'
@@ -14,6 +14,7 @@ import {
 import { stats } from '@/structures/StatsManager'
 
 import headlessData from '../structures/headlessData.json'
+import { Utils } from '@/utils/Utils'
 
 export const useAuthState = (): RootState['auth'] =>
   useSelector((state: RootState) => state.auth)
@@ -41,6 +42,7 @@ export const useHeadless = () => {
 export const useUser = (needsUser: boolean) => {
   const dispatch = useDispatch()
   const { user, loginState } = useAuthState()
+  const [emailWaiting, setEmailWaiting] = useState<0 | 1 | string>(0)
 
   useEffect(() => {
     void goUser(needsUser)
@@ -77,24 +79,39 @@ export const useUser = (needsUser: boolean) => {
     }
   }
 
+  useEffect(() => {
+    if (emailWaiting === 1 && user) {
+      if (user.email) setEmailWaiting(user.email)
+    } else {
+      setEmailWaiting(0)
+    }
+
+    return () => {
+      setEmailWaiting(0)
+    }
+  }, [user])
+
   return {
     user,
     login: () => {
       void goUser(true)
     },
     getEmail: async () => {
-      if (user?.email) return user.email
+      let eUser = user
+      if (!user) eUser = await goUser(true)!
+
+      if (eUser!.email) {
+        setEmailWaiting(eUser!.email)
+
+        return
+      }
 
       const win = Api.login(true)
-
       await win.wait()
 
-      const newUser = await goUser(true)
-
-      if (newUser?.email) return newUser.email
-
-      throw new Error('Could not retrieve email')
+      setEmailWaiting(1)
     },
+    emailWaiting,
     logout: () => {
       Api.logout()
       dispatch(setUser(undefined))
