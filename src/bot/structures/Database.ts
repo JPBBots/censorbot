@@ -213,11 +213,13 @@ export class Database extends Db {
         break
       case 14:
         {
-          db.filter.server = [...new Set(
-            db.filter.server
-              .map((x) => this.filter!.resolve(x)[0]?.t)
-              .filter((x) => x)
-          )]
+          db.filter.server = [
+            ...new Set(
+              db.filter.server
+                .map((x) => this.filter!.resolve(x)[0]?.t)
+                .filter((x) => x)
+            )
+          ]
 
           db.punishments.levels.forEach((level: any, i) => {
             type UnionKeys<T> = T extends T ? keyof T : never
@@ -236,11 +238,13 @@ export class Database extends Db {
         break
       case 15:
         {
-          db.filter.uncensor = [...new Set(
-            db.filter.uncensor
-              .map((x) => this.filter!.resolve(x)[0]?.t)
-              .filter((x) => x)
-          )]
+          db.filter.uncensor = [
+            ...new Set(
+              db.filter.uncensor
+                .map((x) => this.filter!.resolve(x)[0]?.t)
+                .filter((x) => x)
+            )
+          ]
 
           db.v = 16
         }
@@ -420,7 +424,7 @@ export class Database extends Db {
             advanced: db.exceptions.advanced.slice(0, 5)
           },
 
-          webhook: {
+          resend: {
             enabled: false,
             separate: true,
             replace: WebhookReplace.Spoilers
