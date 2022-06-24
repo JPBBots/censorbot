@@ -117,7 +117,10 @@ export class Responses {
         break
     }
 
-    if (response.type === FilterType.BaseFilter) {
+    if (
+      response.type === FilterType.BaseFilter ||
+      response.type === FilterType.ServerFilter
+    ) {
       content = this.worker.filter.surround(content, response.ranges, '__')
       if (content.length > DESCRIPTION_MAX_LENGTH) {
         content =
