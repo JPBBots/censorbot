@@ -1,51 +1,42 @@
 import { BaseExtension, Test } from './Base'
+import { request } from 'undici'
 
-import fetch from 'node-fetch'
-import FormData from 'form-data'
-
-interface UnscanPartialResponse {
-  success: boolean
+interface AntiNsfwApiResponse {
+  percentage: number
   nsfw: boolean
-  scores: {
-    safe: number
-    nsfw: number
-  }
 }
 
 export class AntiNSFW extends BaseExtension {
-  async fetchImage(url: string) {
-    return fetch(url)
-      .then((x) => x.buffer())
-      .catch(() => undefined)
-  }
-
   public async test(text: string): Promise<Test> {
     const tested = this.cache.get(text)
     if (tested) return tested
 
-    const image = await this.fetchImage(text)
-    if (!image) return { bad: false }
+    const { body, statusCode } = await request(
+      'http://localhost:5820/scan/image',
+      {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({ url: text })
+      }
+    ).catch(() => ({ body: null!, statusCode: 500 }))
 
-    const formData = new FormData()
-    formData.append('file', image, 'image.png')
-
-    const req = (await fetch('https://api.unscan.co/nsfw', {
-      method: 'POST',
-      body: formData,
-      headers: { ...formData.getHeaders() }
-    })
-      .then((x) => x.json())
-      .catch(() => ({}))) as UnscanPartialResponse
-
-    if (!req.success) {
+    if (statusCode !== 200) {
       this.working = false
 
       return { bad: false }
+    } else {
+      this.working = true
     }
 
+    const json: AntiNsfwApiResponse = await body
+      .json()
+      .catch(() => ({ nsfw: false, percent: 0 }))
+
     const test: Test = {
-      bad: req.nsfw,
-      percent: `${req.scores.nsfw}%`
+      bad: json.nsfw,
+      percent: `${(json.percentage * 100).toFixed(0) as unknown as number}%`
     }
 
     this.cache.set(text, test)

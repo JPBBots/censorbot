@@ -140,6 +140,11 @@ export class MessagesFilterHandler extends BaseFilterHandler {
   multiLineStore: Cache<Snowflake, MultiLine> = new Cache(3.6e6)
   channelTypes = [ChannelType.GuildText, ChannelType.GuildVoice]
 
+  quickMessageUpdateStore: Cache<
+    `${Snowflake}-${Snowflake}`,
+    DiscordEventMap['MESSAGE_CREATE']
+  > = new Cache(30000)
+
   @Event('MESSAGE_CREATE')
   @Event('MESSAGE_UPDATE')
   async onMessage(
@@ -150,6 +155,27 @@ export class MessagesFilterHandler extends BaseFilterHandler {
       (message.guild_id
         ? this.worker.getThreadParent(message.guild_id, message.channel_id)
         : undefined)
+
+    if (!message.author) {
+      const newMessage = this.quickMessageUpdateStore.get(
+        `${message.channel_id}-${message.id}`
+      )
+      if (!newMessage) return
+
+      Object.keys(message).forEach((messageKey) => {
+        if (message[messageKey]) {
+          newMessage[messageKey] = message[messageKey]
+        }
+      })
+
+      message = newMessage
+    } else {
+      this.quickMessageUpdateStore.set(
+        `${message.channel_id}-${message.id}`,
+        message as DiscordEventMap['MESSAGE_CREATE']
+      )
+    }
+
     if (!message.guild_id || !message.author || !channel || !message.member)
       return
 
