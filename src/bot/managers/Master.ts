@@ -99,13 +99,15 @@ export class MasterManager extends Master {
 
     void this.start()
 
-    this.db.on('started', () => {
-      void this.db
-        .collection('custombots')
-        .find({})
-        .toArray()
-        .then((x) => x.forEach((bot) => this.spawnCustomBot(bot)))
-    })
+    if (!this.config.staging) {
+      this.db.on('started', () => {
+        void this.db
+          .collection('custombots')
+          .find({})
+          .toArray()
+          .then((x) => x.forEach((bot) => this.spawnCustomBot(bot)))
+      })
+    }
   }
 
   readonly customBots: CustomBotManager[] = []

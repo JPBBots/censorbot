@@ -330,7 +330,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
           const { body } = await request(attachment.url)
           const text = await body.text()
 
-          const response = this.test(text, db, {
+          const response = this.test(text.slice(0, 2000), db, {
             roles: message.member.roles,
             channel: message.channel_id
           })
