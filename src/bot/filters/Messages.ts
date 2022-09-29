@@ -138,7 +138,11 @@ export class MessageFilterContext {
 
 export class MessagesFilterHandler extends BaseFilterHandler {
   multiLineStore: Cache<Snowflake, MultiLine> = new Cache(3.6e6)
-  channelTypes = [ChannelType.GuildText, ChannelType.GuildVoice]
+  channelTypes = [
+    ChannelType.GuildText,
+    ChannelType.GuildForum,
+    ChannelType.GuildVoice
+  ]
 
   quickMessageUpdateStore: Cache<
     `${Snowflake}-${Snowflake}`,
@@ -198,7 +202,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
       !this.channelTypes.includes(channel.type) ||
       this.worker.isExcepted(ExceptionType.Everything, db.exceptions, {
         roles: message.member.roles,
-        channel: message.channel_id
+        channel: channel.id
       })
     )
       return
@@ -232,7 +236,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
     if (
       isBitOn(db.plugins, Plugin.Invites) &&
       !this.worker.isExcepted(ExceptionType.Invites, db.exceptions, {
-        channel: message.channel_id,
+        channel: channel.id,
         roles: message.member.roles
       })
     ) {
@@ -310,7 +314,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
       for (const attachment of contentData.contentData.attachments) {
         const response = this.test(attachment.filename, db, {
           roles: message.member.roles,
-          channel: message.channel_id
+          channel: channel.id
         })
 
         if (response) {
@@ -332,7 +336,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
 
           const response = this.test(text.slice(0, 2000), db, {
             roles: message.member.roles,
-            channel: message.channel_id
+            channel: channel.id
           })
 
           if (response) {
@@ -356,7 +360,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
             []) {
             const test = this.test(scan.LineText, db, {
               roles: message.member.roles,
-              channel: message.channel_id
+              channel: channel.id
             })
             if (test) {
               lines.push(scan)
@@ -373,7 +377,7 @@ export class MessagesFilterHandler extends BaseFilterHandler {
     if (contentData.content && isBitOn(db.censor, CensorMethods.Messages)) {
       const response = this.test(contentData.content, db, {
         roles: message.member.roles,
-        channel: message.channel_id
+        channel: channel.id
       })
 
       if (response) contentData.setResponse(response)

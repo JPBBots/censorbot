@@ -39,7 +39,8 @@ export class MasterManager extends Master {
           ChannelType.GuildText,
           ChannelType.GuildNews,
           ChannelType.GuildVoice,
-          ChannelType.GuildCategory
+          ChannelType.GuildCategory,
+          ChannelType.GuildForum
         ]
       },
       cacheControl: {
