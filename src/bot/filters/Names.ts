@@ -100,6 +100,19 @@ export class NamesFilterHandler extends BaseFilterHandler {
 
     let name = member.nick ?? member.user.username
 
+    if (name === db.nickReplace) return
+
+    if (
+      isBitOn(db.censor, CensorMethods.Names) &&
+      !this.worker.isExcepted(ExceptionType.Everything, db.exceptions, {
+        roles: member.roles
+      })
+    ) {
+      const res = this.test(name, db, { roles: member.roles })
+
+      if (res) return this.handleCensor(member, db, res)
+    }
+
     if (
       isBitOn(db.plugins, Plugin.AntiHoist) &&
       NamesFilterHandler.isHoisting(name) &&
@@ -119,21 +132,5 @@ export class NamesFilterHandler extends BaseFilterHandler {
         .setNickname(member.guild_id, member.user.id, `${deHoist}${name}`)
         .catch(() => {})
     }
-
-    if (
-      (db.censor & CensorMethods.Names) === 0 ||
-      this.worker.isExcepted(ExceptionType.Everything, db.exceptions, {
-        roles: member.roles
-      })
-    )
-      return
-
-    if (member.nick === db.nickReplace) return
-
-    const res = this.test(name, db, { roles: member.roles })
-
-    if (!res) return
-
-    this.handleCensor(member, db, res)
   }
 }
