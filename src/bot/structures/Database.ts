@@ -89,7 +89,7 @@ export class Database extends Db {
       (await this.collection('guild_data').findOne({ id })) ??
       (Object.assign(
         { id },
-        DefaultConfig
+        JSON.parse(JSON.stringify(DefaultConfig))
       ) as DatabaseCollections['guild_data'])
 
     // temp migration
