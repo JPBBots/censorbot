@@ -8,7 +8,7 @@ export interface PremiumIconProps extends IconProps {
 export function PremiumIcon({ notColored, ...props }: PremiumIconProps) {
   return (
     <Icon
-      color={notColored ? undefined : 'brand.100'}
+      fill={notColored ? undefined : 'brand.100'}
       as={FaCrown}
       {...props}
     />

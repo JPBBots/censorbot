@@ -30,7 +30,7 @@ export const Header = ({
     {...(headerProps ?? {})}
   >
     <HStack spacing={4} {...(logoProps ?? {})}>
-      <CensorBotIcon boxSize={ICON_SIZE} />
+      <CensorBotIcon color='brand.100' boxSize={ICON_SIZE} />
       <Text
         as="h1"
         color="lighter.100"

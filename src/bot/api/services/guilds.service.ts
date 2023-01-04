@@ -9,6 +9,7 @@ import { CacheService } from './cache.service'
 import { DatabaseService } from './database.service'
 import { FilterService } from './filter.service'
 import { ThreadService } from './thread.service'
+import { WithoutId } from 'mongodb'
 
 @Injectable()
 export class GuildsService extends EventEmitter<{
@@ -97,7 +98,7 @@ export class GuildsService extends EventEmitter<{
       await this.db.updateOne(
         { id },
         {
-          $set: guild.db
+          $set: guild.db as WithoutId<GuildDB>
         },
         { upsert: true }
       )

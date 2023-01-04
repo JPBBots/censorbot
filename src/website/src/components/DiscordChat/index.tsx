@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/layout'
 import { Image } from '@chakra-ui/react'
 import { hex } from 'chroma-js'
-import Typist from 'react-typist'
+import Typist from 'react-typist-component'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { MotionHStack, MotionText, MotionVStack } from '~/motion'
 import BRANDING from '@/BRANDING'

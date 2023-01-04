@@ -149,7 +149,7 @@ export function Aside({
                       cursor="pointer"
                       fontSize="30px"
                       display="inline-flex"
-                      color="lighter.20"
+                      fill="lighter.20"
                       as={FaTimes}
                       onClick={() => props.onClose?.()}
                     />
@@ -197,7 +197,7 @@ export function Aside({
               >
                 <InputGroup transition="0.4s" w="full">
                   <InputLeftAddon>
-                    <Icon color="brand.100" as={FaSearch} />
+                    <Icon fill="brand.100" as={FaSearch} />
                   </InputLeftAddon>
 
                   <Input

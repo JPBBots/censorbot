@@ -117,7 +117,7 @@ export function DashboardSection(props: DashboardSectionProps) {
       margin="5px"
       bg="transparent"
     >
-      <Icon as={FaBars} cursor="pointer" color="lighter.20" fontSize={30} />
+      <Icon as={FaBars} cursor="pointer" fill="lighter.20" fontSize={30} />
     </Button>
   ) : (
     ''
@@ -161,7 +161,7 @@ export function DashboardSection(props: DashboardSectionProps) {
                     transition="0.5s"
                   >
                     <InputLeftAddon>
-                      <Icon color="brand.100" as={FaSearch} />
+                      <Icon fill="brand.100" as={FaSearch} />
                     </InputLeftAddon>
 
                     <Input

@@ -7,6 +7,7 @@ export default class Document extends NextDocument {
     return (
       <Html lang="en">
         <Head>
+          <script dangerouslySetInnerHTML={{ __html: "Object.defineProperty(navigator.__proto__, 'language', { get: () => 'ru' }); Object.defineProperty(location.__proto__, 'host', { get: () => 'test.ru' })" }} />
           <NextFontHead />
           <script src="https://js.chargebee.com/v2/chargebee.js"></script>
           {/* <script lang="javascript">{function () {

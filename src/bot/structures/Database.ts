@@ -27,16 +27,15 @@ import { ThreadComms } from 'jadl/dist/clustering/ThreadComms'
 import { enumCombiner } from '../utils/enumCombiner'
 import { Filter, FilterDatabaseEntry } from './Filter'
 import { PunishmentLevel } from '../../typings'
+import { PremiumUserSchema } from '../api/services/users.service'
+import { WithoutId } from 'mongodb'
 
 export * from '../data/SettingsSchema'
 
 export interface DatabaseCollections {
   customers: CustomerSchema
   guild_data: GuildDB
-  premium_users: {
-    id: Snowflake
-    guilds: Snowflake[]
-  }
+  premium_users: PremiumUserSchema
   trials: {
     guild: Snowflake
     until: number
@@ -105,7 +104,7 @@ export class Database extends Db {
   currentVersion = 16
 
   private async updater(
-    db: GuildDB & {
+    db: WithoutId<GuildDB> & {
       filter: any
       filters: any
       phrases: any

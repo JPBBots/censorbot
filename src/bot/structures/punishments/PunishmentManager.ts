@@ -1,6 +1,6 @@
 import { APIMessage, Snowflake } from 'discord-api-types/v9'
 import { Embed } from '@jadl/embed'
-import { Collection } from 'mongodb'
+import { Collection, WithoutId } from 'mongodb'
 import { GuildDB, PunishmentLevel, PunishmentType } from '@censorbot/typings'
 import { WorkerManager } from '../../managers/Worker'
 import { NonFatalError } from '../../utils/NonFatalError'
@@ -68,7 +68,7 @@ export class PunishmentManager {
 
     if (!db.punishments.levels.length) return
 
-    let punish = await this.db.findOne({ guild, user })
+    let punish: WithoutId<PunishmentSchema> | null = await this.db.findOne({ guild, user })
 
     if (!punish) {
       punish = {

@@ -8,6 +8,12 @@ import { ChargeBeeService } from './chargebee.service'
 import { DatabaseService } from './database.service'
 import { InterfaceService } from './interface.service'
 import { OAuthService } from './oauth.service'
+import { WithoutId } from 'mongodb'
+
+export interface PremiumUserSchema {
+  id: Snowflake,
+  guilds: Snowflake[]
+}
 
 @Injectable()
 export class UsersService extends EventEmitter<{
@@ -75,7 +81,7 @@ export class UsersService extends EventEmitter<{
     if (prem.amount > 0) {
       premium.count = prem.amount
 
-      let premiumUser = await this.database
+      let premiumUser: WithoutId<PremiumUserSchema> | null = await this.database
         .collection('premium_users')
         .findOne({ id: user.id })
       if (!premiumUser) {

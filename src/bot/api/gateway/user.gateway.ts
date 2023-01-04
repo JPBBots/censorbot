@@ -62,7 +62,7 @@ const sfRegex = /^[0-9]{5,50}$/
 const SnowflakeString = Joi.string()
   .regex(sfRegex)
   .error((errs) => {
-    return new ValidationError('Not a Snowflake', errs[0], errs[0])
+    return new ValidationError('Not a Snowflake', errs[0] as any, errs[0])
   })
 
 const JVP = (j: Joi.Schema) => new JoiValidationPipe(j)

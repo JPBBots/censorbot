@@ -113,7 +113,7 @@ export default function DashboardHome() {
               {showSearch && (
                 <InputGroup w="350px" maxW="70vw" display="inline-flex">
                   <InputLeftAddon>
-                    <Icon color="brand.100" as={FaSearch} />
+                    <Icon fill="brand.100" as={FaSearch} />
                   </InputLeftAddon>
 
                   <Input

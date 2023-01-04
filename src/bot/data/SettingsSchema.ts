@@ -41,7 +41,7 @@ const bitWise = (
 const SnowflakeString = Joi.string()
   .regex(sfRegex)
   .error((errs) => {
-    return new ValidationError('Not a Snowflake', errs[0], errs[0])
+    return new ValidationError('Not a Snowflake', errs[0] as any, errs[0])
   })
 
 const nullableSnowflake = SnowflakeString.concat(Joi.string().allow(null))

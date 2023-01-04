@@ -13,6 +13,7 @@ import { PermissionUtils } from 'jadl'
 import { DatabaseService } from './database.service'
 import { ThreadService } from './thread.service'
 import { EventEmitter } from '@jpbberry/typed-emitter'
+import { WithoutId } from 'mongodb'
 
 @Injectable()
 export class OAuthService extends EventEmitter<{ USER_UPDATE: Snowflake }> {
@@ -47,7 +48,7 @@ export class OAuthService extends EventEmitter<{ USER_UPDATE: Snowflake }> {
 
     const token = currentUser?.token ?? this.createToken()
 
-    const db: User = {
+    const db: WithoutId<User> = {
       id: user.id,
       bearer: oauthUser.access_token,
       token,
