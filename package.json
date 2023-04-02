@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc --build",
+    "build-web": "cd ./packages/website && yarn build",
     "start": "node ./packages/bot"
   },
   "repository": "git+https://github.com/JPBBots/censorbot.git",
