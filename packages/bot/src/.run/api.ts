@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 import { AppModule } from '../api/app.module'
-import { Config } from '../config'
+import Config from '@censorbot/config'
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {

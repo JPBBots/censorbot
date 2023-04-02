@@ -15,6 +15,7 @@
   "homepage": "https://censor.bot",
   "workspaces": [
     "packages/typings",
+    "packages/config",
     "packages/bot",
     "packages/website"
   ],

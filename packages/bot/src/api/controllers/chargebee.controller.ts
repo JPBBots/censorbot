@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common'
 import { Snowflake } from 'discord-api-types/v9'
 import { Response } from 'express'
-import { Config } from '../../config'
+import Config from '@censorbot/config'
 import { ChargeBeeService } from '../services/chargebee.service'
 import { DatabaseService } from '../services/database.service'
 import { GuildsService } from '../services/guilds.service'

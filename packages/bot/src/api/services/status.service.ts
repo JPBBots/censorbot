@@ -1,7 +1,7 @@
 import { EventEmitter } from '@jpbberry/typed-emitter'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ClusterStats, Snowflake, State } from 'jadl'
-import { Config } from '../../config'
+import Config from '@censorbot/config'
 import { guildShard } from '../../utils/Discord'
 import { ThreadService } from './thread.service'
 import { CacheService } from './cache.service'

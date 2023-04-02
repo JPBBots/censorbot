@@ -1,5 +1,5 @@
 import { Decorators, Symbols } from '@jadl/cmd'
-import { Config } from '../../config'
+import Config from '@censorbot/config'
 
 export const AdminGuild = Decorators.createBaseDecorator(([], base) => {
   if (!Config.staging) {

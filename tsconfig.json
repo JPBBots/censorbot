@@ -4,6 +4,9 @@
       "path": "./packages/typings"
     },
     {
+      "path": "./packages/config"
+    },
+    {
       "path": "./packages/bot"
     }
   ],

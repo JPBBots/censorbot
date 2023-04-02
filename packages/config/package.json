@@ -1,0 +1,10 @@
+{
+  "name": "@censorbot/config",
+  "version": "0.0.1",
+  "main": "./dist/config.js",
+  "types": "./dist/config.d.ts",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "jadl": "^0.2.1"
+  }
+}

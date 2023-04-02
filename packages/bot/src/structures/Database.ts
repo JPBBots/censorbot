@@ -1,4 +1,4 @@
-import { Config } from '../config'
+import Config from '@censorbot/config'
 import { Cache } from '@jpbberry/cache'
 
 import {
@@ -9,7 +9,9 @@ import {
   WebhookReplace,
   CustomBotOptions,
   FilterType,
-  Plugin
+  Plugin,
+  PunishmentLevel,
+  CustomerSchema
 } from '@censorbot/typings'
 import { Snowflake } from 'discord-api-types/v9'
 
@@ -19,14 +21,12 @@ import SafeConfig from '../data/SafeConfig.json'
 import { settingSchema } from '../data/SettingsSchema'
 
 import { Database as Db } from '@jpbbots/interface/dist/Database'
-import { CustomerSchema } from '../types'
 import { PunishmentSchema } from './punishments/PunishmentManager'
 import { TimeoutSchema } from './punishments/Timeouts'
 import { TicketBanSchema } from './TicketManager'
 import { ThreadComms } from 'jadl/dist/clustering/ThreadComms'
 import { enumCombiner } from '../utils/enumCombiner'
 import { Filter, FilterDatabaseEntry } from './Filter'
-import { PunishmentLevel } from '@censorbot/typings'
 import { WithoutId } from 'mongodb'
 import { PremiumUserSchema } from '../api/services/users.service'
 

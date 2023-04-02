@@ -1,9 +1,10 @@
-import { MessageTypes } from '@jadl/builders'
 import { APIMessage, Snowflake } from 'discord-api-types/v9'
-import { ExtendedGuild, ShortID } from '@censorbot/typings'
+import { ExtendedGuild, ShortID } from './api'
 import { APIInteractionResponseCallbackData } from 'discord-api-types/v10'
 
 export const Reloaders = ['COMMANDS', 'FILTER', 'CACHE', 'FILTERS'] as const
+
+import 'jadl'
 
 export type ReloadNames = typeof Reloaders[number]
 

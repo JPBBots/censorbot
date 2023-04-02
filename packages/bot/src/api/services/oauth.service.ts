@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
 import Crypto from 'crypto'
-import { Config } from '../../config'
+import Config from '@censorbot/config'
 import { ShortGuild, User } from '@censorbot/typings'
 import {
   APIUser,

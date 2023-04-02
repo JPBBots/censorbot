@@ -1,6 +1,6 @@
 import { CommandError, Decorators } from '@jadl/cmd'
 import { Embed } from '@jadl/builders'
-import { Config } from '../../config'
+import Config from '@censorbot/config'
 import { WorkerManager } from '../../managers/Worker'
 
 export const Premium = Decorators.createCommandDecorator((_, cmd) => {

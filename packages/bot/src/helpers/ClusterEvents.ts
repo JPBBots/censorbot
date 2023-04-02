@@ -3,7 +3,7 @@ import { WorkerManager } from '../managers/Worker'
 import { Event } from '@jpbberry/typed-emitter'
 
 import path from 'path'
-import { ReloadNames } from '../types'
+import { ReloadNames } from '@censorbot/typings'
 import { PermissionUtils, Snowflake, Thread } from 'jadl'
 import { ResolveFunction } from 'jadl/dist/clustering/ThreadComms'
 import { EventAdder } from '../utils/EventAdder'

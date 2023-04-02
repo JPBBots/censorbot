@@ -24,7 +24,7 @@ function generateWebhook(wh: string): { id: Snowflake; token: string } {
   return { id, token }
 }
 
-export const Config = {
+const Config = {
   id: process.env.ID as string,
   dbl: process.env.DBL_TOKEN as string,
   token: process.env.BOT_TOKEN as string,
@@ -161,3 +161,5 @@ export const Config = {
     ocrToken: process.env.OCR_KEY as string
   }
 }
+
+export default Config

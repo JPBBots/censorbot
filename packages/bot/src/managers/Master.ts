@@ -3,7 +3,7 @@ import { Master, Cluster, Snowflake, ThreadEvents } from 'jadl'
 import { GatewayIntentBits, ChannelType } from 'discord-api-types/v9'
 
 import path from 'path'
-import { Config } from '../config'
+import Config from '@censorbot/config'
 import { Database } from '../structures/Database'
 
 import { MasterEvents } from '../helpers/MasterEvents'

@@ -1,7 +1,7 @@
 import { Command, Run } from '@jadl/cmd'
 import { Embed } from '@jadl/builders'
 
-import { Config } from '../../config'
+import Config from '@censorbot/config'
 
 const { links } = Config
 

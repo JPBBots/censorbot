@@ -42,7 +42,7 @@ import {
 
 import { JoiValidationPipe } from './joi.pipe'
 import Joi, { ValidationError } from 'joi'
-import { Config } from '../../config'
+import Config from '@censorbot/config'
 
 type EventMap = {
   [key in keyof WebSocketEventMap]: WebSocketEventMap[key]['receive']

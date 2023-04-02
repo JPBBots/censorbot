@@ -2,7 +2,7 @@ import { Cache } from '@jpbberry/cache'
 import { Injectable } from '@nestjs/common'
 import { Snowflake } from 'jadl'
 import { GuildData, ShortGuild, User } from '@censorbot/typings'
-import { Config } from '../../config'
+import Config from '@censorbot/config'
 
 @Injectable()
 export class CacheService {

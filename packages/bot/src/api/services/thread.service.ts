@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { Thread } from 'jadl'
 import { EmbedWithSendback, parseMessage } from '@jadl/builders'
-import { Config } from '../../config'
+import Config from '@censorbot/config'
 
 @Injectable()
 export class ThreadService extends Thread {

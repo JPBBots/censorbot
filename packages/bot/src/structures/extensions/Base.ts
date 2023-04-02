@@ -1,6 +1,6 @@
 import { Cache } from '@jpbberry/cache'
 
-import { Config } from '../../config'
+import Config from '@censorbot/config'
 import { WorkerManager } from '../../managers/Worker'
 
 export type Test =

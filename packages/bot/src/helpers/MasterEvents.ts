@@ -4,7 +4,7 @@ import { Cluster, Snowflake, ThreadEvents } from 'jadl'
 import { ResolveFunction } from 'jadl/dist/clustering/ThreadComms'
 
 import { MasterManager } from '../managers/Master'
-import { ReloadNames } from '../types'
+import { ReloadNames } from '@censorbot/typings'
 import { EventAdder } from '../utils/EventAdder'
 
 import GenerateID from '../utils/GenerateID'

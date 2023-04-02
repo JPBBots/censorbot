@@ -1,6 +1,6 @@
 import { REST } from '@discordjs/rest'
 import { Injectable } from '@nestjs/common'
-import { Config } from '../../config'
+import Config from '@censorbot/config'
 import { Requests } from '../../helpers/Requests'
 
 @Injectable()

@@ -15,7 +15,7 @@ import {
   RESTOAuth2AuthorizationQuery
 } from 'discord-api-types/v9'
 import { Response } from 'express'
-import { Config } from '../../../config'
+import Config from '@censorbot/config'
 import { OAuthService } from '../../services/oauth.service'
 
 @Controller('/api/auth/discord')

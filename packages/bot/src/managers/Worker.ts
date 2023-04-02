@@ -2,7 +2,7 @@ import { PermissionUtils, Worker } from 'jadl'
 
 import { Embed, EmbedWithSendback, parseMessage } from '@jadl/builders'
 
-import { Config } from '../config'
+import Config from '@censorbot/config'
 
 import { Database } from '../structures/Database'
 import { Filter } from '../structures/Filter'
