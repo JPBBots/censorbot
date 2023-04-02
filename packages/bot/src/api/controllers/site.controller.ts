@@ -12,7 +12,7 @@ import { Request, Response } from 'express'
 import path from 'path'
 
 import Next from 'next'
-import { ApiResponse } from '@nestjs/swagger'
+import { ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Config } from '../../config'
 import { OAuth2Scopes } from 'discord-api-types/v10'
 import { Snowflake, PermissionUtils, ClusterStats } from 'jadl'
@@ -25,6 +25,7 @@ import { CacheService } from '../services/cache.service'
 const pathToWebsite = path.parse(require.resolve('@censorbot/website')).dir
 
 @Controller()
+@ApiTags('Site')
 export class SiteController {
   server: ReturnType<typeof Next>
   constructor(

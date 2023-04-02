@@ -1,5 +1,5 @@
 import { Controller, Get, HttpStatus, Param } from '@nestjs/common'
-import { ApiProperty, ApiResponse } from '@nestjs/swagger'
+import { ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Snowflake } from 'discord-api-types/v9'
 import { AmountObject, ChargeBeeService } from '../services/chargebee.service'
 
@@ -19,6 +19,7 @@ export class AmountAnnotation implements AmountObject {
 }
 
 @Controller('/api/premium')
+@ApiTags('Premium')
 export class PremiumController {
   constructor(private readonly premium: ChargeBeeService) {}
   @Get('/:id')
