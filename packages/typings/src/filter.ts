@@ -40,16 +40,21 @@ export const filterTypeNames = {
 
 export type Range = [number, number] | []
 
+export interface PlaceInfo {
+  type: FilterType
+  text: string
+}
+
 export type FilterResultInfo =
   | {
       type: FilterType.BaseFilter
       ranges: Range[]
       filters: baseFilters[]
-      places: string[]
+      places: PlaceInfo[]
     }
   | {
       type: FilterType.ServerFilter
-      places: string[]
+      places: PlaceInfo[]
       ranges: Range[]
     }
   | {

@@ -77,7 +77,7 @@ export class Filter {
         this.filters[entry.filter] = Object.keys(entry.filterData).reduce<
           JPBExp[]
         >((c, d) => {
-          c.push(new JPBExp(d, entry.filterData[d]))
+          c.push(new JPBExp(d, FilterType.BaseFilter, entry.filterData[d]))
 
           return c
         }, [])
@@ -386,7 +386,9 @@ export class Filter {
       [key in baseFilters | 'server']?: JPBExp[]
     } = {}
     if (!exceptions?.server) {
-      scanFor.server = settings.server.map((x) => new JPBExp(x))
+      scanFor.server = settings.server.map(
+        (x) => new JPBExp(x, FilterType.ServerFilter)
+      )
 
       if (settings.phrases) {
         const phrases = settings.phrases
@@ -396,7 +398,12 @@ export class Filter {
         if (phrases.length > 0) {
           censor = true
           res.type = FilterType.ServerFilter
-          res.places.push(...phrases.map((x) => x[1]))
+          res.places.push(
+            ...phrases.map((x) => ({
+              type: FilterType.ServerFilter,
+              text: x[1]
+            }))
+          )
           res.ranges.push(
             ...phrases.map((x) =>
               this._createPhraseRange(text, x[0], x[1].length)
@@ -416,7 +423,10 @@ export class Filter {
 
             res.type = FilterType.ServerFilter
             res.ranges.push([index, index])
-            res.places.push(word)
+            res.places.push({
+              text: word,
+              type: FilterType.ServerFilter
+            })
           }
         })
       }
@@ -433,7 +443,7 @@ export class Filter {
       if (this._inRangeResult(res.ranges, piece.i)) return
 
       for (const key in scanFor) {
-        for (const part of scanFor[key]) {
+        for (const part of scanFor[key as keyof typeof scanFor]!) {
           if (!part.test(piece.t, settings.uncensor)) continue
 
           if (key === 'server') res.type = FilterType.ServerFilter
@@ -442,7 +452,7 @@ export class Filter {
           res.ranges.push(piece.i)
           if (!res.filters.includes(key as baseFilters) && key !== 'server')
             res.filters.push(key as baseFilters)
-          res.places.push(part)
+          res.places.push({ type: part.type, text: part._text })
         }
       }
     })

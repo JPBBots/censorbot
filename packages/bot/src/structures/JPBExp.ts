@@ -1,3 +1,5 @@
+import { FilterType } from '@censorbot/typings'
+
 /**
  * RegExp which takes an array of uncensored parts to use in .test
  * @extends RegExp
@@ -11,7 +13,11 @@ export class JPBExp extends RegExp {
    * @param {String} regex RegEx Statement
    * @param {Array.<String>} uncensor Bits to uncensor
    */
-  constructor(public _text: string, uncensor: string[] = []) {
+  constructor(
+    public _text: string,
+    public readonly type: FilterType,
+    uncensor: string[] = []
+  ) {
     super(_text)
 
     uncensor.forEach((x) => this.addUncensor(x))

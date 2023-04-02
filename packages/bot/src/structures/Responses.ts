@@ -7,7 +7,8 @@ import {
   baseFilterNames,
   FilterResultInfo,
   FilterType,
-  filterTypeNames
+  filterTypeNames,
+  PlaceInfo
 } from '@censorbot/typings'
 import { EmbedWithSendback } from '@jadl/builders'
 
@@ -126,6 +127,18 @@ export class Responses {
         content =
           content.slice(0, DESCRIPTION_MAX_LENGTH - LENGTH_MESSAGE.length) +
           LENGTH_MESSAGE
+      }
+
+      const customPlaces: string[] = [
+        ...new Set(
+          response.places
+            .filter((x) => x.type === FilterType.ServerFilter)
+            .map((x) => x.text)
+        )
+      ]
+
+      if (customPlaces.length >= 1) {
+        embed.field('Places', customPlaces.join(', ').slice(0, 256))
       }
     }
 
