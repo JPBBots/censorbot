@@ -1,5 +1,5 @@
 import { APIMessage, Snowflake } from 'discord-api-types/v9'
-import { Embed, EmbedWithSendback } from '@jadl/builders'
+import { EmbedWithSendback } from '@jadl/builders'
 import { Collection, WithoutId } from 'mongodb'
 import { GuildDB, PunishmentLevel, PunishmentType } from '@censorbot/typings'
 import { WorkerManager } from '../../managers/Worker'
