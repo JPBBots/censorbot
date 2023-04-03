@@ -1,6 +1,6 @@
 import { GuildDB, ExceptionType } from '@censorbot/typings'
 import { WorkerManager, ExceptedData } from '../managers/Worker'
-import { EventAdder } from '../utils/EventAdder'
+import { EventAdder } from '@censorbot/utils'
 
 export class BaseFilterHandler extends EventAdder<WorkerManager> {
   constructor(public readonly worker: WorkerManager) {

@@ -1,50 +1,21 @@
-import Joi, { CustomValidator, ValidationError } from 'joi'
 import {
-  GuildDB,
-  CensorMethods,
-  PunishmentType,
-  WebhookReplace,
-  AdvancedException,
-  ExceptionType,
-  PunishmentLevel,
   BASE_FILTERS,
-  FilterType,
+  CensorMethods,
   FilterSettings,
-  Plugin
+  FilterType,
+  GuildDB,
+  Plugin,
+  WebhookReplace
 } from '@censorbot/typings'
-import { enumCombiner } from '../utils/enumCombiner'
-import { isBitOn } from '../utils/bit'
-
-const enumArray = (enumObj: any) =>
-  Object.values(enumObj).filter((x) => typeof x === 'number')
-
-const sfRegex = /^[0-9]{5,50}$/
-
-const bitWise = (
-  enumObj: any,
-  premiumBits?: number[]
-): CustomValidator<number> => {
-  return (value, helpers) => {
-    const full = enumCombiner(enumObj)
-    if (value < 0 || value > full) {
-      return helpers.error('not.bitwise')
-    }
-
-    if (premiumBits?.some((x) => isBitOn(value, x))) {
-      return helpers.error('not.premium')
-    }
-
-    return value
-  }
-}
-
-const SnowflakeString = Joi.string()
-  .regex(sfRegex)
-  .error((errs) => {
-    return new ValidationError('Not a Snowflake', errs[0] as any, errs[0])
-  })
-
-const nullableSnowflake = SnowflakeString.concat(Joi.string().allow(null))
+import Joi from 'joi'
+import {
+  SnowflakeString,
+  bitWise,
+  enumArray,
+  nullableSnowflake
+} from './common'
+import { advancedExceptionSchema } from './advancedException.schema'
+import { punishmentLevelSchema } from './punishmentLevel.schema'
 
 const premiumValidate = (
   nonPremium: Joi.SchemaLike,
@@ -62,29 +33,6 @@ const premiumValidate = (
   })
 
 const premiumBoolean = premiumValidate(Joi.valid(false), Joi.bool())
-
-export const advancedExceptionSchema = Joi.object<AdvancedException>({
-  channel: nullableSnowflake,
-  role: nullableSnowflake,
-  type: Joi.valid(...enumArray(ExceptionType)).required()
-})
-
-export const punishmentLevelSchema = Joi.object<PunishmentLevel>({
-  type: Joi.valid(...enumArray(PunishmentType)).required(),
-
-  amount: Joi.number().min(1).max(20).required(),
-
-  role: SnowflakeString,
-
-  time: Joi.number()
-    .max(5259600000)
-    .allow(null)
-    .required()
-    .when('type', {
-      is: PunishmentType.Timeout,
-      then: Joi.number().max(2419000000)
-    })
-})
 
 export const premiumObject = <D extends any>(obj: {
   [key in keyof D]: Joi.SchemaLike | [Joi.SchemaLike, Joi.SchemaLike]

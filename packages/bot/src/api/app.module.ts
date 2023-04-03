@@ -1,4 +1,4 @@
-import { Database } from '../structures/Database'
+import { Database } from '@censorbot/database'
 import { Module } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 

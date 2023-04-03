@@ -1,0 +1,11 @@
+{
+  "name": "@censorbot/utils",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "@jadl/builders": "^0.1.3",
+    "@jadl/cmd": "^0.7.6",
+    "@jpbberry/cache": "^1.0.4"
+  }
+}

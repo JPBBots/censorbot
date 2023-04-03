@@ -1,0 +1,18 @@
+{
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./dist",
+    "rootDir": "src",
+    "target": "ES2020",
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "esModuleInterop": true
+  }
+}

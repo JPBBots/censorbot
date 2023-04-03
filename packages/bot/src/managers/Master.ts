@@ -4,7 +4,7 @@ import { GatewayIntentBits, ChannelType } from 'discord-api-types/v9'
 
 import path from 'path'
 import Config from '@censorbot/config'
-import { Database } from '../structures/Database'
+import { Database } from '@censorbot/database'
 
 import { MasterEvents } from '../helpers/MasterEvents'
 
@@ -14,7 +14,7 @@ import { ShortID, CustomBotOptions } from '@censorbot/typings'
 // import AutoPoster from 'topgg-autoposter'
 
 import { Interface } from '@jpbbots/interface'
-import { Requests } from '../helpers/Requests'
+import { Requests } from '@censorbot/utils'
 
 import { CustomBotManager } from '../helpers/CustomBotManager'
 

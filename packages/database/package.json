@@ -1,0 +1,13 @@
+{
+  "name": "@censorbot/database",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "joi": "^17.9.1",
+    "mongodb": "^4.13.0",
+    "@censorbot/typings": "0.0.1",
+    "@censorbot/utils": "0.0.1",
+    "@censorbot/filter": "0.0.1"
+  }
+}

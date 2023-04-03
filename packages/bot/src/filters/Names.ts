@@ -14,7 +14,7 @@ import {
 } from 'discord-api-types/v9'
 import { BaseFilterHandler } from './Base'
 import { DiscordEventMap } from 'jadl'
-import { isBitOn } from '../utils/bit'
+import { isBitOn } from '@censorbot/utils'
 
 const deHoist = String.fromCharCode(856)
 

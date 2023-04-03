@@ -3,7 +3,7 @@ import { DiscordEventMap } from 'jadl'
 import { BaseFilterHandler } from './Base'
 
 import { CensorMethods, ExceptionType, FilterType } from '@censorbot/typings'
-import { isBitOn } from '../utils/bit'
+import { isBitOn } from '@censorbot/utils'
 
 export class AvatarsFilterHandler extends BaseFilterHandler {
   @Event('GUILD_MEMBER_ADD')

@@ -6,12 +6,14 @@ import {
   Snowflake
 } from 'jadl'
 import { Embed } from '@jadl/builders'
-import Wait from '../utils/Wait'
 
 import { WorkerManager } from '../managers/Worker'
-import { PunishmentLevel, PunishmentType } from '@censorbot/typings'
-import { TimeoutSchema } from '../structures/punishments/Timeouts'
-import { EventAdder } from '../utils/EventAdder'
+import {
+  PunishmentLevel,
+  PunishmentType,
+  TimeoutSchema
+} from '@censorbot/typings'
+import { EventAdder, wait } from '@censorbot/utils'
 import { APIThreadChannel } from 'discord-api-types/v9'
 import { PurgeResendsCommand } from '../commands/utility/PurgeResendsCommand'
 
@@ -61,7 +63,7 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
       return
     }
 
-    await Wait(2000)
+    await wait(2000)
 
     const links = this.worker.config.links
     if (guild.system_channel_id) {

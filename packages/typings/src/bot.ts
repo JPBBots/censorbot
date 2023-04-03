@@ -4,7 +4,7 @@ import { APIInteractionResponseCallbackData } from 'discord-api-types/v10'
 
 export const Reloaders = ['COMMANDS', 'FILTER', 'CACHE', 'FILTERS'] as const
 
-import 'jadl'
+import type {} from 'jadl'
 
 export type ReloadNames = typeof Reloaders[number]
 

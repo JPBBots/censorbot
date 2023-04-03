@@ -16,8 +16,13 @@
   "workspaces": [
     "packages/typings",
     "packages/config",
-    "packages/bot",
-    "packages/website"
+    "packages/utils",
+    "packages/filter",
+    "packages/database",
+    "packages/api",
+    "packages/website",
+    "packages/app",
+    "packages/bot"
   ],
   "devDependencies": {
     "@types/node": "^18.11.18",

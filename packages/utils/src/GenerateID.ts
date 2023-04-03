@@ -1,6 +1,6 @@
 import { ShortID } from '@censorbot/typings'
 
-function generate(notAllow: string[] = []): ShortID {
+export function generateShortId(notAllow: string[] = []): ShortID {
   let text = ''
   const possible = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
@@ -8,9 +8,7 @@ function generate(notAllow: string[] = []): ShortID {
     text += possible.charAt(Math.floor(Math.random() * possible.length))
   }
 
-  if (notAllow.includes(text)) return generate(notAllow)
+  if (notAllow.includes(text)) return generateShortId(notAllow)
 
   return text
 }
-
-export default generate

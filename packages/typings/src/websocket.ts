@@ -1,12 +1,6 @@
-import {
-  GuildData,
-  ShortGuild,
-  ShortID,
-  Ticket,
-  TicketTest,
-  User,
-  PremiumTypes
-} from './api'
+import { GuildData, ShortGuild, ShortID, User, PremiumTypes } from './api'
+
+import { Ticket, TicketTest } from './tickets'
 
 import { Snowflake } from 'discord-api-types/v9'
 import { AdminActionObject } from './admin'

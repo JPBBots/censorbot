@@ -1,22 +1,11 @@
 import { Snowflake } from 'discord-api-types/v9'
 import { baseFilters } from './filter'
-
-export enum PunishmentType {
-  GiveRole,
-  Kick,
-  Ban,
-  Timeout
-}
+import { PunishmentLevel } from './punishments'
 
 export interface ServerSideProps {
   serverCount: number
   trialLength: number
 }
-
-export type TimedPunishments =
-  | PunishmentType.Ban
-  | PunishmentType.GiveRole
-  | PunishmentType.Timeout
 
 export enum PremiumTypes {
   Premium = 'premium',
@@ -38,27 +27,6 @@ export enum CensorMethods {
   Threads = 1 << 3,
   Avatars = 1 << 4
 }
-
-export type PunishmentLevel = {
-  amount: number
-} & (
-  | {
-      type: PunishmentType.Ban
-      time: number | null
-    }
-  | {
-      type: PunishmentType.GiveRole
-      role: Snowflake
-      time: number | null
-    }
-  | {
-      type: PunishmentType.Timeout
-      time: number
-    }
-  | {
-      type: PunishmentType.Kick
-    }
-)
 
 export enum ExceptionType {
   Everything,
@@ -182,6 +150,11 @@ export interface UserPremium {
    * Whether or not a user is a customer or a patron
    */
   customer: boolean
+}
+
+export interface PremiumUserSchema {
+  id: Snowflake
+  guilds: Snowflake[]
 }
 
 export interface User {
@@ -311,17 +284,3 @@ export type AdminResponse = Array<{
  * 3 character temporary identifier
  */
 export type ShortID = `${string}${string}${string}`
-
-export interface Ticket {
-  id: ShortID
-  word: string
-  user: Snowflake
-  admin?: Snowflake
-  msg?: Snowflake
-  accepted: boolean
-}
-
-export interface TicketTest {
-  censored: boolean
-  places: string[]
-}

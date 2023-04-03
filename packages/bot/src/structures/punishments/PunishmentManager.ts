@@ -1,18 +1,16 @@
 import { APIMessage, Snowflake } from 'discord-api-types/v9'
 import { EmbedWithSendback } from '@jadl/builders'
 import { Collection, WithoutId } from 'mongodb'
-import { GuildDB, PunishmentLevel, PunishmentType } from '@censorbot/typings'
+import {
+  GuildDB,
+  PunishmentLevel,
+  PunishmentType,
+  PunishmentSchema
+} from '@censorbot/typings'
 import { WorkerManager } from '../../managers/Worker'
-import { NonFatalError } from '../../utils/NonFatalError'
+import { NonFatalError } from '@censorbot/utils'
 
 import { Timeouts } from './Timeouts'
-import { PermissionUtils } from 'jadl'
-
-export interface PunishmentSchema {
-  guild: Snowflake
-  user: Snowflake
-  warnings: number[]
-}
 
 export class PunishmentManager {
   timeouts = new Timeouts(this)

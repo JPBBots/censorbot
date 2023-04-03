@@ -7,7 +7,10 @@ import {
   FilterResultInfo,
   FilterType,
   Range,
-  FilterSettings
+  FilterSettings,
+  FilterDatabaseEntry,
+  FilterDatabaseEntryType,
+  RegExpTypes
 } from '@censorbot/typings'
 
 function inRange(x: number, min: number, max: number): boolean {
@@ -24,36 +27,6 @@ const removeRegex = /\x1D|\x1F/
 
 const firstShortWords = ['an', 'as', 'us', 'be']
 const shortWords = ['it', 'at', 'xd']
-
-export enum FilterDatabaseEntryType {
-  BaseFilter = 0,
-  RegExp,
-  Chars
-}
-
-export type FilterDatabaseEntry =
-  | {
-      type: FilterDatabaseEntryType.BaseFilter
-      filter: baseFilters
-      filterData: Record<string, string[]>
-    }
-  | {
-      type: FilterDatabaseEntryType.RegExp
-      name: RegExpTypes
-      regex: string
-    }
-  | {
-      type: FilterDatabaseEntryType.Chars
-      chars: Record<string, string[]>
-    }
-
-type RegExpTypes =
-  | 'combining'
-  | 'link'
-  | 'email'
-  | 'both'
-  | 'replaceSpaces'
-  | 'replaceNothing'
 
 export class Filter {
   filters: {

@@ -4,8 +4,8 @@ import { Embed, EmbedWithSendback, parseMessage } from '@jadl/builders'
 
 import Config from '@censorbot/config'
 
-import { Database } from '../structures/Database'
-import { Filter } from '../structures/Filter'
+import { Database } from '@censorbot/database'
+import { Filter } from '@censorbot/filter'
 import { ActionBucket } from '../structures/ActionBucket'
 import { Responses } from '../structures/Responses'
 
@@ -38,7 +38,7 @@ import fetch from 'node-fetch'
 import { ExceptionType, GuildDB, CustomBotOptions } from '@censorbot/typings'
 import { WorkerEvents } from '../helpers/WorkerEvents'
 import { AntiPhish } from '../structures/extensions/AntiPhish'
-import { Requests } from '../helpers/Requests'
+import { Requests } from '@censorbot/utils'
 import { CommandHandler } from '@jadl/cmd'
 
 import { DashboardCommand } from '../commands/info/DashboardCommand'

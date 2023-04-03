@@ -11,26 +11,27 @@ import {
   FilterType,
   Plugin,
   PunishmentLevel,
-  CustomerSchema
+  CustomerSchema,
+  PremiumUserSchema,
+  FilterDatabaseEntry,
+  PunishmentSchema,
+  TimeoutSchema,
+  TicketBanSchema
 } from '@censorbot/typings'
+
+import { Filter } from '@censorbot/filter'
+
 import { Snowflake } from 'discord-api-types/v9'
 
-import DefaultConfig from '../data/DefaultConfig.json'
-import SafeConfig from '../data/SafeConfig.json'
+import DefaultConfig from './configs/DefaultConfig.json'
+import SafeConfig from './configs/SafeConfig.json'
 
-import { settingSchema } from '../data/SettingsSchema'
+import { settingSchema } from './schemas/settings.schema'
 
 import { Database as Db } from '@jpbbots/interface/dist/Database'
-import { PunishmentSchema } from './punishments/PunishmentManager'
-import { TimeoutSchema } from './punishments/Timeouts'
-import { TicketBanSchema } from './TicketManager'
 import { ThreadComms } from 'jadl/dist/clustering/ThreadComms'
-import { enumCombiner } from '../utils/enumCombiner'
-import { Filter, FilterDatabaseEntry } from './Filter'
-import { WithoutId } from 'mongodb'
-import { PremiumUserSchema } from '../api/services/users.service'
-
-export * from '../data/SettingsSchema'
+import { enumCombiner } from '@censorbot/utils'
+import { Document, WithoutId } from 'mongodb'
 
 export interface DatabaseCollections {
   customers: CustomerSchema
@@ -40,7 +41,7 @@ export interface DatabaseCollections {
     guild: Snowflake
     until: number
     disabled: boolean
-    user: Snowflake | null // null for JPBBitch
+    user: Snowflake | null
   }
   punish: PunishmentSchema
   tickets: Ticket
@@ -54,15 +55,18 @@ export interface DatabaseCollections {
 export class Database extends Db {
   configCache: Cache<Snowflake, GuildDB> = new Cache(5 * 60 * 1000)
 
-  defaultConfig = DefaultConfig
-  safeConfig = SafeConfig
+  defaultConfig = DefaultConfig as GuildDB
+  safeConfig = SafeConfig as GuildDB
 
   schema = settingSchema
 
-  // @ts-expect-error
   get collection() {
-    return <C extends keyof DatabaseCollections>(name: C) =>
-      super.collection<DatabaseCollections[C]>(name)
+    return <
+      C extends keyof DatabaseCollections,
+      S extends Document = DatabaseCollections[C]
+    >(
+      name: C
+    ) => super.collection<S>(name)
   }
 
   constructor(private readonly comms?: ThreadComms, public filter?: Filter) {
@@ -439,7 +443,9 @@ export class Database extends Db {
               ? db.response.content.slice(0, 200)
               : db.response.content,
             deleteAfter:
-              db.response.deleteAfter > 120e3 ? 120e3 : db.response.deleteAfter,
+              db.response.deleteAfter || 0 > 120e3
+                ? 120e3
+                : db.response.deleteAfter,
             dm: false
           },
 

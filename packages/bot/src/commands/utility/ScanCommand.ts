@@ -3,7 +3,7 @@ import { Embed } from '@jadl/builders'
 import { APIChannel } from 'discord-api-types/v9'
 import { GuildDB } from '@censorbot/typings'
 import { WorkerManager } from '../../managers/Worker'
-import { SnowflakeUtil } from '../../utils/Snowflake'
+import { SnowflakeUtil } from '@censorbot/utils'
 import { Db } from '../decorators/Db'
 import { Premium } from '../decorators/Premium'
 

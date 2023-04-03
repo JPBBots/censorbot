@@ -1,4 +1,4 @@
-function update(obj: any, ..._: any[]): any {
+export function update(obj: any, ..._: any[]): any {
   for (let i = 1; i < arguments.length; i++) {
     for (const prop in arguments[i]) {
       const val = arguments[i][prop]
@@ -17,5 +17,3 @@ function update(obj: any, ..._: any[]): any {
   }
   return obj
 }
-
-export default update

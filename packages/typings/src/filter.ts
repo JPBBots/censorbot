@@ -64,3 +64,33 @@ export type FilterResultInfo =
   | {
       type: FilterType.Invites | FilterType.Phishing
     }
+
+export enum FilterDatabaseEntryType {
+  BaseFilter = 0,
+  RegExp,
+  Chars
+}
+
+export type RegExpTypes =
+  | 'combining'
+  | 'link'
+  | 'email'
+  | 'both'
+  | 'replaceSpaces'
+  | 'replaceNothing'
+
+export type FilterDatabaseEntry =
+  | {
+      type: FilterDatabaseEntryType.BaseFilter
+      filter: baseFilters
+      filterData: Record<string, string[]>
+    }
+  | {
+      type: FilterDatabaseEntryType.RegExp
+      name: RegExpTypes
+      regex: string
+    }
+  | {
+      type: FilterDatabaseEntryType.Chars
+      chars: Record<string, string[]>
+    }

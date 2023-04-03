@@ -7,6 +7,21 @@
       "path": "./packages/config"
     },
     {
+      "path": "./packages/utils"
+    },
+    {
+      "path": "./packages/filter"
+    },
+    {
+      "path": "./packages/database"
+    },
+    {
+      "path": "./packages/api"
+    },
+    {
+      "path": "./packages/app"
+    },
+    {
       "path": "./packages/bot"
     }
   ],

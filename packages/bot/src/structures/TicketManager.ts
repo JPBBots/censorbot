@@ -1,21 +1,12 @@
 import { Collection } from 'mongodb'
 import { WorkerManager } from '../managers/Worker'
 
-import { Ticket, BASE_FILTERS } from '@censorbot/typings'
+import { Ticket, BASE_FILTERS, TicketBanSchema } from '@censorbot/typings'
 import { APIUser, Snowflake } from 'discord-api-types/v9'
 
-import GenerateID from '../utils/GenerateID'
-import { NonFatalError } from '../utils/NonFatalError'
+import { NonFatalError, generateShortId } from '@censorbot/utils'
 
 import { Embed } from '@jadl/builders'
-
-export interface TicketBanSchema {
-  id: Snowflake
-  reason: string
-  when: Date
-  admin: Snowflake
-  banned: boolean
-}
 
 export class TicketManager {
   constructor(private readonly worker: WorkerManager) {
@@ -86,7 +77,7 @@ export class TicketManager {
       throw new NonFatalError('Phrase is not censored by the base filter.')
 
     const tickets = await this.db.find({}).toArray()
-    const id = GenerateID(tickets.map((x) => x.id))
+    const id = generateShortId(tickets.map((x) => x.id))
 
     const msg = await this.worker
       .webhook('tickets')

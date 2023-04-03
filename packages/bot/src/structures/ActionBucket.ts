@@ -20,7 +20,7 @@ import { GuildDB } from '@censorbot/typings'
 
 import { WorkerManager } from '../managers/Worker'
 
-import wait from '../utils/Wait'
+import { wait } from '@censorbot/utils'
 import { DiscordAPIError } from '@discordjs/rest'
 
 interface DeleteBucket {

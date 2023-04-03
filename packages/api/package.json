@@ -1,0 +1,24 @@
+{
+  "name": "@censorbot/api",
+  "version": "3.0.0",
+  "main": "./dist/api.module.js",
+  "types": "./dist/api.module.d.ts",
+  "dependencies": {
+    "@censorbot/config": "0.0.1",
+    "@censorbot/database": "0.0.1",
+    "@censorbot/typings": "0.0.1",
+    "@censorbot/utils": "0.0.1",
+    "@discordjs/collection": "^1.5.0",
+    "@jpbberry/cache": "^1.0.4",
+    "@jpbberry/typed-emitter": "^1.2.1",
+    "@nestjs/common": "^9.3.12",
+    "@nestjs/core": "^9.3.12",
+    "@nestjs/platform-socket.io": "^9.3.12",
+    "@nestjs/swagger": "^6.3.0",
+    "@nestjs/websockets": "^9.3.12",
+    "express": "^4.18.2",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.0",
+    "socket.io": "^4.6.1"
+  }
+}

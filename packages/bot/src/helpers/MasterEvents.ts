@@ -5,9 +5,8 @@ import { ResolveFunction } from 'jadl/dist/clustering/ThreadComms'
 
 import { MasterManager } from '../managers/Master'
 import { ReloadNames } from '@censorbot/typings'
-import { EventAdder } from '../utils/EventAdder'
+import { EventAdder, generateShortId } from '@censorbot/utils'
 
-import GenerateID from '../utils/GenerateID'
 import { CustomBotManager } from './CustomBotManager'
 
 export class MasterEvents extends EventAdder<any> {
@@ -39,7 +38,7 @@ export class MasterEvents extends EventAdder<any> {
     const current = this.master.helpme.find((x) => x.id === id)
     if (current) resolve(current.code)
 
-    const code = GenerateID(this.master.helpme.keyArray())
+    const code = generateShortId(this.master.helpme.keyArray())
 
     this.master.helpme.set(code, { code, id })
 

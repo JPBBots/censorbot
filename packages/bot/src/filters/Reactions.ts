@@ -2,7 +2,7 @@ import { CensorMethods, ExceptionType } from '@censorbot/typings'
 import { BaseFilterHandler } from './Base'
 import { Event } from '@jpbberry/typed-emitter'
 import { DiscordEventMap } from 'jadl'
-import { isBitOn } from '../utils/bit'
+import { isBitOn } from '@censorbot/utils'
 
 export class ReactionsFilterHandler extends BaseFilterHandler {
   @Event('MESSAGE_REACTION_ADD')

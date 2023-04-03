@@ -1,4 +1,4 @@
-const Pieces = {
+export const Pieces = {
   generate: (obj: any): any => {
     const pieces = {}
     function generatePiece(toObj: any, key: string, working?: string): void {
@@ -30,5 +30,3 @@ const Pieces = {
     return res
   }
 }
-
-export default Pieces

@@ -6,7 +6,7 @@ import path from 'path'
 import { ReloadNames } from '@censorbot/typings'
 import { PermissionUtils, Snowflake, Thread } from 'jadl'
 import { ResolveFunction } from 'jadl/dist/clustering/ThreadComms'
-import { EventAdder } from '../utils/EventAdder'
+import { EventAdder } from '@censorbot/utils'
 
 const filterDataDir = path.resolve(__dirname, '../structures/Filter')
 
