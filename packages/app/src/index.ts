@@ -6,7 +6,9 @@ import { AppModule } from './app.module'
 import Config from '@censorbot/config'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, {
+    logger: false
+  })
 
   const config = new DocumentBuilder()
     .setTitle('Censor Bot API')
