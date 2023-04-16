@@ -3,9 +3,11 @@ import { createIcon } from '@chakra-ui/react'
 export const Upper = createIcon({
   displayName: 'UpperWave',
   defaultProps: {
-    w: '1920px',
+    w: '100vw',
     h: '212px',
-    fill: 'brand.100'
+    fill: 'brand.100',
+    minW: '1920px',
+    preserveAspectRatio: 'none'
   },
   viewBox: '0 0 1920 212',
   path: (
@@ -17,9 +19,11 @@ export const Upper = createIcon({
 export const Lower = createIcon({
   displayName: 'LowerWave',
   defaultProps: {
-    w: '1920px',
+    w: '100vw',
     h: '212px',
-    fill: 'brand.100'
+    fill: 'brand.100',
+    minW: '1920px',
+    preserveAspectRatio: 'none'
   },
   viewBox: '0 0 1920 212',
   path: (
