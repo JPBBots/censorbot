@@ -145,7 +145,7 @@ export default function Landing() {
               >
                 60,000
               </Text>{' '}
-              communities on Discord
+              {serverCount !== 1 ? "communities" : "community"} on Discord
             </Text>
             <Text
               textStyle="label.md"
