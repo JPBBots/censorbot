@@ -26,7 +26,7 @@ export class SiteController {
   constructor() {
     this.server = Next({
       quiet: true,
-      dev: false,
+      dev: Config.staging,
       dir: pathToWebsite
     })
 

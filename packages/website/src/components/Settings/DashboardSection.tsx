@@ -180,7 +180,7 @@ export function DashboardSection(props: DashboardSectionProps) {
               )}
             </HStack>
             <Divider color="lighter.5" />
-            <VStack w="full">
+            <VStack w="full" pb="20px">
               {searchTerm === null && props.description && (
                 <Box w="full" textAlign="left" p={1}>
                   <Text>{props.description}</Text>
