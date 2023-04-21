@@ -23,10 +23,12 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Avatar,
   Button,
   useDisclosure
 } from '@chakra-ui/react'
 import { useRef } from 'react'
+import { Utils } from '@/utils/Utils'
 
 export default function GuildPremium() {
   const { currentGuild: guild } = useGuild()
@@ -55,39 +57,57 @@ export default function GuildPremium() {
             <Button onClick={cancelTrialDisclosure.onOpen}>Cancel Trial</Button>
           </VStack>
         )}
-        {guild &&
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-          ((guild.premium && user?.premium?.guilds.includes(guild?.guild.id)) ||
-            (!guild.premium && user?.premium?.count)) && (
-            <HStack>
-              <Text>Enable premium</Text>
-              <Switch
-                onChange={({ target }) => {
-                  const guilds = new Set(user.premium?.guilds)
-                  if (target.checked) guilds.add(guild?.guild.id)
-                  else guilds.delete(guild?.guild.id)
-                  void Api.ws
-                    .request('SET_PREMIUM', {
-                      guilds: [...guilds]
-                    })
-                    .then((val) => {
-                      if (val) {
-                        const premium = Object.assign({}, user.premium)
-                        premium.guilds = [...guilds]
+        {guild && (
+          <>
+            {
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              (guild.premium &&
+                user?.premium?.guilds.includes(guild?.guild.id)) ||
+              (!guild.premium && user?.premium?.count) ? (
+                <HStack>
+                  <Text>Enable premium</Text>
+                  <Switch
+                    onChange={({ target }) => {
+                      const guilds = new Set(user.premium?.guilds)
+                      if (target.checked) guilds.add(guild?.guild.id)
+                      else guilds.delete(guild?.guild.id)
+                      void Api.ws
+                        .request('SET_PREMIUM', {
+                          guilds: [...guilds]
+                        })
+                        .then((val) => {
+                          if (val) {
+                            const premium = Object.assign({}, user.premium)
+                            premium.guilds = [...guilds]
 
-                        dispatch(setUser({ ...user, premium }))
-                      }
-                    })
-                }}
-                isChecked={guild.premium}
-              />
-              <Help>
-                {`This will use 1 of your premium servers. You have
+                            dispatch(setUser({ ...user, premium }))
+                          }
+                        })
+                    }}
+                    isChecked={guild.premium}
+                  />
+                  <Help>
+                    {`This will use 1 of your premium servers. You have
                 ${user.premium.count - user.premium.guilds.length} premium
                 servers remaining`}
-              </Help>
-            </HStack>
-          )}
+                  </Help>
+                </HStack>
+              ) : (
+                ''
+              )
+            }
+            {guild.premium && guild.premiumUser && (
+              <HStack>
+                <Avatar
+                  w="30px"
+                  h="30px"
+                  src={Utils.getUserAvatar(guild.premiumUser)}
+                />
+                <Text>{guild.premiumUser.tag}</Text>
+              </HStack>
+            )}
+          </>
+        )}
       </VStack>
       {guild?.premium
         ? settings

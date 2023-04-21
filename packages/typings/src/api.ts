@@ -157,11 +157,7 @@ export interface PremiumUserSchema {
   guilds: Snowflake[]
 }
 
-export interface User {
-  /**
-   * Censor Bot API Token
-   */
-  token: string
+export interface ShortUser {
   /**
    * ID of user
    */
@@ -174,6 +170,24 @@ export interface User {
    * Avatar hash
    */
   avatar: string | null
+}
+
+export interface SensitiveUser extends ShortUser {
+  /**
+   * Censor Bot API Token
+   */
+  token: string
+
+  /**
+   * Email of the user
+   */
+  email?: string | null
+
+  _id?: string
+  bearer?: string
+}
+
+export interface User extends SensitiveUser {
   /**
    * Premium data
    */
@@ -182,13 +196,6 @@ export interface User {
    * Whether or not user is admin
    */
   admin?: boolean
-  /**
-   * Email of the user
-   */
-  email?: string | null
-
-  _id?: string
-  bearer?: string
 }
 
 export interface ShortGuild {
@@ -251,6 +258,10 @@ export interface GuildData {
    * Whether or not guild is premium
    */
   premium: boolean
+  /**
+   * User who enabled premium
+   */
+  premiumUser?: ShortUser
   /**
    * The time in which the trial will expire (always null if the guild is premium)
    */

@@ -1,4 +1,4 @@
-import { User } from '@censorbot/typings'
+import { ShortUser, User } from '@censorbot/typings'
 import Swal from 'sweetalert2'
 
 import { WindowOpener } from './WindowOpener'
@@ -45,7 +45,7 @@ export class Utils {
     }
   }
 
-  static getUserAvatar(user: User) {
+  static getUserAvatar(user: ShortUser) {
     return user.avatar
       ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
       : `https://cdn.discordapp.com/embed/avatars/${

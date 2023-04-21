@@ -1,7 +1,12 @@
 import { EventEmitter } from '@jpbberry/typed-emitter'
 import { Injectable } from '@nestjs/common'
 import { Snowflake } from 'discord-api-types/v9'
-import { User, UserPremium, PremiumUserSchema } from '@censorbot/typings'
+import {
+  User,
+  UserPremium,
+  PremiumUserSchema,
+  SensitiveUser
+} from '@censorbot/typings'
 
 import { CacheService } from './cache.service'
 import { ChargeBeeService } from './chargebee.service'
@@ -32,12 +37,13 @@ export class UsersService extends EventEmitter<{
   }
 
   async causeUpdate(id: Snowflake) {
-    let cachedUser = this.caching.users.get(id)
+    let cachedUser: User | SensitiveUser | undefined =
+      this.caching.users.get(id)
 
     const dbUser = await this.db.findOne({ id })
     if (!dbUser) return
 
-    if (!cachedUser) cachedUser = dbUser as User
+    if (!cachedUser) cachedUser = dbUser
     else {
       cachedUser.email = dbUser.email
       cachedUser.tag = dbUser.tag
@@ -63,10 +69,8 @@ export class UsersService extends EventEmitter<{
     return extendedUser
   }
 
-  async extendUser(user: User): Promise<User> {
-    user.admin = await this.int.api.isAdmin(user.id)
-
-    const prem = await this.chargebee.getAmount(user.id)
+  async getUserPremium(userId: string): Promise<User['premium']> {
+    const prem = await this.chargebee.getAmount(userId)
 
     const premium: UserPremium = {
       count: 0,
@@ -78,28 +82,34 @@ export class UsersService extends EventEmitter<{
 
       let premiumUser: WithoutId<PremiumUserSchema> | null = await this.database
         .collection('premium_users')
-        .findOne({ id: user.id })
+        .findOne({ id: userId })
 
       if (!premiumUser) {
         premiumUser = {
-          id: user.id,
+          id: userId,
           guilds: []
         }
         await this.database
           .collection('premium_users')
-          .updateOne({ id: user.id }, { $set: premiumUser }, { upsert: true })
+          .updateOne({ id: userId }, { $set: premiumUser }, { upsert: true })
       }
       premium.guilds = premiumUser.guilds
     }
 
-    user.premium = {
+    return {
       ...premium,
       trial: !!(await this.database
         .collection('trials')
-        .findOne({ user: user.id, disabled: false }))
+        .findOne({ user: userId, disabled: false }))
     }
+  }
 
-    return user
+  async extendUser(shortUser: SensitiveUser): Promise<User> {
+    return {
+      ...shortUser,
+      admin: await this.int.api.isAdmin(shortUser.id),
+      premium: await this.getUserPremium(shortUser.id)
+    }
   }
 
   async getGuilds(user: User) {

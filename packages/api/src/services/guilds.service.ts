@@ -1,7 +1,7 @@
 import { EventEmitter } from '@jpbberry/typed-emitter'
 import { Injectable } from '@nestjs/common'
 import { Snowflake } from 'discord-api-types/v9'
-import { GuildData, GuildDB } from '@censorbot/typings'
+import { GuildData, GuildDB, ShortUser } from '@censorbot/typings'
 
 import { Pieces, update } from '@censorbot/utils'
 import { CacheService } from './cache.service'
@@ -9,6 +9,7 @@ import { DatabaseService } from './database.service'
 import { FilterService } from './filter.service'
 import { ThreadService } from './thread.service'
 import { WithoutId } from 'mongodb'
+import { UsersService } from './users.service'
 
 @Injectable()
 export class GuildsService extends EventEmitter<{
@@ -68,9 +69,26 @@ export class GuildsService extends EventEmitter<{
 
     const premiumInfo = await this.database.guildPremium(guild.id)
 
+    let premiumUser: ShortUser | undefined
+
+    if (premiumInfo.premium && premiumInfo.premiumUser) {
+      const dbUser = await this.database.collection('users').findOne({
+        id: premiumInfo.premiumUser
+      })
+
+      if (dbUser) {
+        premiumUser = {
+          id: dbUser.id,
+          avatar: dbUser.avatar,
+          tag: dbUser.tag
+        }
+      }
+    }
+
     return {
       guild,
       premium: premiumInfo.premium,
+      premiumUser,
       trial: premiumInfo.trial,
       db: await this.database.config(guild.id)
     }

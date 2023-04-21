@@ -16,7 +16,8 @@ import {
   FilterDatabaseEntry,
   PunishmentSchema,
   TimeoutSchema,
-  TicketBanSchema
+  TicketBanSchema,
+  SensitiveUser
 } from '@censorbot/typings'
 
 import { Filter } from '@censorbot/filter'
@@ -48,7 +49,7 @@ export interface DatabaseCollections {
   ticketban: TicketBanSchema
   timeouts: TimeoutSchema
   custombots: CustomBotOptions
-  users: User
+  users: SensitiveUser
   filter_data: FilterDatabaseEntry
 }
 
@@ -372,9 +373,11 @@ export class Database extends Db {
     return await this.updater(db as any)
   }
 
-  async guildPremium(
-    guildId: Snowflake
-  ): Promise<{ premium: boolean; trial: number | null }> {
+  async guildPremium(guildId: Snowflake): Promise<{
+    premium: boolean
+    premiumUser?: Snowflake
+    trial: number | null
+  }> {
     const response = await this.collection('premium_users')
       .find({
         guilds: {
@@ -382,9 +385,9 @@ export class Database extends Db {
         }
       })
       .toArray()
-      .then((x) => x.length)
 
-    if (response > 0) return { premium: true, trial: null }
+    if (response.length > 0)
+      return { premium: true, premiumUser: response[0].id, trial: null }
 
     const trial = await this.collection('trials').findOne({
       guild: guildId
@@ -392,6 +395,7 @@ export class Database extends Db {
 
     return {
       premium: trial ? trial.until > Date.now() && !trial.disabled : false,
+      premiumUser: trial ? trial.user || undefined : undefined,
       trial: trial ? trial.until : null
     }
   }
