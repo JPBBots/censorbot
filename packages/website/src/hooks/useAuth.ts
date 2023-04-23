@@ -1,16 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setGuilds } from 'store/reducers/user.reducer'
 import { RootState } from '../store'
 
-import {
-  LoginState,
-  setLoginState,
-  setHeadless
-} from '../store/reducers/auth.reducer'
+import { setHeadless } from '../store/reducers/auth.reducer'
 import { stats } from '@/structures/StatsManager'
-
-import headlessData from '../structures/headlessData.json'
 
 export const useAuthState = (): RootState['auth'] =>
   useSelector((state: RootState) => state.auth)
@@ -22,13 +15,6 @@ export const useHeadless = () => {
   useEffect(() => {
     dispatch(setHeadless(stats.headless))
   }, [])
-
-  useEffect(() => {
-    if (headless) {
-      dispatch(setLoginState(LoginState.LoggedIn))
-      dispatch(setGuilds(headlessData.guilds))
-    }
-  }, [headless])
 
   return [headless] as const
 }

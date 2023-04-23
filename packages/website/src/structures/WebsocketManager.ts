@@ -1,7 +1,6 @@
 import { MetaObject, ShortGuild, WebSocketEventMap } from '@censorbot/typings'
 import { Logger } from './Logger'
 
-import headlessHandlers from './headlessHandler'
 import { stats } from './StatsManager'
 
 import { Event, ExtendedEmitter } from '@jpbberry/typed-emitter'
@@ -58,11 +57,6 @@ export class WebsocketManager extends ExtendedEmitter {
     data?: WebSocketEventMap[K]['receive']
   ): Promise<WebSocketEventMap[K]['send']> {
     return await new Promise((resolve, reject) => {
-      if (stats.headless) {
-        if (headlessHandlers[event])
-          resolve(headlessHandlers[event]?.(data as any) as any)
-      }
-
       this.ws.emit(event, data, (dat: any) => {
         if (dat?.error) {
           this.log('Got error ' + String(dat.error))
