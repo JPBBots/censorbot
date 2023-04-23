@@ -2,85 +2,53 @@ import { Snowflake } from 'discord-api-types/v9'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   setCurrentGuild,
-  setGuilds,
+  setId,
   setNeedsInvite,
   setOfflineInShard
-} from 'store/reducers/guilds.reducer'
+} from 'store/reducers/guild.reducer'
 import { Api } from 'structures/Api'
 import { RootState } from '../store'
 
 import { LoginState } from '../store/reducers/auth.reducer'
-import { useHeadless, useLoginState, useUser } from './useAuth'
+import { useHeadless, useLoginState } from './useAuth'
 
-import { setVolatileDb } from '../store/reducers/guilds.reducer'
+import { setVolatileDb } from '../store/reducers/guild.reducer'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Pieces from 'utils/Pieces'
 import { DeepPartial } from '@chakra-ui/react'
 import { GuildDB } from '@censorbot/typings'
 import headlessData from '@/structures/headlessData.json'
+import { useGuilds, useUser } from './useUser'
 
-export const useGuildsState = (): RootState['guilds'] =>
-  useSelector((state: RootState) => state.guilds)
-
-let requesting = false
-
-export const useGuilds = () => {
-  const dispatch = useDispatch()
-  const { guilds } = useGuildsState()
-  const [loginState] = useLoginState()
-  const { user } = useUser(true)
-
-  useEffect(() => {
-    if (!guilds && !requesting && user) {
-      if (loginState === LoginState.LoggedIn) {
-        requesting = true
-        Api.getGuilds()
-          .then((res) => {
-            if (!res) return
-
-            dispatch(setGuilds(res))
-          })
-          .catch(() => {})
-          .finally(() => {
-            requesting = false
-          })
-      }
-    }
-  }, [user, loginState])
-
-  return [guilds] as const
-}
+export const useGuildState = (): RootState['guild'] =>
+  useSelector((state: RootState) => state.guild)
 
 let selectedGuild: Snowflake | undefined
 let requestingGuild: Snowflake | undefined
 
 export const useGuild = () => {
-  const [headless] = useHeadless()
   const router = useRouter()
 
   const dispatch = useDispatch()
   const { user } = useUser(true)
-  const { currentGuild, volatileDb, needsInvite, offlineInShard } =
-    useGuildsState()
+  const { currentGuild, volatileDb, needsInvite, offlineInShard, id } =
+    useGuildState()
   const [loginState] = useLoginState()
   const [guilds] = useGuilds()
 
-  const [id, setId] = useState<Snowflake | undefined>(undefined)
-
   useEffect(() => {
-    setId(Api.guildId)
-
-    return () => {
-      dispatch(setNeedsInvite(false))
+    if (id !== router.query.guild) {
+      dispatch(setId(router.query.guild?.toString()))
     }
-  }, [router.query])
+    return () => {
+      if (!router.query.guild && needsInvite) dispatch(setNeedsInvite(false))
+    }
+  }, [router.query.guild])
 
   const checkForGuild = async () => {
     if (selectedGuild === id && currentGuild) return
-    if (headless) {
-      dispatch(setCurrentGuild(headlessData.currentGuild as any))
-    }
+
     if (
       requestingGuild !== id &&
       id &&
@@ -123,7 +91,7 @@ export const useGuild = () => {
   useEffect(() => void checkForGuild(), [id, user, guilds, loginState])
 
   useEffect(() => {
-    if (currentGuild) {
+    if (currentGuild && (needsInvite || offlineInShard)) {
       dispatch(setNeedsInvite(false))
       dispatch(setOfflineInShard(false))
     }

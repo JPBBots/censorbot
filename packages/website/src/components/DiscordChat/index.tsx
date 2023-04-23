@@ -13,7 +13,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { MotionHStack, MotionText, MotionVStack } from '~/motion'
 import BRANDING from '@/BRANDING'
 import { Utils } from '@/utils/Utils'
-import { useUser } from '@/hooks/useAuth'
+import { useUser } from '@/hooks/useUser'
 
 // const discordBg = hex('#36393f')
 const discordBg = hex('#000000').alpha(0.2)

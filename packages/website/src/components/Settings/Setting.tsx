@@ -1,4 +1,4 @@
-import { useGuild } from '@/hooks/useGuilds'
+import { useGuild } from '@/hooks/useGuild'
 import { IOption, ISetting, OptionType, settings } from './settings'
 import NextLink from 'next/link'
 import { Option } from '~/Option'
@@ -150,9 +150,9 @@ export function SettingOption({
           </option>
         ))}
         {option.categories?.(guild).map((x) => (
-          <optgroup label={x.name}>
+          <optgroup key={x.name} label={x.name}>
             {x.children.map((a) => (
-              <option value={a.value}>
+              <option key={a.value} value={a.value}>
                 {prefix}
                 {a.label}
               </option>
@@ -493,7 +493,7 @@ export function Setting(setting: ISetting) {
       {!disabled &&
         setting.options.map((opt, i) => (
           <SettingOption
-            key={i}
+            key={opt.name + i + opt.type}
             option={{
               ...opt,
               ...(guild.premium ? opt.premiumProps ?? {} : {})

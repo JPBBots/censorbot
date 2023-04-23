@@ -1,4 +1,4 @@
-import { useUser } from '@/hooks/useAuth'
+import { useUser } from '@/hooks/useUser'
 import { Button } from '@chakra-ui/react'
 
 export function LoginButton({ name = 'Login' }: { name?: string }) {

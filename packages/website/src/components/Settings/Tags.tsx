@@ -10,7 +10,7 @@ import {
   Flex
 } from '@chakra-ui/react'
 import { FaEllipsisV, FaPlus } from 'react-icons/fa'
-import { Tag } from '@jpbbots/censorbot-components'
+import { Tag } from '~/functional/Tag'
 
 import { useRef, useState } from 'react'
 import { wLT } from '@jpbbots/theme'

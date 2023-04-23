@@ -1,4 +1,4 @@
-import { useUser } from '@/hooks/useAuth'
+import { useUser } from '@/hooks/useUser'
 import { Api } from '@/structures/Api'
 import { Ticket } from '@censorbot/typings'
 import Router from 'next/router'

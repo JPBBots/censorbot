@@ -3,12 +3,12 @@ import { ShortGuild } from '@censorbot/typings'
 import { FaAngleLeft } from 'react-icons/fa'
 
 import { store } from '@/store'
-import { setGuilds } from '@/store/reducers/guilds.reducer'
+import { setGuilds } from '@/store/reducers/user.reducer'
 import { Utils } from '@/utils/Utils'
 
 import Link from 'next/link'
 
-import { useGuild, useGuilds } from '@/hooks/useGuilds'
+import { useGuild } from '@/hooks/useGuild'
 
 import {
   VStack,
@@ -22,6 +22,7 @@ import {
 import { animate } from 'framer-motion'
 import { useRef, useEffect } from 'react'
 import { useMeta } from '@/hooks/useMeta'
+import { useGuilds } from '@/hooks/useUser'
 
 export function NeedsInvite({ guild }: { guild: ShortGuild }) {
   const { serverCount } = useMeta()

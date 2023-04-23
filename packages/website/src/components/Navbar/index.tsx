@@ -1,6 +1,7 @@
 import { MenuItem } from '@chakra-ui/menu'
 import { Box } from '@chakra-ui/layout'
-import { useHeadless, useUser } from 'hooks/useAuth'
+import { useHeadless } from 'hooks/useAuth'
+import { useUser } from '@/hooks/useUser'
 import { useRouter } from 'next/router'
 import { stats } from 'structures/StatsManager'
 
@@ -18,7 +19,6 @@ export function NavBar() {
   const showText = wMT(675)
   const showNavItems = wMT(475)
   const router = useRouter()
-  const [headless] = useHeadless()
 
   return (
     <Box
@@ -31,7 +31,7 @@ export function NavBar() {
       }}
     >
       <Header
-        title={headless ? 'Headless Bot' : 'Censor Bot'}
+        title="Censor Bot"
         logoProps={{
           onClick: () => {
             void router.push('/')

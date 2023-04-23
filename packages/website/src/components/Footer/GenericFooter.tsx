@@ -1,10 +1,10 @@
-import { CensorBotIcon } from '@jpbbots/censorbot-components'
 import { HStack, VStack, Text, Link, Flex } from '@chakra-ui/layout'
 
 import NextLink from 'next/link'
 
 import { motion } from 'framer-motion'
 import { wLT, MiddleWrap } from '@jpbbots/theme'
+import { Logo } from '~/logo'
 
 export interface FooterOptions {
   name: string
@@ -85,7 +85,7 @@ export const GenericFooter = (props: FooterOptions) => {
     >
       <VStack textAlign="center" w={wrapping ? 'full' : undefined}>
         <HStack>
-          <CensorBotIcon />
+          <Logo w="50px" h="50px" />
           <Text textStyle="heading.xl">{props.name}</Text>
         </HStack>
         {!wrapping && infoText}

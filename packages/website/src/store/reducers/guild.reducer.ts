@@ -1,28 +1,25 @@
 import { DeepPartial } from '@chakra-ui/react'
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
-import { GuildData, GuildDB, ShortGuild } from '@censorbot/typings'
+import { GuildData, GuildDB } from '@censorbot/typings'
 import { updateObject } from 'utils/updateObject'
 
-export interface GuildsContextType {
-  guilds?: ShortGuild[]
+export interface GuildContextType {
   currentGuild?: GuildData
   needsInvite?: boolean
   offlineInShard?: boolean
   volatileDb?: GuildDB
+  id?: string
 }
 
-const initialState: GuildsContextType = {
+const initialState: GuildContextType = {
   needsInvite: false,
   offlineInShard: false
 }
 
 const slice = createSlice({
-  name: 'guilds',
+  name: 'guild',
   initialState: initialState,
   reducers: {
-    setGuilds: (state, action: PayloadAction<ShortGuild[] | undefined>) => {
-      state.guilds = action.payload
-    },
     setCurrentGuild: (state, action: PayloadAction<GuildData | undefined>) => {
       if (action.payload) {
         state.needsInvite = false
@@ -30,6 +27,9 @@ const slice = createSlice({
       }
       state.currentGuild = action.payload
       state.volatileDb = action.payload?.db
+    },
+    setId: (state, action: PayloadAction<string | undefined>) => {
+      state.id = action.payload
     },
     setNeedsInvite: (state, action: PayloadAction<boolean>) => {
       state.needsInvite = action.payload
@@ -58,10 +58,10 @@ const slice = createSlice({
   }
 })
 
-export const guildsReducer = slice.reducer
+export const guildReducer = slice.reducer
 export const {
-  setGuilds,
   setCurrentGuild,
+  setId,
   setNeedsInvite,
   setOfflineInShard,
   setDb,

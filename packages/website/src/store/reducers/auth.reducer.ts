@@ -10,7 +10,6 @@ export enum LoginState {
 }
 
 export interface AuthContextType {
-  user?: User
   loginState: LoginState
   headless: boolean
 }
@@ -24,14 +23,6 @@ const slice = createSlice({
   name: 'auth',
   initialState: initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<User | undefined>) => {
-      state.user = action.payload
-    },
-    setPremiumGuilds: (state, action: PayloadAction<Snowflake[]>) => {
-      if (state.user?.premium) {
-        state.user.premium.guilds = action.payload
-      }
-    },
     setLoginState: (state, action: PayloadAction<LoginState>) => {
       state.loginState = action.payload
     },
@@ -42,5 +33,4 @@ const slice = createSlice({
 })
 
 export const authReducer = slice.reducer
-export const { setUser, setPremiumGuilds, setLoginState, setHeadless } =
-  slice.actions
+export const { setLoginState, setHeadless } = slice.actions

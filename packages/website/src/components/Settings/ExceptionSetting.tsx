@@ -1,6 +1,6 @@
 import { GuildData, AdvancedException, ExceptionType } from '@censorbot/typings'
 import { DeepPartial, HStack, Text, Icon, Select } from '@chakra-ui/react'
-import { InlineOptionGroup } from '@jpbbots/censorbot-components'
+import { InlineOptionGroup } from './InlineOptionGroup'
 import React from 'react'
 import { FaTrash } from 'react-icons/fa'
 // import { Selector } from '~/functional/Selector'

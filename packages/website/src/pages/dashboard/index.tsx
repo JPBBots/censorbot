@@ -1,12 +1,12 @@
 import { Divider, HStack, Text, VStack } from '@chakra-ui/layout'
-import { useLoginState, useUser } from 'hooks/useAuth'
-import { useGuilds } from 'hooks/useGuilds'
+import { useLoginState } from 'hooks/useAuth'
+import { useGuilds, useUser } from 'hooks/useUser'
 import React, { useEffect, useState } from 'react'
 import { LoginState } from '@/store/reducers/auth.reducer'
 
 import { LoginButton } from '~/button/LoginButton'
 
-import { GuildPreview } from '@jpbbots/censorbot-components'
+import { GuildPreview } from '~/Dashboard/GuildPreview'
 import { Input } from '@chakra-ui/input'
 import {
   InputGroup,
@@ -44,11 +44,7 @@ export function GuildList({
         ?.search(searchTerm)
         .filter(filter ?? (() => true))
         .map((guild) => (
-          <NextLink
-            key={guild.id}
-            href={`/dashboard/${guild.id}`}
-            passHref
-          >
+          <NextLink key={guild.id} href={`/dashboard/${guild.id}`} passHref>
             <GuildPreview
               guild={{
                 name: guild.name,

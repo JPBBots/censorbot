@@ -1,6 +1,7 @@
 import { Input } from '@chakra-ui/input'
 import { Box } from '@chakra-ui/layout'
-import { SelectMenu, Tag } from '@jpbbots/censorbot-components'
+import { SelectMenu } from './SelectMenu'
+import { Tag } from './Tag'
 import { useState } from 'react'
 
 import FuzzySearch from 'fuzzy-search'

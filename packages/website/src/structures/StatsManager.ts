@@ -73,7 +73,7 @@ class StatsManager {
       ping: `${Api.ws.ping}ms`,
       staging: this.staging,
       headless: this.headless,
-      user: store.getState().auth.user,
+      user: store.getState().user.user,
       id: Api.ws.ws.id,
       loginState: `${store.getState().auth.loginState} (${
         swap(LoginState)[store.getState().auth.loginState]

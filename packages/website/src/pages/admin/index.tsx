@@ -1,5 +1,5 @@
 import { AdminAction, AdminActionObject } from '@censorbot/typings'
-import { useUser } from '@/hooks/useAuth'
+import { useUser } from '@/hooks/useUser'
 import { Api } from '@/structures/Api'
 import {
   Spinner,
@@ -151,15 +151,19 @@ export default function Admin() {
         {guildSettings !== '' && errors(() => JSON.parse(guildSettings)) ? (
           <Text>Error in JSON</Text>
         ) : (
-          <Button onClick={() => {
-            const json = JSON.parse(guildSettings)
+          <Button
+            onClick={() => {
+              const json = JSON.parse(guildSettings)
 
-            delete json._id
-            delete json.notInDb
-            delete json.v
+              delete json._id
+              delete json.notInDb
+              delete json.v
 
-            Api.ws.request('CHANGE_SETTING', { id: guildId!, data: json })
-          }}>Save</Button>
+              Api.ws.request('CHANGE_SETTING', { id: guildId!, data: json })
+            }}
+          >
+            Save
+          </Button>
         )}
       </VStack>
     </MiddleWrap>

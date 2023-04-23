@@ -1,15 +1,15 @@
-import { useGuild } from '@/hooks/useGuilds'
+import { useGuild } from '@/hooks/useGuild'
 import { HStack, Text, VStack } from '@chakra-ui/layout'
 
 import { Setting, settings, DashboardSection } from '~/Settings'
 
 import { PremiumIcon } from '~/PremiumIcon'
-import { useUser } from '@/hooks/useAuth'
+import { useUser } from '@/hooks/useUser'
 import { Switch } from '@chakra-ui/switch'
 import { Api } from '@/structures/Api'
 import { useDispatch } from 'react-redux'
 
-import { setUser } from '@/store/reducers/auth.reducer'
+import { setUser } from '@/store/reducers/user.reducer'
 import { Help } from '@jpbbots/theme'
 
 import Countdown from 'react-countdown'

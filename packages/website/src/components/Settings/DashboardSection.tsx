@@ -17,8 +17,8 @@ import {
 } from '@chakra-ui/react'
 import { Aside, sections, SectionName } from './Aside'
 import { LoginButton } from '../button/LoginButton'
-import { useLoginState, useUser } from 'hooks/useAuth'
-import { useGuild, useGuilds } from 'hooks/useGuilds'
+import { useLoginState } from 'hooks/useAuth'
+import { useGuild } from '@/hooks/useGuild'
 import { LoginState } from 'store/reducers/auth.reducer'
 
 import { FaBars, FaSearch, FaAngleLeft } from 'react-icons/fa'
@@ -28,6 +28,7 @@ import { wLT } from '@jpbbots/theme'
 import { NeedsInvite } from '~/NeedsInvite'
 
 import NextLink from 'next/link'
+import { useGuilds, useUser } from '@/hooks/useUser'
 
 interface DashboardSectionProps extends PropsWithChildren<{}> {
   description?: string
@@ -190,11 +191,11 @@ export function DashboardSection(props: DashboardSectionProps) {
               {props.children ??
                 (searchTerm !== null
                   ? searcher
-                    .search(searchTerm)
-                    .slice(0, 10)
-                    .map((x) => (
-                      <Setting key={x.title ?? x.options[0].name} {...x} />
-                    ))
+                      .search(searchTerm)
+                      .slice(0, 10)
+                      .map((x) => (
+                        <Setting key={x.title ?? x.options[0].name} {...x} />
+                      ))
                   : sectionSettings(props.section as any))}
             </VStack>
           </VStack>

@@ -22,7 +22,7 @@ import {
 } from '~/Premium'
 import { Root } from '~/Root'
 import { CSSObject } from '@emotion/react'
-import { useUser } from '@/hooks/useAuth'
+import { useUser } from '@/hooks/useUser'
 import { Api } from '@/structures/Api'
 import { PremiumTypes } from '@censorbot/typings'
 import { useEffect, useState } from 'react'

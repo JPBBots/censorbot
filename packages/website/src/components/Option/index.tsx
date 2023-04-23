@@ -1,5 +1,5 @@
-import { OptionProps, Option as CCOption } from '@jpbbots/censorbot-components'
-import { useGuild } from 'hooks/useGuilds'
+import { OptionProps, Option as CCOption } from '~/Dashboard/Option'
+import { useGuild } from '@/hooks/useGuild'
 
 import Router from 'next/router'
 import { Logger } from 'structures/Logger'

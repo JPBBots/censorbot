@@ -1,4 +1,3 @@
-import { Category, CategoryOption } from '@jpbbots/censorbot-components'
 import {
   VStack,
   HStack,
@@ -10,10 +9,13 @@ import {
   Button,
   Input,
   InputGroup,
-  InputLeftAddon
+  InputLeftAddon,
+  Link
 } from '@chakra-ui/react'
 
 import Router from 'next/router'
+
+import NextLink from 'next/link'
 
 import {
   FaCog,
@@ -28,8 +30,10 @@ import {
   FaSearch
 } from 'react-icons/fa'
 import { PremiumIcon } from '~/PremiumIcon'
-import { useGuild } from 'hooks/useGuilds'
+import { useGuild } from '@/hooks/useGuild'
 import { useWindowSize } from 'react-use'
+import { CategoryOption } from './category/CategoryOption'
+import { Category } from './category/Category'
 
 export const CATEGORIES = {
   Filter: {
@@ -109,7 +113,7 @@ export const sections = [
   }
 ] as const
 
-export type SectionName = typeof sections[number]['name']
+export type SectionName = (typeof sections)[number]['name']
 
 interface AsideOptions {
   selected?: string
@@ -165,6 +169,7 @@ export function Aside({
                     {guild.guild.icon && (
                       <Image
                         w="50px"
+                        h="50px"
                         src={`https://cdn.discordapp.com/icons/${guild.guild.id}/${guild.guild.icon}.png`}
                       />
                     )}
@@ -214,20 +219,25 @@ export function Aside({
                 {sections
                   .filter((x) => x.category === category)
                   .map((section) => (
-                    <CategoryOption
+                    <NextLink
                       key={section.href}
-                      onClick={() => {
-                        props.onClose?.()
-                        void Router.push({
-                          pathname: '/dashboard/[guild]' + section.href,
-                          query: Router.query
-                        })
-                      }}
-                      icon={section.icon}
-                      label={section.name}
-                      isPremium={'premium' in section && section.premium}
-                      isSelected={section.name === selected}
-                    />
+                      href={`/dashboard/${Router.query.guild}${section.href}`}
+                      style={{ width: '100% ' }}
+                    >
+                      <CategoryOption
+                        onClick={() => {
+                          props.onClose?.()
+                          // void Router.push({
+                          //   pathname: '/dashboard/[guild]' + section.href,
+                          //   query: Router.query
+                          // })
+                        }}
+                        icon={section.icon}
+                        label={section.name}
+                        isPremium={'premium' in section && section.premium}
+                        isSelected={section.name === selected}
+                      />
+                    </NextLink>
                   ))}
               </Category>
             ))}

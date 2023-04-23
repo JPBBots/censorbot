@@ -9,11 +9,10 @@ import { store } from 'store'
 import {
   setCurrentGuild,
   setDb,
-  setGuilds,
   setNeedsInvite,
   setOfflineInShard
-} from 'store/reducers/guilds.reducer'
-import { setUser } from 'store/reducers/auth.reducer'
+} from 'store/reducers/guild.reducer'
+import { setGuilds, setUser } from 'store/reducers/user.reducer'
 
 import { io } from 'socket.io-client'
 import { Api } from './Api'
@@ -110,7 +109,7 @@ export class WebsocketManager extends ExtendedEmitter {
 
   @Event('CHANGE_SETTING')
   onGuildChange(data: EventMap['CHANGE_SETTING']) {
-    const currentGuild = store.getState().guilds.currentGuild
+    const currentGuild = store.getState().guild.currentGuild
     if (!currentGuild || currentGuild.guild.id !== data.id) return
 
     store.dispatch(setDb(data.data))
@@ -123,13 +122,14 @@ export class WebsocketManager extends ExtendedEmitter {
 
   @Event('UPDATE_GUILD')
   onGuildUpdate(data: EventMap['UPDATE_GUILD']) {
+    console.log('update guild')
     store.dispatch(setCurrentGuild(data))
   }
 
   @Event('DELETE_GUILD')
   onGuildDelete(guildId: EventMap['DELETE_GUILD']) {
     console.log('Retrieved delete guild ' + guildId)
-    const currentGuild = store.getState().guilds.currentGuild
+    const currentGuild = store.getState().guild.currentGuild
 
     console.log({ currentGuild })
 
@@ -138,7 +138,7 @@ export class WebsocketManager extends ExtendedEmitter {
     store.dispatch(setCurrentGuild(undefined))
     store.dispatch(setNeedsInvite(true))
 
-    const guilds = store.getState().guilds.guilds
+    const guilds = store.getState().user.guilds
 
     const newGuilds: ShortGuild[] = Object.assign([], guilds)
     const g: ShortGuild = Object.assign(
@@ -146,7 +146,6 @@ export class WebsocketManager extends ExtendedEmitter {
       newGuilds.find((x) => x.id === guildId)
     )
 
-    console.log({ g })
     if (g) {
       g.joined = false
 

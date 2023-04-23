@@ -44,9 +44,12 @@ export const SettingSection = ({
           )}
           <Divider color="lighter.5" />
           {description && (
-            <Text textStyle="default" color="lighter.40">
-              {description} {tooltip && <Help>{tooltip}</Help>}
-            </Text>
+            <HStack color="lighter.40">
+              <Text textStyle="default" color="lighter.40">
+                {description}
+              </Text>
+              {tooltip && <Help>{tooltip}</Help>}
+            </HStack>
           )}
         </Fragment>
       )}
