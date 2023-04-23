@@ -1,19 +1,13 @@
-import {
-  Input,
-  VStack,
-  Tooltip,
-  Menu,
-  MenuList,
-  MenuItem,
-  MenuButton,
-  Icon,
-  Wrap
-} from '@chakra-ui/react'
-
 import { useEffect, useState } from 'react'
 
-import humanize from 'humanize-duration'
+import { Menu, MenuList, MenuItem, MenuButton } from '@chakra-ui/menu'
+import { VStack, Wrap } from '@chakra-ui/layout'
+import { Icon } from '@chakra-ui/icon'
+import { Input } from '@chakra-ui/input'
+import { Tooltip } from '@chakra-ui/tooltip'
 import { FaChevronDown } from 'react-icons/fa'
+
+import humanize from 'humanize-duration'
 
 const TIME_CONV: Record<number, string> = {
   2419000000: '1 month',

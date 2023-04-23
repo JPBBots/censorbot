@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
-import type { BoxProps } from '@chakra-ui/react'
+
+import { Box, HStack, Text, Center, BoxProps } from '@chakra-ui/layout'
+import { Button } from '@chakra-ui/button'
+import { Icon } from '@chakra-ui/icon'
 import { FaCrown } from 'react-icons/fa'
-import { Box, Button, Icon, Text, HStack, Center } from '@chakra-ui/react'
 
 export interface CategoryOptionProps extends BoxProps {
   label: string

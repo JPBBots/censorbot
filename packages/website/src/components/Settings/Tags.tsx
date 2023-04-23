@@ -1,19 +1,14 @@
-import { Input } from '@chakra-ui/input'
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Icon,
-  HStack,
-  Text,
-  Flex
-} from '@chakra-ui/react'
-import { FaEllipsisV, FaPlus } from 'react-icons/fa'
+import { useRef, useState } from 'react'
+
 import { Tag } from '~/functional/Tag'
 
-import { useRef, useState } from 'react'
 import { wLT } from '@jpbbots/theme'
+
+import { Input } from '@chakra-ui/input'
+import { HStack, Text, Flex } from '@chakra-ui/layout'
+import { Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/menu'
+import { Icon } from '@chakra-ui/icon'
+import { FaEllipsisV, FaPlus } from 'react-icons/fa'
 
 export interface ITag {
   id?: string

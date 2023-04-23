@@ -1,12 +1,14 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Spinner,
-  Text,
-  TextProps,
-  VStack
-} from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { NextSeo } from 'next-seo'
+import { useRouter } from 'next/router'
+
+import { Api } from '@/structures/Api'
+import { chargebee } from './_app'
+
+import { PremiumTypes } from '@censorbot/typings'
+
+import { useUser } from '@/hooks/useUser'
+import { useMeta } from '@/hooks/useMeta'
 
 import MonthlyIcon from 'images/premium/monthly.png'
 import YearlyIcon from 'images/premium/yearly.png'
@@ -21,19 +23,16 @@ import {
   textGrad
 } from '~/Premium'
 import { Root } from '~/Root'
-import { CSSObject } from '@emotion/react'
-import { useUser } from '@/hooks/useUser'
-import { Api } from '@/structures/Api'
-import { PremiumTypes } from '@censorbot/typings'
-import { useEffect, useState } from 'react'
-import { chargebee } from './_app'
-import NextLink from 'next/link'
+import { PageButton } from '~/link'
+
 import { MiddleWrap, wMT } from '@jpbbots/theme'
-import { NextSeo } from 'next-seo'
+
+import { Flex, Text, TextProps, VStack } from '@chakra-ui/layout'
+import { Spinner } from '@chakra-ui/spinner'
+import { Button } from '@chakra-ui/button'
+import { CSSObject } from '@emotion/react'
 
 import humanize from 'humanize-duration'
-import { useMeta } from '@/hooks/useMeta'
-import { useRouter } from 'next/router'
 
 const gradientButton: CSSObject = {
   _before: {
@@ -210,9 +209,7 @@ export default function Premium({
             <Text textStyle="label.md">
               Enjoy your {user.premium.count} servers
             </Text>
-            <NextLink href="/dashboard" passHref>
-              <Button onClick={() => {}}>Go to dashboard</Button>
-            </NextLink>
+            <PageButton href="/dashboard">Go to dashboard</PageButton>
             <Text textStyle="label.sm">
               Manage your payment through the user dropdown
             </Text>
@@ -316,11 +313,13 @@ export default function Premium({
               If you’re a school or a teacher, teaching on Discord, we offer
               free premium benefits for your teaching communities
             </Text>
-            <NextLink href="mailto:teachers@jpbbots.org">
-              <Button w="full" marginBlockStart="auto !important">
-                Contact Us
-              </Button>
-            </NextLink>
+            <PageButton
+              href="mailto:teachers@jpbbots.org"
+              w="full"
+              marginBlockStart="auto !important"
+            >
+              Contact Us
+            </PageButton>
           </PremiumCard>
           <PremiumCard
             name="Nitro Boost"

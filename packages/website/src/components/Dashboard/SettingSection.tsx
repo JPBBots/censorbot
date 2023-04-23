@@ -1,7 +1,9 @@
 import { Fragment, ReactNode } from 'react'
-import { Divider, Text, VStack, HStack } from '@chakra-ui/react'
 import type { PropsWithChildren } from 'react'
+
 import { Help } from '@jpbbots/theme'
+
+import { Divider, Text, VStack, HStack } from '@chakra-ui/layout'
 
 export interface SettingSectionProps extends PropsWithChildren<unknown> {
   icon?: ReactNode

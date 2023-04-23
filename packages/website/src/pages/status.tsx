@@ -1,8 +1,13 @@
-import { Divider, Text, VStack, HStack, Box, Tooltip } from '@chakra-ui/react'
-import type { ClusterStats } from 'jadl'
-import { MiddleWrap } from '@jpbbots/theme'
 import useSWR from 'swr'
+
 import { Root } from '~/Root'
+
+import { MiddleWrap } from '@jpbbots/theme'
+
+import { Divider, Text, VStack, HStack, Box } from '@chakra-ui/layout'
+import { Tooltip } from '@chakra-ui/tooltip'
+
+import type { ClusterStats } from 'jadl'
 
 enum State {
   DISCONNECTED = 0,

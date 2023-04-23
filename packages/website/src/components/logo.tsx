@@ -1,4 +1,5 @@
-import { Image, ImageProps } from '@chakra-ui/react'
+import { Image, ImageProps } from '@chakra-ui/image'
+
 import BRANDING from 'BRANDING'
 
 export function Logo(props: Omit<ImageProps, 'draggable' | 'src'>) {

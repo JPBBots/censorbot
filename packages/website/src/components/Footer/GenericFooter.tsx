@@ -1,10 +1,11 @@
-import { HStack, VStack, Text, Link, Flex } from '@chakra-ui/layout'
+import { HStack, VStack, Text, Flex } from '@chakra-ui/layout'
 
-import NextLink from 'next/link'
+import { Logo } from '~/logo'
+import { PageLink } from '~/link'
+
+import { wLT, MiddleWrap } from '@jpbbots/theme'
 
 import { motion } from 'framer-motion'
-import { wLT, MiddleWrap } from '@jpbbots/theme'
-import { Logo } from '~/logo'
 
 export interface FooterOptions {
   name: string
@@ -57,16 +58,14 @@ export const GenericFooter = (props: FooterOptions) => {
           </Text>
         </motion.span>{' '}
         by{' '}
-        <NextLink href="https://jpbbots.org" passHref>
-          <Link
-            href="#"
-            onClick={() => {}}
-            target="_blank"
-            textDecor="underline"
-          >
-            JPBBots
-          </Link>
-        </NextLink>
+        <PageLink
+          target="_blank"
+          textDecor="underline"
+          href="https://jpbbots.org"
+          passHref
+        >
+          JPBBots
+        </PageLink>
       </Text>
     </VStack>
   )
@@ -98,9 +97,9 @@ export const GenericFooter = (props: FooterOptions) => {
               {cat.label.toUpperCase()}
             </Text>
             {cat.children.map((link) => (
-              <Link
+              <PageLink
                 target="_blank"
-                href={link.url}
+                href={link.url || '#'}
                 onClick={link.onClick}
                 key={link.label}
                 color="lighter.40"
@@ -111,7 +110,7 @@ export const GenericFooter = (props: FooterOptions) => {
                 }}
               >
                 {link.label}
-              </Link>
+              </PageLink>
             ))}
           </VStack>
         ))}

@@ -1,16 +1,15 @@
+import type { ReactNode } from 'react'
+
 import {
-  Box,
-  BoxProps,
-  InputProps,
   Popover,
   PopoverBody,
   PopoverContent,
   PopoverProps,
-  PopoverTrigger,
-  useBoolean,
-  useDisclosure
-} from '@chakra-ui/react'
-import type { ReactNode } from 'react'
+  PopoverTrigger
+} from '@chakra-ui/popover'
+import { Box, BoxProps } from '@chakra-ui/layout'
+import type { InputProps } from '@chakra-ui/input'
+import { useBoolean, useDisclosure } from '@chakra-ui/hooks'
 import type { UseDisclosureReturn } from '@chakra-ui/hooks'
 
 export interface SelectMenuOption {

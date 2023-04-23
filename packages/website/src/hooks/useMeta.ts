@@ -1,5 +1,6 @@
-import { ServerSideProps } from '@/../../typings'
 import { useEffect, useState } from 'react'
+
+import type { ServerSideProps } from '@censorbot/typings'
 
 export const useMeta = () => {
   const [props, setProps] = useState<ServerSideProps>({

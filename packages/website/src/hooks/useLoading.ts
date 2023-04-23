@@ -1,6 +1,7 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { setLoading } from 'store/reducers/loading.reducer'
 import { RootState } from '../store'
+import { setLoading } from 'store/reducers/loading.reducer'
+
+import { useDispatch, useSelector } from 'react-redux'
 
 export const useLoadingState = (): RootState['loading'] =>
   useSelector((state: RootState) => state.loading)

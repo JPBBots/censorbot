@@ -1,8 +1,6 @@
-import { Box, Flex, HStack, Text, VStack } from '@chakra-ui/layout'
-import { Icon } from '@chakra-ui/react'
-
+import { Flex, HStack, Text, VStack } from '@chakra-ui/layout'
+import { Icon } from '@chakra-ui/icon'
 import { FaCheck, FaTimes } from 'react-icons/fa'
-import { brandGrad } from '.'
 
 const normalLineColor = '#4b525e'
 

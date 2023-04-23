@@ -1,9 +1,14 @@
-import { GuildData, AdvancedException, ExceptionType } from '@censorbot/typings'
-import { DeepPartial, HStack, Text, Icon, Select } from '@chakra-ui/react'
-import { InlineOptionGroup } from './InlineOptionGroup'
 import React from 'react'
+import { GuildData, AdvancedException, ExceptionType } from '@censorbot/typings'
+
+import { InlineOptionGroup } from './InlineOptionGroup'
+
+import { HStack, Text } from '@chakra-ui/layout'
+import { Icon } from '@chakra-ui/icon'
+import { Select } from '@chakra-ui/select'
 import { FaTrash } from 'react-icons/fa'
-// import { Selector } from '~/functional/Selector'
+
+import type { DeepPartial } from 'redux'
 
 export interface ExceptionSettingProps {
   guild: GuildData

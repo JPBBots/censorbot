@@ -3,9 +3,9 @@ import {
   TagLeftIcon,
   TagCloseButton,
   Tag as ChakraTag,
-  TagProps as ChakraTagProps,
-  Button
-} from '@chakra-ui/react'
+  TagProps as ChakraTagProps
+} from '@chakra-ui/tag'
+import { Button } from '@chakra-ui/button'
 import { FaAt, FaHashtag } from 'react-icons/fa'
 
 interface TagProps extends ChakraTagProps {

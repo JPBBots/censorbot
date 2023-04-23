@@ -1,15 +1,10 @@
 import type { FunctionComponent, PropsWithChildren } from 'react'
-import type { StackProps } from '@chakra-ui/react'
-import {
-  Box,
-  Button,
-  HStack,
-  Link,
-  Menu,
-  MenuButton,
-  MenuList
-} from '@chakra-ui/react'
+
 import { AvatarDropdownAction } from './AvatarDropdownAction'
+
+import { Menu, MenuButton, MenuList } from '@chakra-ui/menu'
+import { HStack, StackProps, Box, Link } from '@chakra-ui/layout'
+import { Button } from '@chakra-ui/button'
 
 export interface NavUserType {
   avatarUrl: string

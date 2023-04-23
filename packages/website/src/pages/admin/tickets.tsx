@@ -1,11 +1,16 @@
-import { useUser } from '@/hooks/useUser'
-import { Api } from '@/structures/Api'
-import { Ticket } from '@censorbot/typings'
-import Router from 'next/router'
 import { useEffect, useState } from 'react'
-import { MiddleWrap } from '@jpbbots/theme'
+import Router from 'next/router'
+import { Api } from '@/structures/Api'
+
+import { Ticket } from '@censorbot/typings'
+
+import { useUser } from '@/hooks/useUser'
+
 import { TicketInteraction } from '~/Tickets'
-import { Spinner } from '@chakra-ui/react'
+
+import { MiddleWrap } from '@jpbbots/theme'
+
+import { Spinner } from '@chakra-ui/spinner'
 
 export default function Tickets() {
   const { user } = useUser(true)

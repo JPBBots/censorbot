@@ -1,9 +1,11 @@
-import { VStack, Flex, StackProps } from '@chakra-ui/react'
 import { PropsWithChildren, useEffect, useRef, useState } from 'react'
+
 import { useWindowSize } from 'react-use'
 
 import { Footer } from '~/Footer'
 import { HEADER_HEIGHT } from '~/Navbar/Header'
+
+import { VStack, Flex, StackProps } from '@chakra-ui/layout'
 
 export interface RootProps extends PropsWithChildren<StackProps> {
   showFooter?: boolean

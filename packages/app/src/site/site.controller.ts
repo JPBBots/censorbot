@@ -14,8 +14,7 @@ import path from 'path'
 import Next from 'next'
 import { ApiResponse, ApiTags } from '@nestjs/swagger'
 import Config from '@censorbot/config'
-import { OAuth2Scopes } from 'discord-api-types/v10'
-import { Snowflake, PermissionUtils, ClusterStats } from 'jadl'
+import { Snowflake } from 'jadl'
 
 const pathToWebsite = path.parse(require.resolve('@censorbot/website')).dir
 
@@ -26,7 +25,7 @@ export class SiteController {
   constructor() {
     this.server = Next({
       quiet: true,
-      dev: Config.staging,
+      dev: Config.dev,
       dir: pathToWebsite
     })
 

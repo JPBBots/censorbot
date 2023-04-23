@@ -1,5 +1,19 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react'
 
+import { useLoginState } from '@/hooks/useAuth'
+import { useGuild } from '@/hooks/useGuild'
+import { useGuilds, useUser } from '@/hooks/useUser'
+
+import { LoginState } from 'store/reducers/auth.reducer'
+
+import { Aside, sections, SectionName } from './Aside'
+import { LoginButton } from '../button/LoginButton'
+import { sectionSettings, Setting } from './Setting'
+import { NeedsInvite } from '~/NeedsInvite'
+import { PageButton } from '~/link'
+
+import { wLT } from '@jpbbots/theme'
+
 import {
   HStack,
   VStack,
@@ -7,28 +21,15 @@ import {
   Divider,
   Flex,
   Box,
-  Input,
-  Icon,
-  InputGroup,
-  InputLeftAddon,
-  Button,
-  Center,
-  Spinner
-} from '@chakra-ui/react'
-import { Aside, sections, SectionName } from './Aside'
-import { LoginButton } from '../button/LoginButton'
-import { useLoginState } from 'hooks/useAuth'
-import { useGuild } from '@/hooks/useGuild'
-import { LoginState } from 'store/reducers/auth.reducer'
-
+  Center
+} from '@chakra-ui/layout'
+import { Input, InputGroup, InputLeftAddon } from '@chakra-ui/input'
+import { Icon } from '@chakra-ui/icon'
+import { Button } from '@chakra-ui/button'
+import { Spinner } from '@chakra-ui/spinner'
 import { FaBars, FaSearch, FaAngleLeft } from 'react-icons/fa'
-import { sectionSettings, Setting } from './Setting'
-import { searcher } from './settings'
-import { wLT } from '@jpbbots/theme'
-import { NeedsInvite } from '~/NeedsInvite'
 
-import NextLink from 'next/link'
-import { useGuilds, useUser } from '@/hooks/useUser'
+import { searcher } from './settings'
 
 interface DashboardSectionProps extends PropsWithChildren<{}> {
   description?: string
@@ -59,12 +60,10 @@ export function DashboardSection(props: DashboardSectionProps) {
     return (
       <VStack p="16px">
         <Box alignSelf="flex-start">
-          <NextLink href="/dashboard">
-            <Button>
-              <Icon as={FaAngleLeft} fontSize="25px" mr="5px" />
-              Go Back
-            </Button>
-          </NextLink>
+          <PageButton href="/dashboard">
+            <Icon as={FaAngleLeft} fontSize="25px" mr="5px" />
+            Go Back
+          </PageButton>
         </Box>
         <Center>
           <VStack>
@@ -72,9 +71,9 @@ export function DashboardSection(props: DashboardSectionProps) {
               Censor Bot is experiencing some issues
             </Text>
             <Text textStyle="heading.lg">Check back in a bit</Text>
-            <NextLink href="/status" passHref>
+            <PageButton variant="brand" href="/status">
               <Button variant="brand">Check status</Button>
-            </NextLink>
+            </PageButton>
           </VStack>
         </Center>
       </VStack>

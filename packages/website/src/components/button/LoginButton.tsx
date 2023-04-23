@@ -1,5 +1,6 @@
 import { useUser } from '@/hooks/useUser'
-import { Button } from '@chakra-ui/react'
+
+import { Button } from '@chakra-ui/button'
 
 export function LoginButton({ name = 'Login' }: { name?: string }) {
   const { login } = useUser(false)

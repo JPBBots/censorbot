@@ -1,11 +1,6 @@
-import {
-  StackProps,
-  VStack,
-  Text,
-  HStack,
-  Icon,
-  Button
-} from '@chakra-ui/react'
+import { StackProps, VStack, Text, HStack } from '@chakra-ui/layout'
+import { Icon } from '@chakra-ui/icon'
+import { Button } from '@chakra-ui/button'
 import { FaCrown } from 'react-icons/fa'
 
 const CARD_WIDTH = '240px'

@@ -1,28 +1,24 @@
+import { useRef, useEffect } from 'react'
+
+import { Utils } from '@/utils/Utils'
+
 import { ShortGuild } from '@censorbot/typings'
 
-import { FaAngleLeft } from 'react-icons/fa'
+import { useGuild } from '@/hooks/useGuild'
+import { useMeta } from '@/hooks/useMeta'
+import { useGuilds } from '@/hooks/useUser'
 
 import { store } from '@/store'
 import { setGuilds } from '@/store/reducers/user.reducer'
-import { Utils } from '@/utils/Utils'
 
-import Link from 'next/link'
+import { PageButton } from '~/link'
 
-import { useGuild } from '@/hooks/useGuild'
-
-import {
-  VStack,
-  Box,
-  Icon,
-  Avatar,
-  Button,
-  Text,
-  HStack
-} from '@chakra-ui/react'
+import { VStack, Box, Text, HStack } from '@chakra-ui/layout'
+import { Icon } from '@chakra-ui/icon'
+import { Button } from '@chakra-ui/button'
+import { Avatar } from '@chakra-ui/avatar'
 import { animate } from 'framer-motion'
-import { useRef, useEffect } from 'react'
-import { useMeta } from '@/hooks/useMeta'
-import { useGuilds } from '@/hooks/useUser'
+import { FaAngleLeft } from 'react-icons/fa'
 
 export function NeedsInvite({ guild }: { guild: ShortGuild }) {
   const { serverCount } = useMeta()
@@ -79,12 +75,10 @@ export function NeedsInvite({ guild }: { guild: ShortGuild }) {
   return (
     <VStack p="16px">
       <Box alignSelf="flex-start">
-        <Link href="/dashboard">
-          <Button>
-            <Icon as={FaAngleLeft} fontSize="25px" mr="5px" />
-            Go Back
-          </Button>
-        </Link>
+        <PageButton href="/dashboard">
+          <Icon as={FaAngleLeft} fontSize="25px" mr="5px" />
+          Go Back
+        </PageButton>
       </Box>
       <VStack>
         <Text textAlign="center" textStyle="heading.xl" color="brand.100">

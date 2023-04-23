@@ -1,19 +1,19 @@
-import { AdminAction, AdminActionObject } from '@censorbot/typings'
-import { useUser } from '@/hooks/useUser'
-import { Api } from '@/structures/Api'
-import {
-  Spinner,
-  VStack,
-  Text,
-  Button,
-  Input,
-  HStack,
-  Textarea
-} from '@chakra-ui/react'
-import { MiddleWrap } from '@jpbbots/theme'
-import Router from 'next/router'
 import { useEffect, useRef, useState } from 'react'
+import Router from 'next/router'
+
+import { Api } from '@/structures/Api'
+
+import { AdminAction, AdminActionObject } from '@censorbot/typings'
+
+import { useUser } from '@/hooks/useUser'
 import { useInput, useSelect } from '@/hooks/useInput'
+
+import { MiddleWrap } from '@jpbbots/theme'
+
+import { VStack, Text, HStack } from '@chakra-ui/layout'
+import { Spinner } from '@chakra-ui/spinner'
+import { Button } from '@chakra-ui/button'
+import { Textarea } from '@chakra-ui/textarea'
 
 import TextareaResizer from 'react-textarea-autosize'
 

@@ -1,34 +1,35 @@
-import { useGuild } from '@/hooks/useGuild'
-import { HStack, Text, VStack } from '@chakra-ui/layout'
+import { useRef } from 'react'
 
-import { Setting, settings, DashboardSection } from '~/Settings'
-
-import { PremiumIcon } from '~/PremiumIcon'
-import { useUser } from '@/hooks/useUser'
-import { Switch } from '@chakra-ui/switch'
 import { Api } from '@/structures/Api'
-import { useDispatch } from 'react-redux'
+import { Utils } from '@/utils/Utils'
+
+import { useUser } from '@/hooks/useUser'
+import { useGuild } from '@/hooks/useGuild'
 
 import { setUser } from '@/store/reducers/user.reducer'
-import { Help } from '@jpbbots/theme'
 
+import { Setting, settings, DashboardSection } from '~/Settings'
+import { PremiumIcon } from '~/PremiumIcon'
 import Countdown from 'react-countdown'
-
 import Premium from 'pages/premium'
 
+import { Help } from '@jpbbots/theme'
+
+import { HStack, Text, VStack } from '@chakra-ui/layout'
+import { Switch } from '@chakra-ui/switch'
 import {
   AlertDialog,
   AlertDialogBody,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogOverlay,
-  Avatar,
-  Button,
-  useDisclosure
-} from '@chakra-ui/react'
-import { useRef } from 'react'
-import { Utils } from '@/utils/Utils'
+  AlertDialogOverlay
+} from '@chakra-ui/modal'
+import { Avatar } from '@chakra-ui/avatar'
+import { Button } from '@chakra-ui/button'
+import { useDisclosure } from '@chakra-ui/hooks'
+
+import { useDispatch } from 'react-redux'
 
 export default function GuildPremium() {
   const { currentGuild: guild } = useGuild()

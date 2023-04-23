@@ -1,28 +1,27 @@
-import { Divider, HStack, Text, VStack } from '@chakra-ui/layout'
-import { useLoginState } from 'hooks/useAuth'
-import { useGuilds, useUser } from 'hooks/useUser'
 import React, { useEffect, useState } from 'react'
+import { NextSeo } from 'next-seo'
+
+import { ShortGuild } from '@censorbot/typings'
+
+import { useGuilds, useUser } from '@/hooks/useUser'
+import { useLoginState } from '@/hooks/useAuth'
+
 import { LoginState } from '@/store/reducers/auth.reducer'
 
 import { LoginButton } from '~/button/LoginButton'
-
 import { GuildPreview } from '~/Dashboard/GuildPreview'
+import { PageLink } from '~/link'
+
+import { wMT } from '@jpbbots/theme'
+
+import { Divider, HStack, Text, VStack, Wrap } from '@chakra-ui/layout'
 import { Input } from '@chakra-ui/input'
-import {
-  InputGroup,
-  InputLeftAddon,
-  Icon,
-  Wrap,
-  Spinner
-} from '@chakra-ui/react'
+import { InputGroup, InputLeftAddon } from '@chakra-ui/input'
+import { Spinner } from '@chakra-ui/spinner'
+import { Icon } from '@chakra-ui/icon'
 import { FaSearch } from 'react-icons/fa'
 
-import NextLink from 'next/link'
-
 import FuzzySearch from 'fuzzy-search'
-import { ShortGuild } from '@censorbot/typings'
-import { wMT } from '@jpbbots/theme'
-import { NextSeo } from 'next-seo'
 
 export function GuildList({
   searchTerm,
@@ -44,7 +43,7 @@ export function GuildList({
         ?.search(searchTerm)
         .filter(filter ?? (() => true))
         .map((guild) => (
-          <NextLink key={guild.id} href={`/dashboard/${guild.id}`} passHref>
+          <PageLink key={guild.id} href={`/dashboard/${guild.id}`}>
             <GuildPreview
               guild={{
                 name: guild.name,
@@ -53,7 +52,7 @@ export function GuildList({
                   : undefined
               }}
             />
-          </NextLink>
+          </PageLink>
         ))}
     </Wrap>
   )

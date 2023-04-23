@@ -1,6 +1,8 @@
-import { VStack, Text } from '@chakra-ui/react'
 import { ReactNode } from 'react'
+
 import { MotionImage, MotionVStack } from '~/motion'
+
+import { VStack, Text } from '@chakra-ui/layout'
 
 import { boxGrad, textGrad } from '.'
 

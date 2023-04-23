@@ -1,20 +1,18 @@
-import { motion, MotionProps } from 'framer-motion'
 import {
   Box,
   BoxProps,
-  Button,
-  ButtonProps,
   Flex,
   FlexProps,
   Stack,
   VStack,
   HStack,
   StackProps,
-  Image,
-  ImageProps,
   Text,
   TextProps
-} from '@chakra-ui/react'
+} from '@chakra-ui/layout'
+import { Image, ImageProps } from '@chakra-ui/image'
+import { Button, ButtonProps } from '@chakra-ui/button'
+import { motion, MotionProps } from 'framer-motion'
 
 export const MotionBox = motion<
   Omit<BoxProps, keyof MotionProps> & MotionProps

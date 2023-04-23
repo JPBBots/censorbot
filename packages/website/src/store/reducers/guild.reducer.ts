@@ -1,4 +1,4 @@
-import { DeepPartial } from '@chakra-ui/react'
+import type { DeepPartial } from 'redux'
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import { GuildData, GuildDB } from '@censorbot/typings'
 import { updateObject } from 'utils/updateObject'

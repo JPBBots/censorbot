@@ -1,9 +1,6 @@
-import { useRouter } from 'next/router'
 import { GenericFooter } from './GenericFooter'
 
 export function Footer() {
-  const router = useRouter()
-
   return (
     <GenericFooter
       name="Censor Bot"
@@ -40,7 +37,7 @@ export function Footer() {
             },
             {
               label: 'Status',
-              onClick: () => void router.push('/status')
+              url: '/status'
             }
           ]
         },

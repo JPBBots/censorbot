@@ -1,9 +1,5 @@
 import { PermissionUtils } from '@/utils/Permissions'
 
-import type { IconType } from 'react-icons/lib'
-
-import type { DeepPartial } from 'redux'
-
 import {
   CensorMethods,
   GuildData,
@@ -12,12 +8,15 @@ import {
   filterTypeNames,
   Plugin
 } from '@censorbot/typings'
+import { ChannelType } from '@/types'
 
 import type { SectionName } from './Aside'
-
-import FuzzySearch from 'fuzzy-search'
-import { ChannelType } from '@/types'
 import { TagsSettings } from './Tags'
+
+import type { IconType } from 'react-icons/lib'
+
+import type { DeepPartial } from 'redux'
+import FuzzySearch from 'fuzzy-search'
 
 export enum OptionType {
   Boolean = 0,
@@ -663,7 +662,7 @@ export type IOption =
         bit: number
         label: string
         premium?: boolean
-        requiredPermission?: keyof typeof PermissionUtils['bits']
+        requiredPermission?: keyof (typeof PermissionUtils)['bits']
       }
     >
   | DataOption<
@@ -708,7 +707,7 @@ export interface ISetting {
   tooltip?: string
   premium?: boolean
   icon?: IconType
-  requiredPermission?: keyof typeof PermissionUtils['bits']
+  requiredPermission?: keyof (typeof PermissionUtils)['bits']
   options: IOption[]
 
   disable?: {

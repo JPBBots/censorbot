@@ -1,5 +1,7 @@
-import { Input, InputProps, Select, SelectProps } from '@chakra-ui/react'
 import { useState } from 'react'
+
+import { Select, SelectProps } from '@chakra-ui/select'
+import { Input, InputProps } from '@chakra-ui/input'
 
 export const useInput = <V extends string | number = string>() => {
   const [value, setValue] = useState<V>()

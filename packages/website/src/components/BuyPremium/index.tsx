@@ -1,14 +1,18 @@
-import { useUser } from '@/hooks/useUser'
-import { Api } from '@/structures/Api'
-import { Button } from '@chakra-ui/button'
-import { Flex, Text, VStack } from '@chakra-ui/layout'
-import { Spinner } from '@chakra-ui/react'
-import { PremiumCard } from './PremiumCard'
 import { useEffect, useState } from 'react'
-import { PremiumTypes } from '@censorbot/typings'
-import { chargebee } from 'pages/_app'
 
-import NextLink from 'next/link'
+import { Api } from '@/structures/Api'
+
+import { PremiumTypes } from '@censorbot/typings'
+
+import { useUser } from '@/hooks/useUser'
+
+import { PremiumCard } from './PremiumCard'
+import { PageButton } from '~/link'
+
+import { Flex, Text, VStack } from '@chakra-ui/layout'
+import { Spinner } from '@chakra-ui/spinner'
+
+import { chargebee } from 'pages/_app'
 
 export function BuyPremium() {
   const { user, getEmail } = useUser(false)
@@ -60,9 +64,7 @@ export function BuyPremium() {
             <Text textStyle="label.md">
               Enjoy your {user.premium.count} servers
             </Text>
-            <NextLink href="/dashboard" passHref>
-              <Button onClick={() => {}}>Go to dashboard</Button>
-            </NextLink>
+            <PageButton href="/dashboard">Go to dashboard</PageButton>
             <Text textStyle="label.sm">
               Manage your payment through the user dropdown
             </Text>

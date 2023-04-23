@@ -1,27 +1,8 @@
-import { useGuild } from '@/hooks/useGuild'
-import { IOption, ISetting, OptionType, settings } from './settings'
-import NextLink from 'next/link'
-import { Option } from '~/Option'
+import { useRouter } from 'next/router'
 
 import { PermissionUtils, humanReadablePermissions } from '@/utils/Permissions'
-
-import {
-  Button,
-  Icon,
-  Input,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputStepper,
-  Textarea,
-  Text,
-  VStack,
-  HStack,
-  Select,
-  Alert,
-  AlertIcon
-} from '@chakra-ui/react'
 import Pieces from 'utils/Pieces'
+
 import {
   AdvancedException,
   ExceptionType,
@@ -29,17 +10,36 @@ import {
   PunishmentLevel,
   PunishmentType
 } from '@censorbot/typings'
-import { SectionName } from './Aside'
 
-import TextareaResizer from 'react-textarea-autosize'
+import { useGuild } from '@/hooks/useGuild'
+
+import { SectionName } from './Aside'
 import { Tags } from './Tags'
 import { ExceptionSetting } from './ExceptionSetting'
-import { FaPlus } from 'react-icons/fa'
-
-import { useRouter } from 'next/router'
 import { PunishmentSetting } from './PunishmentSetting'
 import { TimeSelector } from '~/functional/TimeSelector'
 import { SettingSection } from '~/Dashboard'
+import { PageLink } from '~/link'
+import { Option } from '~/Option'
+import { IOption, ISetting, OptionType, settings } from './settings'
+
+import {
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputStepper
+} from '@chakra-ui/number-input'
+import { Alert, AlertIcon } from '@chakra-ui/alert'
+import { Text, VStack, HStack } from '@chakra-ui/layout'
+import { Textarea } from '@chakra-ui/textarea'
+import { Select } from '@chakra-ui/select'
+import { Icon } from '@chakra-ui/icon'
+import { Button } from '@chakra-ui/button'
+import { Input } from '@chakra-ui/input'
+
+import { FaPlus } from 'react-icons/fa'
+
+import TextareaResizer from 'react-textarea-autosize'
 
 export function SettingOption({
   setValue,
@@ -170,7 +170,7 @@ export function SettingOption({
           option.maxTags &&
           !guild.premium &&
           value.length >= option.maxTags && (
-            <NextLink
+            <PageLink
               href={{
                 pathname: '/dashboard/[guild]/premium',
                 query: router.query
@@ -182,7 +182,7 @@ export function SettingOption({
                   Reached the maximum of {option.maxTags}. Get premium for more!
                 </Text>
               </Alert>
-            </NextLink>
+            </PageLink>
           )}
         <Tags
           {...props}
@@ -342,7 +342,7 @@ export function SettingOption({
         )}
 
         {premiumLocked && (
-          <NextLink
+          <PageLink
             href={{
               pathname: '/dashboard/[guild]/premium',
               query: router.query
@@ -358,7 +358,7 @@ export function SettingOption({
                 'Reached the maximum 100 punishments'
               )}
             </Alert>
-          </NextLink>
+          </PageLink>
         )}
       </VStack>
     )
@@ -422,7 +422,7 @@ export function SettingOption({
           </HStack>
         )}
         {premiumLocked && (
-          <NextLink
+          <PageLink
             href={{
               pathname: '/dashboard/[guild]/premium',
               query: router.query
@@ -438,7 +438,7 @@ export function SettingOption({
                 'Reached the maximum 20 punishments'
               )}
             </Alert>
-          </NextLink>
+          </PageLink>
         )}
       </VStack>
     )

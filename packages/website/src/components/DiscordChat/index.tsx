@@ -1,3 +1,12 @@
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+
+import { Utils } from '@/utils/Utils'
+import BRANDING from '@/BRANDING'
+
+import { useUser } from '@/hooks/useUser'
+
+import { MotionHStack, MotionText, MotionVStack } from '~/motion'
+
 import {
   Box,
   HStack,
@@ -6,14 +15,11 @@ import {
   StackProps,
   TextProps
 } from '@chakra-ui/layout'
-import { Image } from '@chakra-ui/react'
-import { hex } from 'chroma-js'
+import { Image } from '@chakra-ui/image'
+
 import Typist from 'react-typist-component'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { MotionHStack, MotionText, MotionVStack } from '~/motion'
-import BRANDING from '@/BRANDING'
-import { Utils } from '@/utils/Utils'
-import { useUser } from '@/hooks/useUser'
+
+import { hex } from 'chroma-js'
 
 // const discordBg = hex('#36393f')
 const discordBg = hex('#000000').alpha(0.2)

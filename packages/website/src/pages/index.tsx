@@ -1,29 +1,27 @@
 import { useEffect, useRef } from 'react'
-import { Button, Image, Text, VStack, Box, Divider } from '@chakra-ui/react'
+
+import { Utils } from '@/utils/Utils'
 
 import DashboardExample from 'images/dashboardexample.png'
 import PhoneDashboard from 'images/phonedashboard.png'
 import DiscordChatExample from 'images/discordchat.png'
-
 import BlurryImage from 'images/blurry.jpg'
+
+import { useMeta } from '@/hooks/useMeta'
 
 import { Lower, Upper } from '~/LandingSectionSvg'
 import { PremiumIcon } from '~/PremiumIcon'
-
-import NextLink from 'next/link'
+import { Root } from '~/Root'
+import { CensorBotEmbed, DiscordChat } from '~/DiscordChat'
+import { PageButton } from '~/link'
 
 import { wLT, wMT, TABLET_WIDTH, MiddleWrap } from '@jpbbots/theme'
 
+import { Text, VStack, Box, Divider } from '@chakra-ui/layout'
+import { Image } from '@chakra-ui/image'
 import { animate } from 'framer-motion'
 
-import { Root } from '~/Root'
-import { useMeta } from '@/hooks/useMeta'
-
-import { CensorBotEmbed, DiscordChat } from '~/DiscordChat'
-
 import BRANDING from '@/BRANDING'
-
-import { Utils } from '@/utils/Utils'
 
 const DESCRIPTION_FONT_SIZE = '24px'
 
@@ -114,17 +112,13 @@ export default function Landing() {
           </VStack>
 
           <MiddleWrap spacing="10px 32px">
-            <NextLink href="/dashboard" passHref>
-              <Button w="230px" variant="brand" onClick={() => {}}>
-                Invite Censor Bot
-              </Button>
-            </NextLink>
+            <PageButton href="/dashboard" w="230px" variant="brand">
+              Invite Censor Bot
+            </PageButton>
 
-            <NextLink href="/dashboard" passHref>
-              <Button w="200px" onClick={() => {}}>
-                Dashboard
-              </Button>
-            </NextLink>
+            <PageButton href="/dashboard" w="200px">
+              Dashboard
+            </PageButton>
           </MiddleWrap>
 
           <VStack
@@ -145,7 +139,7 @@ export default function Landing() {
               >
                 60,000
               </Text>{' '}
-              {serverCount !== 1 ? "communities" : "community"} on Discord
+              {serverCount !== 1 ? 'communities' : 'community'} on Discord
             </Text>
             <Text
               textStyle="label.md"
@@ -207,11 +201,9 @@ export default function Landing() {
                   pre-made filters or make your own. Easily add filter
                   exceptions or manage custom punishments!
                 </Text>
-                <NextLink href="/dashboard" passHref>
-                  <Button w="200px" variant="dark">
-                    Dashboard
-                  </Button>
-                </NextLink>
+                <PageButton href="/dashboard" w="200px" variant="dark">
+                  Dashboard
+                </PageButton>
               </VStack>
 
               {wMT(TABLET_WIDTH) && (
@@ -305,11 +297,9 @@ export default function Landing() {
                 moderation easier
               </Text>
 
-              <NextLink href="/dashboard" passHref>
-                <Button onClick={() => {}} w="200px">
-                  Get going!
-                </Button>
-              </NextLink>
+              <PageButton href="/dashboard" w="200px">
+                Get going!
+              </PageButton>
             </VStack>
             <DiscordChat
               w={imageWidth}
@@ -422,11 +412,9 @@ export default function Landing() {
                 . Gain access to increased filter limits, AI features, image
                 filtering and more!
               </Text>
-              <NextLink href="/premium" passHref>
-                <Button color="brand.100" onClick={() => {}}>
-                  Get Premium
-                </Button>
-              </NextLink>
+              <PageButton href="/premium" color="brand.100">
+                Get Premium
+              </PageButton>
             </VStack>
           </MiddleWrap>
         </VStack>
@@ -451,11 +439,9 @@ export default function Landing() {
             </Text>
           </VStack>
           <MiddleWrap spacing="5px">
-            <NextLink href="/dashboard" passHref>
-              <Button w="230px" variant="brand" onClick={() => {}}>
-                Get Started
-              </Button>
-            </NextLink>
+            <PageButton href="/dashboard" w="230px" variant="brand">
+              Get Started
+            </PageButton>
           </MiddleWrap>
           <Text fontFamily="Kalam" color="lighter.60" fontSize={15}>
             Keeping your servers{' '}

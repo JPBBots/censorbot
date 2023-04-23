@@ -1,5 +1,4 @@
-import type { StackProps } from '@chakra-ui/react'
-import { Box, Text, VStack } from '@chakra-ui/react'
+import { Box, Text, VStack, StackProps } from '@chakra-ui/layout'
 
 export interface CategoryProps extends StackProps {
   title: string

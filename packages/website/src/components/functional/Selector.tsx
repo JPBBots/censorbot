@@ -1,11 +1,13 @@
-import { Input } from '@chakra-ui/input'
-import { Box } from '@chakra-ui/layout'
-import { SelectMenu } from './SelectMenu'
-import { Tag } from './Tag'
 import { useState } from 'react'
 
-import FuzzySearch from 'fuzzy-search'
+import { SelectMenu } from './SelectMenu'
+import { Tag } from './Tag'
+
+import { Input } from '@chakra-ui/input'
+import { Box } from '@chakra-ui/layout'
 import { UseDisclosureReturn } from '@chakra-ui/hooks'
+
+import FuzzySearch from 'fuzzy-search'
 
 export interface SelectorTagOptions {
   value: any

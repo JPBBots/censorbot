@@ -1,4 +1,5 @@
-import { Avatar, AvatarProps, StackProps, VStack, Text } from '@chakra-ui/react'
+import { StackProps, VStack, Text } from '@chakra-ui/layout'
+import { Avatar, AvatarProps } from '@chakra-ui/avatar'
 
 const GUILD_ICON_SIZE = '128px'
 

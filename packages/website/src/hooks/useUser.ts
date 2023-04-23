@@ -1,12 +1,17 @@
-import { User } from '@/../../typings/dist'
+import { useEffect, useState } from 'react'
+
+import { Api } from '@/structures/Api'
+
+import { User } from '@censorbot/typings'
+
+import { useLoginState } from './useAuth'
+
 import { RootState } from '@/store'
 import { LoginState, setLoginState } from '@/store/reducers/auth.reducer'
 import { setCurrentGuild } from '@/store/reducers/guild.reducer'
 import { setGuilds, setUser } from '@/store/reducers/user.reducer'
-import { Api } from '@/structures/Api'
-import { useEffect, useState } from 'react'
+
 import { useDispatch, useSelector } from 'react-redux'
-import { useLoginState } from './useAuth'
 
 export const useUserState = (): RootState['user'] =>
   useSelector((state: RootState) => state.user)

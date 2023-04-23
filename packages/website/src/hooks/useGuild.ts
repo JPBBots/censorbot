@@ -1,25 +1,27 @@
-import { Snowflake } from 'discord-api-types/v9'
-import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
+
+import { Api } from 'structures/Api'
+import Pieces from 'utils/Pieces'
+
+import { GuildDB } from '@censorbot/typings'
+import type { Snowflake } from 'discord-api-types/v9'
+
+import { useLoginState } from './useAuth'
+import { useGuilds, useUser } from './useUser'
+
 import {
   setCurrentGuild,
   setId,
   setNeedsInvite,
   setOfflineInShard
 } from 'store/reducers/guild.reducer'
-import { Api } from 'structures/Api'
 import { RootState } from '../store'
-
 import { LoginState } from '../store/reducers/auth.reducer'
-import { useHeadless, useLoginState } from './useAuth'
-
 import { setVolatileDb } from '../store/reducers/guild.reducer'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
-import Pieces from 'utils/Pieces'
-import { DeepPartial } from '@chakra-ui/react'
-import { GuildDB } from '@censorbot/typings'
-import headlessData from '@/structures/headlessData.json'
-import { useGuilds, useUser } from './useUser'
+
+import { useDispatch, useSelector } from 'react-redux'
+import type { DeepPartial } from 'redux'
 
 export const useGuildState = (): RootState['guild'] =>
   useSelector((state: RootState) => state.guild)

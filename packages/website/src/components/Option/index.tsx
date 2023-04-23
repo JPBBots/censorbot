@@ -1,8 +1,10 @@
-import { OptionProps, Option as CCOption } from '~/Dashboard/Option'
+import Router from 'next/router'
+
+import { Logger } from 'structures/Logger'
+
 import { useGuild } from '@/hooks/useGuild'
 
-import Router from 'next/router'
-import { Logger } from 'structures/Logger'
+import { OptionProps, Option as CCOption } from '~/Dashboard/Option'
 
 export function Option({ onChange, name, ...props }: OptionProps) {
   const { currentGuild } = useGuild()

@@ -1,4 +1,4 @@
-import { Icon, IconProps } from '@chakra-ui/react'
+import { Icon, IconProps } from '@chakra-ui/icon'
 import { FaCrown } from 'react-icons/fa'
 
 export interface PremiumIconProps extends IconProps {
@@ -7,11 +7,7 @@ export interface PremiumIconProps extends IconProps {
 
 export function PremiumIcon({ notColored, ...props }: PremiumIconProps) {
   return (
-    <Icon
-      fill={notColored ? undefined : 'brand.100'}
-      as={FaCrown}
-      {...props}
-    />
+    <Icon fill={notColored ? undefined : 'brand.100'} as={FaCrown} {...props} />
   )
 }
 

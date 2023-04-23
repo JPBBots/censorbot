@@ -1,17 +1,13 @@
-import { FaChevronDown } from 'react-icons/fa'
 import { forwardRef } from 'react'
 
-import {
-  Avatar,
-  Box,
-  Button,
-  Center,
-  HStack,
-  Icon,
-  MenuButton,
-  MenuButtonProps
-} from '@chakra-ui/react'
 import { NavUserType } from './NavActions'
+
+import { Box, Center, HStack } from '@chakra-ui/layout'
+import { MenuButton, MenuButtonProps } from '@chakra-ui/menu'
+import { Icon } from '@chakra-ui/icon'
+import { Button } from '@chakra-ui/button'
+import { Avatar } from '@chakra-ui/avatar'
+import { FaChevronDown } from 'react-icons/fa'
 
 type SlightlyCustomizedMenuButtonProps = MenuButtonProps & NavUserType
 

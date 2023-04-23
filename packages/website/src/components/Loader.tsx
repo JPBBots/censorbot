@@ -1,8 +1,9 @@
-import { motion } from 'framer-motion'
 import { useLoading } from 'hooks/useLoading'
+
 import { Logo } from './logo'
 
-import { Box } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/layout'
+import { motion } from 'framer-motion'
 
 export function Loader() {
   const [loading] = useLoading()

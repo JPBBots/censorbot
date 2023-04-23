@@ -6,7 +6,9 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc --build",
-    "build-web": "cd ./packages/website && yarn build",
+    "build:web": "cd ./packages/website && yarn build",
+    "build:watch": "tsc --build --watch",
+    "dev": "cross-env DEV=true node ./packages/bot",
     "start": "node ./packages/bot"
   },
   "repository": "git+https://github.com/JPBBots/censorbot.git",
@@ -26,6 +28,7 @@
   ],
   "devDependencies": {
     "@types/node": "^18.11.18",
+    "cross-env": "^7.0.3",
     "typescript": "^4.9.4"
   }
 }

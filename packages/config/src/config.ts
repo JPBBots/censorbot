@@ -38,6 +38,7 @@ const Config = {
   trialLength: 259200000,
 
   staging,
+  dev: process.env.DEV === 'true',
 
   adminGuild: staging ? '569907007465848842' : '399688888739692552',
 

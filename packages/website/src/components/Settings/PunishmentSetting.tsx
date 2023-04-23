@@ -1,22 +1,19 @@
+import { GuildData, PunishmentLevel, PunishmentType } from '@censorbot/typings'
+
+import { TimeSelector } from '~/functional/TimeSelector'
+
 import {
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
   NumberInputStepper,
-  Wrap,
-  Select,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  NumberInputField,
-  Icon,
-  Button,
-  HStack
-} from '@chakra-ui/react'
-import { GuildData, PunishmentLevel, PunishmentType } from '@censorbot/typings'
-import { TimeSelector } from '~/functional/TimeSelector'
-
+  NumberInputField
+} from '@chakra-ui/number-input'
+import { Wrap, HStack } from '@chakra-ui/layout'
+import { Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/menu'
+import { Select } from '@chakra-ui/select'
+import { Icon } from '@chakra-ui/icon'
+import { Button } from '@chakra-ui/button'
 import { FaTrash } from 'react-icons/fa'
 
 export interface PunishmentSettingProps {
@@ -98,7 +95,10 @@ export function PunishmentSetting({
                         : newTime
                   }
 
-                  if (newObject.type === PunishmentType.GiveRole && !newObject.role)
+                  if (
+                    newObject.type === PunishmentType.GiveRole &&
+                    !newObject.role
+                  )
                     newObject.role = guild.guild.roles[0].id
 
                   setValue(newObject)

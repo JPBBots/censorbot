@@ -1,11 +1,7 @@
-import {
-  Text,
-  HStack,
-  Switch,
-  FormControl,
-  SwitchProps,
-  Icon
-} from '@chakra-ui/react'
+import { Switch, SwitchProps } from '@chakra-ui/switch'
+import { Icon } from '@chakra-ui/icon'
+import { FormControl } from '@chakra-ui/form-control'
+import { Text, HStack } from '@chakra-ui/layout'
 import { FaCrown } from 'react-icons/fa'
 
 export interface OptionProps extends SwitchProps {

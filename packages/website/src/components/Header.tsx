@@ -1,5 +1,6 @@
-import BRANDING from 'BRANDING'
 import Head from 'next/head'
+
+import BRANDING from 'BRANDING'
 
 export function Header() {
   return (

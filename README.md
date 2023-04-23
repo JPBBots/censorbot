@@ -11,3 +11,16 @@ Censor Bot is an advanced Anti-Swear Bot that comes with pre-built filters, no w
 ## Not for hosting
 
 Censor Bot open source is not made to be hosting, and there is no support to do so. This is purely to allow for users to contribute to the production of the [main censor bot](https://censor.bot) bot.
+
+## Web importing
+
+- React / next
+- Structures
+- Typings
+- Hooks
+- Stores
+- Content (images)
+- Components
+- Theme
+- Chakra / framer / emotion / icons
+- Other

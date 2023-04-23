@@ -1,22 +1,18 @@
-import {
-  VStack,
-  HStack,
-  Icon,
-  Divider,
-  Text,
-  Flex,
-  Image,
-  Button,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  Link
-} from '@chakra-ui/react'
-
 import Router from 'next/router'
 
-import NextLink from 'next/link'
+import { useGuild } from '@/hooks/useGuild'
+import { useWindowSize } from 'react-use'
 
+import { PremiumIcon } from '~/PremiumIcon'
+import { CategoryOption } from './category/CategoryOption'
+import { Category } from './category/Category'
+import { PageLink } from '~/link'
+
+import { Input, InputGroup, InputLeftAddon } from '@chakra-ui/input'
+import { VStack, HStack, Divider, Text, Flex } from '@chakra-ui/layout'
+import { Icon } from '@chakra-ui/icon'
+import { Image } from '@chakra-ui/image'
+import { Button } from '@chakra-ui/button'
 import {
   FaCog,
   FaFilter,
@@ -29,11 +25,6 @@ import {
   FaTimes,
   FaSearch
 } from 'react-icons/fa'
-import { PremiumIcon } from '~/PremiumIcon'
-import { useGuild } from '@/hooks/useGuild'
-import { useWindowSize } from 'react-use'
-import { CategoryOption } from './category/CategoryOption'
-import { Category } from './category/Category'
 
 export const CATEGORIES = {
   Filter: {
@@ -219,10 +210,10 @@ export function Aside({
                 {sections
                   .filter((x) => x.category === category)
                   .map((section) => (
-                    <NextLink
+                    <PageLink
                       key={section.href}
                       href={`/dashboard/${Router.query.guild}${section.href}`}
-                      style={{ width: '100% ' }}
+                      w="full"
                     >
                       <CategoryOption
                         onClick={() => {
@@ -237,7 +228,7 @@ export function Aside({
                         isPremium={'premium' in section && section.premium}
                         isSelected={section.name === selected}
                       />
-                    </NextLink>
+                    </PageLink>
                   ))}
               </Category>
             ))}

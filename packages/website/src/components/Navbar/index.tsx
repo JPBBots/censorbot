@@ -1,18 +1,19 @@
-import { MenuItem } from '@chakra-ui/menu'
-import { Box } from '@chakra-ui/layout'
-import { useHeadless } from 'hooks/useAuth'
-import { useUser } from '@/hooks/useUser'
 import { useRouter } from 'next/router'
-import { stats } from 'structures/StatsManager'
+
+import { Api } from '@/structures/Api'
+import { Utils } from '@/utils/Utils'
+import { stats } from '@/structures/StatsManager'
+
+import { useUser } from '@/hooks/useUser'
 
 import { Header } from './Header'
 import { NavActions } from './NavActions'
+import { PageLink } from '~/link'
 
-import NextLink from 'next/link'
-
-import { Api } from '@/structures/Api'
 import { wMT } from '@jpbbots/theme'
-import { Utils } from '@/utils/Utils'
+
+import { MenuItem } from '@chakra-ui/menu'
+import { Box } from '@chakra-ui/layout'
 
 export function NavBar() {
   const { user, login, logout } = useUser(false)
@@ -83,22 +84,22 @@ export function NavBar() {
           )}
           {!showNavItems && (
             <>
-              <NextLink href="/dashboard" passHref>
-                <MenuItem onClick={() => {}}>Dashboard</MenuItem>
-              </NextLink>
+              <PageLink href="/dashboard">
+                <MenuItem>Dashboard</MenuItem>
+              </PageLink>
 
-              <NextLink href="/support" passHref>
-                <MenuItem onClick={() => {}}>Support</MenuItem>
-              </NextLink>
+              <PageLink href="/support">
+                <MenuItem>Support</MenuItem>
+              </PageLink>
             </>
           )}
-          <MenuItem onClick={() => void router.push('/premium')}>
-            Premium
-          </MenuItem>
+          <PageLink href="/premium">
+            <MenuItem>Premium</MenuItem>
+          </PageLink>
           {user?.admin && (
-            <MenuItem onClick={() => void router.push('/admin')}>
-              Admin
-            </MenuItem>
+            <PageLink href="/admin">
+              <MenuItem>Admin</MenuItem>
+            </PageLink>
           )}
           <MenuItem
             onClick={() => {

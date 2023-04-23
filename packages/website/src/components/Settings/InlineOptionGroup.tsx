@@ -1,5 +1,6 @@
-import { HStack } from '@chakra-ui/react'
 import type { PropsWithChildren } from 'react'
+
+import { HStack } from '@chakra-ui/layout'
 
 interface InlineOptionGroupProps extends PropsWithChildren<unknown> {}
 
