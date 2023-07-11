@@ -292,7 +292,7 @@ export default function Landing() {
                 color="lighter.60"
               >
                 Censor Bot can do much more than just swears and messages.
-                Remove invites, phishing links, innapropriate nicknames,
+                Remove invites, phishing links, inappropriate nicknames,
                 hoisters and more. We have all the features to make advanced
                 moderation easier
               </Text>
