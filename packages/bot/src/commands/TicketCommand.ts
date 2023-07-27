@@ -20,6 +20,7 @@ export class TicketCommand {
     if (!id) return
 
     return new MessageBuilder()
+      .setMessage({ flags: MessageFlags.Ephemeral })
       .addEmbed(
         new Embed()
           .title(`Ticket submitted (${id})`)
@@ -28,6 +29,5 @@ export class TicketCommand {
           )
           .footer(`${author.username}#${author.discriminator}`)
       )
-      .setMessage({ flags: MessageFlags.Ephemeral })
   }
 }

@@ -54,22 +54,22 @@ export class EvalCommand {
       }
 
       return new MessageBuilder()
+        .setMessage({ flags: MessageFlags.Ephemeral })
         .addEmbed(
           new Embed()
             .color(0x28bf62)
             .title('Eval Successful')
             .description(`\`\`\`xl\n${evaled}\`\`\``)
         )
-        .setMessage({ flags: MessageFlags.Ephemeral })
     } catch (err) {
       return new MessageBuilder()
+        .setMessage({ flags: MessageFlags.Ephemeral })
         .addEmbed(
           new Embed()
             .color(0xdb0b0b)
             .title('Eval Unsuccessful')
             .description(`\`\`\`xl\n${clean(err)}\`\`\``)
         )
-        .setMessage({ flags: MessageFlags.Ephemeral })
     }
   }
 }

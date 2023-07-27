@@ -24,10 +24,10 @@ export class HelpMeCommand {
   ) {
     if (guild.id === '399688888739692552') {
       return new MessageBuilder()
+        .setMessage({ flags: MessageFlags.Ephemeral })
         .addEmbed(
           new Embed().description('Run /helpme in your server, not here!')
         )
-        .setMessage({ flags: MessageFlags.Ephemeral })
     }
 
     const code = await worker.comms.sendCommand('CREATE_HELPME', {
@@ -35,13 +35,13 @@ export class HelpMeCommand {
     })
 
     return new MessageBuilder()
+      .setMessage({ flags: MessageFlags.Ephemeral })
       .addEmbed(
         new Embed()
           .title('Your HelpME Code')
           .description(`\`${code}\`, give this code to the helper asking.`)
           .footer('No private information is attached to the code.')
       )
-      .setMessage({ flags: MessageFlags.Ephemeral })
   }
 }
 
@@ -62,7 +62,7 @@ export class AdminHelpMeCommand {
     if (!id) throw new CommandError('Invalid HelpME Code')
 
     return new MessageBuilder()
-      .addEmbed(new Embed().description(`https://censor.bot/dashboard/${id}`))
       .setMessage({ flags: MessageFlags.Ephemeral })
+      .addEmbed(new Embed().description(`https://censor.bot/dashboard/${id}`))
   }
 }

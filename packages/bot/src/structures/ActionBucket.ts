@@ -193,8 +193,8 @@ export class ActionBucket {
 
     if (messageInfo instanceof FileBuilder) {
       const builder = new MessageBuilder()
-        .addFiles(messageInfo)
         .setMessage({ ...extra })
+        .addFiles(messageInfo)
 
       messageInfo = builder
     } else if (messageInfo instanceof MessageBuilder) {

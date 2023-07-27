@@ -39,7 +39,7 @@ export class SnipeCommand {
       throw new CommandError('No recent message found deleted by Censor Bot')
 
     return new MessageBuilder()
+      .setMessage({ flags: show ? undefined : MessageFlags.Ephemeral })
       .addEmbed(new Embed().title('Sniped Message').description(snipe))
-      .setMessage({ flags: MessageFlags.Ephemeral })
   }
 }
