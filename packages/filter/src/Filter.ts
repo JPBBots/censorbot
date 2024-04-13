@@ -386,7 +386,7 @@ export class Filter {
       }
 
       if (settings.words) {
-        const split = text.split(' ')
+        const split = text.split(this.regex.replaceSpaces)
 
         split.forEach((word, index) => {
           if (this._inRangeResult(res.ranges, [index, index])) return
