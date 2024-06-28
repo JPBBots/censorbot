@@ -65,19 +65,19 @@ export const settingSchema = Joi.object<GuildDB & { premium: boolean }>({
       .unique(),
     server: [
       Joi.array().items(Joi.string().max(20)).max(150),
-      Joi.array().max(150)
+      Joi.array().max(1500)
     ],
     uncensor: [
       Joi.array().items(Joi.string().max(20)).max(150),
-      Joi.array().max(150)
+      Joi.array().max(1500)
     ],
     words: [
       Joi.array().items(Joi.string().max(20)).max(150),
-      Joi.array().max(150)
+      Joi.array().max(1500)
     ],
     phrases: [
       Joi.array().items(Joi.string().max(20)).max(150),
-      Joi.array().max(150)
+      Joi.array().max(1500)
     ]
   }),
   exceptions: premiumObject<GuildDB['exceptions']>({
