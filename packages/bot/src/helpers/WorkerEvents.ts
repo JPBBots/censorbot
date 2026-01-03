@@ -272,54 +272,6 @@ export class WorkerEvents extends EventAdder<WorkerManager> {
     this.worker.comms.tell('GUILD_DELETED', guild.id)
   }
 
-  commands = [
-    'help',
-    'debug',
-    'ticket',
-    'support',
-    'invite',
-    'help',
-    'dashboard',
-    'dash'
-  ]
-
-  @Event('MESSAGE_CREATE')
-  async command(msg: DiscordEventMap['MESSAGE_CREATE']) {
-    if (this.worker.isCustom(msg.guild_id)) return
-    if (!msg.guild_id) return
-
-    const config = await this.worker.db.config(msg.guild_id)
-
-    if (config.prefix && !msg.content.startsWith(config.prefix)) return
-
-    if (
-      this.commands.some((a) =>
-        [config.prefix].some(
-          (b) =>
-            msg.content.startsWith(`${b}${a}`) ||
-            msg.content.startsWith(`${b} ${a}`)
-        )
-      )
-    ) {
-      if (
-        !this.worker.hasPerms(
-          msg.guild_id,
-          ['sendMessages', 'embed'],
-          msg.channel_id
-        )
-      )
-        return
-
-      void this.worker.requests.sendMessage(msg.channel_id, {
-        embeds: [
-          (
-            this.worker.interface.commands.slashCommandEmbed as unknown as Embed
-          ).render()
-        ]
-      })
-    }
-  }
-
   @Event('GUILD_BAN_ADD')
   async userBanned({
     user: { id: userId },

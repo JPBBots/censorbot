@@ -55,8 +55,10 @@ import {
   HelpMeCommand
 } from '../commands/info/HelpMeCommand'
 import {
+  ActivityType,
   APIInteractionResponseCallbackData,
-  APIMessage
+  APIMessage,
+  PresenceUpdateStatus
 } from 'discord-api-types/v10'
 
 interface CachedThread {
@@ -128,11 +130,6 @@ export class WorkerManager extends Worker<{}> {
 
     if (!custom) {
       this.interface.setupWorker(this)
-
-      this.setStatus(
-        this.config.custom.status?.[0] ?? 'watching',
-        this.config.custom.status?.[1] ?? 'For Bad Words'
-      )
     }
 
     console.log = (...msg: string[]) => this.comms.log(msg.join(' '))
@@ -143,7 +140,19 @@ export class WorkerManager extends Worker<{}> {
       void this.updateFilters()
     })
 
-    this.interface.commands.setupOldCommand(['+'], this.eventHandler.commands)
+    this.interface.commands.setupOldCommand(
+      ['+'],
+      [
+        'help',
+        'debug',
+        'ticket',
+        'support',
+        'invite',
+        'help',
+        'dashboard',
+        'dash'
+      ]
+    )
   }
 
   public async updateFilters() {
