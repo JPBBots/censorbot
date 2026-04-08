@@ -107,7 +107,7 @@ export class OAuthService extends EventEmitter<{ USER_UPDATE: Snowflake }> {
         (x) =>
           (x.owner as boolean) ||
           PermissionUtils.has(
-            Number(x.permissions),
+            BigInt(x.permissions),
             Config.dashboardOptions.requiredPermission
           )
       )
